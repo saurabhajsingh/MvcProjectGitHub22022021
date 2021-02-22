@@ -20,6 +20,10 @@ namespace KeystoneProject.Controllers.MasterFinacialAccounts
 
         public void HospitalLocationID()
         {
+
+
+            
+
             HospitalID = Convert.ToInt32(Session["HospitalID"]);
             LocationID = Convert.ToInt32(Session["LocationID"]);
             CreationID = Convert.ToInt32(Session["CreationID"]);

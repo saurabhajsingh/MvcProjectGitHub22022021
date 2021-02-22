@@ -23,6 +23,10 @@ namespace KeystoneProject.Buisness_Logic.Application
             con = new SqlConnection(Constring);
 
         }
+
+
+
+
         public void HospitlLocationID()
         {
 
