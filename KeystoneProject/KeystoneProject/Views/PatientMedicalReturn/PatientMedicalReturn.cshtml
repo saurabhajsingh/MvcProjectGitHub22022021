@@ -1,0 +1,1194 @@
+﻿@{
+    ViewBag.Title = "Patient Medical Return";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#productName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindProductName", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.productName, value: item.productName, id: item.productID,
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var productID = i.item.id;
+                $("#productID").val(productID)
+            }
+
+        })
+
+        $("#customerName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindCustomer", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.customerName, value: item.customerName, id: item.customerID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var customerID = i.item.id;
+                $("#customerID").val(customerID)
+            }
+        })
+
+        $("#salesPersonName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindSalesPerson", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.salesPersonName, value: item.salesPersonName, id: item.salesPersonID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                debugger
+                var salesPersonID = i.item.id;
+                $("#salesPersonID").val(salesPersonID)
+            }
+        })
+
+        $("#doctorName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindDoctor", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.doctorName, value: item.doctorName, id: item.doctorID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var doctorID = i.item.id;
+                $("#doctorID").val(doctorID)
+            }
+        })
+
+        $("#patientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindPatient", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.patientName, value: item.patientName, id: item.patientRegNo
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var patientRegNo = i.item.id;
+                $("#patientRegNo").val(patientRegNo)
+            }
+        })
+
+        var count = 1;
+        var GST = 0;
+        var DiscountValue = 0;
+        $("#addProductInformation").click(function () {
+            debugger
+            var Price = parseFloat($("#netRate").val());
+            var QuantityUpper = parseFloat($("#QtyU").val());
+            var QuantityLower = parseFloat($("#QtyL").val());
+
+            var name = $("#productName").val();
+
+            var skillsSelect = document.getElementById("batchNumber");
+            var batch = skillsSelect.options[skillsSelect.selectedIndex].text;
+
+            var TotalAmount = 0;
+            var SalesReturn = 0;
+
+            if (name == "" || name == null) {
+                alert("Kindly Enter Product Name !");
+            }
+            else if (batch == "--Select--" || batch == null)
+            {
+                alert("Kindly Select Product Batch !");
+            }
+            else if (QuantityUpper == "" || QuantityUpper == 0 || QuantityUpper == null)
+            {
+                alert("Kindly Enter Product Quantity !");
+            }
+            else
+            {
+                if ($("#netRate").val() == "" || $("#netRate").val() == NaN) {
+                    Price = 0;
+                }
+                if ($("#QtyU").val() == "" || $("#QtyU").val() == NaN) {
+                    QuantityUpper = 0;
+                }
+                if ($("#QtyL").val() == "" || $("#QtyL").val() == NaN) {
+                    QuantityLower = 0;
+                }
+
+                TotalAmount = parseInt((Price * QuantityUpper) + (Price * QuantityLower));
+
+                var GTotal = parseFloat($("#grossTotal").val()) + parseFloat(TotalAmount);
+                var r = parseFloat($("#prod_discPercentage").val());
+                var Discount = parseFloat($("#discountAmount").val()) + parseFloat((r * TotalAmount) / 100);
+
+                var GrandTotalAmount = GTotal - Discount + parseFloat($("#vatAmount").val());
+                var DiscInPer = parseFloat($("#discountPercentage").val());
+
+                var DiscInPerValue = (GrandTotalAmount * DiscInPer) / 100;
+                var OtherLess = parseFloat($("#otherLess").val());
+                var NetAmount = GrandTotalAmount - DiscInPerValue - OtherLess;
+
+                $("#grossTotal").val(GTotal);
+                $("#totalAmount").val(GrandTotalAmount);
+                $("#discountAmount").val(Discount);
+                $("#netAmount").val(NetAmount);
+
+
+                $("#purchaseReturnTable tbody ").append('<tr><td>' + count + '</td><td><input type="hidden" value="' + $("#productName").val() + '" name="tblProductName"><input type="hidden" value=' + $("#productID").val() + ' name="tblProductID"> ' + $("#productName").val() + '</td><td><input type="hidden" value=' + batch + ' name="tblbatchNumber">' + batch + '</td><td><input type="hidden" value=' + $("#expiry").val() + ' name="tblexpiryDate">' + $("#expiry").val() + '</td><td><input type="hidden" value=' + $("#mrp").val() + ' name="tblmrp">' + $("#mrp").val() + '</td><td><input type="hidden" value=' + $("#netRate").val() + ' name="tblnetRate">' + $("#netRate").val() + '</td><td><input type="hidden" value=' + $("#QtyU").val() + ' name="tblQtyU">' + $("#QtyU").val() + '</td><td><input type="hidden" value=' + $("#QtyL").val() + ' name="tblQtyL">' + $("#QtyL").val() + '</td><td><input type="hidden"  value=' + $("#freeQuantity").val() + ' name="tblfreeQuantity">' + $("#freeQuantity").val() + '</td><td>' + $("#prod_discPercentage").val() + '</td><td class="total"><input type="hidden" value=' + $("#prod_discPercentage").val() + ' name="tbldiscountPercentage"><input type="hidden" value=' + TotalAmount + ' name="tbltotalAmount" >' + TotalAmount + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>')
+                count++;
+            }
+
+        })
+
+    })
+</script>
+<script>
+    $(function () {
+        $("#patientName").change(function () {
+            debugger
+            var patnm = $("#patientName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_PatName", "PatientMedicalReturn")',
+                data: '{patnm: ' + JSON.stringify(patnm) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#patientName").val(searchList[0].patientName);
+                    $("#patientRegNo").val(searchList[0].patientRegNo);
+                    $("#customerName").val(searchList[0].customerName);
+                    $("#doctorName").val(searchList[0].doctorName);
+                    $("#address").val(searchList[0].address);
+                    $("#PatientType").val(searchList[0].PatientType);
+
+                    document.getElementById('patientName').readOnly = true;
+                    document.getElementById('patientRegNo').readOnly = true;
+                    document.getElementById('customerName').readOnly = true;
+
+                },
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_OldBill", "PatientMedicalReturn")',
+                data: '{patnm: ' + JSON.stringify(patnm) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#oldBillNumber").find("option").remove();
+                    $("#oldBillNumber").append('<option value="--New--">--New--</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        $("#oldBillNumber").append($("<option value=" + searchList[i].oldBillNumber + ">" + searchList[i].oldBillNumber + "</option>"));
+                    }
+                },
+            });
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Bind_oldPrint", "PatientMedicalReturn")',
+                data: { patnm: patnm },
+                dataType: "json",
+                success: function (data) {
+                    $("#purchaseReturnTableOLD tbody tr").remove();
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        var SrNo = i + 1;
+                        $("#purchaseReturnTableOLD").append(
+                           '<tr><td><a href="#" id="print"><i class="fa fa-print"></i></td><td>' + data[i].patientRegNo + '</td><td>' + data[i].oldBillNumber + '</td><td>' + data[i].referenceDate + '</td><td>' + data[i].PatientType + '</td><td>' + data[i].patientName + '</td></tr>');
+                    };
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#patientRegNo").change(function () {
+            debugger
+            var regno = $("#patientRegNo").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_regno", "PatientMedicalReturn")',
+                data: '{regno: ' + JSON.stringify(regno) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#patientName").val(searchList[0].patientName);
+                    $("#patientRegNo").val(searchList[0].patientRegNo);
+                    $("#customerName").val(searchList[0].customerName);
+                    $("#doctorName").val(searchList[0].doctorName);
+                    $("#address").val(searchList[0].address);
+                    $("#PatientType").val(searchList[0].PatientType);
+
+                    document.getElementById('patientName').readOnly = true;
+                    document.getElementById('patientRegNo').readOnly = true;
+                    document.getElementById('customerName').readOnly = true;
+
+                },
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_OldBill_regno", "PatientMedicalReturn")',
+                data: '{regno: ' + JSON.stringify(regno) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#oldBillNumber").find("option").remove();
+                    $("#oldBillNumber").append('<option value="--New--">--New--</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        $("#oldBillNumber").append($("<option value=" + searchList[i].oldBillNumber + ">" + searchList[i].oldBillNumber + "</option>"));
+                    }
+                },
+            });
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Bind_oldPrint_regno", "PatientMedicalReturn")',
+                data: { regno: regno },
+                dataType: "json",
+                success: function (data) {
+                    $("#purchaseReturnTableOLD tbody tr").remove();
+                    debugger;
+                    for (var i = 0; i < data.length; i++) {
+                        var SrNo = i + 1;
+                        $("#purchaseReturnTableOLD").append(
+                           '<tr><td><a href="#" id="print"><i class="fa fa-print"></i></td><td>' + data[i].patientRegNo + '</td><td>' + data[i].oldBillNumber + '</td><td>' + data[i].referenceDate + '</td><td>' + data[i].PatientType + '</td><td>' + data[i].patientName + '</td></tr>');
+                    };
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#customerName").change(function () {
+            debugger
+            var custNM = $("#customerName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_CustName", "PatientMedicalReturn")',
+                data: '{custNM: ' + JSON.stringify(custNM) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#customerName").val(searchList[0].customerName);
+                    $("#address").val(searchList[0].address);
+
+                    $("#patientName").val("");
+                    $("#patientRegNo").val("");
+
+                    document.getElementById('patientName').readOnly = true;
+                    document.getElementById('patientRegNo').readOnly = true;
+
+                },
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_CustOldBill", "PatientMedicalReturn")',
+                data: '{custNM: ' + JSON.stringify(custNM) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#oldBillNumber").find("option").remove();
+                    $("#oldBillNumber").append('<option value="--New--">--New--</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        $("#oldBillNumber").append($("<option value=" + searchList[i].oldBillNumber + ">" + searchList[i].oldBillNumber + "</option>"));
+                    }
+                },
+            });
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#productName").change(function () {
+            debugger
+            var prodnm = $("#productName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_batchno", "PatientMedicalReturn")',
+                data: '{prodnm: ' + JSON.stringify(prodnm) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#ProductDetailsID").val(searchList[0].ProductDetailsID)
+
+                    $("#batchNumber").find("option").remove();
+                    $("#batchNumber").append('<option value="--Select--">--Select--</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+
+                        debugger
+                        var color = "background-color: " + searchList[i].ExparyDateColor + "";
+                        $("#batchNumber").append($("<option style='" + color + "' value=" + searchList[i].ProductDetailsID + ">" + searchList[i].batchNumber + "</option>"));
+                    }
+                },
+            });
+
+            $("#batchNumber").val("")
+            $("#expiry").val((new Date()).toISOString().split('T')[0])
+            $("#mrp").val("0.00")
+            $("#netRate").val("0.00")
+            $("#prod_discPercentage").val("0.00")
+            $("#QtyU").val("0.00")
+            $("#QtyL").val("0.00")
+            $("#freeQuantity").val("0.00")
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#batchNumber").change(function () {
+            debugger
+            var ProductDetailsID = $("#batchNumber").val();
+            if (ProductDetailsID != "--Select--") {
+                $.ajax({
+                    url: '@Url.Action("FillDataByProductID", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { ProductDetailsID: ProductDetailsID },
+                    success: function (data) {
+                        debugger
+                        $("#expiry").val(data.expiry);
+                        $("#netRate").val(data.netRate);
+                        $("#mrp").val(data.mrp);
+                        $("#barCode").val(data.barCode);
+                        //$("#Contain").val(data.Contain)
+                        debugger
+                        Qtyupper = (data.QtyU).trim();
+                        Qtylower = (data.QtyL).trim();
+
+                        $("#lbl_QtyU").html(Qtyupper);
+                        $("#lbl_QtyL").html(Qtylower);
+
+                        //Contain = data.Contain;
+                        //GST = data.Gst;
+                        //DiscountValue = data.DiscountValue;
+                    }
+                })
+            }
+            else {
+                $("#expiry").val((new Date()).toISOString().split('T')[0])
+                $("#mrp").val("0.00")
+                $("#barCode").val("")
+                $("#netRate").val("0.00")
+                $("#prod_discPercentage").val("0.00")
+                $("#QtyU").val("0.00")
+                $("#QtyL").val("0.00")
+                $("#freeQuantity").val("0.00")
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+
+        var discper = 0;
+        var less = 0;
+        var totAmt = 0;
+        var netAmt = 0;
+        var discValue = 0;
+
+        $("#discountPercentage").change(function () {
+            if ($("#discountPercentage").val() == "") {
+                discper = 0;
+            }
+            else
+            {
+                discper = $("#discountPercentage").val();
+            }
+
+            if ($("#otherLess").val() == "") {
+                less = 0;
+            }
+            else {
+                less = $("#otherLess").val();
+            }
+
+            if ($("#totalAmount").val() == "") {
+                totAmt = 0;
+            }
+            else {
+                totAmt = $("#totalAmount").val();
+            }
+
+            discValue = (totAmt * discper) / 100;
+
+            $("#netAmount").val(parseFloat(totAmt) - parseFloat(discValue) - parseFloat(less));
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        var discper = 0;
+        var less = 0;
+        var totAmt = 0;
+        var netAmt = 0;
+        var discValue = 0;
+
+        $("#otherLess").change(function () {
+            if ($("#discountPercentage").val() == "") {
+                discper = 0;
+            }
+            else {
+                discper = $("#discountPercentage").val();
+            }
+
+            if ($("#otherLess").val() == "") {
+                less = 0;
+            }
+            else {
+                less = $("#otherLess").val();
+            }
+
+            if ($("#totalAmount").val() == "") {
+                totAmt = 0;
+            }
+            else {
+                totAmt = $("#totalAmount").val();
+            }
+
+            discValue = (totAmt * discper) / 100;
+
+            $("#netAmount").val(parseFloat(totAmt) - parseFloat(discValue) - parseFloat(less));
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#purchaseReturnTable").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+
+        })
+    });
+</script>
+<script>
+    function myFunction(row) {
+        debugger;
+        var totamount = 0;
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        var totamount = document.getElementById('purchaseReturnTable').tBodies[0].rows[rowIndex].cells[10].children[1].value;
+        var disc = document.getElementById('purchaseReturnTable').tBodies[0].rows[rowIndex].cells[9].innerText;
+
+        var disc_amt = (totamount * disc) / 100;
+
+        var gross = parseFloat($("#grossTotal").val()) - parseFloat(totamount);
+        //var vat = parseFloat($("#vatAmount").val()) - parseFloat(gst_vat);
+        var Discount = parseFloat($("#discountAmount").val()) - parseFloat(disc_amt);
+
+        var GrandTotalAmount = gross - Discount + parseFloat($("#vatAmount").val());
+        var DiscInPer = parseFloat($("#discountPercentage").val());
+
+        var DiscInPer = (GrandTotalAmount * DiscInPer) / 100;
+        var OtherLess = parseFloat($("#otherLess").val());
+        var NetAmount = GrandTotalAmount - DiscInPer - OtherLess;
+
+        $("#grossTotal").val(gross);
+        $("#totalAmount").val(GrandTotalAmount);
+        $("#discountAmount").val(Discount);
+        $("#netAmount").val(NetAmount);
+        $("#vatAmount").val(vat);
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#oldBillNumber").change(function () {
+            debugger
+            var BillNo = $("#oldBillNumber").val();
+
+            if (BillNo != "--New--") {
+                $("#save").html("<i class='fa fa-save'></i>Update");
+                $.ajax({
+                    url: '@Url.Action("FillOldBillDetails", "PatientMedicalReturn")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { BillNo: $(this).val() },
+                    success: function (data) {
+                        debugger
+                        $("#medicalReturnID").val(data.objmodel.medicalReturnID);
+                        $("#referenceDate").val(data.objmodel.referenceDate);
+                        $("#referenceNumber").val(data.objmodel.referenceNumber);
+
+                        if (data.objmodel.postingAccount == "Return Cash")
+                        {
+                            $("#returnCash").prop("checked", true);
+                        }
+                        else if (data.objmodel.postingAccount == "Adjust In Invoice") {
+                            $("#adjustInvoice").prop("checked", true);
+                        }
+                        else if (data.objmodel.postingAccount == "Account") {
+                            $("#account").prop("checked", true);
+                        }
+                        else
+                        {
+                            $("#returnCash").prop("checked", false);
+                            $("#adjustInvoice").prop("checked", false);
+                            $("#account").prop("checked", false);
+                        }
+
+                        $("#patientRegNo").val(data.objmodel.patientRegNo);
+                        $("#patientName").val(data.objmodel.patientName);
+                        $("#address").val(data.objmodel.address);
+                        $("#doctorID ").val(data.objmodel.doctorID);
+                        $("#doctorName").val(data.objmodel.doctorName);
+                        $("#salesPersonID").val(data.objmodel.salesPersonID);
+                        $("#salesPerson").val(data.objmodel.salesPerson);
+                        $("#remark").val(data.objmodel.remark);
+                        $("#grossTotal").val(data.objmodel.grossTotal);
+                        $("#discountAmount").val(data.objmodel.discountAmount);
+                        $("#vatAmount").val(data.objmodel.vatAmount);
+                        $("#totalAmount").val(data.objmodel.totalAmount);
+                        $("#discountPercentage").val(data.objmodel.discountPercentage);
+                        $("#otherLess").val(data.objmodel.otherLess);
+                        $("#netAmount").val(data.objmodel.netAmount);
+                        $("#purchaseReturnTable tbody tr").remove();
+                        for(var i=0; i < data.obj1.length;i++)
+                        {
+                            $("#medicalReturnDetailID").val(data.obj1[i].medicalReturnDetailID);
+                            $("#medicalReturnID").val(data.obj1[i].medicalReturnID);
+                            $("#ProductDetailsID").val(data.obj1[i].ProductDetailsID);
+
+                            var Discount = parseFloat((data.obj1[i].tbltotalAmount * data.obj1[i].tbldiscountPercentage) / 100);
+                            var GST = 0;
+
+                            var count = i + 1;
+
+                            $("#purchaseReturnTable tbody ").append('<tr><td>' + count + '</td><td><input type="hidden" value="' + data.obj1[i].tblProductName +
+                                '" name="tblProductName"><input type="hidden" value=' + data.obj1[i].tblProductID + ' name="tblProductID"> ' + data.obj1[i].tblProductName +
+                                '</td><td><input type="hidden" value=' + data.obj1[i].tblbatchNumber + ' name="tblbatchNumber">' + data.obj1[i].tblbatchNumber +
+                                '</td><td><input type="hidden" value=' + data.obj1[i].tblexpiryDate + ' name="tblexpiryDate">' + data.obj1[i].tblexpiryDate + '</td><td><input type="hidden" value='
+                                + data.obj1[i].tblmrp + ' name="tblmrp">' + data.obj1[i].tblmrp + '</td><td><input type="hidden" value=' + data.obj1[i].tblnetRate +
+                                ' name="tblnetRate">' + data.obj1[i].tblnetRate + '</td><td><input type="hidden" value=' + data.obj1[i].tblQtyU + ' name="tblQtyU">' + data.obj1[i].tblQtyU +
+                                '</td><td><input type="hidden" value=' + data.obj1[i].tblQtyL + ' name="tblQtyL">' + data.obj1[i].tblQtyL + '</td><td><input type="hidden"  value='
+                                + data.obj1[i].tblfreeQuantity + ' name="tblfreeQuantity">' + data.obj1[i].tblfreeQuantity + '</td><td>' + data.obj1[i].tbldiscountPercentage +
+                                '</td><td class="total"><input type="hidden" value=' + data.obj1[i].tbldiscountPercentage + ' name="tbldiscountPercentage"><input type="hidden" value='
+                                + data.obj1[i].tbltotalAmount + ' name="tbltotalAmount" >' + data.obj1[i].tbltotalAmount + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>')
+
+                            $("#productName").val("");
+                            $("#productID").val("");
+                            $("#batchNumber").val("--Select--");
+                            $("#expiry").val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                            $("#mrp").val("0.00");
+                            $("#netRate").val("0.00");
+                            $("#Prod_discPercentage").val("0.00");
+                            $("#QtyU").val("0.00");
+                            $("#QtyL").val("0.00");
+                            $("#freeQuantity").val("0.00");
+
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $("#save").html("<i class='fa fa-save'></i>save");
+
+                $("#medicalReturnID").val("0");
+                $("#referenceDate").val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                $("#referenceNumber").val("");
+                $("#remark").val(""); $("#salesPersonID").val("0");
+                $("#salesPerson").val("");
+                $("#returnCash").prop("checked", false);
+                $("#adjustInvoice").prop("checked", false);
+                $("#account").prop("checked", false);
+                $("#grossTotal").val("0.00");
+                $("#discountAmount").val("0.00");
+                $("#vatAmount").val("0.00");
+                $("#totalAmount").val("0.00");
+                $("#discountPercentage").val("0.00");
+                $("#otherLess").val("0.00");
+                $("#netAmount").val("0.00");
+                $("#purchaseReturnTable tbody tr").remove();
+                $("#medicalReturnDetailID").val("0");
+                $("#ProductDetailsID").val("0");
+                $("#productName").val("");
+                $("#productID").val("");
+                $("#batchNumber").val("--Select--");
+                $("#expiry").val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                $("#mrp").val("0.00");
+                $("#netRate").val("0.00");
+                $("#Prod_discPercentage").val("0.00");
+                $("#QtyU").val("0.00");
+                $("#QtyL").val("0.00");
+                $("#freeQuantity").val("0.00");
+            }
+        });
+    });
+</script>
+<script>
+    function Delete(medicalReturnID) {
+        debugger
+        if (medicalReturnID != "") {
+            var ans = confirm("Are you sure you want to Delete this Record ?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete_medBill", "PatientMedicalReturn")',
+                    data: { medicalReturnID: medicalReturnID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "Medical Return Bill Deleted Successfully !") {
+                            alert("Medical Return Bill Deleted Successfully !");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                });
+            }
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#purchaseReturnTableOLD").on('click', '#print', function (e) {
+            debugger
+
+            var row = $(this).parent().index();
+            var BillNo = document.getElementById("purchaseReturnTableOLD").tBodies[0].rows[row].cells[2].innerHTML;
+
+            var UserData = { BillNo: BillNo, }
+            $.ajax({
+                url: '@Url.Action("OldBillPrint_click", "PatientMedicalReturn")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+                    window.location.href = '@Url.Action("medicalBillReturn", "PharmacyReport")';
+                }
+            });
+        })
+
+    });
+</script>
+
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient Medical Return</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Pharmacy","Application")">Pharmacy</a></li>
+                                    <li class="breadcrumb-item active">Patient Medical Return</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="background: #bddff7;">
+                                        <div class="col-lg-10 col-md-8 col-sm-12 col-xs-12">
+                                            <h2 class="panelheading">Patient Information</h2>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="padding-top: 3px;">
+                                            <button type="button" id="oldBillPrint" name="oldBillPrint" class="btndivcss pull-right" data-toggle="modal" data-target="#oldBillPrintModal" style="height: 25px;">
+                                                Old Bill Print
+                                            </button>
+
+                                            <!-- Old Bill Modal -->
+                                            <div class="modal fade" id="oldBillPrintModal" role="dialog">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Modal title</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="table-responsive">
+                                                                <table id="purchaseReturnTableOLD" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th><i class="fa fa-print"></i></th>
+                                                                            <th>Patient Reg. No.</th>
+                                                                            <th>Bill No.</th>
+                                                                            <th>Bill No. & Date</th>
+                                                                            <th>Bill Type</th>
+                                                                            <th>Patient Details</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                            <button type="button" class="btndivcss pull-right" data-dismiss="modal">Ok</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Patinet Registration Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Pt. Reg. No.</label>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <input type="number" id="patientRegNo" name="patientRegNo" class="form-control">
+                                                    <input type="hidden" name="medicalReturnID" id="medicalReturnID" />
+                                                </div>
+                                                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                                    <input type="text" id="patientName" name="patientName" class="form-control">
+                                                    <input type="hidden" name="PatientType" id="PatientType" />
+                                                </div>
+                                            </div>
+                                            <!--old Bill Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>old Bill No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select id="oldBillNumber" name="oldBillNumber" class="form-control"></select>
+                                                </div>
+                                            </div>
+                                            <!--Customer Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Customer Name</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="customerName" name="customerName" class="form-control">
+                                                    <input type="hidden" name="customerID" id="customerID" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addCustomerName" name="addCustomerName" class="btndivcss pull-right" style="height: 25px;">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Doctor Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Doctor Name</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="doctorName" name="doctorName" class="form-control" readonly>
+                                                    <input type="hidden" name="doctorID" id="doctorID" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addDoctorName" name="addDoctorName" class="btndivcss pull-right" style="height: 25px;">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Reference Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Ref. No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="referenceNumber" name="referenceNumber" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Reference Date-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Ref. Date</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="Date" id="referenceDate" name="referenceDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Sales Person-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Sales Person</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="salesPerson" name="salesPerson" class="form-control" readonly>
+                                                    <input type="hidden" name="salesPersonID" id="salesPersonID" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addSalesPerson" name="addSalesPerson" onclick="window.location.href='@Url.Action("SalesPerson", "SalesPerson")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Address-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Address</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <textarea id="address" name="address" class="form-control" readonly></textarea>
+                                                </div>
+                                            </div>
+                                            <!--Remark-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Remark</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <textarea id="remark" name="remark" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Amount Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Gross Total-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gross Total</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="grossTotal" name="grossTotal" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <!--Total Amount-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Total Amount</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="totalAmount" name="totalAmount" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <!--Discount Amount-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Disc. Amount</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="discountAmount" name="discountAmount" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <!--Discount Percentage-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Disc. %</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="discountPercentage" name="discountPercentage" value="0.00" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Vat Amount-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Vat Amount</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="vatAmount" name="vatAmount" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <!--Other Less-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Other Less</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="otherLess" name="otherLess" value="0.00" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Net Amount-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Net Amt.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="netAmount" name="netAmount" value="0.00" readonly class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Posting Account-->
+                                            <div class="form-group col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Posting A/c.</label>
+                                                </div>
+                                                <div class="col-lg-10 col-md-8 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="Return Cash" id="returnCash" name="postingAccount">Return Cash
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="Adjust In Invoice" id="adjustInvoice" name="postingAccount">Adjust In Invoice
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="Account" id="account" name="postingAccount">Account
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Bar Code-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Bar Code</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="barCode" name="barCode" class="form-control">
+                                                    <input type="hidden" name="medicalReturnDetailID" id="medicalReturnDetailID" />
+                                                </div>
+                                            </div>
+                                            <!--Product Name-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Pdt. Name</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="productName" name="productName" class="form-control">
+                                                    <input type="hidden" name="productID" id="productID" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addProductName" name="addProductName" class="btndivcss pull-right" style="height: 25px;">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Batch Number-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Batch No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select id="batchNumber" name="batchNumber" class="form-control"></select>
+                                                    <input type="hidden" id="ProductDetailsID" name="ProductDetailsID" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Expiry Date-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Expiry</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="expiry" name="expiry" readonly value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--MRP-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>MRP</label>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="number" id="mrp" name="mrp" value="0.00" readonly class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Net Rate-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Net Rate</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="netRate" name="netRate" value="0.00" readonly class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Discount Percentage-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Disc. %</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="prod_discPercentage" value="0.00" readonly name="discountPercentage" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Strip-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label id="lbl_QtyU" name="lbl_QtyU">Strip</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="QtyU" name="QtyU" value="0" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Tab-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label id="lbl_QtyL" name="lbl_QtyL">Tube</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="QtyL" name="QtyL" value="0" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Free Quantity-->
+                                            <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Free Qty.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="freeQuantity" name="freeQuantity" value="0" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Button-->
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <button type="button" id="addProductInformation" name="addProductInformation" class="btndivcss pull-right" style="height: 25px;">
+                                                    Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                            <table id="purchaseReturnTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th>Sr. No.</th>
+                                                        <th>Product Name</th>
+                                                        <th>Batch</th>
+                                                        <th>Expiry Date</th>
+                                                        <th>M.R.P.</th>
+                                                        <th>Rate</th>
+                                                        <th>Quantity Upper</th>
+                                                        <th>Quantity Lower</th>
+                                                        <th>Free Quantity</th>
+                                                        <th>Discount %</th>
+                                                        <th>Total Amount</th>
+                                                        <th>Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('medicalReturnID').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Pharmacy", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                @*<div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" id="purchaseReturnTableExcelExport"></a>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

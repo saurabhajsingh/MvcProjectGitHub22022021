@@ -1,0 +1,729 @@
+﻿@model KeystoneProject.Models.PharmacyMaster.Product
+
+@{
+    ViewBag.Title = "Product Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $('html').bind('keypress', function (e) {
+        if (e.keyCode == 13) {
+            return false;
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#productCompany").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Bind_productComp", "Product")',
+                    data: { prefix: request.term },
+                    datatype: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.productCompany, value: item.productCompany, id: item.productCompanyID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#productCompany").val('');
+                }
+                $('#productCompanyID').val(i.item.id);
+
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#manufacturerName").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Bind_Manufacturer", "Product")',
+                    data: { prefix: request.term },
+                    datatype: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.manufacturerName, value: item.manufacturerName, id: item.manufacturerNameID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#manufacturerName").val('');
+                }
+                $('#manufacturerNameID').val(i.item.id);
+
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#packing").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type : "POST",
+                    url :'@Url.Action("Bind_Pack", "Product")',
+                    data : {prefix :request.term},
+                    datatype : "json",
+                    success: function (data) {
+                        debugger
+                        response($.map(data,function(item){
+                            return {
+                                label : item.packing, value : item.packing, id : item.packingID,
+                            };
+                        }))
+                    },
+                })
+                },
+            minlength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#packing").val('');
+                }
+                $("#packingID").val(i.item.id);
+
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#generic").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url : '@Url.Action("Bind_Gen", "Product")',
+                    data: { prefix: request.term },
+                    datatype: "json",
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label :item.generic,value :item.generic, id : item.genericID,
+                            };
+                        }))
+                    },
+                })
+            },
+            minlength : 1,
+            change : function (event , i){
+                if (!i.item)
+                {
+                    this.value='';
+                    $("#generic").val('');
+                }
+                $("#genericID").val(i.item.id);
+
+            },
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#category").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url : '@Url.Action("Bind_Cat", "Product")',
+                    data: { prefix: request.term },
+                    datatype: "json",
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.category, value: item.category, id: item.categoryID,
+                            };
+                        }))
+                    },
+                })
+            },
+            minlength : 1,
+            change : function (event , i){
+                if (!i.item)
+                {
+                    this.value='';
+                    $("#category").val('');
+                }
+                $("#categoryID").val(i.item.id);
+
+            },
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#HSNSACCode").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url : '@Url.Action("Bind_HSNCODE", "Product")',
+                    data: { prefix: request.term },
+                    datatype: "json",
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.HSNSACCode, value: item.HSNSACCode,
+                            };
+                        }))
+                    },
+                })
+            },
+            minlength : 1,
+            change : function (event , i){
+                if (!i.item)
+                {
+                    this.value='';
+                    $("#HSNSACCode").val('');
+                }
+                
+            },
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("BindTable", "Product")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    debugger;
+                    var SrNo = i + 1;
+                    $("#productTable").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].productName + '</td><td>' + data[i].productCompany + '</td><td>' + data[i].packing + '</td><td>' + data[i].HSNSACCode + '</td><td>' + data[i].manufacturerName + '</td><td style="display:none">' + data[i].productNameID + '</td></tr>');
+                };
+                $('#productTable').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#productTable').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#productTableExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#productTable').delegate('td', 'click', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var productNameID = parseInt(document.getElementById("productTable").tBodies[0].rows[row_num].cells[6].innerHTML);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Rebind_Data", "Product")',
+                data: { id: productNameID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#productNameID").val(data[0].productNameID);
+                    $("#productName").val(data[0].productName);
+                    $("#productCompanyID").val(data[0].productCompanyID);
+                    $("#productCompany").val(data[0].productCompany);
+                    $("#packingID").val(data[0].packingID);
+                    $("#packing").val(data[0].packing);
+                    $("#contains").val(data[0].contains);
+                    $("#containsQuantity").val(data[0].containsQuantity);
+                    $("#sellLoose").val(data[0].sellLoose);
+                    $("#genericID").val(data[0].genericID);
+                    $("#generic").val(data[0].generic);
+                    $("#HSNSACCode").val(data[0].HSNSACCode);
+                    $("#SKUCode").val(data[0].SKUCode);
+                    $("#chapterCode").val(data[0].chapterCode);
+                    $("#manufacturerName").val(data[0].manufacturerName);
+                    $("#maximumLevel").val(data[0].maximumLevel);
+                    $("#minimumLevel").val(data[0].minimumLevel);
+                    $("#scheduled").val(data[0].scheduled);
+                    $("#categoryID").val(data[0].categoryID);
+                    $("#category").val(data[0].category);
+                    $("#barCode").val(data[0].barCode);
+                    $("#discontinueDate").val(data[0].discontinueDate);
+                    $("#extrafield").val(data[0].extrafield);
+                    $("#detailextrafield").val(data[0].detailextrafield);
+                    $("#gst").val(data[0].gst);
+                    $("#sgst").val(data[0].sgst);
+                    $("#cgst").val(data[0].cgst);
+                    $("#utgst").val(data[0].utgst);
+                    $("#cess").val(data[0].cess);
+
+                    if (data[0].sellLoose == "True")
+                    {
+                        $("#sellLoose").prop("checked",true);
+                    }
+                    else
+                    {
+                        $("#sellLoose").prop("checked", false);
+                    }
+
+                    if (data[0].scheduled == "True") {
+                        $("#scheduled").prop("checked", true);
+                    }
+                    else {
+                        $("#scheduled").prop("checked", false);
+                    }
+
+                    if (data[0].detailextrafield == "True") {
+                        $("#detailextrafield").prop("checked", true);
+                    }
+                    else {
+                        $("#detailextrafield").prop("checked", false);
+                    }
+
+                },
+            });
+
+    });
+    });
+</script>
+<script>
+   
+    function Delete(productNameID) {
+            debugger
+            if (productNameID != "")
+            {
+                var ans = confirm("Are you sure you want to delete this record ?");
+                if (ans) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteProduct", "Product")',
+                        data: { productNameID, productNameID },
+                        datatype: "json",
+                        success: function (data) {
+                            if (data == "Done") {
+                                alert("Product Deleted Successfully");
+                                location.reload(true);
+                                Restore();
+                            }
+                            else {
+                                alert(data);
+                            }
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+                    })
+                }
+            }
+        }
+   
+</script>
+<script>
+    $(function () {
+        $("#HSNSACCode").change(function () {
+            debugger
+            var code = $("#HSNSACCode").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Get_HSN_GST", "Product")',
+                data: '{HSNSACCode: ' + JSON.stringify(code) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger;
+                    $("#gst").val(searchList[0].gst);
+                    $("#utgst").val($("#gst").val());
+                    var percntg = parseInt($("#gst").val());
+                    if (percntg != 0 || percntg != null) {
+                        $("#cgst").val(percntg / 2);
+                        $("#sgst").val(percntg / 2);
+                    }
+                },
+            });
+        });
+    });
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Product Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Product</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Product Company-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Product Company</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="productCompany" name="productCompany" placeholder="Search Product Company" class="form-control">
+                                                    <input type="hidden" id="productCompanyID" name="productCompanyID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addProductCompany" name="addProductCompany" onclick="window.location.href='@Url.Action("ProductCompany","ProductCompany")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Product Name-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Product Name</label>
+                                                </div>
+                                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="productName" name="productName" class="form-control" required
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Product Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" id="productNameID" name="productNameID" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Packing-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Packing</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="packing" name="packing" placeholder="Search Packing" class="form-control">
+                                                    <input type="hidden" id="packingID" name="packingID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addPacking" name="addPacking" onclick="window.location.href='@Url.Action("ProductUnit", "ProductUnit")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Contains-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Contains</label>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="number" id="contains" name="contains" class="form-control">
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="containsQuantity" name="containsQuantity" class="form-control">
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <div class="form-check-inline pull-right">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="sellLoose" name="sellLoose">Sell Loose
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Generic-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Generic</label>
+                                                </div>
+                                                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="generic" name="generic" placeholder="Search Generic" class="form-control">
+                                                    <input type="hidden" id="genericID" name="genericID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addGeneric" name="addGeneric" onclick="window.location.href='@Url.Action("GenericInformation", "GenericInformation")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <div class="form-check-inline pull-right">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="scheduled" name="scheduled">Scheduled
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Minimum and Maximum Level-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Min Lvl.</label>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="number" id="minimumLevel" name="minimumLevel" class="form-control">
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <label class="pull-right">Max Lvl.</label>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="number" id="maximumLevel" name="maximumLevel" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Manufacturer Name-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Mfr. Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="manufacturerName" name="manufacturerName" class="form-control">
+                                                    <input type="hidden" id="manufacturerNameID" name="manufacturerNameID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addmanufacturerName" name="addmanufacturerName" onclick="window.location.href='@Url.Action("Manufacture","Manufacture")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Category-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Category</label>
+                                                </div>
+                                                <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="category" name="category" placeholder="Search Category" class="form-control">
+                                                    <input type="hidden" id="categoryID" name="categoryID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addProductCategory" name="addProductCategory" onclick="window.location.href='@Url.Action("ProductCategory","ProductCategory")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--SKU Code-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>SKU Code</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="SKUCode" name="SKUCode" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--HSN / SAC Code-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>HSN/SAC Code</label>
+                                                </div>
+                                                <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="HSNSACCode" name="HSNSACCode" placeholder="Search HSN/SAC Code" class="form-control">
+                                                    <input type="hidden" id="HSNSACCodeID" name="HSNSACCodeID" class="form-control">
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 cpb-10">
+                                                    <button type="button" id="addHSNCode" name="addHSNCode" onclick="window.location.href='@Url.Action("HSNCode","HSNCode")'" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Chapter Code-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Chapter Code</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="chapterCode" name="chapterCode" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Bar Code-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Bar Code</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="barCode" name="barCode" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Extra Field-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Extra Field</label>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="extrafield" name="extrafield" class="form-control">
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                    <div class="form-check-inline pull-right">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="detailextrafield" name="detailextrafield">Detail with Extra Field
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Discontinue Date-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Discontinue Date</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="date" id="discontinueDate" name="discontinueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">GST Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--G.S.T-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>G.S.T %</label>
+                                                    <input type="text" id="gst" name="gst" readonly value="0.00" class="form-control">
+                                                </div>
+                                                <!--S.G.S.T-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>S.G.S.T %</label>
+                                                    <input type="text" id="sgst" name="sgst" readonly value="0.00" class="form-control">
+                                                </div>
+                                                <!--C.G.S.T-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>C.G.S.T %</label>
+                                                    <input type="text" id="cgst" name="cgst" readonly value="0.00" class="form-control">
+                                                </div>
+                                                <!--U.T.G.S.T-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>U.T.G.S.T %</label>
+                                                    <input type="text" id="utgst" name="utgst" readonly value="0.00" class="form-control">
+                                                </div>
+                                                <!--C.E.S.S-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>C.E.S.S %</label>
+                                                    <input type="text" id="cess" name="cess" readonly value="0.00" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('productNameID').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="productTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="productTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr.No.</th>
+                                            <th>Product Name</th>
+                                            <th>Product Company Name</th>
+                                            <th>Packing</th>
+                                            <th>HSN/SAC Code</th>
+                                            <th>Manufacturer Name</th>
+                                            <th style="display:none">Product Name ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

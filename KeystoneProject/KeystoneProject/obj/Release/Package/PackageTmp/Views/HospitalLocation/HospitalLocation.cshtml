@@ -1,0 +1,1696 @@
+﻿@model KeystoneProject.Models.Keystone.HospitalLocation
+
+@{
+    ViewBag.Title = "HospitalLocation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#City").autocomplete({
+
+            source: function (request, response) {
+                debugger
+                $.ajax({
+
+                    url: '@Url.Action("GetCityBind", "HospitalLocation")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.City, value: item.City, id: item.CityID
+                            };
+                        }));
+                    }
+                })
+            },
+
+            minLength: 1,
+            change: function (event, ui) {
+                $("#CityID").val(ui.item.id);
+            }
+
+        });
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $("#City").change(function () {
+            debugger
+            var City = $("#City").val();
+            $.ajax({
+                type: "POST",
+
+                url: '@Url.Action("AjaxMethod", "HospitalLocation")',
+                data: '{City: ' + JSON.stringify(City) + '}',
+                contentType: "application/json; charset=utf-8",
+
+                success: function (searchList) {
+                    debugger
+                    $("#State").val(searchList[0]);
+                    $("#Country").val(searchList[1]);
+
+                    $("#StateID").val(searchList[2]);
+                    $("#CountryID").val(searchList[3]);
+                },
+            });
+        });
+    });
+</script>
+
+@*<script>
+
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DataTableBind", "HospitalLocation")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                $.each(result, function (i, obj) {
+
+                    $("#datatable-responsive").append('<tr><td>' + count + '</td><td> ' + obj.LocationID + ' </td> <td> ' + obj.LocationName + ' </td> <td style="display:none"> ' + obj.Logo + '</td></tr>');
+                    count++;
+                });
+            },
+            error: function () {
+
+            }
+        });
+    });
+</script>*@
+
+@*<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("ShowAllHospitalLocation", "HospitalLocation")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    debugger
+                    var SrNo = i + 1;
+                    $("#datatable-responsive").append('<tr><td>' + SrNo + '</td><td>' + data[i].LocationID + '</td><td>' + data[i].LocationName + '</td><td style="display:none">' + data[i].HospitalName + '</td>\<td style="display:none">' + data[i].GroupName + '</td><td style="display:none">' + data[i].Logo + '</td><td style="display:none">' + data[i].ManagingBody + '</td><td style="display:none">' + data[i].Adminstrator + '</td><td style="display:none">' + data[i].Address + '</td><td style="display:none">' + data[i].Pincode + '</td><td style="display:none">' + data[i].PhoneNumber + '</td><td style="display:none">' + data[i].PhoneNumber1 + '</td><td style="display:none">' + data[i].MobileNo + '</td><td style="display:none">' + data[i].EmailPassword + '</td><td style="display:none">' + data[i].Fax + '</td><td style="display:none">' + data[i].EmailID + '</td><td style="display:none">' + data[i].CityID + '</td><td style="display:none">' + data[i].StateID + '</td><td style="display:none">' + data[i].CountryID + '</td><td style="display:none">' + data[i].City + '</td><td style="display:none">' + data[i].State + '</td><td style="display:none">' + data[i].Country + '</td><td style="display:none">' + data[i].URL + '</td><td style="display:none">' + data[i].BillHeader + '</td><td style="display:none">' + data[i].LabReportHeader + '</td><td style="display:none">' + data[i].ReportHeader + '</td><td style="display:none">' + data[i].ReportSignature + '</td><td style="display:none">' + data[i].ReportSignature1 + '</td><td style="display:none">' + data[i].AdmissionCardBack + '</td><td style="display:none">' + data[i].AdmissionCardFront + '</td><td style="display:none">' + data[i].PrivilegeCardBack + '</td><td style="display:none">' + data[i].PrivilegeCardFront + '</td><td style="display:none">' + data[i].OtherHeader + '</td><td style="display:none">' + data[i].BillHeader1 + '</td><td style="display:none">' + data[i].LabReportsHeaderImg + '</td><td style="display:none">' + data[i].ReportsHeaderImg + '</td><td style="display:none">' + data[i].ReportsSignatureImg + '</td><td style="display:none">' + data[i].ReportSignature1Img + '</td><td style="display:none">' + data[i].CardBackendImg + '</td><td style="display:none">' + data[i].CardFrontendImg + '</td><td style="display:none">' + data[i].PriCardBackendImg + '</td><td style="display:none">' + data[i].PriCardFrontendImg + '</td><td style="display:none">' + data[i].OtherHeaderImg + '</td><td style="display:none">' + data[i].RegistrationNo + '</td><td style="display:none">' + data[i].ServiceTaxNo + '</td><td style="display:none">' + data[i].PANNo + '</td><td style="display:none">' + data[i].TDSCircle + '</td><td style="display:none">' + data[i].TDSProfessional + '</td><td style="display:none">' + data[i].TDSContrator + '</td><td style="display:none">' + data[i].ServiceCharge + '</td><td style="display:none">' + data[i].RegistrationCharge + '</td><td style="display:none">' + data[i].TANo + '</td><td style="display:none">' + data[i].RegistrationRenwalCharges + '</td></tr>');
+
+                };
+
+                $('#datatable-responsive').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [{
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'exportExcel',
+                        filename: 'Test_Excel',
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'CSV',
+                        className: 'exportExcel',
+                        filename: 'Test_Csv',
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'PDF',
+                        className: 'exportExcel',
+                        filename: 'Test_Pdf',
+                        exportOptions: { modifier: { page: 'all' } }
+                    }]
+                });
+
+            },
+            error: function (data) {
+                alert("Error grd bind");
+            }
+        });
+
+
+    });
+
+
+</script>*@
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowAllHospitalLocation", "HospitalLocation")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#datatable-responsive").append('<tr><td>' + SrNo + '</td><td>' + data[i].LocationID + '</td><td>' + data[i].LocationName + '</td><td style="display:none">' + data[i].HospitalName + '</td>\<td style="display:none">' + data[i].GroupName + '</td><td style="display:none">' + data[i].Logo + '</td><td style="display:none">' + data[i].ManagingBody + '</td><td style="display:none">' + data[i].Adminstrator + '</td><td style="display:none">' + data[i].Address + '</td><td style="display:none">' + data[i].Pincode + '</td><td style="display:none">' + data[i].PhoneNumber + '</td><td style="display:none">' + data[i].PhoneNumber1 + '</td><td style="display:none">' + data[i].MobileNo + '</td><td style="display:none">' + data[i].EmailPassword + '</td><td style="display:none">' + data[i].Fax + '</td><td style="display:none">' + data[i].EmailID + '</td><td style="display:none">' + data[i].CityID + '</td><td style="display:none">' + data[i].StateID + '</td><td style="display:none">' + data[i].CountryID + '</td><td style="display:none">' + data[i].City + '</td><td style="display:none">' + data[i].State + '</td><td style="display:none">' + data[i].Country + '</td><td style="display:none">' + data[i].URL + '</td><td style="display:none">' + data[i].BillHeader + '</td><td style="display:none">' + data[i].LabReportHeader + '</td><td style="display:none">' + data[i].ReportHeader + '</td><td style="display:none">' + data[i].ReportSignature + '</td><td style="display:none">' + data[i].ReportSignature1 + '</td><td style="display:none">' + data[i].AdmissionCardBack + '</td><td style="display:none">' + data[i].AdmissionCardFront + '</td><td style="display:none">' + data[i].PrivilegeCardBack + '</td><td style="display:none">' + data[i].PrivilegeCardFront + '</td><td style="display:none">' + data[i].OtherHeader + '</td><td style="display:none">' + data[i].BillHeader1 + '</td><td style="display:none">' + data[i].LabReportsHeaderImg + '</td><td style="display:none">' + data[i].ReportsHeaderImg + '</td><td style="display:none">' + data[i].ReportsSignatureImg + '</td><td style="display:none">' + data[i].ReportSignature1Img + '</td><td style="display:none">' + data[i].CardBackendImg + '</td><td style="display:none">' + data[i].CardFrontendImg + '</td><td style="display:none">' + data[i].PriCardBackendImg + '</td><td style="display:none">' + data[i].PriCardFrontendImg + '</td><td style="display:none">' + data[i].OtherHeaderImg + '</td><td style="display:none">' + data[i].RegistrationNo + '</td><td style="display:none">' + data[i].ServiceTaxNo + '</td><td style="display:none">' + data[i].PANNo + '</td><td style="display:none">' + data[i].TDSCircle + '</td><td style="display:none">' + data[i].TDSProfessional + '</td><td style="display:none">' + data[i].TDSContrator + '</td><td style="display:none">' + data[i].ServiceCharge + '</td><td style="display:none">' + data[i].RegistrationCharge + '</td><td style="display:none">' + data[i].TANo + '</td><td style="display:none">' + data[i].RegistrationRenwalCharges + '</td></tr>');
+                };
+
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });       
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#datatable-responsive').delegate('td', 'click', function () {
+            debugger;
+
+            var row = $(this).parent().index();
+
+            var LocationID = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[1].innerHTML;
+            var LocationName = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[2].innerHTML;
+            var HospitalName = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[3].innerHTML;
+            var GroupName = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[4].innerHTML;
+            var Logo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[5].innerHTML;
+            document.getElementById('img1').src = Logo;
+            var ManagingBody = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[6].innerHTML;
+            var Adminstrator = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[7].innerHTML;
+            var Address = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[8].innerHTML;
+            var Pincode = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[9].innerHTML;
+            var PhoneNumber = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[10].innerHTML;
+            var PhoneNumber1 = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[11].innerHTML;
+            var MobileNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[12].innerHTML;
+            var EmailPassword = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[13].innerHTML;
+            var Fax = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[14].innerHTML;
+            var EmailID = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[15].innerHTML;
+            var CityID = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[16].innerHTML;
+            var StateID = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[17].innerHTML;
+            var CountryID = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[18].innerHTML;
+            var City = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[19].innerHTML;
+            var State = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[20].innerHTML;
+            var Country = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[21].innerHTML;
+            var URL = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[22].innerHTML;
+            var BillHeader = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[23].innerHTML;
+            var LabReportHeader = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[24].innerHTML;
+            var ReportHeader = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[25].innerHTML;
+            var ReportSignature = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[26].innerHTML;
+            var ReportSignature1 = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[27].innerHTML;
+            var AdmissionCardBack = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[28].innerHTML;
+            var AdmissionCardFront = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[29].innerHTML;
+            var PrivilegeCardBack = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[30].innerHTML;
+            var PrivilegeCardFront = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[31].innerHTML;
+            var OtherHeader = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[32].innerHTML;
+            var BillHeader1 = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[33].innerHTML;
+            var LabReportsHeaderImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[34].innerHTML;
+            var ReportsHeaderImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[35].innerHTML;
+            var ReportsSignatureImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[36].innerHTML;
+            var ReportSignature1Img = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[37].innerHTML;
+            var CardBackendImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[38].innerHTML;
+            var CardFrontendImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[39].innerHTML;
+            var PriCardBackendImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[40].innerHTML;
+            var PriCardFrontendImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[41].innerHTML;
+            var OtherHeaderImg = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[42].innerHTML;
+            var RegistrationNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[43].innerHTML;
+            var ServiceTaxNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[44].innerHTML;
+            var PANNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[45].innerHTML;
+            var TDSCircle = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[46].innerHTML;
+            var TDSProfessional = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[47].innerHTML;
+            var TDSContrator = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[48].innerHTML;
+            var ServiceCharge = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[49].innerHTML;
+            var RegistrationCharge = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[50].innerHTML;
+            var TANo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[51].innerHTML;
+            var RegistrationRenwalCharges = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[52].innerHTML;
+
+            //$("#ReportSignature12").val(data);
+            //$("#ReportSignature1").val(data);
+            //$("#OtherSignature").val(data);
+            //$("#BillHeader").val(data);
+            //$("#LabReportHeader").val(data);
+            //$("#ReportHeader").val(data);
+            //$("#AdmissionCardFront").val(data);
+            //$("#AdmissionCardBack").val(data);
+            //$("#PrivilegeCardFront").val(data);
+            //$("#PrivilegeCardBack").val(data);
+            //document.getElementById("img2").src = "data:image/png;base64," + ReportsSignatureImg;
+            //document.getElementById("img3").src = "data:image/png;base64," + ReportSignature1Img;
+            //document.getElementById("img4").src = "data:image/png;base64," + OtherHeaderImg;
+            //document.getElementById("img5").src = "data:image/png;base64," + ReportsSignatureImg;
+            //document.getElementById("img6").src = "data:image/png;base64," + LabReportsHeaderImg;
+            //document.getElementById("img7").src = "data:image/png;base64," + ReportsHeaderImg;
+            //document.getElementById("img8").src = "data:image/png;base64," + CardFrontendImg;
+            //document.getElementById("img9").src = "data:image/png;base64," + PriCardBackendImg;
+            debugger;
+            document.getElementById("img2").src = ReportSignature;
+            document.getElementById("img3").src = ReportSignature1;
+            document.getElementById("img4").src = OtherHeader;
+            document.getElementById("img5").src = BillHeader;
+            document.getElementById("img6").src = LabReportHeader;
+            document.getElementById("img7").src = ReportHeader;
+            document.getElementById("img8").src = AdmissionCardFront;
+            document.getElementById("img9").src = AdmissionCardBack;
+            document.getElementById("img10").src = PrivilegeCardFront;
+            document.getElementById("img11").src = PrivilegeCardBack;
+
+
+
+
+            $("#ReportSignature12").val(ReportSignature);
+
+            $("#ReportSignature1").val(ReportSignature1);
+            $("#OtherSignature").val(OtherHeader);
+
+            $("#BillHeader").val(BillHeader);
+            $("#LabReportHeader").val(LabReportHeader);
+            $("#ReportHeader").val(ReportHeader);
+            $("#AdmissionCardFront").val(AdmissionCardFront);
+            $("#AdmissionCardBack").val(AdmissionCardBack);
+            $("#PrivilegeCardFront").val(PrivilegeCardFront);
+            $("#PrivilegeCardBack").val(PrivilegeCardBack);
+          
+
+            $("#LocationID").val(LocationID);
+            $("#LocationName").val(LocationName);
+            $("#HospitalName").val(HospitalName);
+            $("#GroupName").val(GroupName);
+            //$("#Logo").val(Logo);
+            $("#ManagingBody").val(ManagingBody);
+            $("#Adminstrator").val(Adminstrator);
+            $("#Address").val(Address);
+            $("#Pincode").val(Pincode);
+            $("#PhoneNumber").val(PhoneNumber);
+            $("#PhoneNumber1").val(PhoneNumber1);
+            $("#MobileNo").val(MobileNo);
+            $("#EmailPassword").val(EmailPassword);
+
+            $("#Fax").val(Fax);
+            $("#EmailID").val(EmailID);
+            $("#URL").val(URL);
+            $("#RegistrationNo").val(RegistrationNo);
+            $("#ServiceTaxNo").val(ServiceTaxNo);
+            $("#PANNo").val(PANNo);
+            $("#TDSCircle").val(TDSCircle);
+            $("#TDSProfessional").val(TDSProfessional);
+            $("#TDSContrator").val(TDSContrator);
+            $("#ServiceCharge").val(ServiceCharge);
+            $("#RegistrationCharge").val(RegistrationCharge);
+            $("#TANo").val(TANo);
+            $("#RegistrationRenwalCharges").val(RegistrationRenwalCharges);
+            debugger;
+            $("#City").val(City);
+            $("#State").val(State);
+            $("#Country").val(Country);
+            $("#CityID").val(CityID);
+            $("#StateID").val(StateID);
+            $("#CountryID").val(CountryID);
+            debugger;
+            $("#Logo").val(Logo);
+            document.getElementById('img1').src = Logo;
+            
+  
+           
+
+        }); 
+    });
+</script>
+
+
+
+<script>
+
+    var loadfile = function (event, name) {
+        debugger
+
+
+        var file = event.target.files[0];
+        if (name == "Logo") {
+            document.getElementById('img1').src = window.URL.createObjectURL(event.target.files[0]);
+        }
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data = new FormData();
+        data.append("ImageFile", file);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("Logo", "HospitalLocation")',
+            type: "POST",
+
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                if (name == "Logo") {
+                    $("#Logo").val(data);
+                }
+
+            }
+        });
+    }
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile1 = function (event, name) {
+        debugger
+        var file1 = event.target.files[0];
+        if (name == "ReportSignature") {
+            document.getElementById('img2').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile1", file1);
+        // data.append("DoctorImage", name);
+        $.ajax({
+            url: '@Url.Action("ReportSignature", "HospitalLocation")',
+            type: "POST",
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#ReportSignature12").val(data);
+
+                alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile2 = function (event, name) {
+        debugger
+
+
+        var file2 = event.target.files[0];
+        if (name == "ReportSignature1") {
+            document.getElementById('img3').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile2", file2);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("ReportSignature1", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#ReportSignature1").val(data);
+
+                   alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile3 = function (event, name) {
+        debugger
+
+
+        var file3 = event.target.files[0];
+        if (name == "OtherSignature") {
+            document.getElementById('img4').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile3", file3);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("OtherSignature", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#OtherSignature").val(data);
+
+                alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile4 = function (event, name) {
+        debugger
+
+
+        var file4 = event.target.files[0];
+        if (name == "BillHeader") {
+            document.getElementById('img5').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile4", file4);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("BillHeader", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#BillHeader").val(data);
+
+                alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile5 = function (event, name) {
+        debugger
+
+
+        var file5 = event.target.files[0];
+        if (name == "LabReportHeader") {
+            document.getElementById('img6').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile5", file5);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("LabReportHeader", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#LabReportHeader").val(data);
+
+                alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile6 = function (event, name) {
+        debugger
+
+
+        var file6 = event.target.files[0];
+        if (name == "ReportHeader") {
+            document.getElementById('img7').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile6", file6);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("ReportHeader", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#ReportHeader").val(data);
+
+                   alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile7 = function (event, name) {
+        debugger
+
+
+        var file7 = event.target.files[0];
+        if (name == "AdmissionCardFront") {
+            document.getElementById('img8').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile7", file7);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("AdmissionCardFront", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#AdmissionCardFront").val(data);
+
+                   alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile8 = function (event, name) {
+        debugger
+
+
+        var file8 = event.target.files[0];
+        if (name == "AdmissionCardBack") {
+            document.getElementById('img9').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile8", file8);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("AdmissionCardBack", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#AdmissionCardBack").val(data);
+
+                   alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile9 = function (event, name) {
+        debugger
+
+
+        var file9 = event.target.files[0];
+        if (name == "PrivilegeCardFront") {
+            document.getElementById('img10').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile9", file9);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("PrivilegeCardFront", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#PrivilegeCardFront").val(data);
+
+                   alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile10 = function (event, name) {
+        debugger
+
+
+        var file10 = event.target.files[0];
+        if (name == "PrivilegeCardBack") {
+            document.getElementById('img11').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data1 = new FormData();
+        data1.append("ImageFile10", file10);
+        // data.append("DoctorImage", name);
+
+
+        $.ajax({
+
+            url: '@Url.Action("PrivilegeCardBack", "HospitalLocation")',
+            type: "POST",
+
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#PrivilegeCardBack").val(data);
+
+                alert(data);
+
+
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#myModal").show();
+    })
+    var loadfile15 = function (event, name) {
+        debugger
+
+
+        var file15 = event.target.files[0];
+        if (name == "Pharmacy") {
+            document.getElementById('img15').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+    var data1 = new FormData();
+        data1.append("ImageFile11", file15);
+        $.ajax({
+            url: '@Url.Action("Pharmacy", "HospitalLocation")',
+            type: "POST",
+            data: data1,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                $("#Pharmacy").val(data);
+                alert(data);
+            }
+        });
+
+    }
+</script>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+    function Location(LocationID) {
+
+    var ans = confirm("Are you sure you want to delete this Record?");
+    if (ans) {
+        $.ajax({
+            type: "POST",
+           
+            url:  '@Url.Action("DeleteHospitalLocation", "HospitalLocation")',
+            data: { LocationID: LocationID },
+            dataType: "json",
+            success: function (data)
+            {
+                if (data == "HospitalLocation Deleted Successfully")
+                    {
+                    alert("HospitalLocation Deleted Successfully");
+                        window.location.reload(true);
+                    }
+                    else
+                    {
+                        alert(data);
+                    }
+                },
+            error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+        });
+
+
+    }
+    }
+
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Hospital location Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item active">Hospital location</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <!--Hospital Location Details-->
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Hospital Location Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Group Name-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Client Code</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="GroupName" name="GroupName" placeholder="Client Code">
+                                                    </div>
+                                                </div>
+                                                <!--Hospital Name-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Hosp. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text"  class="form-control" id="HospitalName" name="HospitalName" placeholder="Hospital Name"
+                                                               required style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Hospital Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" id="HospitalID" name="HospitalID">
+                                                    </div>
+                                                </div>
+                                                <!--Hospital Location-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Hosp. Location</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="LocationName" name="LocationName" placeholder="Hospital Location"
+                                                               required style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Hospital Location')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" id="LocationID" name="LocationID">
+                                                    </div>
+                                                </div>
+                                                <!--Managing Body-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Managing Body</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="ManagingBody" name="ManagingBody">
+                                                    </div>
+                                                </div>
+                                                <!--Administrator-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Administrator</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" value="" class="form-control" id="Adminstrator" name="Adminstrator">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Hospital Image-->
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group" style="border-radius: 4px;text-align: -webkit-center;">
+                                                        <img src="https://www.freeiconspng.com/uploads/ambulance-cross-hospital-icon-11.png" id="img1" style="height: 100px;">
+                                                    </div>
+                                                    <div class="custom-file">
+                                                        <input type="file" id="file1" name="file" onchange="loadfile(event,'Logo')" aria-label="File browser example" class="custom-file-input">
+                                                        <label class="custom-file-label" for="customFile">Upload</label>
+                                                        <input type="hidden" name="Logo" id="Logo" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Hospital Registration Details-->
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Registration Number</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Registration Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Registration No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" name="RegistrationNo" id="RegistrationNo">
+                                                    </div>
+                                                </div>
+                                                <!--Service Tax Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Service Tax No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" name="ServiceTaxNo" id="ServiceTaxNo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--PAN Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>PAN No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" name="PANNo" id="PANNo">
+                                                    </div>
+                                                </div>
+                                                <!--T.A. Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>T.A. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" name="TANo" id="TANo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--TDS Circle-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>TDS Circle</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" name="TDSCircle" id="TDSCircle">
+                                                    </div>
+                                                </div>
+                                                <!--TDS Pro.%-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>TDS Pro.%</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" name="TDSProfessional" id="TDSProfessional">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--TDS Contractor-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>TDS Contractor</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" name="TDSContrator" id="TDSContrator">
+                                                    </div>
+                                                </div>
+                                                <!--Renewal Charge-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Renewal Charge</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" name="RegistrationRenwalCharges" id="RegistrationRenwalCharges">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Registration Charge-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Reg. Charge</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" name="RegistrationCharge" id="RegistrationCharge">
+                                                    </div>
+                                                </div>
+                                                <!--Service Tax %-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Service Tax %</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" name="ServiceCharge" id="ServiceCharge">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary card-tabs">
+                                    <div class="card-header p-0 pt-1">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="pt-2 px-3">
+                                                <h2 class="panelheading">Other Info</h2>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="addressDetail-tab" data-toggle="pill" href="#addressDetail" role="tab" aria-controls="addressDetail" aria-selected="true">
+                                                    <i class="fa fa-map-marker"></i> Address Details
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="reportSignature-tab" data-toggle="pill" href="#reportSignature" role="tab" aria-controls="reportSignature" aria-selected="false">
+                                                    <i class="fa fa-file-text-o"></i> Report Signature
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="hospitalLogo-tab" data-toggle="pill" href="#hospitalLogo" role="tab" aria-controls="hospitalLogo" aria-selected="false">
+                                                    <i class="fa fa-file-text-o"></i> Hospital Logo
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="pharmacyLogo-tab" data-toggle="pill" href="#pharmacyLogo" role="tab" aria-controls="pharmacyLogo" aria-selected="false">
+                                                    <i class="fa fa-file-text-o"></i> Pharmacy Logo
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="admissionCard-tab" data-toggle="pill" href="#admissionCard" role="tab" aria-controls="admissionCard" aria-selected="false">
+                                                    <i class="fa fa-id-card-o"></i> Admission Card
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="privilegeCard-tab" data-toggle="pill" href="#privilegeCard" role="tab" aria-controls="privilegeCard" aria-selected="false">
+                                                    <i class="fa fa-credit-card"></i> Privilege Card
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content" id="custom-tabs-two-tabContent">
+                                            <!--Address Detail-->
+                                            <div class="tab-pane fade show active" id="addressDetail" role="tabpanel" aria-labelledby="addressDetail-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Address-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Address</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <textarea class="form-control" name="Address" id="Address" rows="2"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <!--City-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>City</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="text" name="City" id="City" class="form-control">
+                                                                <input type="hidden" name="CityID" id="CityID" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--State-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>State</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="text" name="State" id="State" class="form-control">
+                                                                <input type="hidden" name="StateID" id="StateID" />
+                                                            </div>
+                                                        </div>
+                                                        <!--Pin code-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Pin code</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="number" name="Pincode" id="Pincode" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Country-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Country</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="text" name="Country" id="Country" class="form-control">
+                                                                <input type="hidden" name="CountryID" id="CountryID" />
+                                                            </div>
+                                                        </div>
+                                                        <!--Url-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Url</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="text" name="URL" id="URL" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--First Phone Number-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Phone No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="number" name="PhoneNumber" id="PhoneNumber" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Second Phone Number-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Phone No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="number" name="PhoneNumber1" id="PhoneNumber1" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Mobile Number-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Mobile No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="number" name="MobileNo" id="MobileNo" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Fax No.-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Fax No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="number" name="Fax" id="Fax" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Email I'd-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Email I'd</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="email" name="EmailID" id="EmailID" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Email Password-->
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Email Pass.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="text" name="EmailPassword" id="EmailPassword" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Report Signature-->
+                                            <div class="tab-pane fade" id="reportSignature" role="tabpanel" aria-labelledby="reportSignature-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <!--Report Signature 1-->
+                                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Report Signature</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                    <img src="http://keystonehms.com/img/keystone-logo.png" id="img2" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="custom-file">
+                                                                        <input type="file" id="file1" name="file1" onchange="loadfile1(event, 'ReportSignature')" aria-label="File browser example" class="custom-file-input">
+                                                                        <label class="custom-file-label" for="customFile">Upload</label>
+                                                                        <input type="hidden" name="ReportSignature12" id="ReportSignature12">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--Report Signature 2-->
+                                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                    <img src="http://keystonehms.com/img/keystone-logo.png" id="img3" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="custom-file">
+                                                                        <input type="file" id="file2" name="file2" onchange="loadfile2(event, 'ReportSignature1')" aria-label="File browser example" class="custom-file-input">
+                                                                        <label class="custom-file-label" for="customFile">Upload</label>
+                                                                        <input type="hidden" name="ReportSignature1" id="ReportSignature1">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <!--Others Header-->
+                                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Others Header</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                    <img src="http://keystonehms.com/img/keystone-logo.png" id="img4" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="custom-file">
+                                                                        <input type="file" id="file3" name="file3" onchange="loadfile3(event, 'OtherSignature')" aria-label="File browser example" class="custom-file-input">
+                                                                        <label class="custom-file-label" for="customFile">Upload</label>
+                                                                        <input type="hidden" name="OtherSignature" id="OtherSignature" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Hospital Logo-->
+                                            <div class="tab-pane fade" id="hospitalLogo" role="tabpanel" aria-labelledby="hospitalLogo-tab">
+                                                <div class="row">
+                                                    <!--Bill Header-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Bill Header</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img5" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file14" name="file14" onchange="loadfile4(event, 'BillHeader')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="BillHeader" id="BillHeader" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Lab Report Header-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Lab Report Header</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img6" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file5" name="file5" onchange="loadfile5(event, 'LabReportHeader')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="LabReportHeader" id="LabReportHeader" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Report Header-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Report Header</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img7" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file6" name="file6" onchange="loadfile6(event, 'ReportHeader')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="ReportHeader" id="ReportHeader" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Pharmacy Logo-->
+                                            <div class="tab-pane fade" id="pharmacyLogo" role="tabpanel" aria-labelledby="pharmacyLogo-tab">
+                                                <div class="row">
+                                                    <!-- Logo -->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Logo</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img15" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" id="pharmacText" name="pharmacText" class="form-control" placeholder="Pharmacy Text">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file15" name="file15" onchange="loadfile15(event, 'Pharmacy')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="Pharmacy" id="Pharmacy" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Admission Card-->
+                                            <div class="tab-pane fade" id="admissionCard" role="tabpanel" aria-labelledby="admissionCard-tab">
+                                                <div class="row">
+                                                    <!--Card Frontend Image-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Card Frontend Image</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img8" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file7" name="file7" onchange="loadfile7(event, 'AdmissionCardFront')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="AdmissionCardFront" id="AdmissionCardFront" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Card Banktend Image-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Card Banktend Imager</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img9" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file8" name="file8" onchange="loadfile8(event, 'AdmissionCardBack')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="AdmissionCardBack" id="AdmissionCardBack" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Privilege Card-->
+                                            <div class="tab-pane fade" id="privilegeCard" role="tabpanel" aria-labelledby="privilegeCard-tab">
+                                                <div class="row">
+                                                    <!--Card Frontend Image-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Card Frontend Image</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img10" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file9" name="file9" onchange="loadfile9(event, 'PrivilegeCardFront')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="PrivilegeCardFront" id="PrivilegeCardFront" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--Card Banktend Image-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12"></div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Card Banktend Imager</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="border: 1px solid;">
+                                                                <img src="http://keystonehms.com/img/keystone-logo.png" id="img11" class="img-fluid" style="display: block; margin: auto; max-height: 100px;">
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" id="file10" name="file10" onchange="loadfile10(event, 'PrivilegeCardBack')" aria-label="File browser example" class="custom-file-input">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                    <input type="hidden" name="PrivilegeCardBack" id="PrivilegeCardBack" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Location(document.getElementById('LocationID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="datatable-responsiveExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <table id="datatable-responsive" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Location ID</th>
+                                            <th>Location Name</th>
+                                            <th style="display: none;">Hospital Name</th>
+                                            <th style="display: none;">Group Name</th>
+                                            <th style="display: none;">Logo</th>
+                                            <th style="display: none;">Managing Body</th>
+                                            <th style="display: none;">Adminstrator</th>
+                                            <th style="display: none;">Address</th>
+                                            <th style="display: none;">Pincode</th>
+                                            <th style="display: none;">Phone Number</th>
+                                            <th style="display: none;">Phone Number 1</th>
+                                            <th style="display: none;">Mobile Number</th>
+                                            <th style="display: none;">Email Password</th>
+                                            <th style="display: none;">Fax Number</th>
+                                            <th style="display: none;">Email ID</th>
+                                            <th style="display: none;">City ID</th>
+                                            <th style="display: none;">State ID</th>
+                                            <th style="display: none;">Country ID</th>
+                                            <th style="display: none;">City</th>
+                                            <th style="display: none;">State</th>
+                                            <th style="display: none;">Country</th>
+                                            <th style="display: none;">Url</th>
+                                            <th style="display: none;">Bill Header</th>
+                                            <th style="display: none;">Lab Report Header</th>
+                                            <th style="display: none;">Report Header</th>
+                                            <th style="display: none;">Report Signature</th>
+                                            <th style="display: none;">Report Signature 1</th>
+                                            <th style="display: none;">Admission Card Back</th>
+                                            <th style="display: none;">Admission Card Front</th>
+                                            <th style="display: none;">Privillege Card Back</th>
+                                            <th style="display: none;">Privillege Card Front</th>
+                                            <th style="display: none;">Bill Header 1</th>
+                                            <th style="display: none;">Lab Reports Header Imgage</th>
+                                            <th style="display: none;">Reports Header Image</th>
+                                            <th style="display: none;">Reports Signature Image</th>
+                                            <th style="display: none;">Reports Signature 1 Image</th>
+                                            <th style="display: none;">Card Backend Image</th>
+                                            <th style="display: none;">Card Frontend Image</th>
+                                            <th style="display: none;">Privillage Card Backend Image</th>
+                                            <th style="display: none;">Privillage Card Frontend Image</th>
+                                            <th style="display: none;">Other Header Image</th>
+                                            <th style="display: none;">Registration Number</th>
+                                            <th style="display: none;">Service Tax Number</th>
+                                            <th style="display: none;">Pan Number</th>
+                                            <th style="display: none;">TDS Circle</th>
+                                            <th style="display: none;">TDS Professiona</th>
+                                            <th style="display: none;">TDS Contrator</th>
+                                            <th style="display: none;">Service Charge</th>
+                                            <th style="display: none;">Registration Charge</th>
+                                            <th style="display: none;">TA Number</th>
+                                            <th style="display: none;">Registration Renwal Charges</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="modal fade" id="modal-default">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">Create Hospital</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- left column -->
+                                    <div class="col-md-12">
+                                        <!-- Hospital Location Tab Starts -->
+                                        <div class="box box-primary">
+                                            <div class="form-horizontal">
+                                                <div class="box-body">
+                                                    <!-- Hospital Name Form Start -->
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Hospital Name</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" name="hospitalName" id="Hospital_Name_id" class="form-control"
+                                                                       placeholder="Enter Hospital Name">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Hospital Name Form Ends -->
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <!-- Hospital Name Tab Ends -->
+                                    </div>
+                                </div>
+                                <!-- /.row -->
+                            </div>
+                            <div class="modal-footer">
+                                <!--<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>-->
+                                <a class="btn btn-app pull-left" data-dismiss="modal">
+                                    <i class="fa fa-close"></i> close
+                                </a>
+                                <a class="btn btn-app">
+                                    <i class="fa fa-save"></i> Save
+                                </a>
+                                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+

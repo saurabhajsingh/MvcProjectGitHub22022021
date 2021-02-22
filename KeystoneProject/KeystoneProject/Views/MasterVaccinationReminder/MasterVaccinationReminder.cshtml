@@ -1,0 +1,260 @@
+﻿@model KeystoneProject.Models.Master.MasterVaccinationReminder
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- This file is edited by Mohammed -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+        $("#save").click(function ()
+        {
+            var row = $("#VaccinNameTableId tbody tr").length;
+            if (row == 0)
+            {
+                alert("Enter Vaccination Name");
+                return false;
+            }
+        })
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#vaccinationReminderTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#vaccinationReminderTableId").delegate('tr', 'click', function () {
+            $('#vaccinationReminderTableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+    });
+</script>
+<script>
+    function Delele(MasterVaccinationReminderID) {
+        debugger
+        if (MasterVaccinationReminderID != "" && $("#MasterVaccinationReminderName").val() != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteMasterVaccinationReminder", "MasterVaccinationReminder")',
+                    data: { MasterVaccinationReminderID: MasterVaccinationReminderID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Deleted Successfully") {
+                            alert("Vaccination Deleted Successfully");
+                            window.location.reload(true);
+                            //Restor();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        TempData["Msg"] = null;
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#btnAdd").click(function () {
+            debugger
+            $("#VaccinNameTableId").append('<tr> <td> <input type="text" name="VaccinesName" class="form-control" required style="border-left-color: red;border-left-width: thick;"  oninvalid="this.setCustomValidity(`Please Enter Vaccination Name`)" oninput="this.setCustomValidity(``)"> </td><td><button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+        })
+        $("#VaccinNameTableId").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ShowAllMasterVaccinationReminder", "MasterVaccinationReminder")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                $.each(result, function (i, obj) {
+                    $("#vaccinationReminderTableId").append('<tr><td>' + count + '</td> <td> ' + obj.MasterVaccinationReminderName + ' </td> <td style="display:none"> ' + obj.MasterVaccinationReminderID + '</td></tr>');
+                    count++;
+                });
+                $('#vaccinationReminderTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#vaccinationReminderTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#VaccineReminderExcelExport'));
+            },
+            error: function () {
+            }
+        });
+        var count = 1;
+        $("#vaccinationReminderTableId").delegate('td', 'click', function () {
+            debugger
+            //Restor();
+            $('#VaccinNameTableId tbody tr').remove();
+            $("#save").text("Update");
+            $("save").addClass("btndivcss");
+            var row_num = parseInt($(this).parent().index());
+            var MasterVaccinationReminderID = parseInt(document.getElementById("vaccinationReminderTableId").tBodies[0].rows[row_num].cells[2].innerHTML);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Edit_MasterVaccinationReminder", "MasterVaccinationReminder")',
+                dataType: "json",
+                data: { MasterVaccinationReminderID: MasterVaccinationReminderID },
+                contentType: 'application/json',
+                success: function (result) {
+                    var count1 = 1;
+                    $.each(result, function (i, obj) {
+                        $("#MasterVaccinationReminderID").val(MasterVaccinationReminderID);
+                        $("#MasterVaccinationReminderName").val(obj.MasterVaccinationReminderName);
+                        $("#Advice").val(obj.Advice);
+                        $("#VaccinNameTableId").append('<tr><td> <input type="text" name="VaccinesName" value= ' + obj.VaccinesName + ' class="form-control"> </td>  <td style=""> <button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+                        count1++;
+                    });
+                }
+            });
+        });
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <form action="" method="post">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Vaccination Reminder Master</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Vaccination Reminder Master</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Master Vaccination Reminder</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                                <label>Vaccination Schedule</label>
+                                                <input type="text" id="MasterVaccinationReminderName" name="MasterVaccinationReminderName" class="form-control"
+                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Vaccination Schedule')"
+                                                       oninput="this.setCustomValidity('')">
+                                                <input type="hidden" name="MasterVaccinationReminderID" id="MasterVaccinationReminderID" class="form-control input-sm" />
+                                            </div>
+                                            <div class="form-group col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                                <label>Advice</label>
+                                                <textarea id="Advice" name="Advice" class="form-control" required style="border-left-color: red;border-left-width: thick;"
+                                                          oninvalid="this.setCustomValidity('Please Enter Vaccination Advice Name')" oninput="this.setCustomValidity('')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <table id="VaccinNameTableId" class="table table-bordered table-striped">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th>Vaccines Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" id="btnAdd" class="btndivcss button-add" value="add">
+                                    <span class="fa fa-plus buttoniconcss"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="Delele(document.getElementById('MasterVaccinationReminderID').value)">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="VaccineReminderExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="vaccinationReminderTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="vaccinationReminder_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Vaccination Name</th>
+                                        <th scope="col" style="display:none">Vaccination ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </form>
+</div>

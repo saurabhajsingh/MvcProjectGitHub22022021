@@ -1,0 +1,461 @@
+﻿@model KeystoneProject.Models.Patient.PatientSearch
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetPatientRecord", "PatientSearch")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientName
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#PatientRegNO").val(show);
+            },
+        });
+    })
+    $(document).ready(function () {
+        $("#PMiddleName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPMiddleNameRecord", "PatientSearch")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PMiddleName, value: item.PMiddleName, id: item.PatientName
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#PatientRegNO").val(show);
+            },
+        });
+    })
+    $(document).ready(function () {
+        $("#PLastName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPLastNameRecord", "PatientSearch")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PLastName, value: item.PLastName, id: item.PatientRegNO
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {   
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#PatientRegNO").val(show);
+            },
+        });
+    })
+    $(document).ready(function () {
+        $("#DoctorPrintName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetAllConsultantDoctorRecord", "PatientSearch")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#DoctorID").val(show);
+            },
+        });
+    })
+
+    $(document).ready(function () {
+        $("#RefferedDoctorPrintName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetAllRefferedDoctorRecord", "PatientSearch")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.RefferedDoctorPrintName, value: item.RefferedDoctorPrintName, id: item.RefferedDoctorID
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#RefferedDoctorID").val(show);
+            },
+        });
+    })
+   
+    $(document).ready(function () {
+    
+
+        $("#submit").click(function () {
+            @*alert($("#financialYear").val());
+            $("#tbprojectmanager").DataTable({
+                "ajax": {
+                    "url": '@Url.Action("GetallPatientSearch", "PatientSearch")',
+                    data: { finacialyear: $("#financialYear").val(), FName: $("#PatientName").val(), Lastname: $("#PLastName").val(), MidLename: $("#PMiddleName").val(), PatientType: $("#patienttype").val(), Doctor: $("#DoctorID").val() },
+                    "tye": "POST",
+                    "datatype": "json",
+                },
+                "columns": [
+                            { "data": "PatientRegNO", "autowidth": true },
+                            { "data": "PrintOPDIPDNO", "autowidth": true },
+                            { "data": "OPDIPDID", "autowidth": true },
+                            { "data": "PatientType", "autowidth": true },
+                            { "data": "RegDate", "autowidth": true },
+                             { "data": "PatientName", "autowidth": true },
+                            { "data": "GuardianName", "autowidth": true },
+                            { "data": "Weight", "autowidth": true },
+                            { "data": "PhoneNo", "autowidth": true },
+                            { "data": "Address", "autowidth": true },
+                              { "data": "Age", "autowidth": true },
+                            { "data": "Gender", "autowidth": true },
+                             { "data": "ConsDoctor", "autowidth": true },
+                            { "data": "ReffDoctor", "autowidth": true },
+                            { "data": "TPAName", "autowidth": true },
+                            { "data": "WardName", "autowidth": true },
+                            { "data": "RoomName", "autowidth": true },
+                              { "data": "BedNO", "autowidth": true },
+                             { "data": "PatientStatus", "autowidth": true },
+                              { "data": "Dischargedate", "autowidth": true },
+
+                ]
+            });*@
+
+            $.ajax({
+                url: '@Url.Action("GetallPatientSearch", "PatientSearch")',
+                type: "POST",
+                dataType: "json",
+                data: { finacialyear: $("#financialYear").val(), FName: $("#PatientName").val(), Lastname: $("#PLastName").val(), MidLename: $("#PMiddleName").val(), PatientType: $("#patienttype").val(), Doctor: $("#DoctorID").val() },
+                success: function (data) {
+                    debugger
+
+                    $("#patientsearch tbody tr").remove();
+                    for (var i = 0; i < data.length; i++) {
+
+                        $("#patientsearch").append('<tr><td>' + data[i].PatientRegNO + '</td><td>' + data[i].PrintOPDIPDNO + '</td><td>' + data[i].OPDIPDID + '</td><td>' + data[i].PatientType + '</td><td>' + data[i].RegDate + '</td><td>' + data[i].PatientName + '</td><td>' + data[i].GuardianName + '</td><td>' + data[i].Weight + '</td><td>' + data[i].PhoneNo + '</td><td>' + data[i].Address + '</td><td>' + data[i].Age + '</td><td>' + data[i].Gender + '</td><td>' + data[i].ConsDoctor + '</td><td>' + data[i].ReffDoctor + '</td><td>' + data[i].TPAName + '</td><td>' + data[i].WardName + '</td><td>' + data[i].RoomName + '</td><td>' + data[i].BedNO + '</td><td>' + data[i].PatientStatus + '</td><td>' + data[i].Dischargedate + '</td></tr>');
+                    };
+                 
+                }
+          
+            });
+        })
+
+        $(document).ready(function () {
+            $('#patientsearch').DataTable({
+                "fixedHeader": true,
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": false,
+            });
+            $("#patientsearch").delegate(function () {
+                debugger;
+
+        
+                $("submit").addClass("btndivcss");
+                var row_num = parseInt($(this).parent().index());
+                var PatientRegNO = parseInt(document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[1].innerHTML);
+                var PrintOPDNO = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[2].innerHTML;
+                var OPDIPDID = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[3].innerHTML;
+                var PatientType = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[4].innerHTML;
+                var RegDate = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[5].innerHTML;
+                var PatientName = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[6].innerHTML;
+                var GuardianName = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[7].innerHTML;
+                var Weight = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[8].innerHTML;
+                var PhoneNo = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[9].innerHTML;
+                var Address = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[10].innerHTML;
+                var Age = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[11].innerHTML;
+                var Gender = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[12].innerHTML;
+                var ConsDoctor = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[13].innerHTML;
+                var ReffDoctor = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[14].innerHTML;
+                var TPAName = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[15].innerHTML;
+                var WardName = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[16].innerHTML;
+                var RoomName = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[17].innerHTML;
+                var BedNO = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[18].innerHTML;
+                var PatientStatus = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[19].innerHTML;
+                var Dischargedate = document.getElementById("patientsearch").tBodies[0].rows[row_num].cells[20].innerHTML;
+                $("#patienttype").val(PatientType);
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            url: '@Url.Action("GetFinancialYear", "PatientSearch")',
+            type: "GET",
+           // data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                var i = 0;
+                $(data).each(function (index, d) {
+                    debugger
+                    $("#financialYear").append('<option value=' + d.FinancialYearID + '>' + d.financialYear + '</option>');
+                   
+                });
+           
+            },
+            error: function (data) {
+            }
+        });
+    });
+</script>
+
+
+
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Patient Search</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient</a></li>
+                                <li class="breadcrumb-item active">Patient Search</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Patient Search</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Financial Year-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Financial Year</label>
+
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                             
+                                                        <input type="hidden" id="FinancialYearID" name="FinancialYearID">
+                                                        <select class="form-control" id="financialYear" name="financialYear">
+
+                                                          
+                                                        </select>
+</div>
+                                            </div>
+                                            <!--First Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>First Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Middle Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Middle Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="PMiddleName" name="PMiddleName" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Last Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Last Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="PLastName" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Consultant Doctor-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Consultant Dr.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="DoctorPrintName" name="DoctorPrintName" class="form-control">
+                                                    <input type="hidden" id="DoctorID" name="DoctorID">
+                                                </div>
+                                            </div>
+                                            <!--Reffered Doctor-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Reffered Dr.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="RefferedDoctorPrintName" name="RefferedDoctorPrintName" class="form-control">
+                                                    <input type="hidden" id="RefferedDoctorID" name="RefferedDoctorID">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Patient Type-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Patient Type</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="patienttype" name="PatientType">
+                                                        <option value="All">All</option>
+                                                        <option value="IPD">IPD</option>
+                                                        <option value="OPD">OPD</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--Search Button-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <button type="button" id="submit" name="submit" class="btndivcss" style="float: right;">
+                                                        <span class="fa fa-search buttoniconcss"></span>Search
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="patientsearch" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th>UHID No.</th>
+                                        <th>OPD No.</th>
+                                        <th>OPD/IPD ID</th>
+                                        <th>Patient Type</th>
+                                        <th>Reg. Date</th>
+                                        <th>Patient Name</th>
+                                        <th>Guardian Name</th>
+                                        <th>Weight</th>
+                                        <th>Phone No.</th>
+                                        <th>Address</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>Cons. Doctor</th>
+                                        <th>Reff. Doctor</th>
+                                        <th>TPA Name</th>
+                                        <th>Ward Name</th>
+                                        <th>Room Name</th>
+                                        <th>Bed No.</th>
+                                        <th>Patient Status</th>
+                                        <th>Discharge Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+
+
+
+

@@ -1,0 +1,401 @@
+﻿@model KeystoneProject.Models.Patient.PatientFeedback
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    .star {
+        visibility: hidden;
+        font-size: 30px;
+        cursor: pointer;
+        margin: 0px;
+        line-height: 20px;
+    }
+
+        .star:before {
+            content: "\2605";
+            position: absolute;
+            visibility: visible;
+            color: #fd4;
+            margin: 0px;
+            line-height: 20px;
+        }
+
+        .star:checked:before {
+            content: "\2606";
+            position: absolute;
+            color: #035ef6;
+            margin: 0px;
+            line-height: 20px;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#Name1").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientNameValue", "PatientFeedback")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNO
+                            }
+                        }));
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                debugger
+                $("#Nameid1").val(ui.item.id);
+                var name = $("#Nameid1").val();
+                $("#datatable-responsive td").remove();
+                $.ajax({
+                    url: '@Url.Action("FillData", "PatientFeedback")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: name },
+                    success: function (data) {
+                        debugger
+                        $(data).each(function (index, d) {
+                            debugger
+                            // $("#Name1").val(d.name);
+                            debugger
+                            $("#ContactNo1").val(d.ContactNo);
+                            $("#EmailId1").val(d.EmailId);
+                            $("#Address1").val(d.Address);
+                            $("#ConsultantDoctor1").val(d.ConsultantDoctor);
+                            $("#ReferredDr1").val(d.ReferredDr);
+                            $("#DoctorID1").val(d.DoctorID);
+                            $("#ReferredByDoctorID1").val(d.ReferredByDoctorID);
+                        })
+                        debugger
+                    }
+                })
+            },
+            select: function (event, i) {
+                $('#PatientRegNO').val(i.item.id);
+            },
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.chk').click(function () {
+            debugger
+            $(this).each(function () {
+                debugger
+                if ($(this).is(':checked')) {
+                    debugger
+                    alert($(this).val())
+                }
+            })
+            var hedid = "";
+            var name = "";
+            $('.table tbody tr').each(function () {
+                debugger
+                var ch = $(this).parent().find('input[name=ReviewType]').is(':checked');
+                if (ch == true) {
+                    hedid += $(this).parent().find('#QuestionHeadID1').val() + ",";
+                    name += $(this).parent().find('#QuestionID1').val() + ",";
+                }
+                $("#Qestion").val(name);
+                $("#headid").val(hedid);
+            })
+            var row = $('.table tbody tr').length;
+            debugger
+        });
+    })
+</script>
+@*<script>
+        $(document).ready(function () {
+            $('input[type="checkbox"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    alert("Checkbox is checked.");
+                }
+                else if ($(this).prop("checked") == false) {
+                    alert("Checkbox is unchecked.");
+                }
+            });
+        });
+    </script>*@
+<script>
+    $(document).ready(function () {
+        Bind();
+        function Bind() {
+            $(".Username1").autocomplete({
+                source: function (request, response) {
+                    debugger;
+                    $.ajax({
+                        url: '@Url.Action("GetUserValue", "PatientFeedback")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.Username, value: item.Username, id: item.UserID
+                                };
+                            }))
+                        }
+                    })
+                },
+                minLength: 1,
+                change: function (event, ui) {
+                    if (!ui.item) {
+                        this.value = "";
+                    }
+                },
+                select: function (event, i) {
+                    $('#UserID').val(i.item.id);
+                },
+            });
+        }
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="skin-blue fixed sidebar-mini sidebar-mini-expand-feature sidebar-collapse">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Patient Feedback</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient</a></li>
+                                    <li class="breadcrumb-item active">Patient Feedback</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Feedback</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient Name/ Outsider-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Pt. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" name="Nameid1" id="Nameid1" class="form-contro">
+                                                        <input type="text" name="Name" id="Name1" required class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Contact Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Contact No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" name="ContactNo" id="ContactNo1" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Email ID-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Email ID</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" name="EmailId" id="EmailId1" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Address-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Address</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <textarea name="Address" id="Address1" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Consultant Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Cons. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" name="DoctorID" id="DoctorID1" class="form-control">
+                                                        <input type="text" name="ConsultantDoctor" id="ConsultantDoctor1" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Referred By-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label> Referred By</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" name="ReferredByDoctorID" id="ReferredByDoctorID1" class="form-control">
+                                                        <input type="text" name="ReferredDr" id="ReferredDr1" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary">
+                                    @{  string headid = "";
+                                      for (int i = 0; i < Model.dsgrid.Tables[0].Rows.Count; i++)
+                                      {
+                                          if (headid != Model.dsgrid.Tables[0].Rows[i]["QuestionHeadID"].ToString())
+                                          {
+                                              headid = Model.dsgrid.Tables[0].Rows[i]["QuestionHeadID"].ToString();
+                                              string HeadName = Model.dsgrid.Tables[0].Rows[i]["QuestionHeadName"].ToString();
+                                              var coolsapanid = i;
+                                              //  string    collapseOpenTwo, collapseOpenOne = "";
+                                            <div class="card-header panelheading">
+                                                <h3 class="card-title" id="@HeadName">@HeadName</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body" style="display: block;">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="hidden" name="Qestion" id="Qestion">
+                                                        <input type="hidden" name="headid" id="headid">
+                                                        @*<div class="panel-heading" role="tab" id="@HeadName">
+                                                                <h4 class="panel-title" style=" background: #458bff; color: #ffffff; font-family: roboto; font-size: 17px; color: #ffffff;">
+                                                                    <a class="" role="button" data-toggle="collapse" data-parent="#accordionGroupOpen" href="#@i" aria-expanded="false" aria-controls="@coolsapanid@i">
+                                                                        <i class="fa fa-hospital-o"></i>&nbsp;     @HeadName
+                                                                    </a>
+                                                                </h4>
+                                                            </div>*@
+                                                        <input type="hidden" name="QuestionHeadID" value="@headid" id="QuestionHeadID1" class="form-control">
+                                                        <table class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    <th scope="col" style=" width: 53.2%; "></th>
+                                                                    <th scope="col" style="text-align:center">Excellent</th>
+                                                                    <th scope="col" style="text-align:center">Good</th>
+                                                                    <th scope="col" style="text-align:center">Average </th>
+                                                                    <th scope="col" style="text-align:center">Poor </th>
+                                                                </tr>
+                                                            </thead>
+                                                            @{
+                                              for (
+                                                  int j = 0; j < Model.dsgrid.Tables[0].Rows.Count; j++)
+                                              {
+                                                  if (headid == Model.dsgrid.Tables[0].Rows[j]["QuestionHeadID"].ToString())
+                                                  {
+                                                      string QuestionName = Model.dsgrid.Tables[0].Rows[j]["QuestionName"].ToString();
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="width: 35%; text-align: left; padding-left: 10px !important; margin-left: 20px;"> @QuestionName
+                                                            <td>
+                                                                <input type="hidden" name="QuestionHeadID" value="@headid" id="QuestionHeadID1" class="form-control">
+                                                                <input type="hidden" name="QuestionName" id="QuestionID1" value="@QuestionName" class="form-control">
+                                                                <input class="chk star" type="checkbox" name="ReviewType" value="Excellent" title="bookmark page">
+                                                            </td>
+                                                            <td>
+                                                                <input type="hidden" name="QuestionHeadID" value="@headid" id="QuestionHeadID1" class="form-control">
+                                                                <input type="hidden" name="QuestionName" id="QuestionID1" value="@QuestionName" class="form-control">
+                                                                <input class="chk star" type="checkbox" name="ReviewType" value="Good" title="bookmark page">
+                                                            </td>
+                                                            <td>
+                                                                <input type="hidden" name="QuestionHeadID" value="@headid" id="QuestionHeadID1" class="form-control">
+                                                                <input type="hidden" name="QuestionName" id="QuestionID1" value="@QuestionName" class="form-control">
+                                                                <input class="chk star" type="checkbox" name="ReviewType" value="Average" title="bookmark page">
+                                                            </td>
+                                                            <td>
+                                                                <input type="hidden" name="QuestionHeadID" value="@headid" id="QuestionHeadID1" class="form-control">
+                                                                <input type="hidden" name="QuestionName" id="QuestionID1" value="@QuestionName" class="form-control">
+                                                                <input class="chk star" type="checkbox" name="ReviewType" value="Poor" title="bookmark page">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                  }
+                                              }
+                                                            }
+                                                        </table>
+                                                        <div class="panel-body">
+                                                            <div class="row">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <!--Employee Name-->
+                                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                            <label>Employee Name :</label>
+                                                                        </div>
+                                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                            <input type="hidden" name="userquestionhead" value="@headid" id="userquestionhead">
+                                                                            <input type="text" id="Username1" name="Username" class="Username1 form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--Remark-->
+                                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                            <label>Remark: </label>
+                                                                        </div>
+                                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                            <input type="hidden" name="remark" value="@headid" id="remark">
+                                                                            <input type="text" id="Comments1" name="Comments" class="Comments1 form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          }
+                                      }
+                                    }
+                                    @* ggg *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

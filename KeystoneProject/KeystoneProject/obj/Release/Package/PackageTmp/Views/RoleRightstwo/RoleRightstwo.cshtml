@@ -1,0 +1,1337 @@
+﻿@using System.Data;
+
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    h4 {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    a.list-group-item, button.list-group-item {
+        color: #000;
+    }
+
+    .list-group-item {
+        position: relative;
+        display: block;
+        padding: 3px 15px;
+        border: 1px solid #ddd;
+        border-top: 0px solid red;
+    }
+
+    body {
+        font-family: roboto;
+    }
+
+    div.bhoechie-tab-container {
+        z-index: 10;
+        background-color: #ffffff;
+        padding: 0 !important;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        border: 1px solid #ddd;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        background-clip: padding-box;
+        opacity: 0.97;
+        filter: alpha(opacity=97);
+    }
+
+    div.bhoechie-tab-menu {
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+
+        div.bhoechie-tab-menu div.list-group {
+            margin-bottom: 0;
+        }
+
+            div.bhoechie-tab-menu div.list-group > a {
+                margin-bottom: 0;
+                text-align: left !important;
+            }
+
+                div.bhoechie-tab-menu div.list-group > a .glyphicon,
+                div.bhoechie-tab-menu div.list-group > a .fa {
+                    color: #5A55A3;
+                }
+
+                div.bhoechie-tab-menu div.list-group > a:first-child {
+                    border-top-right-radius: 0;
+                    -moz-border-top-right-radius: 0;
+                }
+
+                div.bhoechie-tab-menu div.list-group > a:last-child {
+                    border-bottom-right-radius: 0;
+                    -moz-border-bottom-right-radius: 0;
+                }
+
+                div.bhoechie-tab-menu div.list-group > a.active,
+                div.bhoechie-tab-menu div.list-group > a.active .glyphicon,
+                div.bhoechie-tab-menu div.list-group > a.active .fa {
+                    background-color: rgb(6, 124, 207);
+                    background-image: rgb(6, 124, 207);
+                    color: #ffffff;
+                }
+
+                    div.bhoechie-tab-menu div.list-group > a.active:after {
+                        content: '';
+                        position: absolute;
+                        left: 100%;
+                        top: 50%;
+                        margin-top: -13px;
+                        border-left: 0;
+                        border-bottom: 13px solid transparent;
+                        border-top: 13px solid transparent;
+                        border-left: 10px solid #1482d1;
+                    }
+
+    div.bhoechie-tab-content {
+        background-color: #ffffff;
+        /* border: 1px solid #eeeeee; */
+        padding-left: 20px;
+        padding-top: 10px;
+    }
+
+    div.bhoechie-tab div.bhoechie-tab-content:not(.active) {
+        display: none;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("div.bhoechie-tab-menu>div.list-group>a").click(function (e) {
+            e.preventDefault();
+            $(this).siblings('a.active').removeClass("active");
+            $(this).addClass("active");
+            var index = $(this).index();
+            $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+            $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+        });
+    });
+
+</script>
+
+<style>
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+
+    .glyphicon {
+        position: relative;
+        top: 3px;
+    }
+
+    .checkbox, .radio; {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+    .radio .cr .cr-icon {
+        margin-left: 0.04em;
+    }
+
+    .checkbox label input[type="checkbox"],
+    .radio label input[type="radio"] {
+        display: none;
+    }
+
+        .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+        .radio label input[type="radio"] + .cr > .cr-icon {
+            transform: scale(3) rotateZ(-20deg);
+            opacity: 0;
+            transition: all .3s ease-in;
+        }
+
+        .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+        .radio label input[type="radio"]:checked + .cr > .cr-icon {
+            transform: scale(1) rotateZ(0deg);
+            opacity: 1;
+        }
+
+        .checkbox label input[type="checkbox"]:disabled + .cr,
+        .radio label input[type="radio"]:disabled + .cr {
+            opacity: .5;
+        }
+
+    .colname {
+    }
+</style>
+
+<style>
+    .form-control::placeholder {
+        color: #bbc1c5;
+    }
+    /* The container */
+    .container1 {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .container1 input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        background-color: #fff;
+        border-radius: 2px;
+        border: 1px solid #35a4f1;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container1:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container1 input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container1 input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .container1 .checkmark:after {
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
+<style>
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+        display: block;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #ffffff;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+
+    th:nth-child(1) {
+        width: 300px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    div.bhoechie-tab-menu div.list-group > a {
+        margin-bottom: 0;
+        font-size: 15px;
+        padding: 8px;
+    }
+
+        div.bhoechie-tab-menu div.list-group > a .glyphicon, div.bhoechie-tab-menu div.list-group > a .fa {
+            color: #164c72;
+            background: #dddddd;
+            padding: 2px;
+            width: 25px;
+            height: 25px;
+            border-radius: 10%;
+            font-size: 15px;
+            margin-right: 20px;
+            padding: 6px;
+            /* padding-top: 4px; */
+            line-height: 17px;
+        }
+</style>
+
+
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <h5 class="topheadline">Role & Rights Master</h5>
+                <!-- Content Header (Page header) -->
+                <!-- Main content -->
+                <section class="content-header">
+                    <div class="row">
+                        <div class="col-lg-8 padding0">
+                            <!-- left column -->
+                            <div class="col-md-12">
+
+                                <div class="panel-primary">
+                                    <div class="box-header with-border">
+                                        <h3 class="panelheading">Role Selection Master</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <!-- Hospital Location Form Start -->
+                                    <!--<form role="form">-->
+                                    <div class="panel-body padding0">
+
+                                        <div class="col-lg-7 padding0">
+                                            <div class="rowmargintop rowmarginbottom" style="padding-top:6px">
+                                                <div class="col-lg-12 padding0">
+                                                    <div class="col-lg-4">
+                                                        <label>Role Name</label>
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        @{
+                                                        <input type="text" class="form-control" value="@Model.RoleName" name="RoleName">
+                                                        <input type="hidden" class="form-control" value="@Model.RoleID" id="RoleID" name="RoleID">
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 padding0 rowmargintop" style="padding-top:6px">
+                                                    <div class="col-lg-4">
+                                                        <label>Role Right</label>
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="checkbox" name="keystone" value="keystone"> keystone<br>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <!-- Hospital Location Tab Ends -->
+                                    <!-- Address Tab Starts -->
+                                    <!-- Address Tab Ends -->
+                                </div>
+                            </div>
+
+                            <!-- Registration Tab Starts -->
+                            <!-- Registration Tab Ends -->
+                            <!--/.col (left) -->
+                            <!-- right column -->
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="panel-primary" style="overflow-x: scroll;height: 250px;">
+
+                                <!-- /.box-header -->
+                                <table id="example" class="display" style="width:100%">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable-responsive"
+                                                rowspan="1" colspan="1" style="width: 1%">
+                                                Sr. No
+                                            </th>
+                                            <th class="sorting" aria-controls="datatable-responsive"
+                                                rowspan="1" colspan="1">
+                                                Role ID
+                                            </th>
+                                            <th class="sorting" aria-controls="datatable-responsive"
+                                                rowspan="1" colspan="1">
+                                                Role Name
+                                            </th>
+
+                                            <th class="sorting" aria-controls="datatable-responsive"
+                                                rowspan="1" colspan="1" style="width: 5% !important;">
+                                                ACTION
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="presentor">
+                                        @{
+                                            for (int i = 0; i < Model.GetRoles.Tables[0].Rows.Count; i++)
+                                            {
+                                                var SrNo = i + 1;
+                                                var RoleID = Model.GetRoles.Tables[0].Rows[i]["RoleID"].ToString();
+                                                var RoleName = Model.GetRoles.Tables[0].Rows[i]["RoleName"].ToString();
+                                                <tr role="row" class="odd">
+                                                    <td tabindex="0" class="sorting_1" style="text-transform: uppercase; text-align: center;">@SrNo</td>
+                                                    <td>@RoleID</td>
+                                                    <td>@RoleName</td>
+                                                    <td style="text-align: center;">
+                                                        <a href="@Url.Action("RoleRightstwo", "RoleRightstwo", new { RoleID = Model.GetRoles.Tables[0].Rows[i]["RoleID"].ToString() })"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                       @* <a href="" onclick="EditClick('@Model.GetRoles.Tables[0].Rows[i]["RoleID"].ToString()')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>*@
+                                                        <a href="#" onclick="Delele(@Model.GetRoles.Tables[0].Rows[i]["RoleID"].ToString())"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+
+                                </table>
+
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <div class="col-lg-12 rowmargintop">
+                            <div style="text-align: center; display: block;">
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="submit" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+                                    <button type="button" onclick="window.open('@Url.Action("RoleRightstwo", "RoleRights")')" id="2ndrole" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Two Role</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="container-fluid">
+                        <div id="loadimg" style="display:none">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/54/Ajux_loader.gif" style="display: inline-block;" />
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="col-lg-12">
+                                <div class="col-lg-12 col-md-5 col-sm-8 col-xs-9 bhoechie-tab-container">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+                                        <div class="list-group" style="padding:10px">
+
+
+                                            @{
+                                                if(Model.GetRoleAndRights.Tables[0].Rows.Count > 0)
+                                                {
+                                                    var ParentModuleID = Convert.ToInt32(Model.GetRoleAndRights.Tables[0].Rows[0]["ParentModuleID"]);
+                                                    var ParentModuleName = Model.GetRoleAndRights.Tables[0].Rows[0]["ModuleName"].ToString();
+
+                                                    DataView dataView = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + ParentModuleID + " ", "", DataViewRowState.CurrentRows);
+                                                    int levelid1 = 1;
+                                                    int levelid2 = 1;
+                                                    int levelid3 = 1;
+                                                    int levelid4 = 1;
+                                                    foreach (DataRowView dataViewLevel0 in dataView)
+                                                    {
+                                                        var Level = Convert.ToInt32(dataViewLevel0["ModuleID"]);
+                                                        DataView dataView1 = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + dataViewLevel0["ModuleID"] + " ", "", DataViewRowState.CurrentRows);
+                                                        foreach (DataRowView drRow in dataView1)
+                                                        {
+                                                            var Level1 = Convert.ToInt32(drRow["ModuleID"]);
+                                                            DataView dataView2 = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + drRow["ModuleID"].ToString() + "", "", DataViewRowState.CurrentRows);
+                                                        <div>
+                                                            <a href="#" class="list-group-item text-center" onclick="Level1('@Level1')"><input type="checkbox" class="frstmodule checkbox @Level1" name="@Level1" value="@Level1" />
+                                                                <input type="hidden" name="Level1" id="Level1" value="@Level1"><h4 class="glyphicon glyphicon-credit-card" style="padding-right:20px"></h4>@drRow["ModuleName"]
+                                                            </a>
+                                                          
+                                                        </div>
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+                                        <div class="list-group" style="padding:10px" id="level2">
+
+
+                                            @*@{
+                                                    var ParentModuleID1 = Convert.ToInt32(Model.GetRoleAndRights.Tables[0].Rows[0]["ParentModuleID"]);
+                                                   // var ParentModuleName = Model.GetRoleAndRights.Tables[0].Rows[0]["ModuleName"].ToString();
+
+                                                    DataView dataView11 = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + ParentModuleID1 + " ", "", DataViewRowState.CurrentRows);
+
+                                                    foreach (DataRowView dataViewLevel0 in dataView11)
+                                                    {
+                                                        var Level = Convert.ToInt32(dataViewLevel0["ModuleID"]);
+                                                        DataView dataView1 = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + dataViewLevel0["ModuleID"] + " ", "", DataViewRowState.CurrentRows);
+                                                        foreach (DataRowView drRow in dataView1)
+                                                        {
+                                                            var Level1 = Convert.ToInt32(drRow["ModuleID"]);
+                                                            DataView dataView2 = new DataView(Model.GetRoleAndRights.Tables[0], " ParentModuleID = " + drRow["ModuleID"].ToString() + "", "", DataViewRowState.CurrentRows);
+                                                            <a href="#" class="list-group-item text-center">
+                                                                <h4 class="glyphicon glyphicon-credit-card" style="padding-right:20px"></h4>@drRow["ModuleName"]
+                                                            </a>
+                                                        }
+                                                    }
+                                                }*@
+                                        </div>
+                                    </div>
+
+                                    <div id="showhidediv" class="col-lg-5 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
+                                        <!-- flight section -->
+                                        <div class="">
+
+
+                                            <h3 style="margin-top: 0; color: #ffffff; background: #0d7fd0; padding: 10px;font-size:17px" id="Pagename">Patient Registraiton</h3>
+                                            <table id="tblchk" class="table table-bordered" style="font-family:roboto">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sub Modules List</th>
+
+                                                        <th>
+                                                            Add
+
+                                                            <label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
+                                                                <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Add checked" />
+                                                                <span class="checkmark checked"></span>
+                                                            </label>
+                                                        </th>
+
+                                                        <th>
+                                                            Edit<label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
+                                                                <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Edit checked" />
+                                                                <span class="checkmark checked"></span>
+                                                            </label>
+                                                        </th>
+                                                        <th>
+
+                                                            Delete<label class="container1" style=" margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
+                                                                <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Delete checked" />
+                                                                <span class="checkmark checked"></span>
+                                                            </label>
+                                                        </th>
+                                                        <th>
+                                                            Print<label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
+                                                                <input type="checkbox" id="PatientCancelID" class="Print checked" name="TPACheck" />
+                                                                <span class="checkmark checked"></span>
+                                                            </label>
+                                                        </th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="level3"></tbody>
+                                            </table>
+
+
+
+                                        </div>
+                                        <!-- train section -->
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                    </div>
+                </section>
+
+
+
+
+<input type="hidden" id="beforAfterchk" name="beforAfterchk" />
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+    var unchk = "";
+    var chk1 = "";
+
+    $(document).ready(function () {
+        $('input[name=parentLevel4]').change(function () {
+
+            debugger
+            var parentLevel4 = "";
+            var con = $(this).prop("checked");
+            if (con == false) {
+                $(this).each(function () {
+                    debugger
+                    parentLevel4 += $(this).val();
+                })
+            }
+        })
+        $.ajax({
+            url: '@Url.Action("RoleRightsLevelChk", "RoleRightstwo")',
+            type: "GET",
+            data: { RoleID: $("#RoleID").val() },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var len = $("#level3 tr").length;
+                var row = 0;
+                $(data).each(function (index, d) {
+                    
+                    $('input[name=' + d.ModuleIDchk + ']').prop("checked", true);
+                    //$('input[name=' + d.ModuleID + ']').prop("checked", true);
+                 //  Level1(d.ModuleID);
+                })
+                //$('.frstmodule').each(function () {
+                //    debugger
+                //   var chk= $(this).prop("checked");
+                //   if(chk)
+                //   {
+                //       Level1($(this).val());
+                //   }
+
+                //})
+
+                }
+        })
+        $("#level3").on('click', '.Add1,.Edit1,.Delete1', '.Print1', function () {
+            debugger
+             unchk = "";
+               chk1 = "";
+
+               var chk =$(this).parent().find('input[name="parentLevel4"]').prop("checked");
+                
+                    if (chk == false)
+                    {
+                        $(this).parent().find('input[name="parentLevel4"]').prop("checked",false);
+                    }
+                    else
+                    {
+                        $(this).parent().find('input[name="parentLevel4"]').prop("checked",true);
+                    }
+                    unchk1();
+             })
+            debugger
+            
+           unchk = unchk.split(',');
+            chk1 = chk1.split(',');
+        //})
+    })
+
+    function unchk1()
+    {
+        debugger
+        //alert(unchk);
+       var beforAfterchk = "";
+        $("#level3").parent().find('input[name="parentLevel4"]').each(function () {
+            debugger
+            
+           var parentLevel4 = $(this).val();
+           var  con= $(this).prop("checked");
+
+              if (con == true)
+               {
+                  chk1 = parentLevel4 + ",";// $(this).prop("checked",false);
+               }
+               else
+               {
+                  unchk = parentLevel4 + ",";
+                  parentLevel4 + ",";
+                  beforAfterchk+= parentLevel4 + ",";
+               }
+        })
+        $("#beforAfterchk").val(beforAfterchk);
+      
+    }
+    function EditClick(RoleID)
+    {
+
+    }
+        function Level1(Level1ModuleID)
+        {
+            debugger
+            $("#showhidediv").show();
+            var chkall1 = $('input[name=' + Level1ModuleID + ']').prop("checked");
+            debugger
+            $.ajax({
+                url: '@Url.Action("RoleRightsLevel2", "RoleRightstwo")', 
+                type: "POST",
+                data: { Level1ModuleID: Level1ModuleID },
+                dataType: "json",
+                success: function (data) {
+                    $("#level2").empty();
+                    $(".m").hide(200);
+                    $(data).each(function (index, d) {
+                        debugger;
+                        $("#level2").append('<div class="list-group-item text-center"><a href="#" onclick="Level2(\'' + d.ModuleID + '\',\'' + d.ModuleName + '\',\'' + false + '\')" ><h4 class="glyphicon glyphicon-credit-card" style="padding-right:20px"></h4>' + d.ModuleName + '<div class="form-check-inline"><label class="form-check-label"></a><input type="checkbox" onclick="checkedmodule(this)" value=' + d.ModuleID + "-" + d.ModuleName + ' name= ' + d.ModuleID + '  class="' + Level1ModuleID + ' form-check-input"></label></div></div>');
+                        // Level2(d.ModuleID);
+
+                        if(chkall1==true)
+                        {
+                           // $('input[name=' + d.ModuleID + ']').prop("checked", true);
+                            //Level2(d.ModuleID, d.ModuleName, false);
+
+                        }
+                        else
+                        {
+                            //$('.checked' + Level1ModuleID).prop("checked", false);
+                            //$('.checkedEdit' + Level1ModuleID).prop("checked", false);
+                            //$('.checkedDelete' + Level1ModuleID).prop("checked", false);
+                            //$('.checkedPrint' + Level1ModuleID).prop("checked", false);
+                            //$('input[name=' + d.ModuleID + ']').prop("checked", false);
+                           // Level2(d.ModuleID, d.ModuleName, false);
+                        }
+                    })
+
+                    // Before Checked Edit 
+
+
+                    $.ajax({
+                        url: '@Url.Action("RoleRightsLevelChk", "RoleRightstwo")',
+                        type: "GET",
+                        data: { RoleID: $("#RoleID").val() },
+                        dataType: "json",
+                        success: function (data) {
+                            debugger
+                            //var len = $("#level3 tr").length;
+                            //var row = 0;
+                            $(data).each(function (index, d) {
+                                debugger
+                               
+                                $('input[name=' + d.ModuleID + ']').prop("checked", true);
+                                //  Level1(d.ModuleID);
+                            })
+                            //$('.frstmodule').each(function () {
+                            //    debugger
+                            //   var chk= $(this).prop("checked");
+                            //   if(chk)
+                            //   {
+                            //       Level1($(this).val());
+                            //   }
+
+                            //})
+
+                        }
+                    })
+                }
+            })
+            
+        }
+    function checkedmodule(value) {
+        debugger
+       
+        //  var value=$(this).val();
+        var moduleID = value.value.split('-')[0];
+        var moduleName = value.value.split('-')[1];
+        var chkall1 = $('input[name=' + moduleID + ']').prop("checked");
+      Level2(moduleID, moduleName, value.checked);
+        debugger
+        if (chkall1 == true) {
+            $(".Add1").prop("checked", true);
+            $(".Edit1").prop("checked", true);
+            $(".Delete1").prop("checked", true);
+            $(".Print1 ").prop("checked", true);
+           // $('input[name=' + d.ModuleID + ']').prop("checked", true);
+        }
+        else {
+            $(".Add1").prop("checked", false);
+            $(".Edit1").prop("checked", false);
+            $(".Delete1").prop("checked", false);
+            $(".Print1 ").prop("checked", false);
+            unchk1();
+           // $('input[name=' + d.ModuleID + ']').prop("checked", false);
+            // Level2(d.ModuleID, d.ModuleName, false);
+        }
+    }
+    var ModuleID = "";
+
+    function Level2(Level1ModuleID, ModuleName, chkall) {
+        //  Pagename
+
+
+        debugger
+
+        // alert(unchk);
+        if(unchk!="")
+        {
+
+            //  unchk1();
+        }
+        $("#Pagename").text(ModuleName);
+        ModuleID = Level1ModuleID;
+        $(".m").hide(200);
+        // $(".Add").prop("checked", false);
+        var tt = "";
+        $("." + Level1ModuleID).each(function () {
+
+            tt = $(this).attr('class');
+
+            $(this).show(200);
+        })
+        $.ajax({
+            url: '@Url.Action("RoleRightsLevel2", "RoleRightstwo")',
+            type: "POST",
+            data: { Level1ModuleID: Level1ModuleID },
+            dataType: "json",
+            success: function (data) {
+                // $("#level3 tr").remove();
+
+                var n = tt.replace("m", "");
+                if (tt.replace("m","").trim() != Level1ModuleID) {
+
+                    $(data).each(function (index, d)
+                    {
+                        $("#level3").append('<tr class="' + Level1ModuleID + ' m" value=' + Level1ModuleID + ' ><td>' + d.ModuleName + '<td style="display:none" ><input type="hidden" class="find" value=' + Level1ModuleID + '></td></td><td><label class="container1" style="margin-left: 10px "><input type="checkbox" id="PatientCancelID" name="parentLevel4" value=' + d.ModuleID + "+" + 1 + '  class="Add1 checked' + Level1ModuleID + '"  /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 2 + ' id="PatientCancelID"  class="Edit1 checkedEdit' + Level1ModuleID + '"  /><span class="checkmark "></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 3 + ' id="PatientCancelID"  class="Delete1 checkedDelete' + Level1ModuleID + '" /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 5 + ' id="PatientCancelID"  class="Print1 checkedPrint'+Level1ModuleID + '"  /><span class="checkmark checked"></span></label></td></tr>');
+                        // $("#DateOfBirth").val(data);
+                    })
+                   
+                    if($("#RoleID").val()>0)
+                    {
+                        $.ajax({
+                            url: '@Url.Action("EditRoleRightsLevel2", "RoleRightstwo")',
+                            type: "GET",
+                            data: { RoleID: $("#RoleID").val() },
+                            dataType: "json",
+                            success: function (data) {
+
+                                var len = $("#level3 tr").length;
+                                var row = 0;
+                                $(data).each(function (index, d) {
+
+                                    var y = d.ModuleID;
+                                    $('#level3 tr').each(function () {
+                                        debugger
+
+                                        //-----Add
+                                        var AddRightCode = $(this).find('.Add1').val().split('+');
+                                        var AddModuleID = AddRightCode[0];
+                                        var we = unchk;
+                                        if (d.ModuleID == AddModuleID)
+                                        {
+                                            debugger
+                                            $("."+d.ModuleID).prop("checked", true);
+                                            if (AddRightCode[1] == d.RightCode) {
+
+                                                $(this).find('.Add1').prop("checked", true);
+                                            }
+
+                                        }
+                                        //---End
+
+                                        //-----Edit
+                                        var EditRightCode = $(this).find('.Edit1').val().split('+');
+                                        var EditModuleID = AddRightCode[0];
+
+                                        if (d.ModuleID == EditModuleID) {
+                                            if (EditRightCode[1] == d.RightCode) {
+
+                                                $(this).find('.Edit1').prop("checked", true);
+
+                                            }
+
+                                        }
+                                        //---End
+                                        //-----Delete
+                                        var DeleteRightCode = $(this).find('.Delete1').val().split('+');
+                                        var DeleteModuleID = AddRightCode[0];
+
+                                        if (d.ModuleID == DeleteModuleID) {
+                                            if (DeleteRightCode[1] == d.RightCode) {
+                                                $(this).find('.Delete1').prop("checked", true);
+                                            }
+
+                                        }
+                                        //---End
+                                        row++;
+                                    });
+
+                                    //for(var a=0; a<len;a++)
+
+                                    //{
+                                    //    debugger
+                                    //    var add = document.getElementById('tblchk').tBodies[0].rows[a].cells[3].children[0].value;
+                                    //}
+
+                                })
+                            }
+                        })
+                    }
+
+                }
+                debugger
+                    chkall = $('input[name=' + Level1ModuleID + ']').prop("checked");
+                     if(chkall == true) {
+                    $(".Add1").prop("checked", true);
+                    $(".Edit1").prop("checked", true);
+                    $(".Delete1").prop("checked", true);
+                    $(".Print1 ").prop("checked", true);
+                    //$('.checked' + Level1ModuleID).prop("checked", true);
+                    //$('.checkedEdit' + Level1ModuleID).prop("checked", true);
+                    //$('.checkedDelete' + Level1ModuleID).prop("checked", true);
+                    //$('.checkedPrint' + Level1ModuleID).prop("checked", true);
+                }
+                else {
+                    //$('.checked' + Level1ModuleID).prop("checked", false);
+                    //$('.checkedEdit' + Level1ModuleID).prop("checked", false);
+                    //$('.checkedDelete' + Level1ModuleID).prop("checked", false);
+                    //$('.checkedPrint' + Level1ModuleID).prop("checked", false);
+
+                }
+            }
+        })
+        if (chkall != "false")
+            {
+          //  $('.Add1,.Edit1,.Delete1').prop("checked", true);
+        }
+        else
+        {
+          //  $(".chkallhideshow").show();
+        }
+    }
+
+    function ChkAll()
+    {debugger
+        $("#showhidediv").hide();
+        var count = 0;
+        var data1 = $("input[name=Level1]").length;
+        $("input[name=Level1]").each(function () {
+
+            var Module1ID = $(this).val();
+          
+
+            $.ajax({
+                url: '@Url.Action("RoleRightsLevel2", "RoleRightstwo")',
+                type: "POST",
+                data: { Level1ModuleID: $(this).val() },
+                dataType: "json",
+                success: function (data) {
+                    $("#level2").empty();
+                    $(".m").hide(200);
+                    $("#loadimg").show();
+                    count++;
+                            
+                    debugger
+                    $(data).each(function (index, d) {
+                               
+                        //  $("#level2").append('<a href="#" onclick="Level2(\'' + d.ModuleID + '\',\'' + d.ModuleName + '\')"  class="list-group-item text-center"><h4 class="glyphicon glyphicon-credit-card" style="padding-right:20px"></h4>' + d.ModuleName + '</a>');
+                        // Level2(d.ModuleID);
+                        var chkall = $(this).is(":checked");
+                        $(".chkallhideshow").hide();
+                        Level2(d.ModuleID, d.ModuleName,chkall);
+                        if ($("input[name=keystone]").prop("checked") == true) {
+
+                            $("input[name=" + Module1ID + "]").prop("checked", true);
+                            $(".Add1").prop("checked", true);
+                            $(".Edit1").prop("checked", true);
+                            $(".Delete1").prop("checked", true);
+                            $(".Print1 ").prop("checked", true);
+                            //  $("checkbox").prop("checked", true);
+                            $("input[name=" + d.ModuleID + "]").prop("checked", true);
+                        }
+                        else
+                        {
+                            $("input[name=" + Module1ID + "]").prop("checked", false);
+                            $(".Add1").prop("checked", false);
+                            $(".Edit1").prop("checked", false);
+                            $(".Delete1").prop("checked", false);
+                            $(".Print1 ").prop("checked", false);
+                            //  $("checkbox").prop("checked", true);
+                            $("input[name=" + d.ModuleID + "]").prop("checked", false);
+                        }
+                    })
+                    if (data1 == count) {
+                        $("#loadimg").hide();
+                    }
+                }
+            })
+
+
+
+
+        })
+
+    }
+    $(document).ready(function () {
+        $("input[name=keystone]").change(function () {
+            debugger
+            if ($(this).is(":checked")) {
+                debugger
+                ChkAll();
+            }
+            else
+            {
+                ChkAll();
+            }
+            })
+ 
+        
+        $(".Add").click(function () {
+            debugger
+            if ($(this).is(":checked")) {
+                debugger
+                $(".checked"+ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", true);
+                })
+            }
+            else
+            {
+                $(".checked"+ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", false);
+                })
+            }
+            unchk1();
+        })
+
+      
+        //----------------
+
+
+
+
+        $(".Edit").click(function () {
+            debugger
+            if ($(this).is(":checked")) {
+                debugger
+                $(".checkedEdit" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", true);
+                })
+            }
+            else {
+                $(".checkedEdit" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", false);
+                })
+            }
+            unchk1();
+        })
+        //------------------------------------------
+
+        $(".Delete").click(function () {
+            debugger
+            if ($(this).is(":checked")) {
+                debugger
+                $(".checkedDelete" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", true);
+                })
+            }
+            else {
+                $(".checkedDelete" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", false);
+                })
+            }
+            unchk1();
+        })
+        //-----------Print
+
+
+
+        $(".Print").click(function () {
+            debugger
+            if ($(this).is(":checked")) {
+                debugger
+                $(".checkedPrint" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", true);
+                })
+            }
+            else {
+                $(".checkedPrint" + ModuleID).each(function () {
+                    debugger
+                    $(this).prop("checked", false);
+                })
+            }
+            unchk1();
+        })
+    })
+</script>

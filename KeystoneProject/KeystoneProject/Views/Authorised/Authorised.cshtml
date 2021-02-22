@@ -1,0 +1,334 @@
+﻿@model KeystoneProject.Models.MasterLaboratory.Authorised
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file isedited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        data();
+    });
+    function data() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllAuthoriser", "Authorised")',
+            dataType: "json",
+            success: function (data) {
+                var table = "";
+                var tr = "";
+                for (var i = 0; i < data.length; i++) {
+                    debugger
+                    tr += '<tr><td>' + data[i].UserId + '</td><td>' + data[i].AuthoriserName + '</td><td style="display: none;">' + data[i].AuthoriserID + '</td></tr>';
+                };
+                $(".table").append(tr);
+                $('#authorisedTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#authorisedTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#authorisedExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+    })
+    var loadfile = function (event, name) {
+        debugger
+        var file = event.target.files[0];
+        if (name == "OPDImageUrl") {
+            document.getElementById('img2').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data = new FormData();
+        data.append("ImageFile", file);
+        // data.append("DoctorImage", name);
+        $.ajax({
+            url: '@Url.Action("imageuplod", "Authorised")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                $("#Image1").val(data);
+              //  alert(data);
+            }
+        });
+    }
+</script>
+<script>
+            $(document).ready(function () {
+                $("#Delete").click(function () {
+                   // alert($("#OutSourceLabID").val());
+                    var conform = confirm("Are you sure you want to Delete this Record ?");
+                    if (conform) {
+                        debugger
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Authorised")',
+                            type: 'POST',
+                            data: { AuthoriserID: $("#AuthoriserID").val() },
+
+                            success: function (data) {
+                                if (data.length > 1) {
+                                    alert("Authoriser Deleted Successfully !");
+                                    location.reload();
+
+                                }
+                                else {
+
+                                }
+
+
+                            }
+
+                        })
+
+                    }
+                });
+            });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#authorisedTableId').delegate("td", "click", function () {
+            debugger
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row_num = parseInt($(this).parent().index());
+            var ID = document.getElementById("authorisedTableId").tBodies[0].rows[row_num].cells[2].innerHTML;
+            $("#AuthoriserID").val(ID);
+           // alert($("#AuthoriserID").val());
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAuthoriser", "Authorised")',
+                data: { id: $("#AuthoriserID").val() },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    //   alert("jhvj");
+                    $("#AuthoriserID").val(data[0].AuthoriserID);
+                //    alert($("#AuthoriserID").val());
+                    $("#UserId").val(data[0].UserId);
+                    $("#AuthoriserName").val(data[0].AuthoriserName);
+                    $("#MobileNo").val(data[0].MobileNo);
+                    $("#Remark").val(data[0].Remark);
+                    $("#Image1").val(data[0].Signature);
+                    document.getElementById('img2').src = data[0].Signature;
+                },
+                error: function (result) {
+                    //alert("Error in bindgrid");
+                }
+            });
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#AuthoriserName").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetAuthoriser", "Authorised")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.AuthoriserName, value: item.AuthoriserName, id: item.UserId };
+                        }));
+                    },
+                    //error: function (xhr, status, error) {
+                    //    alert("Error: " + error);
+                    //}
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#UserId").val(ui.item.id);
+                //$("#State").val(ui.item.UserId);
+                //$("#Country").val(ui.item.country);
+                //$("#StateID").val(ui.item.stateID);
+                //$("#CountryID").val(ui.item.countryID);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#authorisedTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Authoriser Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Authoriser</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Authoriser Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                                                <!--Authoriser Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Authoriser Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="AuthoriserName" name="AuthoriserName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Authoriser Name')"
+                                                               oninput="this.setCustomValidity('')" placeholder="Search Authoriser Name">
+                                                        <input type="hidden" name="AuthoriserID" id="AuthoriserID" class="form-control input-sm" />
+                                                        <input type="hidden" name="UserId" id="UserId">
+                                                    </div>
+                                                </div>
+                                                <!--Mobile Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>MobileNo.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="MobileNo" id="MobileNo" maxlength="10" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Mobile Number')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Remark-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Remark</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="Remark" name="Remark" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Signatuer-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Signature File</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="custom-file">
+                                                            <input type="file" id="file" name="file" onchange="loadfile(event, 'OPDImageUrl')" aria-label="File browser example" class="custom-file-input">
+                                                            <input type="hidden" name="Image1" id="Image1" />
+                                                            <label class="custom-file-label" for="customFile">Upload</label>
+                                                        </div>
+                                                        <img src="/Vendor/dist/images/Doctor.png" id="img2" class="img-fluid" style="width: 100px;" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="authorisedExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="data-responsive">
+                                <table id="authorisedTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. no.</th>
+                                            <th>Authoriser Name</th>
+                                            <th style="display: none;">Authoriser Id</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

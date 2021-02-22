@@ -1,0 +1,1185 @@
+﻿@model KeystoneProject.Models.MasterLaboratory.TestMaster
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    @@media screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+
+    .addHeaderParameterColor {
+        background-color: red;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+
+        // $('#example1_parameter').hide()
+        example1_parameter.style.display = 'none';
+
+    });
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#TestName").keyup(function () {
+            var name = $(this).val();
+            $("#PrintAs").val(name);
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            //url: "/OPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetTestMasterForBindSampleType", "TestMaster")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                $("#SampleType").append('<option value=0>--Select--</option>');
+                $(data).each(function (index, d) {
+                    $("#SampleType").append('<option value=' + d.SampleTypeID + '>' + d.SampleType + '</option>');
+                    //$("#CategoryID").val(data[0].catgaryID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            //url: "/OPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetTestMasterForBindCategory", "TestMaster")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                $("#Category").append('<option value=0>--Select--</option>');
+                $(data).each(function (index, d) {
+                    $("#Category").append('<option value=' + d.Category + '>' + d.Category + '</option>');
+                    $("#CategoryID").val(d.CategoryID);
+                    //alert($("#Category").val())
+                    //alert($("#CategoryID").val());
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#example").on('click', "#Updategeneral", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#example td").closest("tr").length;
+            var general = document.getElementById("example").tBodies[0].rows[0].cells[3].children[0].value;
+            for (var j = 1; j < child; j++) {
+                emer = document.getElementById("example").tBodies[0].rows[j].cells[3].children[0].value = general;
+            }
+            debugger
+        })
+        $("#example").on('click', "#UpdateEmergency", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#example td").closest("tr").length;
+            var general = document.getElementById("example").tBodies[0].rows[0].cells[4].children[0].value;
+            for (var j = 1; j < child; j++) {
+                emer = document.getElementById("example").tBodies[0].rows[j].cells[4].children[0].value = general;
+            }
+            debugger
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            //url: "/Add_Patient_Registration/FillRevisit",
+            url: '@Url.Action("GetAllWard", "TestMaster")',
+            data: { prefix: "" },
+            success: function (data) {
+                debugger
+                $("#example tbody tr").remove();
+                //
+                $(data).each(function (index, d) {
+                    $("#example").append('<tr><td style="display:none"><input type="text" id="TestMasterDetailIPDChargeID" name="TestMasterDetailIPDChargeID"  class="form-control" value ="0"></td><td hidden><input type="text" style="display:hidden" id="WardID" name="WardID"  class="form-control" value =' + d.WardID + '></td><td><input type="text" readonly id="WardName"  name="WardName" class="form-control" value =' + d.WardName + '></td><td><input type="text" id="GeneralCharges" name="GeneralCharges" class="form-control" value =' + d.GeneralCharges + '></td><td><input type="text" id="EmergencyCharges" name="EmergencyCharges" class="form-control" value =' + d.EmergencyCharges + '></td></tr>');
+                })
+                $("#example").append('<tr><td colspan="1"></td><td><input type="button" value="Update To All General" id="Updategeneral"></td><td><input type="button" value="Update To All Emergency" id="UpdateEmergency"></td></tr>');
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#IPDCharges").click(function () {
+            //   alert($("#IPDCharges").val());
+            if ($("#IPDCharges").val() == "show") {
+                $("#chkdiv").show();
+                //// if (WardName > 0) {
+                // var id = $("#example").append('<tr><td class="1testidhidden"><input type="hidden" id="WardID"  value=' + WardID + ' name="WardID"><input type="hidden" value=' + WardName + ' name="WardName">' + WardName + '</td><td><input type="text" class="form-control" name="GeneralCharges" value=' + GeneralCharges + ' ></td><td><input type="text" value=0.00 class="form-control" id="EmergencyCharges" name="EmergencyCharges"></td></tr>');
+                //// }
+            }
+            else {
+                $("#chkdiv").hide();
+            }
+            $("#okk").click(function () {
+                if ($("#okk").val() == "ok") {
+                    $("#chkdiv").hide();
+                }
+                else {
+                    $("#chkdiv").show();
+                }
+            })
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#AddHearder").click(function () {
+            debugger;
+            var HeaderName = $("#Adding").val();
+            //   var headID = $("#headID").val()
+            $.ajax({
+                type: "POST",
+                //url: "/Add_Patient_Registration/FillRevisit",
+                url: '@Url.Action("Add", "TestMaster")',
+                data: { HeaderName: $("#Adding").val() },
+                success: function (data) {
+                    debugger
+                    if (data == "Header Saved Successfully !") {
+                        alert("Header Saved Successfully !");
+                        location.reload();
+                    }
+                    else {
+                        alert("Header Already Exists !");
+                        location.reload();
+                    }
+                }
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        // alert("alert");
+        $("#SearchH").keyup(function () {
+            debugger
+            var selValue = $('input[name=RadioSwitch]:checked').val();
+            //alert(selValue);
+            $(this).on("keyup", function () {
+                debugger
+                var value = $(this).val().toUpperCase();
+                $("#example1 tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toUpperCase().indexOf(value) > -1)
+                });
+            });
+        })
+        $("#SearchTest").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#example3 tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        //$("#SearchTest").keyup(function () {
+        //    //var selValue = $('input[name=RadioSwitch]:checked').val();
+        //    // alert(selValue);
+        //    //$(this).on("keyup", function () {
+        //    //    var value = $(this).val().toUpperCase();
+        //    //    $("#example3 td").filter(function () {
+        //    //        $(this).toggle($(this).text().toUpperCase().indexOf(value) > -1)
+        //    //    });
+        //    //});
+        //})
+    });
+</script>
+<script>
+    function displayRadioValue() {
+        var ele = document.getElementsByName('gender');
+        for (i = 0; i < ele.length; i++) {
+            if (ele[i].checked)
+                document.getElementById("result").innerHTML
+                        = "Gender: " + ele[i].value;
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var row_num1 = 0;
+        $("#example2").delegate('td', 'click', function () {
+            row_num1 = parseInt($(this).parent().index());
+        });
+        $("#btnup").click(function () {
+            //   var ParamiterHederName = document.getElementById('table3').tBodies[0].rows[row_num1].cells[0].children[0];
+            var ParamiterHederName = document.getElementById('example2').tBodies[0].rows[row_num1].cells[0].children[0].value;
+            var ParamiterHederID = document.getElementById('example2').tBodies[0].rows[row_num1].cells[2].children[0].value;
+            var Type = document.getElementById('example2').tBodies[0].rows[row_num1].cells[1].children[0].value;
+            var Space = document.getElementById('example2').tBodies[0].rows[row_num1].cells[3].children[0].value;
+            if (Type == "H") {
+                document.getElementById('example2').tBodies[0].rows[row_num1].cells[3].style.color = "pink";
+                // .tBodies[0].rows[row_num1].cells[3].children[0].value;
+            }
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[3].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[3].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[2].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[2].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[1].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[1].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[0].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[0].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[2].children[0].value = ParamiterHederID;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[0].children[0].value = ParamiterHederName;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[1].children[0].value = Type;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) - parseInt(1)].cells[3].children[0].value = Space;
+            row_num1 = parseInt(row_num1) - parseInt(1);
+            $("#tbl").find("tr").each(function (i, j) {
+                debugger
+                var Type = document.getElementById('example2').tBodies[0].rows[i].cells[1].children[0].value;
+                if (Type == "H") {
+                    $(this).css("background-color", "pink");
+                }
+                else {
+                    $(this).css("background-color", "white");
+                }
+                // alert($(this).html());
+            });
+        })
+        $("#btndown").click(function () {
+            //   var ParamiterHederName = document.getElementById('table3').tBodies[0].rows[row_num1].cells[0].children[0];
+            var ParamiterHederName = document.getElementById('example2').tBodies[0].rows[row_num1].cells[0].children[0].value;
+            var ParamiterHederID = document.getElementById('example2').tBodies[0].rows[row_num1].cells[2].children[0].value;
+            var Type = document.getElementById('example2').tBodies[0].rows[row_num1].cells[1].children[0].value;
+            var Space = document.getElementById('example2').tBodies[0].rows[row_num1].cells[3].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[3].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[3].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[2].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[2].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[1].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[1].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[row_num1].cells[0].children[0].value = document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[0].children[0].value;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[2].children[0].value = ParamiterHederID;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[0].children[0].value = ParamiterHederName;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[1].children[0].value = Type;
+            document.getElementById('example2').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[3].children[0].value = Space;
+            row_num1 = parseInt(row_num1) + parseInt(1);
+            // document.getElementById('table3').tBodies[0].rows[parseInt(row_num1) + parseInt(1)].cells[3].innerHTML = ParamiterHederID;
+            debugger
+            //var row = $("#tbl tr").length;
+            $("#tbl").find("tr").each(function (i, j) {
+                debugger
+                var Type = document.getElementById('example2').tBodies[0].rows[i].cells[1].children[0].value;
+                if (Type == "H") {
+                    $(this).css("background-color", "pink");
+                }
+                else {
+                    $(this).css("background-color", "white");
+                }
+                // alert($(this).html());
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#example3").delegate('td', 'click', function () {
+            debugger
+            //  alert("hjk");
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row_num = parseInt($(this).parent().index());
+            var SrNo = document.getElementById("example3").tBodies[0].rows[row_num].cells[0].innerHTML;
+            var TestID = document.getElementById("example3").tBodies[0].rows[row_num].cells[1].innerHTML;
+            $("#TestID").val(TestID);
+            //  alert($("#TestID").val());
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Edit", "TestMaster")',
+                data: { TestID: $("#TestID").val() },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#TestID").val(data[0].TestID);
+                    $("#TestName").val(data[0].TestName);
+                    $("#HSNCode").val(data[0].HSNCode);
+                    $("#PrintAs").val(data[0].PrintAs);
+                    $("#OPDGeneralCharges").val(data[0].GeneralCharges);
+                    $("#OPDEmergencyCharges").val(data[0].EmergencyCharges);
+                    $("#MyCost").val(data[0].MyCost);
+                    $("#Alias").val(data[0].Alias);
+                    $("#TestType").val(data[0].TestType);
+                    //alert($("#TestType").val());
+                    if ($("#TestType").val() == "1" || "2" || "3") {
+                        $("#move").prop("disabled", true);
+                    }
+                    if ($("#TestType").val() == "0") {
+                        $("#move").prop("disabled", false);
+                    }
+                    $("#ReffComission").val(data[0].ReffCommission);
+                    $("#sign").val(data[0].ReffCommissionRs);
+                    $("#Comission").val(data[0].Commission);
+                    $("#sign1").val(data[0].CommissionRs);
+                    $("#Client").val(data[0].Client);
+                    $("#Gender").val(data[0].ForGender);
+                    $("#Format").val(data[0].Format);
+                    $("#ProcessBy").val(data[0].ProcessDay);
+                    $("#PrintOrder").val(data[0].PrintOrder);
+                    $("#Method").val(data[0].Methord);
+                    $("#OutSideLab").val(data[0].OutSideLab);
+                    $("#DisposalDays").val(data[0].DisposalDay);
+                    $("#Discount").val(data[0].Discount);
+                    $("#SampleType").val(data[0].SampleType);
+                    $("#PrintName").val(data[0].PrintName);
+                    $("#PrintTogether").val(data[0].PrintTogether);
+                    $("#WardView").val(data[0].WardView);
+                    $("#Interpretation").val(data[0].Interpretation);
+                    $("#HMSCode").val(data[0].HMSCode);
+                    $("#PatientInstr").val(data[0].PatientInstr);
+                    $("#Footer").val(data[0].Footer);
+                    $("#Technician").val(data[0].TechnicianIntr);
+                    $("#BothFooter").val(data[0].BothFooter);
+                    $("#MachineName").val(data[0].MachineName);
+                    $("#CategoryID").val(data[0].CategoryID);
+                    $("#Category").val(data[0].Category);
+                    @*$.ajax({
+                            type: "GET",
+                            //url: "/Add_Patient_Registration/FillRevisit",
+                            url: '@Url.Action("", "TestMaster")',
+                            data: { prefix: "" },
+                            success: function (data) {
+                                $("#example td").remove();
+                                //
+                                $(data).each(function (index, d) {
+                                    $("#example").append('<tr><td hidden><input type="text" id="WardID" name="WardID"  class="form-control" value =' + d.WardID + '></td><td><input type="text" readonly id="WardName"  name="WardName" class="form-control" value =' + d.WardName + '></td><td><input type="text" id="GeneralCharges" name="GeneralCharges" class="form-control" value =' + d.GeneralCharges + '></td><td><input type="text" id="EmergencyCharges" name="EmergencyCharges" class="form-control" value =' + d.EmergencyCharges + '></td></tr>');
+                                })
+                            }
+                        });*@
+                },
+                error: function (data) {
+                }
+            })
+            $.ajax({
+                type: "POST",
+                //url: "/Add_Patient_Registration/FillRevisit",
+                url: '@Url.Action("GetMasterDetails", "TestMaster")',
+                data: { TestID: $("#TestID").val() },
+                success: function (data) {
+                    debugger
+                    $("#example2 td").remove();
+                    $(data).each(function (index, d) {
+                        for (var a = 0; a < d.GetTest.length; a++) {
+                            if (d.GetTest[a].Type1 == "H") {
+                                //var a = document.getElementById('example1').tBodies[0].rows[row_num].cells[1].innerHTML;
+                                //var ID = document.getElementById('example1').tBodies[0].rows[row_num].cells[0].innerHTML;
+                                //if (name == "Parameter") {
+                                $("#example2").append('<tr style="background-color: pink;"><td><input type="text" name="ParameterHeaderName" class="form-control" readonly value="' + d.GetTest[a].HeaderName + '" /></td><td><input type="text" name="Type" class="form-control" readonly value="H" /></td> <td style="display:none"><input type="hidden" name="HeaderParameterID" value="' + d.GetTest[a].HeaderID + '"/></td><td><input type="text" name="Space" class="form-control" value="' + d.GetTest[a].Space1 + '" /></td><td><span class="btn btn-danger fa fa-trash" id="chk2"></span></td></tr>');
+                            }
+                                //}
+                                //else {
+                            else {
+                                $("#example2").append('<tr><td><input type="text"  name="ParameterHeaderName" class="form-control" readonly  value="' + d.GetTest[a].ParameterName + '" /></td><td><input type="text" name="Type" class="form-control" readonly value="P" /></td> <td style="display:none"><input type="hidden" name="HeaderParameterID"  value="' + d.GetTest[a].HeaderParmater + '"/></td><td><input type="text"  name="Space" class="form-control"  value="' + d.GetTest[a].Space1 + '" /></td><td><span class="btn btn-danger fa fa-trash" id="chk2"></span></td></tr>');
+                                //}
+                            }
+                        }
+                        $("#example tbody tr").remove();
+                        for (var b = 0; b < d.GetWard.length; b++) {
+                            debugger;
+                            if (d.GetWard[b].WardID > 0) {
+                                //$("#example").show();
+                                $("#example").append('<tr><td style="display:none"><input type="text" id="TestMasterDetailIPDChargeID" name="TestMasterDetailIPDChargeID"  class="form-control" value =' + d.GetWard[b].TestMasterDetailIPDChargeID + '></td><td hidden><input type="text" id="WardID" name="WardID"  style="display:none"  class="form-control" value =' + d.GetWard[b].WardID + '></td><td><input type="text" readonly id="WardName"  name="WardName" class="form-control" value =' + d.GetWard[b].WardName + '></td><td><input type="text" id="GeneralCharges" name="GeneralCharges" class="form-control" value =' + d.GetWard[b].GeneralCharges + '></td><td><input type="text" id="EmergencyCharges" name="EmergencyCharges" class="form-control" value =' + d.GetWard[b].EmergencyCharges + '></td></tr>');
+                            }
+                        }
+                    })
+                }
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#tbl tr").remove();
+        //$("#example1").append('<tr><th>HeaderID</th><th>HeaderName</th></tr>');
+        $.ajax({
+            type: "GET",
+            //url: "/Add_Patient_Registration/FillRevisit",
+            url: '@Url.Action("GetAllHeader", "TestMaster")',
+            data: { prefix: "" },
+            success: function (data) {
+                $(data).each(function (index, d) {
+                    $("#example1").append('<tr><td>' + d.HeaderID + '</td><td>' + d.HeaderName + '</td></tr>');
+                })
+            }
+        });
+        var name = $("input[name='RadioSwitch']").val();
+        $("input[name='RadioSwitch']").change(function () {
+            $("#example1 tr").remove();
+            name = $(this).val();
+            // alert(name);
+            if (name == "Parameter") {
+                $("#example1").append('<tr><th style="background-color: #bddff7; width: 25%;">Parameter ID</th><th style="background-color: #bddff7;">Parameter Name</th></tr>');
+                $.ajax({
+                    type: "GET",
+                    //url: "/Add_Patient_Registration/FillRevisit",
+                    url: '@Url.Action("GetAllParameter", "TestMaster")',
+                    data: { prefix: "" },
+                    success: function (data) {
+                        $(data).each(function (index, d) {
+                            $("#example1").append('<tr><td>' + d.ParameterID + '</td><td>' + d.ParameterName + '</td></tr>');
+                        })
+                    }
+                });
+            }
+            else {
+                $("#example1").append('<tr><th style="background-color: #bddff7; width: 20%;">Header ID</th><th style="background-color: #bddff7;">Header Name</th></tr>');
+                $.ajax({
+                    type: "GET",
+                    //url: "/Add_Patient_Registration/FillRevisit",
+                    url: '@Url.Action("GetAllHeader", "TestMaster")',
+                    data: { prefix: "" },
+                    success: function (data) {
+                        //
+                        $(data).each(function (index, d) {
+                            $("#example1").append('<tr><td>' + d.HeaderID + '</td><td>' + d.HeaderName + '</td></tr>');
+                        })
+                    }
+                });
+            }
+        });
+        var row_num = 0;
+        $("#TestType").change(function () {
+            //alert($("#TestType").val());
+            debugger
+            if ($("#TestType").val() == "0") {
+                $("#UploadFile").prop("disabled", true);
+                $("#move").prop("disabled", false);
+            }
+            else {
+                $("#move").prop("disabled", true);
+                $("#UploadFile").prop("disabled", false);
+            }
+        })
+        $("#example1").delegate('td', 'click', function () {
+            debugger
+            row_num = parseInt($(this).parent().index());
+            var Testname = document.getElementById('example1').tBodies[0].rows[row_num].cells[1].innerHTML;
+            var TestID = document.getElementById('example1').tBodies[0].rows[row_num].cells[0].innerHTML;
+            var t = $("#example2  tbody tr").length;
+            var chk = true;
+            $("input[name=ParameterHeaderName]").each(function () {
+                debugger
+                var a = $(this).val();
+                if ($(this).val() == Testname) {
+                    alert("Record Already Added !");
+                    chk = false;
+                    return false;
+                }
+            });
+            debugger
+            // if (t == 0) {
+            if (chk) {
+                if (name == "Parameter") {
+                    $("#example2").append('<tr><td><input type="text"  name="ParameterHeaderName" class="form-control" readonly  value="' + Testname + '" /></td><td><input type="text" name="Type" class="form-control" readonly value="P" /></td> <td style="display:none"><input type="hidden" name="HeaderParameterID"  value="' + TestID + '"/></td><td><input type="text"  name="Space" class="form-control"  value=0 /></td><td><span class="btn btn-danger fa fa-trash" id="chk2"></span></td></tr>');
+                }
+                else {
+                    $("#example2").append('<tr style="background-color: pink;"><td><input type="text"  name="ParameterHeaderName" class="form-control" readonly  value="' + Testname + '" /></td><td><input type="text" name="Type" class="form-control" readonly value="H" /></td> <td  style="display:none"><input type="hidden" name="HeaderParameterID" value="' + TestID + '"/></td><td><input type="text"  name="Space" class="form-control"  value=0 /></td><td><span class="btn btn-danger fa fa-trash" id="chk2"></span></td></tr>');
+                }
+            }
+        })
+        //$('input[name="paramiterhedername"]').val(a);
+        $("#example2").on('click', '#chk2', function () {
+            var row_num = parseInt($(this).parent().index());
+            //var selValue = $('input[name=chk2]:checked').val();
+            //  document.getElementById('table3').tBodies[0].rows[row_num].remove();
+            $(this).parents("tr").remove();
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllTestMaster", "TestMaster")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                //   alert("jhvj");
+                debugger;
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#example3").append('<tr><td>' + SrNo + '</td><td style="display:none">' + data[i].TestID + '</td><td>' + data[i].TestName + '</td></tr>');
+                };
+                $('#example3').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+            },
+            error: function (result) {
+                //alert("Error in bindgrid");
+            }
+        });
+        $("#Show").click(function () {
+            //  alert($("#Show").val());
+            if ($("#Show").val() == "Show") {
+                //   alert("eg");
+                $("#1").show();
+            }
+            else {
+                $("#1").example1();
+            }
+        })
+        $("#Hide").click(function () {
+            $("#1").hide();
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            //alert($("#PatientAppointmentScheduleID").val());
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete","TestMaster")',
+                    type: 'POST',
+                    data: { TestID: $("#TestID").val() },
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Test Deleted Successfully !");
+                            location.reload();
+                            //  alert($("#PatientAppointmentScheduleID").val());
+                        }
+                        else { }
+                    }
+                })
+            }
+        });
+    });
+</script>
+<script>
+    var loadfile = function (event) {
+        debugger
+        var file = event.target.files[0];
+        alert = ("download");
+        var data = new FormData();
+        data.append("ImageFile", file);
+        //data.append("PaperName", "SamsungA8");
+        $.ajax({
+            url: '@Url.Action("imageuplod", "TestMaster")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (d) {
+                debugger
+                //$("#file1").val = d.PaperName;
+                //document.getElementById("img").src = d[0].PaperName;
+                @*$("#example").append('<tr><td><input type="checkbox" name="check" id="check" ></td><td  id="CasePaperID" value="' + $("#CasePaperID").val() + '">' + $("#CasePaperID").val() + '</td><td>' + $("#PatientRegNo").val() + '</td><td>' + $("#OPDIPDNo").val() + '</td><td>' + $("#PatientType").val() + '</td><td>' + d + '</td><td> <a href="@Url.Action("DownLoadFile", "PatientImageManager")?CasePaperID=' + $("#CasePaperID").val() + '"><i  class="fa fa-print fa-1x" aria-hidden="true">Download</i></a>  </td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td><td style="display:none"><input type ="hidden" name="PaperName" value="' + d[0].PaperName + '"><input type ="hidden" name="Paper" value="' + d[0].Paper + '"></td></tr>');*@
+            }
+        });
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <form action="" method="post">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Test Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Test</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    @*<div id="chkdiv" style="display:none; height: 200px; width: 794px; background-color: antiquewhite; margin-left: 25%;">
+                            <div style=" overflow-x: scroll; width: 300p; height: 209px;">
+                            </div>
+                        </div>*@
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Test Details</h2>
+                                    @*<div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-12" style="background: #bddff7;padding:0px">
+                                                    <div class="col-lg-9 padding0" style="font-family:roboto;padding:4px">
+                                                        <span> Test Master</span>
+                                                        <button type="button" id="Show" class="btndivcss" name="Show" value="Show"><span>Show Grid</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Test Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Test Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="TestDetailsID" name="TestDetailsID">
+                                                        <input type="hidden" id="TestID" name="TestID">
+                                                        <input type="text" id="TestName" name="TestName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Test Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--HSN Code Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>HSN Code</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="HSNCode" name="HSNCode" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Test Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Test Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="TestType" name="TestType" class="form-control">
+                                                            <option value="0">NORMAL</option>
+                                                            <option value="1">HISTOPATHOLOGY</option>
+                                                            <option value="2">XRAY</option>
+                                                            <option value="3">SONOGRAPHY</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Print As-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Print As</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PrintAs" name="PrintAs" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Method-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Method</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="Method" name="Method" class="form-control">
+                                                            <option value="Turn">Turn</option>
+                                                            <option value="TRN">TRN</option>
+                                                            <option value="TR">TR</option>
+                                                            <option value="TRU">TRU</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Upload File-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Upload File</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="custom-file">
+                                                            <input type="File" id="UploadFile" name="UploadFile" onchange="loadfile(event)" aria-label="File browser example" class="custom-file-input" disabled>
+                                                            @*<input type="file" name="file" onchange="loadfile(event)" class="form-control" />*@
+                                                            <label class="custom-file-label" for="customFile"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Category-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Category</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="CategoryID" name="CategoryID" required class="form-control">
+                                                        <select id="Category" name="Category" required class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <!--Alias-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Alias</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Alias" name="Alias" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Gender-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Gender</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="Gender" name="Gender" class="form-control">
+                                                            <option value="All">All</option>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Format-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Format</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="Format" name="Format" class="form-control">
+                                                            <option value="1">1</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Client-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Client</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="Client" name="Client" class="form-control">
+                                                            <option value="0">All</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Technician Instructor-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Tech Instr.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Technician" name="Technician" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Sample Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Sample Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="SampleTypeID" name="SampleTypeID">
+                                                        <select id="SampleType" name="SampleType" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <!--HMS Code-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>HMS Code</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="HMSCode" name="HMSCode" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Process By-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Process By</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ProcessBy" name="ProcessBy" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Print Order-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Print Order</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PrintOrder" name="PrintOrder" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Instruction-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Instr.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientInstr" name="PatientInstr" class="form-control" placeholder="Patient Instruction">
+                                                    </div>
+                                                </div>
+                                                <!--Interpretation-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Interpretation</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Interpretation" name="Interpretation" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Disposal Day-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Disposal Day</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="DisposalDays" name="DisposalDays" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Include For TPA-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Incl. For TPA</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="IncludeForTPA" name="IncludeForTPA" class="form-control">
+                                                            <option value="Yes">Yes</option>
+                                                            <option value="No">No</option>
+                                                        </select>
+                                                        @*<input type="text" id="doc_first_name" class="form-control input-sm" />*@
+                                                    </div>
+                                                </div>
+                                                <!--Machine Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Mach. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MachineName" name="MachineName" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Footer-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Footer</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="Footer" name="Footer" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Charges</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--OPD General Charges-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>OPD General Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="OPDGeneralCharges" name="OPDGeneralCharges" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Refference Comission-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Reff. Comission</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                            <input type="number" id="ReffComission" name="ReffComission" value="0.00" class="form-control">
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <select id="sign" name="sign" class=" form-control">
+                                                                <option value="%">%</option>
+                                                                <option value="Rs">Rs</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--OPD Emergency Charges-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>OPD Emergency Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="OPDEmergencyCharges" name="OPDEmergencyCharges" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Comission-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Comission</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                            <input type="number" id="Comission" name="Comission" value="0.00" class="form-control">
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <select id="sign1" name="sign1" class=" form-control input-sm">
+                                                                <option value="%">%</option>
+                                                                <option value="Rs">Rs</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--My Cost-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>My Cost</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MyCost" name="MyCost" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--IPD Charges Button-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        @*<button type="button" id="IPDCharges" name="IPDCharges" value="show" class="btndivcss pull-right" style="height: 25px;">IPD Charges</button>*@
+                                                        <button type="button" class="btndivcss pull-right" data-toggle="modal" data-target="#ipdChargesModal">
+                                                            IPD Charges
+                                                        </button>
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="ipdChargesModal" tabindex="-1" role="dialog" aria-labelledby="ipdChargesModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="ipdChargesModalLabel">IPD Charges</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <table id="example" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                                            <thead style="background-color: #bddff7;">
+                                                                                <tr>
+                                                                                    <th id="WardName" name="WardName">WardName</th>
+                                                                                    <th id="GeneralCharges" name="GeneralCharges">GeneralCharges</th>
+                                                                                    <th id="EmergencyCharges" name="EmergencyCharges">EmergencyCharges</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody class="scrollbar"></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <!--Header and Parameter-->
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="radio" id="Header" name="RadioSwitch" value="Header" checked="checked">
+                                                            <label>Header</label>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="radio" id="Parameter" name="RadioSwitch" value="Parameter">
+                                                            <label>Parameter</label>
+                                                        </div>
+                                                    </div>
+                                                    <!--Search for Header and Parameter-->
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="SearchH" name="SearchH" placeholder="Search Header/Parameter" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--Add new Header-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 cpb-10">
+                                                            <input type="text" id="Adding" name="Adding" placeholder="Add Header" class="form-control">
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <button type="button" id="AddHearder" name="AddHearder" class="btndivcss">Add Header</button>
+                                                        </div>
+                                                    </div>
+                                                    <!--Header and Parameter Table-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 table-display" style="height: 350px; overflow-y: scroll;">
+                                                            <table id="example1" class="table table-bordered hover display dataTable table-head-fixed table-hover" role="grid" style="width: 100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="background-color: #bddff7; width: 20%;">Header Id</th>
+                                                                        <th style="background-color: #bddff7;">Header Name</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="scrollbar"></tbody>
+                                                            </table>
+                                                        </div>                                                       
+                                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding: 10px;">
+                                                            <button type="button" id="move" name="move" class="btndivcss" style="display:none">
+                                                                <i class="fa fa-angle-double-right fa-2x"></i>
+                                                            </button>
+                                                            @*<button type="button" id="btndown" name="btndown" style="background: #35a4f1;border: 0px;border-radius: 4px;margin-top:10px">
+                                                                    <i class="fa fa-angle-double-left" style="border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 35px; padding: 5px; border: 0px; font-size: 20px; "></i>
+                                                                </button>*@
+                                                        </div>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 table-display" style="max-height: 450px; overflow-y: auto;">
+                                                        <table id="example2" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    @*if(document.getElementById('example2').tBodies[0].rows[row_num1].cells[1].children[0].value=="H")
+                                                                        {*@
+                                                                    <th>Paramater Name</th>
+                                                                    <th>Type</th>
+                                                                    <th>Space</th>
+                                                                    <th>Action</th>
+                                                                    @*@*}
+                                                                        else
+                                                                        {
+                                                                        <th>Paramater Name</th>
+                                                                        <th>Type</th>
+                                                                        <th>Cancel</th>
+                                                                        }*@
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tbl"></tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 10px;">
+                                                            <button type="button" id="btnup" name="btnup" class="btndivcss">
+                                                                <i class="fa fa-angle-up fa-2x"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 10px;">
+                                                            <button type="button" id="btndown" name="btndown" class="btndivcss">
+                                                                <i class="fa fa-angle-down fa-2x"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5 table-responsive" style="padding-bottom: 10px;overflow:auto">
+                                <table id="example3" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th style="display:none">TestID</th>
+                                            <th>TestName</th>
+                                            @*<th>PrintAs</th>
+                                                <th>GeneralCharges</th>
+                                                <th>EmergencyCharges</th>
+                                                <th style="display:none">TestGroupID</th>
+                                                <th>TestType</th>
+                                                <th>Commission</th>
+                                                <th>CommissionRs</th>
+                                                <th>ForGender</th>
+                                                <th>Format</th>
+                                                <th>ProcessDay</th>
+                                                <th>PrintOrder</th>
+                                                <th>Method</th>
+                                                <th>DisposalDay</th>
+                                                <th>SampleType</th>
+                                                <th>Interpretation</th>
+                                                <th>PatientInstr</th>
+                                                <th>Footer</th>
+                                                <th>TechnicianInstr</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</body>

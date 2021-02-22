@@ -1,0 +1,589 @@
+﻿@model KeystoneProject.Models.Report.MISServiceWiseCollectionReport
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    /*#ui-id-2 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        max-width: 200px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+        cursor: pointer !important;
+        height: 200px;
+        overflow: auto;
+    }
+        #ui-id-2 li {
+            cursor: pointer !important;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+            #ui-id-2 li:hover {
+                cursor: pointer !important;
+                background: #eae4e4;
+            }
+    #ui-id-1 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        max-width: 200px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+        cursor: pointer !important;
+        height: 200px;
+        overflow: auto;
+    }
+        #ui-id-1 li {
+            cursor: pointer !important;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+            #ui-id-1 li:hover {
+                cursor: pointer !important;
+                background: #eae4e4;
+            }*/
+
+    /*input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }*/
+</style>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#ServiceGroup").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetQuestionHeadRecord", "MISServiceWiseCollectionReport")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name, value: item.Name, id: item.ID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#ServiceGroupID').val(i.item.id);
+            },
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#ServiceName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetQuestionRecord", "MISServiceWiseCollectionReport")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name, value: item.Name, id: item.ID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#ServiceID').val(i.item.id);
+            },
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientNameValue", "MISServiceWiseCollectionReport")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNO
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#PatientRegNo').val(i.item.id);
+            },
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        //$("#hideshow").hide();
+        $("#servicedetails td").on('click', function () {
+            debugger
+            $("#modalservicedetails").modal('show');
+            //$("#servicedetails").hide();
+            var row_num = parseInt($(this).parent().index());
+            var ServiceID = document.getElementById('servicedetails').tBodies[0].rows[row_num].cells[1].innerHTML;
+            $.ajax({
+                url: '@Url.Action("GetClick", "MISServiceWiseCollectionReport")',
+                data: { ServiceID: ServiceID },
+                success: function (data) {
+                    debugger;
+                    $("#datatable-responsive td").remove();
+                    //$("#servicedetails").hide();
+                    $(data).each(function (index, d) {
+                        debugger;
+                        $("#datatable-responsive").append('<tr><td>' + d.PatientRegNo + '</td><td>' + d.PatientName + '</td><td>' + d.ServiceName + '</td><td>' + d.Qty + '</td><td>' + d.TotalAmount + '</td></tr>')
+                        debugger
+                        bal1 = parseFloat(Data[2].TotalAmt1);
+                        $("#totalamount").hide();
+                        $("#totalamount1").show();
+                        $("#totalamount1").text(d.bal1);
+                        $("#totalamount1").hide();
+                    });
+                },
+            });
+        });
+        $("#close").click(function () {
+            debugger
+            $("#modalservicedetails").modal('hide');
+            $("#totalamount").show();
+            //$("#servicedetails").show();
+            $("#totalamount1").hide();
+        })
+        $('.ex-btn').css('display', 'inline-flex');
+        $('#servicedetails').DataTable({
+            "fixedHeader": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": false,
+        });
+        var buttons = new $.fn.dataTable.Buttons($('#servicedetails').DataTable(), {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                }
+            ]
+        }).container().appendTo($('#servicedetailsExcelExport'));
+    });
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>MIS Service Wise Collection Report</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("MISReports", "Application")">MIS Report</a></li>
+                                    <li class="breadcrumb-item active">MIS Service Wise Collection</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">MIS Service Wise Collection Search</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="FromDate" name="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="ToDate" name="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="patient_type" name="patient_type">
+                                                            <option value="All">All</option>
+                                                            <option value="OPD">OPD</option>
+                                                            <option value="IPD">IPD</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Service Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Serv. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="service Name">
+                                                        <input type="hidden" name="ServiceID" id="ServiceID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Service Group-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Serv. Group</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ServiceGroup" name="ServiceGroup" class="form-control" placeholder="Service Group">
+                                                        <input type="hidden" name="ServiceGroupID" id="ServiceGroupID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control" placeholder="Patient Name">
+                                                        <input type="hidden" name="PatientRegNo" id="PatientRegNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" id="save" name="save" class="btn btn-app">
+                                        <i class="fa fa-search"></i>Search
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("MISReports", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" id="Report" onclick="window.location.href='@Url.Action("RptMISServicesWiseCollectionNew", "MISServiceWiseCollectionReport")'" class="btn btn-app">
+                                        <span class="fa fa-bar-chart"></span>Report
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" id="Patientwise" onclick="window.location.href='@Url.Action("RptServicepatientwise", "MISServiceWiseCollectionReport")'" class="btn btn-app">
+                                        <span class="fa fa-bar-chart"></span>Patient wise
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning ex-btn" style="display: none;">
+                                    <a class="btn btn-app" id="servicedetailsExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="servicedetails" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            @*<th scope="col">Sno.</th>*@
+                                            <th scope="col" aria-controls="servicedetails">Service Group Name</th>
+                                            <th scope="col" aria-controls="servicedetails">Service ID</th>
+                                            <th scope="col" aria-controls="servicedetails">Service Name</th>
+                                            <th scope="col" aria-controls="servicedetails">QTY</th>
+                                            <th scope="col" aria-controls="servicedetails">Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (Model != null)
+                                            {
+                                                decimal GrossTotal = 0;
+                                                for (int i = 0; i < Model.ds.Tables[0].Rows.Count; i++)
+                                                {
+                                                    string ServiceGroupName = Model.ds.Tables[0].Rows[i]["ServiceGroupName"].ToString();
+                                                    string ServiceID = Model.ds.Tables[0].Rows[i]["ServiceID"].ToString();
+                                                    string ServiceName = Model.ds.Tables[0].Rows[i]["ServiceName"].ToString();
+                                                    string QTY = Model.ds.Tables[0].Rows[i]["QTY"].ToString();
+                                                    string TotalAmount = Model.ds.Tables[0].Rows[i]["Total Amount"].ToString();
+                                        <tr role="row" class="odd">
+                                            <td scope="col">@ServiceGroupName</td>
+                                            <td scope="col">@ServiceID</td>
+                                            <td scope="col">@ServiceName</td>
+                                            <td scope="col">@QTY</td>
+                                            <td scope="col">@TotalAmount</td>
+                                        </tr>
+                                                    if (i < 10)
+                                                    {
+                                                        GrossTotal = GrossTotal + Convert.ToDecimal(Model.ds.Tables[0].Rows[i]["Total Amount"].ToString());
+                                                        ViewData["TotalAmount"] = GrossTotal;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div id="modalservicedetails" class="modal" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Reports</h4>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <input type="button" style="font-size: 15px;" id="btnReport" value="Report" class="btn btn-success">
+                                                        <input type="button" style="font-size: 15px;" id="close" value="Close" class="btn btn-danger">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="table-responsive">
+                                                        <table id="datatable-responsive" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr role="row">
+                                                                    <th>Patient Reg. No.</th>
+                                                                    <th>Patient Name</th>
+                                                                    <th>Service Name</th>
+                                                                    <th>QTY</th>
+                                                                    <th>Total Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="float:right;">
+                            @*<div class="col-md-1 col-sm-1 col-xs-6">
+                                    <button type="submit"  class="btn btn-primary">Year Wise</button>
+                                </div>*@
+                            <div class="control-label col-md-7 col-sm-7 col-xs-12" for="name">
+                                <span class="required" style="font-size:15px;">Total Amount:</span>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                @{
+                                    if (Model != null)
+                                    {
+                                <label class="lbl" id="totalamount" name="lbl_total">@Convert.ToString(Model.ds.Tables[0].Compute("sum([Total Amount])", string.Empty).ToString())</label>
+                                    }
+                                    else
+                                    {
+                                <label class="lbl" id="totalamount1" name="lbl_total">0.00</label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

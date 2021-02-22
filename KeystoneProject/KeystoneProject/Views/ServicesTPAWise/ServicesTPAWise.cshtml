@@ -1,0 +1,769 @@
+﻿@model KeystoneProject.Models.Master.ServicesTPAWise
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    #ui-id-1 {
+        z-index: 1;
+    }
+</style>
+
+@*<script>
+        var loadfile = function (event, name) {
+            debugger
+            var file = event.target.files[0];
+            alert("File Selected");
+            if (name == "DoctorImage") {
+                // document.getElementById('img1').src = window.URL.createObjectURL(event.target.files[0]);
+                // alert(window.URL.createObjectURL(event.target.files[0]));
+            }
+            var data = new FormData();
+            data.append("ImageFile", file);
+            $.ajax({
+                url: '@Url.Action("imageuplod", "ServicesTPAWise")',
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    debugger
+                    // var img = document.getElementById("img")
+                }
+            });
+        }
+    </script>*@
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    var loadfile = function (event, name) {
+        debugger
+        var validFilesTypes = ["Service_Excel_Data"];
+        var file = event.target.files[0];
+        function CheckExtension(file) {
+            /*global document: false */
+            var filePath = file.name;
+            //  alert(filePath);
+            var ext = filePath.startsWith('Service_Excel_Data');
+            // var ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+            var isValidFile = false;
+            if (ext) {
+                for (var i = 0; i < validFilesTypes.length; i++) {
+                    if (ext == validFilesTypes[i]) {
+                        isValidFile = true;
+                        break;
+                    }
+                    return true;
+                }
+            }
+
+
+            if (!isValidFile) {
+                file.value = null;
+                alert("Invalid File. Valid extensions are:\n\n" + validFilesTypes.join(","));
+                return false;
+            }
+
+
+        }
+
+        //if (name == "DoctorImage")
+        //{
+        //    // document.getElementById('img1').src = window.URL.createObjectURL(event.target.files[0]);
+        //    // alert(window.URL.createObjectURL(event.target.files[0]));
+        //}
+        var data = new FormData();
+
+        data.append("ImageFile", file);
+        //alert(file);
+        var Chk = CheckExtension(file);
+        if (Chk != false) {
+
+            $("#lodeImage").show();
+            $.ajax({
+                url: '@Url.Action("imageuplod", "ServicesTPAWise")',
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    debugger
+                    $("#lodeImage").hide();
+                    //alert(data);
+                    // var img = document.getElementById("img")
+                }
+            });
+        }
+        else {
+            $("#file1").val("");
+            return false;
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#UnitName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Services/GetUnitID",
+                    url: '@Url.Action("GetUnitID", "Services")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.UnitName, value: item.UnitName, id: item.UnitID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                if (!i.item) {
+                    this.value = '';
+                    $("#UnitName").val('');
+                    $('#UnitID').val('');
+                }
+                $('#UnitID').val(i.item.id);
+                if (!i.item) {
+                    this.value = '';
+                    $("#UnitName").val('');
+                    $('#UnitID').val('');
+                }
+            }
+        });
+        //-----------------------------
+        $("#ServiceNaFme").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Services/GetUnitID",
+                    url: '@Url.Action("GetUnitID", "Services")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ServiceName, value: item.ServiceName, svcIDhidden: item.ServiceID };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                if (!i.item) {
+                    this.value = '';
+                    $("#ServiceName").val('');
+                }
+                $("#ServiceID").val(i.item.svcIDhidden);
+                if (!i.item) {
+                    this.value = '';
+                    $("#ServiceName").val('');
+                }
+            }
+        });
+        //--------------------------------Table Bind Word
+        $("#serviceTpaTableId").delegate('td', 'click', function () {
+            debugger
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row_num = parseInt($(this).parent().index());
+            var ServicesTPAWiseID = parseInt(document.getElementById("serviceTpaTableId").tBodies[0].rows[row_num].cells[5].children[0].value);
+            var UserData = { ServicesTPAWiseID: ServicesTPAWiseID }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditServiceTPAWise", "ServicesTPAWise")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (result) {
+                    debugger
+                    $("#ServicesTPAWiseID").val(ServicesTPAWiseID);
+                    $("#OrganizationID").val(result[0].OrganizationID);
+                    $("#OrganizationName").val(result[0].OrganizationName);
+                    $("#ServiceID").val(result[0].ServiceID);
+                    $("#ServiceName").val(result[0].ServiceName);
+                    $("#UnitID").val(result[0].UnitID);
+                    $("#UnitName").val(result[0].UnitName);
+                    $("#GeneralCharges").val(result[0].GeneralCharges);
+                    $("#EmergencyCharges").val(result[0].EmergencyCharges);
+                    $("#ServiceType").val(result[0].ServiceType);
+                    $("#RecommendedByDoctor").val(result[0].RecommendedByDoctor);
+                    $("#HideInBilling").val(result[0].HideInBilling);
+                    var count = 1;
+                    $('#wardDetailTableId tbody tr').remove();
+                    $.each(result, function (i, obj) {
+                        if (obj.WardName != null) {
+                            $("#wardDetailTableId").append('<tr><td>  ' + obj.WardName + '  </td> <td><input type="number" name="GeneralCharges1" id="GeneralCharges1" class="form-control input-sm" value=' + obj.GeneralCharges + ' /> </td> <td><input type="number" name="EmergencyCharges1" id="EmergencyCharges1" class="form-control input-sm" value=' + obj.EmergencyCharges + ' /> </td><td <td style="display:none"><input type="hidden" name="ServicesDetailsTPAWiseID"   value=' + obj.ServicesDetailsTPAWiseID + '> <input type="hidden" name="WardID1"   value=' + obj.WardID + '> </td></tr>');
+                            //count++;
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        });
+        // Edit Table Click Fill Data
+        $("#lodeImage").show();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SelectAllServiceTPAWise", "ServicesTPAWise")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                debugger
+                $.each(result, function (i, obj) {
+                    $("#lodeImage").hide();
+                    $("#serviceTpaTableId").append('<tr><td style="width:35px">' + count + '</td><td>  ' + obj.OrganizationName + '  </td> <td>' + obj.ServiceName + '  </td>  <td>' + obj.UnitName + '  </td>  <td>' + obj.ServiceType + '  </td>    <td style="display:none"><input type="hidden" name="WardID"   value=' + obj.ServicesTPAWiseID + '> </td></tr>');
+                    count++;
+                });
+                $('#serviceTpaTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#serviceTpaTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#serviceTpaExcelExport'));
+            },
+            error: function () {
+            }
+        });
+        //Downlode Excel Data
+
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btnDownlode").on('click', function () {
+            debugger
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetWardDetailsPivot", "ServicesTPAWise")',
+                dataType: "json",
+                //type: 'POST',
+                data: JSON.stringify(""),
+                //traditional: true,
+                //contentType: 'application/json',
+                success: function (data) {
+                    debugger
+                    alert("abc");
+                    debugger
+                    $("#tablepivot td").remove();
+                    var table = "";
+                    var tr = "";
+                    //$(data).each(function (index, d) {
+                    var rows = "";
+                    var pkgrow = data.modeladd.length;
+                    for (var j = 0; j < pkgrow; j++) {
+                        debugger
+                        for (var i = 0; i < data.modeladd[j].length; i++) {
+                            rows += '<td>' + data.modeladd[j][i].Value + '</td>';
+                        }
+
+                        $("#tablepivot").append('<tr>' + rows + '</tr>');
+
+                        rows = "";
+                    }
+
+
+
+                    //var count = 1;
+                    //debugger
+                    //for (var i = 0; i < data.length; i++) {
+                    //    $("#column").append('<th>' + data[i] + '</th>');
+                    //}
+                    //$.each(Data, function (i, obj) {
+                    //    debugger
+                    //    count++;
+                    //});
+                    //$('#tablepivot').DataTable({
+                    //    dom: 'Bfrtip',
+                    //    buttons: [{
+                    //        extend: 'excel',
+                    //        text: 'Excel',
+                    //        className: 'exportExcel',
+                    //        filename: 'Test_Excel',
+                    //        exportOptions: { modifier: { page: 'all' } }
+                    //    },
+                    //    {
+                    //        extend: 'csv',
+                    //        text: 'CSV',
+                    //        className: 'exportExcel',
+                    //        filename: 'Test_Csv',
+                    //        exportOptions: { modifier: { page: 'all' } }
+                    //    },
+                    //    {
+                    //        extend: 'pdf',
+                    //        text: 'PDF',
+                    //        className: 'exportExcel',
+                    //        filename: 'Test_Pdf',
+                    //        exportOptions: { modifier: { page: 'all' } }
+                    //    }]
+                    //});
+                    //var buttons = new $.fn.dataTable.Buttons($('#tablepivot').DataTable(), {
+                    //    buttons: [
+                    //        {
+                    //            extend: 'excel',
+                    //            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                    //        }
+                    //    ]
+                    //}).container().appendTo($('#serviceTpaExcelExport'));
+                },
+                error: function () {
+                }
+            });
+
+            @*debugger
+            $("#lodeImage").show();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DownLoadFile", "ServicesTPAWise")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(""),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (result) {
+                    $("#lodeImage").hide();
+
+                    debugger
+                }
+            })*@
+        })
+        $("#wardDetailTableId").on('click', "#Updategeneral", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#wardDetailTableId td").closest("tr").length;
+            var general = document.getElementById("wardDetailTableId").tBodies[0].rows[0].cells[1].children[0].value;
+            for (var j = 1; j < child; j++) {
+
+                emer = document.getElementById("wardDetailTableId").tBodies[0].rows[j].cells[1].children[0].value = general;
+
+
+            }
+            debugger
+
+        })
+        $("#wardDetailTableId").on('click', "#UpdateEmergency", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#wardDetailTableId td").closest("tr").length;
+            var general = document.getElementById("wardDetailTableId").tBodies[0].rows[0].cells[2].children[0].value;
+            for (var j = 1; j < child; j++) {
+
+                emer = document.getElementById("wardDetailTableId").tBodies[0].rows[j].cells[2].children[0].value = general;
+
+            }
+            debugger
+
+        })
+
+    })
+
+</script>
+
+<script>
+    function ServicesTPA(ServicesTPAWiseID) {
+        debugger
+        if (ServicesTPAWiseID != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteServicesTPAWise", "ServicesTPAWise")',
+                    data: { ServiceID: $("#ServicesTPAWiseID").val(), ServiceType: $("#ServiceType").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "ServiceTPAWise Deleted Successfully") {
+                            alert("ServiceTPAWise Deleted Successfully");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                });
+            }
+        }
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+
+        $("#ServiceName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Services/GetUnitID",
+                    url: '@Url.Action("GetServices", "ServicesTPAWise")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term, OgrID: $("#OrganizationID").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceName, value: item.ServiceName, id: item.ServiceID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            select: function (event, i) {
+                //if (!i.item) {
+                //    this.value = '';
+                //    $("#UnitName").val('');
+                //}
+                $('#ServiceID').val(i.item.id);
+                //if (!i.item) {
+                //    this.value = '';
+                //    $("#UnitName").val('');
+                //}
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var newvar = "";
+        $("#OrganizationName").autocomplete({
+            source: function (request, response) {
+                // alert($("#countryid").val())
+                // var UserData =
+                // alert(JSON.stringify(UserData))
+                $.ajax({
+                    url: '@Url.Action("GetOrganisation", "ServicesTPAWise")',
+                    dataType: "json",
+                    type: 'POST',
+                    data: { prefix: $("#OrganizationID").val() },
+                    //traditional: true,
+                    //contentType: 'application/json',
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            //$("#tpa_id").val(item.OrganizationId);
+                            return { label: item.OrganizationName, value: item.OrganizationName, newvar: item.OrganizationID };
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: " + error);
+                    }
+                });
+            },
+            minLength: 1,
+            //change: function (event, ui) {
+            //    //alert(ui.item.newvar);
+            //    $("#OrganizationID").val(ui.item.newvar);
+            //}
+            select: function (event, i) {
+                //if (!i.item) {
+                //    this.value = '';
+                //    $("#UnitName").val('');
+                //}
+                $("#OrganizationID").val(i.item.newvar);
+                //if (!i.item) {
+                //    this.value = '';
+                //    $("#UnitName").val('');
+                //}
+            }
+        });
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <div style="position: fixed; top: 0; left: 0; right: 0; width: 100%; height: 100%; bottom: 0; background-color: #00000047; z-index: 999999; text-align: center; display: none;" id="lodeImage">
+        <img src="~/Content/custom/Images/loader.gif" style="position:absolute; left: 45%; top: 40%;">
+    </div>
+    <div class="content-wrapper">
+        <form action="" method="post">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1>Services TPA Wise Master</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Services TPA Wise</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Services TPA Wise Details</h2>
+                                <input type="hidden" name="ServicesTPAWiseID" id="ServicesTPAWiseID" />
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--TPA Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>TPA Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" name="OrganizationName" id="OrganizationName" class="form-control accent-blue">
+                                                    <input type="hidden" name="OrganizationID" id="OrganizationID">
+                                                </div>
+                                            </div>
+                                            <!--Service Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Service Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ServiceName" name="ServiceName" class="form-control">
+                                                    <input type="hidden" name="ServiceID" id="ServiceID" />
+                                                </div>
+                                            </div>
+                                            <!--Unit-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Unit</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="UnitName" name="UnitName" class="form-control">
+                                                    <input type="hidden" id="UnitID" name="UnitID" class="form-control input-sm" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--General Charges-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Gnrl. Charges</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" name="GeneralCharges" id="GeneralCharges" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Emergency Charges-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Emg. Charges</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="EmergencyCharges" name="EmergencyCharges" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Service Type-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Service Type</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <select id="ServiceType" name="ServiceType" class="form-control">
+                                                        <option value="Both">Both</option>
+                                                        <option value="IPD">IPD</option>
+                                                        <option value="OPD">OPD</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Non Billable-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Non Billable</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <select id="HideInBilling" name="HideInBilling" class="form-control">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--Include For TPA-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Inc. For TPA</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <select id="RecommendedByDoctor" name="RecommendedByDoctor" class="form-control">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--Upload & Download-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    @*<div class="btn-group dropdown-split-warning">
+                                                            <a href="@Url.Action("DownLoadFile", "ServicesTPAWise")"><span class="fa fa-download" title="Download TPA Service"></span></a>
+                                                        </div>*@
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                        <a href="#" id="btnDownlode"><span class="fa fa-download"></span></a>
+                                                        @* <button type="button" onclick="@Url.Action("DownLoadFile", "Services")"  id="btnDownlode" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Downlode</button>*@
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="custom-file">
+                                                        <input type="file" id="file1" name="file" onchange="loadfile(event,'DoctorImage')" aria-label="File browser example" class="custom-file-input">
+                                                        <input type="hidden" name="DoctorImage" id="DoctorImage" />
+                                                        <label class="custom-file-label" for="customFile">Upload</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" class="btn btn-app" id="Delete" onclick="ServicesTPA(document.getElementById('ServicesTPAWiseID').value)">
+
+                                    <i class="fa fa-trash"></i>Delete
+
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="serviceTpaExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Ward Details</h2>
+                                    <div class="card-body table-responsive p-0" style="height: 400px;">
+                                        <table id="wardDetailTableId" class="table table-bordered table-striped">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    @*<th scope="col">Sno.</th>*@
+                                                    <th scope="col">Ward Name</th>
+                                                    <th scope="col">Gnrl. Charges</th>
+                                                    <th scope="col">Emg. Charges</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <div class="pagination pull-right">
+                                                            <input type="button" value="Update To All Genral" id="Updategeneral" class="btn btn-primary" style="font-size: 13px;" />
+                                                        </div>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="pagination pull-right">
+                                                            <input type="button" value="Update To All Eme" id="UpdateEmergency" class="btn btn-primary" style="font-size: 13px;" />
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                            </tfoot>
+                                            <tbody class="scrollbar" style="overflow: scroll;height: 300px;"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                                <table id="serviceTpaTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                       style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">Sr. no.</th>
+                                            <th scope="col">Org. Name</th>
+                                            <th scope="col">Service Name</th>
+                                            <th scope="col">Unit Name</th>
+                                            <th scope="col">ServiceType</th>
+                                            <th style="display:none">S</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="">
+                    <table id="tablepivot" hidden class="table table-bordered table-striped ">
+
+                        <thead style="background-color: #bddff7;">
+                            <tr>
+                                @{
+                                    for (int a = 0; a < Model.ds.Tables[0].Columns.Count; a++)
+                                    {
+                                        //string per = "";
+                                        //if (a > 3)
+                                        //{
+                                        //    per = "(%)(Rs)";
+                                        //}
+                                        <th scope="col">@Model.ds.Tables[0].Columns[a]</th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+
+
+                        <tbody class="scrollbar" id="pivotbl" style="overflow: scroll;height: 300px;"></tbody>
+
+                    </table>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>

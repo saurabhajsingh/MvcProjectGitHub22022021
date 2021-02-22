@@ -1,0 +1,640 @@
+﻿@model KeystoneProject.Models.Master.Region
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 2px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    th {
+        width: 33.33%;
+    }
+
+    thead {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+    }
+
+    tfoot {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+        padding: 3px;
+        border: 1px solid white !important;
+    }
+
+        tfoot td {
+            border: 1px solid white !important;
+            padding: 1px !important;
+        }
+
+    tbody {
+        height: 180px;
+        overflow: auto;
+        overflow-x: hidden;
+        display: block;
+        width: 100%;
+    }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+</style>
+
+<style>
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity:.5;
+            }
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+
+    $(document).ready(function () {
+        $("#table").delegate('tr', 'click', function () {
+
+            $('#table tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#table td").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<script>
+
+    function Delele(RegionID) {
+        debugger
+        if (RegionID != "" && $("#RegionName").val() != "") {
+
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteRegion", "Region")',
+                    data: { RegionID: RegionID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Done") {
+                            alert("Region Deleted Successfully");
+                            location.reload(true);
+                            Restor();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+
+<script>
+
+
+    $(document).ready(function () {
+        $("#RegionName").val("");
+        $("#RegionID").val("");
+        $("#Area").val("");
+        $("#table").delegate('td', 'click', function () {
+            debugger
+           
+            var row = $(this).parent().index();
+
+            var RegionID = document.getElementById("table").tBodies[0].rows[row].cells[1].innerHTML;
+
+            var RegionName = document.getElementById("table").tBodies[0].rows[row].cells[2].innerHTML;
+            var Area = document.getElementById("table").tBodies[0].rows[row].cells[3].innerHTML;
+
+
+            $("#RegionName").val(RegionName);
+            $("#RegionID").val(RegionID);
+            $("#Area").val(Area);
+
+        })
+
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+
+<div class="wrapper">
+
+
+    <div class="content-wrapper">
+
+        <h5 class="topheadline">Region Master</h5>
+
+        <form action="" method="post">
+            <section class="content-header">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-primary">
+
+
+                                <h2 class="panelheading">Region Details</h2>
+
+
+
+
+
+                                <div class="pane-body">
+
+                                    <div class="row">
+                                        <div class="col-lg-12 rowmargintop padding0 rowmarginbottom">
+
+                                            <div class="col-lg-4">
+                                                <div class="col-lg-3">
+                                                    <span>Region</span>
+
+
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <textarea id="RegionName" name="RegionName" class="form-control input-sm"></textarea>
+                                                    <input type="hidden" id="RegionID" name="RegionID" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="col-lg-3">
+                                                    <span>Area</span>
+
+
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <input type="text" name="Area" id="Area" class="form-control input-sm" />
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="">
+                        <div class="col-lg-12">
+                            <div class="row rowmargintop" style="border: 1px solid #e9ecef; background: #ffffff; padding-top: 5px;">
+
+                                <div class="col-lg-3">
+                                    <div class="tableheading">
+
+
+                                        <span class="fa fa-file-text" style=" color: #2b538c; font-size: 16px;
+  padding-right: 10px;"></span> Details
+                                    </div>
+
+
+                                </div>
+                                <div class="col-lg-6" style="text-align: center; display: block;">
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="submit" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" class="btndivcss" onclick="Delele(document.getElementById('RegionID').value)"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" onclick="window.location.reload(true)" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-3 pull-right" style="text-align:right;margin-bottom:4px;display:block;padding-top:0px">
+                                    <div style="display: flex;">
+
+                                        <input placeholder="Search" type="text" id="Search" style=" border: 1px solid #dce0f2;
+                                                                               border-radius:4px 0px 0px 4px;
+                                                                               height :31px;
+                                                                               font-family :roboto;
+                                                                               width :100%;
+                                                                               border-right:0px solid red;
+                                                                               text-align :left;
+                                                                               padding-left :4px;
+                                                                               font-size :13px;">
+                                        <button class="btn btn-gradient aos-init aos-animate" data-aos="zoom-in-up" data-aos-duration="800" style=" border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 46px; padding: 0px; border: 0px; margin-left: -5px; ">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-12 margin-r-5">
+                                    <table id="table" class="table table-bordered table-striped ">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sno.</th>
+                                                <th scope="col">Region</th>
+                                                <th scope="col">Area</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody class="scrollbar">
+                                          
+                                            @{
+                                                int count = 1;
+                                                for (int i = 0; i < Model.dsRegion.Tables[0].Rows.Count; i++)
+                                                {
+
+                                                    int RegionID = Convert.ToInt32(Model.dsRegion.Tables[0].Rows[i]["RegionID"].ToString());
+                                                    var Region = Model.dsRegion.Tables[0].Rows[i]["Region"].ToString();
+                                                    var Area = Model.dsRegion.Tables[0].Rows[i]["Area"].ToString();
+
+                                                    <tr role="row" class="odd">
+                                                        <td tabindex="0" class="sorting_1" style="text-transform:uppercase;text-align:center;">@count</td>
+                                                        <td style="display:none">@RegionID</td>
+                                                        <td>@Region</td>
+                                                        <td>@Area</td>
+
+                                                    </tr>
+                                                    count++;
+                                                }
+                                            }
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+
+                                                <td>
+                                                    <div class="pagination pull-right">
+                                                        <a href="#">&laquo;</a>
+                                                        <a href="#">1</a>
+                                                        <a href="#" class="active">2</a>
+                                                        <a href="#">3</a>
+                                                        <a href="#">4</a>
+
+
+                                                        <a href="#">&raquo;</a>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+            </section>
+        </form>
+    </div>
+
+</div>
+
+
+

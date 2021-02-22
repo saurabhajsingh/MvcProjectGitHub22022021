@@ -1,0 +1,342 @@
+﻿@{
+    ViewBag.Title = "Stock Status";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger
+       
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#allProduct").change(function () {
+            if (document.getElementById("allProduct").checked == true) {
+                document.getElementById("productName").disabled = true;
+                document.getElementById("allProductBatch").disabled = true;
+                document.getElementById("productBatch").disabled = true;
+
+                $("#productName").val("");
+                $("#productBatch").val("");
+
+            }
+            else {
+                document.getElementById("productName").disabled = false;
+            }
+        });
+    });
+    $(document).ready(function () {
+        debugger
+        $("#allProductBatch").change(function () {
+            if (document.getElementById("allProductBatch").checked == true) {
+                document.getElementById("productBatch").disabled = true;
+
+                $("#productBatch").val("");
+
+            }
+            else {
+                document.getElementById("productBatch").disabled = false;
+            }
+        });
+    });
+    $(document).ready(function () {
+        debugger
+        $("#productName").change(function () {
+            document.getElementById("allProductBatch").disabled = false;
+            document.getElementById("productBatch").disabled = false;
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#productName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("BindProductName", "StockStatus")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.productName, value: item.productName, id: item.ProductID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#productName").val('');
+                }
+                $('#ProductID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#productBatch").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("BindProductBatch", "StockStatus")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.productBatch, value: item.productBatch, id: item.productBatchID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#productBatch").val('');
+                }
+                $('#productBatchID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#productName").change(function () {
+            debugger
+            var productNM = $("#productName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_BatchName", "StockStatus")',
+                data: '{productNM: ' + JSON.stringify(productNM) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#productBatch").val(searchList[0].productBatch);
+                },
+            });
+        });
+    });
+</script>
+<script>
+    function View() {
+        debugger        
+        var chk_allProduct = "False";
+        var chk_allBatch = "False";
+        var product = $("#productName").val();
+        var batch = $("#productBatch").val();
+        var productID = $("#ProductID").val();
+
+        if (document.getElementById("allProduct").checked == true) {
+            chk_allProduct = "True";
+        }
+
+        if (document.getElementById("allProductBatch").checked == true) {
+            chk_allBatch = "True";
+        }
+
+        if (product == "null") {
+            product = "";
+        }
+
+        if (batch == "null") {
+            batch = "";
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("View_stock", "StockStatus")',
+            data: { chk_allProduct: chk_allProduct, chk_allBatch: chk_allBatch, product: product, batch: batch, productID: productID },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                $("#stockStatusTable tbody tr").remove();
+                
+                var table = "";
+                var tr = "";
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;                   
+                    
+                    if (data[i].productName !== "") {
+                        var color = ''
+                    }else{
+                        var color = 'style="background-color: #D3D3D3;"';
+                    }
+                    //tr += ;
+                    $("#stockStatusTable").append('<tr ' + color + '><td>' + SrNo + '</td><td>' + data[i].productName + '</td><td>' + data[i].productBatch + '</td><td>' + data[i].CurrentStock + '</td><td>' + data[i].CurrentStock1 + '</td><td style="display:none">' + data[i].ProductID + '</td></tr>');                   
+                };
+
+              $('#stockStatusTableExcelExport').css('display', 'block')
+
+                $('#stockStatusTable').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#stockStatusTable').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#stockStatusTableExcelExport'));
+            },
+        });
+    }
+</script>
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Stock Status</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Pharmacy","Application")">Pharmacy</a></li>
+                                    <li class="breadcrumb-item active">Stock Status</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Stock Status</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--All Product-->
+                                            <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" id="allProduct" name="allProduct" checked="checked">All Product
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <!--Product Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Product Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="productName" name="productName" class="form-control" disabled>
+                                                    <input type="hidden" id="ProductID" name="ProductID" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--All Product Batch-->
+                                            <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="form-check-inline">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" id="allProductBatch" name="allProductBatch" disabled>All Product Batch
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <!--Product Batch-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Product Batch</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="productBatch" name="productBatch" class="form-control" disabled>
+                                                    <input type="hidden" id="productBatchID" name="productBatchID" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="view" onclick="View();">
+                                        <i class="fa fa-eye"></i>View
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Pharmacy", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="stockStatusTableExcelExport" style="display:none"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="card-body col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="stockStatusTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Name</th>
+                                            <th>Batch Number</th>                                            
+                                            <th>Current Stock</th>
+                                            <th>Current Stock 1</th>
+                                            <th style="display:none">Product ID</th>                                      
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

@@ -1,0 +1,2463 @@
+﻿@model KeystoneProject.Models.Laboratory.Patient_Wise_Result_Entry
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+<style>
+    div.dt-buttons {
+        position: relative;
+        float: left;
+        display: none;
+    }
+
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+        display: none;
+    }
+
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ccc8c8 !important;
+        background: #bddff7;
+        font-weight: 500 !important;
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #ebe7e7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: #333;
+        background: #d0e6f6;
+        font-family: roboto;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: inherit !important;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #41b0ff !important;
+            padding: 0px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 2px 8px 0px 8px !important;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #333 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em;
+        padding-bottom: 3px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        padding: 3px;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            border: 1px solid #a6abaf;
+            border-radius: 2px;
+        }
+
+
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        background: white;
+    }
+
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        Hight: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-Hight: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        Hight: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .tab .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tab .nav-tabs > li > a {
+            border: none;
+            padding: 6px 10px;
+            color: #fff;
+            background: #4e6270;
+            border-radius: 0;
+            font-family: roboto;
+            font-size: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+            .tab .nav-tabs > li > a > i {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+        .tab .nav-tabs > li.active > a,
+        .tab .nav-tabs > li.active > a:focus,
+        .tab .nav-tabs > li.active > a:hover {
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            transition: background 0.20s linear;
+        }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -25px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #e74c3c;
+        z-index: 999;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-Hight: 25px;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-Hight: 30px;
+        border: 2px solid #bddff7;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+</style>
+<style>
+    .the-legend {
+        border-style: none;
+        border-width: 0;
+        font-size: 14px;
+        line-Hight: 20px;
+        margin-bottom: 0;
+        width: auto;
+        padding: 0 10px;
+        border: 1px solid #e0e0e0;
+        font-family: roboto;
+        background: #bddff7;
+    }
+
+    .the-fieldset {
+        border: 1px solid #e0e0e0;
+        padding: 4px;
+        background: #ffffff;
+        font-family: roboto;
+        border-bottom: 0px solid red;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        display: none;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 4px 10px !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+      
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        var d = new Date(),
+            h = d.getHours(),
+            m = d.getMinutes();
+        if (h < 10) h = '0' + h;
+        if (m < 10) m = '0' + m;
+        $('input[type="time"][value="now"]').each(function () {
+            $(this).attr({ 'value': h + ':' + m });
+
+        });
+    });
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#Calculation").click(function () {
+            debugger
+            var len = $("#datatable-responsive3 tbody tr").length;
+            Caculate();
+        })
+        $("#EditParameter tbody td").remove();
+        $("#test").change(function () {
+            debugger
+            chkRechk = false;
+            SelectFillDataAll();
+        })
+        //function resizeFunction() {
+        //    alert("sdf");
+        //}
+        function SelectFillDataAll() {
+            debugger
+
+            if (document.getElementById("test").selectedIndex == 0) {
+                $("#Complete").css("background-color", "blue");
+            }
+            if ($("#test").val() > 0) {
+                debugger
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetPatientWiseResultforParameterValue", "PatientWiseResultEntry")',
+                    data: { LabNo: $("#LabNo").val(), TestID: $("#test").val() },
+                    success: function (data) {
+                        $("#datatable-responsive3  tbody tr").remove();
+                        $("#datatable-responsive2 tbody td").remove();
+                        $("#EditParameter tbody tr").remove();
+                        for (var row = 0; row < data.length; row++) {
+                            debugger
+                            if (data[row].ParamiterName != null) {
+                                
+                                $("#datatable-responsive3").append('<tr><td> <textarea id="footer" name="footer" class="footer">' + data[row].footer + '</textarea>' + data[row].ParamiterName + ' </td><td><input type="text"  value="' + data[row].ResultValue + '" name="value" class="value form-control" /></td><td>   <select disabled class="form-control " id="test" name="tests"><option  value=' + data[row].NLH + '>' + data[row].NLH + '</option> <option  value="Normal">Normal</option><option  value="Low">Low</option> <option value="High">High</option></select> </td><td>' + data[row].Low + '</td><td>' + data[row].Hiegh + '</td><td style="display:none">' + data[row].Formula + '</td><td style="display:none">' + data[row].ParamiterID + '</td><td style="display:none">' + data[row].ResultValue + '</td><td style="display:none"><input type="hidden" name="status" value=' + data[row].status + '/></td><td style="display:none">' + data[row].TestID + '</td></tr>');
+                                $("#EditParameter").append('<tr><td>' + data[row].ParamiterName + '</td><td><input type="text"  Readonly value="' + data[row].ResultValue + '" name="ResultValue" class=" form-control" /></td><td>   <input type="text"  value="' + data[row].Value1 + '" name="value1" class=" form-control" /> </td><td><input type="text"  value="' + data[row].Value2 + '" name="value2" class=" form-control" /></td><td><input type="text"  value="' + data[row].Value3 + '" name="value3" class=" form-control" /></td></tr>');
+                                if (data[row].Footer != "") {
+
+
+                                    //  $("#datatable-responsive3").append('<tr><td><textarea name="footer' + data[row].ParamiterID + '" class="footer">' + data[row].Footer + '</textarea> </td></tr>');
+                                }
+                                //<textarea  name="footer' + data[row].ParamiterID + '" class="footer">' + data[row].Footer + '</textarea>
+                               }
+
+                            if (data[0].Color == "Green") {
+                                $("#Complete").css("background-color", "Green");
+                            }   
+                            else {
+                                $("#Complete").css("background-color", "blue");
+                            }
+                            if (data[0].Color == "Coral") {
+                                $("#Complete").css("background-color", "Coral");
+                            }
+                            else {
+                                // $("#Complete").css("background-color", "blue");
+
+                            }
+
+
+                            if (data[row].UserID != null) {
+                                var ss = data[row].UserID;
+                                //alert(ss);
+                                $("#datatable-responsive2").append('<tr><td>' + data[row].UserID + '</td><td>' + data[row].AuthoriserName + '</td><td> ' + data[row].status + ' </td></tr>');
+                            }
+                        }
+                        $("#EditParameter").append('<tr><td colspan="2"></td><td><button type="button" class="btndivcss" id="btnSaveRechk" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Save</button>    <button type="button" class="btndivcss" id="btnApplyRechk" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Apply</button></td><td>   <button type="button" class="btndivcss" id="btnrecksave2" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Save</button>    <button type="button" class="btndivcss" id="btnSaveApply2" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Apply</button></td><td><button type="button" class="btndivcss" id="btnRechkSave3" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Save</button>   <button type="button" class="btndivcss" id="btnApplyRechk3" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Apply</button></td></tr>');
+
+                        var len = $("#datatable-responsive3 tbody tr").length;
+                        //    $("#datatable-responsive3 td").remove();
+                        debugger
+                        $(".footer").each(function () {
+                            debugger
+                            var footervalue = $(this).text();
+                            if (footervalue == "") {
+                                $(this).hide();
+                            }
+                            else {
+                               CKEDITOR.replace(this);
+                            }
+                        })
+                        
+                        for (var row1 = 0; row1 < len; row1++) {
+
+                            var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[3].innerHTML;
+                            if (NLH == "") {
+                                document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value = "";
+                            }
+                            var Formula = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML;
+
+                            if (Formula.length > 0) {
+                                document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value = "";
+                                document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].style.backgroundColor = "pink";
+
+                                document.getElementById("datatable-responsive3").tBodies[0].rows[row1].style.backgroundColor = "pink";
+
+                               // document.getElementById('EditParameter').tBodies[0].rows[row1].cells[1].children[0].style.backgroundColor = "pink";
+
+                               // document.getElementById("EditParameter").tBodies[0].rows[row1].style.backgroundColor = "pink";
+                            }
+                            var newValue = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].value;
+
+                            // var ParamiterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0];
+
+                            if (newValue != "") {
+                                if ((parseInt(newValue) >= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[3].innerHTML) && (parseFloat(newValue) <= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[4].innerHTML)))) {
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value = "Normal";
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[8].children[0].value = "Y";
+                                }
+                                else if (parseFloat(newValue) < parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[3].innerHTML)) {
+
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value = "Low";
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[8].children[0].value = "Y";
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].style.color = "#0014ff";
+                                    // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style ="font-size: x-large;"
+
+                                }
+                                else
+                                {
+                                    if (parseFloat(newValue) > parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[3].innerHTML)) {
+                                        document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value = "High";
+                                        document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[8].children[0].value = "Y";
+                                        document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].style.color = "Red";
+                                    }
+                                    // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style = "font-size: x-large;"
+                                }
+                            }
+                        }
+
+
+                     
+
+                    }
+                })
+            }
+
+
+        }
+        var col = "";
+        $("#EditParameter").delegate('td', 'click', function () {
+            debugger
+            col = $(this).parent().children().index($(this));
+            chkRechk = true;
+        })
+        $("#EditParameter").on('click', '#btnSaveRechk,#btnrecksave2,#btnRechkSave3', function () {
+            debugger
+            var columnID = $(this).attr("id");
+            if (columnID == "btnSaveRechk") {
+                col = 2;
+                RechkeCaculate();
+                RechkComplete();
+            }
+            if (columnID == "btnrecksave2") {
+                col = 3;
+                RechkeCaculate();
+                RechkComplete();
+            }
+            if (columnID == "btnRechkSave3") {
+                col = 4;
+                RechkeCaculate();
+                RechkComplete();
+            }
+
+        })
+       function RechkComplete(){
+            debugger
+
+            var LabNo1 = $("#LabNo").val();
+            var ParamiterID1 = ParamiterID;
+            var TestID21 = $("#test").val();
+            var Formula1 = Formula;
+            var newValue1 = newValue;
+            var NLH11 = NLH1;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RechkCompletebtn", "PatientWiseResultEntry")',
+                data: { LabNo: LabNo1, ParamiterID: RechkParamiterID, TestID2: $("#test").val(), Formula: RechkFormula, newValue: RechknewValue, NLH1: RechkNLH1, col: col },
+                success: function (data) {
+                    debugger
+                    if (data.length > 0) {
+                        alert(data);
+                        //$("#datatable-responsive3 tr").remove();
+                        //$("#RegNo").val("");
+                        //$("#LabNo").val("");
+                        //$("#Patientname").val("");
+                       // $("#Consdr").val("");
+                    }
+                }
+
+            })
+        }
+
+
+        $("#EditParameter").on('click', '#btnApplyRechk,#btnSaveApply2,#btnApplyRechk3', function () {
+            debugger
+            var columnID = $(this).attr("id");
+            if (columnID == "btnApplyRechk")
+            {
+                col = 2;
+            }
+            if (columnID == "btnSaveApply2") {
+                col = 3;
+            }
+            if (columnID == "btnApplyRechk3") {
+                col = 4;
+            }
+            
+            RechkApply();
+        })
+        function RechkApply() {
+
+               chkRechk = false;
+                debugger
+              //  var a = $(this).attr('id');$("#EditParameter").
+                var row_num1 = $("#EditParameter td").closest("tr").length;
+                //Focus();
+                sendrow = parseInt($(this).parent().index());
+
+                // var ParamiterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0];
+                for (var row_num = 0; row_num < row_num1; row_num++) {
+                    var newValue = document.getElementById('EditParameter').tBodies[0].rows[row_num].cells[col].children[0].value;
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].value = newValue;
+                    if (newValue != "") {
+                        if ((parseInt(newValue) >= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML) && (parseFloat(newValue) <= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[4].innerHTML)))) {
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Normal";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        }
+                        else if (parseFloat(newValue) < parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML)) {
+
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Low";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style.color = "#0014ff";
+                            // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style ="font-size: x-large;"
+
+                        }
+                        else {
+
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "High";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style.color = "Red";
+                            // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style = "font-size: x-large;"
+                        }
+                    }
+                    debugger
+                    var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML;
+                    if (NLH == "") {
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+
+                    }
+                    ////  Caculate();
+                    var ParameterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[6].innerHTML
+                    if (ParameterID == 13) {
+                        var table = document.getElementById('datatable-responsive3');
+                        var Total = 0;
+                        var len = $("#datatable-responsive3 tbody tr").length;
+                        debugger
+                        for (var row1 = 0; row1 < len; row1++) {
+
+                            if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 7) {
+                                Total = Total + parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[7].innerHTML);
+
+                            }
+                        }
+                        if (Total != 100) {
+                            for (var i = 0; i < len; i++) {
+                                if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+                                    document.getElementById('datatable-responsive3').tBodies[0].rows[i].style.backgroundColor = "#ddd";
+                                }
+                            }
+                            alert("Addition of Highlighted Rows will be 100 only.");
+                            //  return false;
+                        }
+                        else {
+                            //for (var i = 0; i < len; i++) {
+                            //    if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells["ParameterID"].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+                            //        //    table.rows[i].style.backgroundColor = "white";
+
+                            //    }
+                            //}
+                        }
+                    }
+                }
+                Caculate();
+                //text event caculate change------------------------------------------------------------------------------
+
+
+
+
+
+           
+        }
+
+
+
+        $("#EditParameter").delegate('td', 'change', function () {
+
+            debugger
+            col=  $(this).parent().children().index($(this));
+            var a = $(this).attr('id');
+            var row_num = parseInt($(this).parent().index());
+            //Focus();
+            sendrow = parseInt($(this).parent().index());
+
+            var newValue = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+            // var ParamiterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0];
+            //  Caculate();
+            var ParameterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[6].innerHTML
+            if (ParameterID == 13) {
+                var table = document.getElementById('datatable-responsive3');
+                var Total = 0;
+            //    var len = $("#datatable-responsive3 tbody tr").length;
+            //    debugger
+            //    for (var row1 = 0; row1 < len; row1++) {
+
+            //        if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 7) {
+            //            Total = Total + parseInt(document.getElementById('EditParameter').tBodies[0].rows[row1].cells[7].innerHTML);
+
+            //        }
+            //    }
+            //    if (Total != 100) {
+            //        for (var i = 0; i < len; i++) {
+            //            if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+            //                document.getElementById('EditParameter').tBodies[0].rows[i].style.backgroundColor = "#ddd";
+            //            }
+            //        }
+            //        alert("Addition of Highlighted Rows will be 100 only.");
+            //        //  return false;
+            //    }
+            //    else {
+            //        for (var i = 0; i < len; i++) {
+            //            if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells["ParameterID"].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+            //                //    table.rows[i].style.backgroundColor = "white";
+
+            //            }
+            //        }
+            //    }
+            }
+            RechkeCaculate();
+            //text event caculate change------------------------------------------------------------------------------
+
+
+
+
+
+        });
+
+
+
+        // Edit Caculate
+        var RechkParamiterID = "";
+      var RechkNLH1 = "";
+      var RechkTestID2 = "";
+      var RechkFormula = "";
+      var RechknewValue = "";
+      var Footer = "";
+        function RechkeCaculate() {
+
+            var len = $("#datatable-responsive3 tbody tr").length;
+            debugger
+            RechkParamiterID = "";
+            RechkNLH1 = "";
+            RechkTestID2 = "";
+            RechkFormula = "";
+            RechknewValue = "";
+            for (var row1 = 0; row1 < len; row1++) {
+
+                RechkParamiterID += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML + ",";
+                RechkTestID2 += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[9].innerHTML + ",";
+
+                if (document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML.length > 0) {
+                    RechkFormula += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML + ",";
+                }
+                else {
+                    RechkFormula += "Blank" + ",";
+                }
+                if (document.getElementById('EditParameter').tBodies[0].rows[row1].cells[2].children[0].value.length > 0) {
+                    RechknewValue += document.getElementById('EditParameter').tBodies[0].rows[row1].cells[col].children[0].value + ",";
+                }
+                else {
+                    RechknewValue += "Blank" + ",";
+                }
+                var NL = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value;
+                if (NL == "") {
+                    //            document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[2].children[0].value = "";
+                    RechkNLH1 += "Blank" + ",";
+                }
+                else {
+                    RechkNLH1 += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value + ",";
+                }
+
+                //var Footer = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].innerHTML;
+                //if (Footer == "") {
+                //    //            document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[2].children[0].value = "";
+                //    Footer += "Blank" + ",";
+                //}
+                //else {
+                //    Footer += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].innerHTML + ",";
+                //}
+            }
+
+            var LabNo = $("#LabNo").val();
+
+          //  $("#LabNo").val()
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Calculation", "PatientWiseResultEntry")',
+                data: { LabNo: LabNo, ParamiterID: RechkParamiterID, TestID2: RechkTestID2, Formula: RechkFormula, newValue: RechknewValue, NLH1: RechkNLH1, Footer: Footer },
+                success: function (data) {
+                    // $("#datatable-responsive3 tbody td").remove();
+                    // $("#datatable-responsive3 tbody tr").remove();
+                    //  $("#datatable-responsive3").closest("tr").remove();
+
+
+                    for (var row = 0; row < data.length; row++) {
+
+                        //$("#datatable-responsive3").append('<tr><td>' + data[row].ParamiterName + '</td><td><input type="text"  id="value" name="value" value="' + data[row].ResultValue + '" class="value form-control" /></td><td>   <select  class="form-control" id="test" name="tests"><option value=""></option> <option value="Normal">Normal</option><option value="Low">Low</option> <option value="High">High</option></select> </td><td>' + data[row].Low + '</td><td>' + data[row].Hiegh + '</td><td style="display:none" >' + data[row].Formula + '</td><td style="display:none">' + data[row].ParamiterID + '</td><td style="display:none">' + data[row].ResultValue + '</td><td style="display:none"><input type="hidden" name="status" value=' + data[row].status + '/></td><td style="display:none">' + data[row].TestID + '</td></tr>');
+
+                    }
+                    debugger
+                    var len = $("#datatable-responsive3 tbody tr").length;
+                    //  $("#datatable-responsive3 td").remove();
+
+                    for (var row_num = 0; row_num < len; row_num++) {
+                        var Formula = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[5].innerHTML;
+
+                        if (Formula.length > 0) {
+                           // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+                            document.getElementById('EditParameter').tBodies[0].rows[row_num].cells[col].children[0].value = data[row_num].ResultValue;
+                            document.getElementById("EditParameter").tBodies[0].rows[row_num].style.backgroundColor = "pink";
+                            document.getElementById('EditParameter').tBodies[0].rows[row_num].cells[1].children[0].style.backgroundColor = "pink";
+                        }
+
+                        var newValue = document.getElementById('EditParameter').tBodies[0].rows[row_num].cells[2].children[0].value;
+
+                        //if (newValue.length > 0) {
+                        //    $('#EditParameter').closest('tr').next().find('td:eq(' + row_num + ')').focus();
+                        //    if ((parseInt(newValue) >= parseFloat(document.getElementById('datatable-respo  nsive3').tBodies[0].rows[row_num].cells[3].innerHTML) && (parseFloat(newValue) <= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[4].innerHTML)))) {
+
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Normal";
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        //    }
+                        //    else if (parseFloat(newValue) < parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML)) {
+
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Low";
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        //    }
+                        //    else {
+
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "High";
+                        //       // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        //    }
+                        //}
+
+                        //---------------------------
+
+                        //var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML;
+                        //if (NLH == "") {
+                        //    //
+                        //    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+
+                        //}
+
+                        //if (document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[5].innerHTML != "") {
+
+                        //    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+                        //}
+                    }
+                }
+            });
+            debugger
+            //   Focus();
+        }
+
+
+
+        /// end
+
+        var FromDate = localStorage.getItem('FromDate');
+        var ToDate = localStorage.getItem('ToDate');
+      debugger
+        if (FromDate!="") {
+            GetPatientWiseResultForPatientSearchReg(FromDate, ToDate);
+            localStorage.setItem('FromDate', "");
+            localStorage.setItem('ToDate', "");
+        }
+        function GetPatientWiseResultForPatientSearchReg(Fromdate, Todate)
+        {
+            $("#myModal1").show();
+             $("#FromDate").val(Fromdate);
+              $("#ToDate").val(Todate);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PatientBind", "PatientWiseResultEntry")',
+                data: { FromDate: Fromdate, Todate: Todate },
+                success: function (data) {
+                    debugger
+                    $("#datatable-responsive tbody tr").remove();
+                    for (var row = 0; row < data.length; row++) {
+                        $("#datatable-responsive").append('<tr  style="overflow: scroll"><td>' + data[row].LabNo + '</td><td>' + data[row].Patientname + '</td><td>' + data[row].PatientType + '</td><td>' + data[row].LabDate + '</td></tr>')
+
+                    }
+                }
+            })
+
+
+           
+        }
+
+       
+
+
+        $("#datatable-responsive").delegate('td', 'click', function () {
+            debugger
+            var row = $(this).parent().index();
+            var LabNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[0].innerHTML;
+            $("#labno").val(LabNo);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DgvClickGetPatientWiseResultForPatientSearch", "PatientWiseResultEntry")',
+                data: { LabNo: LabNo },
+                success: function (data) {
+                    debugger
+                    $("#myModal1").hide(300);
+                    $("#test").val("");
+                    $("#test").text("");
+                    $("#test").append('<option value="">Select</Option>');
+                    for (var row = 0; row < data.length; row++) {
+
+                        $("#RegNo").val(data[0].RegNo); 
+                        $("#printregno").val(data[0].PrintRegNO);
+                        $("#LabNo").val(data[0].LabNo);
+                        $("#Patientname").val(data[0].Patientname);
+                        $("#Consdr").val(data[0].ConsDr);
+
+                        $("#test").append('<option value=' + data[row].TestID + '>' + data[row].Testname + '</Option>');
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPatientWiseResultforParameterValue", "PatientWiseResultEntry")',
+                data: { LabNo: LabNo, TestID: "0" },
+                success: function (data) {
+                    $("#datatable-responsive3  tbody tr").remove();
+                    $("#datatable-responsive2 tbody td").remove();
+                    debugger
+                    for (var row = 0; row < data.length; row++) {
+                        $("#datatable-responsive3").append('<tr><td>' + data[row].ParamiterName + '</td><td><input type="text" value="' + data[row].ResultValue + '" name="value"  class="value form-control" /></td><td>   <select disabled class="form-control" id="test" name="tests"><option value=' + data[row].NLH + '></option>' + data[row].NLH + ' <option value="Normal">Normal</option><option value="Low">Low</option> <option value="High">High</option></select> </td><td>' + data[row].Low + '</td><td>' + data[row].Hiegh + '</td><td  style="display:none"  >' + data[row].Formula + '</td><td style="display:none">' + data[row].ParamiterID + '</td><td style="display:none">' + data[row].ResultValue + '</td><td style="display:none"><input type="hidden" name="status" value=' + data[row].status + '/></td><td style="display:none">' + data[row].TestID + '</td></tr>');
+                        //alert("df");
+                        //if (data[row].Footer != "")
+                        //{
+                           
+                        //    $("#datatable-responsive3").append('<tr><td><textarea id="footer" class="footer"></textarea> </td></tr>');
+                        //    CKEDITOR.replace("footer");
+                        //  //  $('textarea[name="footer"]').CKEDITOR();
+                        //}
+                    }
+                   
+                  //  $(".footer").each(function () {
+                  //  debugger
+                  //  CKEDITOR.replace("footer");
+
+                  ////  alert($(this).parent().find('#footer').attr("id"));
+                  //  //    CKEDITOR.replace($(this).parent().find('#footer').attr("id"));
+                  //  })
+             
+                    var len = $("#datatable-responsive3 tbody tr").length;
+                    debugger
+                    for (var row1 = 0; row1 < len; row1++) {
+                        debugger
+                        var Formula = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML;
+                        if (Formula.length > 0) {
+
+                            document.getElementById("datatable-responsive3").tBodies[0].rows[row1].style.backgroundColor = "pink";
+                           // document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[3].children[0].value = "";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].style.backgroundColor = "pink";
+
+                        }
+
+                    }
+                }
+            })
+            
+        })
+        var sendrow;
+        $("#datatable-responsive3,#EditParameter").delegate('td', 'click', function () {
+            debugger
+            var id = $(this).attr("id");
+            sendrow = parseInt($(this).parent().index());
+            //  sendrow = row_num;
+            var newValue = document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[1].children[0].value;
+            //var TestID_CBC = parseFloat(ucPatientWiseResultEntry1.dgvResultEntry.Rows[e.RowIndex].Cells["TestID"].Value);
+            var ParameterID = parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[6].innerHTML);
+            var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[3].innerHTML;
+            if (NLH == "") {
+                document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[2].children[0].value = "";
+
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetParamaterHelpValue", "PatientWiseResultEntry")',
+                data: { ParameterID: ParameterID },
+                success: function (data) {
+                    $("#datatable-responsive4 tbody tr").remove();
+                    if (data.length > 0) {
+                        $("#showdiv1").show(300);
+                    }
+                    else {
+                        $("#showdiv1").hide(300);
+                    }
+                    for (var row1 = 0; row1 < data.length; row1++) {
+
+                        $("#datatable-responsive4").append('<tr><td>' + data[row1].HelpValue + '</td></tr>');
+                    }
+                }
+
+            })
+           
+            //Focus();
+        });
+        $("#datatable-responsive4").delegate('td', 'click', function () {
+            debugger
+            var a = sendrow;
+            var HelpValue = "";
+            var len = $("#datatable-responsive4 tbody tr").length;
+            var row_num = parseInt($(this).parent().index());
+            if (len > 0) {
+                if (chkRechk == false) {
+
+                    HelpValue = document.getElementById('datatable-responsive4').tBodies[0].rows[row_num].cells[0].innerHTML;
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[1].children[0].value = HelpValue;
+                }
+                else
+                {
+                    HelpValue = document.getElementById('datatable-responsive4').tBodies[0].rows[row_num].cells[0].innerHTML;
+                    document.getElementById('EditParameter').tBodies[0].rows[sendrow].cells[col].children[0].value = HelpValue;
+                }
+                $("#showdiv1").hide(300);
+            }
+            
+        })
+     
+        $("#datatable-responsive3").delegate('td', 'change', function () {
+            chkRechk = false;
+            debugger
+          var a=  $(this).attr('id');
+            var row_num = parseInt($(this).parent().index());
+            //Focus();
+            sendrow = parseInt($(this).parent().index());
+            var newValue = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+            // var ParamiterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0];
+
+            if (newValue != "") {
+                if ((parseInt(newValue) >= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML) && (parseFloat(newValue) <= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[4].innerHTML)))) {
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Normal";
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                }
+                else if (parseFloat(newValue) < parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML)) {
+
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Low";
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style.color = "#0014ff";
+                   // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style ="font-size: x-large;"
+                    
+                }
+                else {
+                
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "High";
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                    document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style.color = "Red";
+                   // document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style = "font-size: x-large;"
+                }
+            }
+            debugger
+            var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[3].innerHTML;
+            if (NLH == "") {
+                document.getElementById('datatable-responsive3').tBodies[0].rows[sendrow].cells[2].children[0].value = "";
+
+            }
+          //  Caculate();
+            var ParameterID = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[6].innerHTML
+            if (ParameterID == 13) {
+                var table = document.getElementById('datatable-responsive3');
+                var Total = 0;
+                var len = $("#datatable-responsive3 tbody tr").length;
+                debugger
+                for (var row1 = 0; row1 < len; row1++) {
+
+                    if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML) == 7) {
+                        Total = Total + parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[7].innerHTML);
+
+                    }
+                }
+                if (Total != 100) {
+                    for (var i = 0; i < len; i++) {
+                        if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[i].style.backgroundColor = "#ddd";
+                        }
+                    }
+                    alert("Addition of Highlighted Rows will be 100 only.");
+                  //  return false;
+                }
+                else {
+                    for (var i = 0; i < len; i++) {
+                        if (parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 3 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells["ParameterID"].innerHTML) == 4 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 5 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 6 || parseInt(document.getElementById('datatable-responsive3').tBodies[0].rows[i].cells[6].innerHTML) == 7) {
+                        //    table.rows[i].style.backgroundColor = "white";
+
+                        }
+                    }
+                }
+            }
+            Caculate();
+            //text event caculate change------------------------------------------------------------------------------
+           
+          
+                
+
+                
+        });
+        $("#btnshow").click(function () {
+            debugger
+            $("#myModal1").show();
+
+            var Fromdate = $("#FromDate").val();
+            var Todate = $("#ToDate").val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PatientBind", "PatientWiseResultEntry")',
+                data: { FromDate: Fromdate, Todate: Todate },
+                success: function (data) {
+                    debugger
+                    $("#datatable-responsive tbody tr").remove();
+                    for (var row = 0; row < data.length; row++) {
+                        $("#datatable-responsive").append('<tr  style="overflow: scroll"><td>' + data[row].LabNo + '</td><td>' + data[row].Patientname + '</td><td>' + data[row].PatientType + '</td><td>' + data[row].LabDate + '</td></tr>')
+                    }
+                }
+            })
+        });
+        $("#btnclose").click(function () {
+            debugger
+            $("#myModal1").hide();
+        });
+        var chkRechk = false;
+        $("#recheckparameter").change(function () {
+            debugger
+            chkRechk = $(this).prop('checked');
+            if ($(this).prop('checked'))
+            {
+                chkRechk = true;
+                $(".value").each(function () {
+                    debugger
+                    $(this).parent().find('.value').attr('readonly', 'readonly')
+                })
+                $("#myModal2").show();
+                }
+            else
+            {
+                $(".value").each(function () {
+                    debugger
+                    $(this).parent().find('.value').attr('readonly', false)
+                })
+                $("#myModal2").hide();
+                chkRechk = false;
+            }
+          
+            SelectFillData();
+            chkRechk = false;
+            $("#test").change(function () {
+                debugger
+              
+                SelectFillData();
+              
+            })
+
+
+            function SelectFillData() {
+                debugger
+
+                if (document.getElementById("test").selectedIndex == 0) {
+                    $("#Complete").css("background-color", "blue");
+                }
+                if ($("#test").val() > 0) {
+                    debugger
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetPatientLabWithParameterRecheck1", "PatientWiseResultEntry")',
+                        data: { LabNo: $("#LabNo").val(), TestID: $("#test").val() },
+                        success: function (data) {
+                            $("#EditParameter  tbody tr").remove();
+                          //  $("#datatable-responsive2 tbody td").remove();
+
+                            for (var row = 0; row < data.length; row++) {
+                                debugger
+                                if (data[row].ParamiterName != null) {
+                                    $("#EditParameter").append('<tr><td>' + data[row].ParamiterName + '</td><td><input type="text"  value="' + data[row].ResultValue + '" name="ResultValue" class="value form-control" /></td><td>   <input type="text"  value="' + data[row].Value1 + '" name="value1" class=" form-control" /> </td><td><input type="text"  value="' + data[row].Value2 + '" name="value2" class=" form-control" /></td><td><input type="text"  value="' + data[row].Value3 + '" name="value3" class=" form-control" /></td></tr>');
+                                }
+
+                                //if (data[0].Color == "Green") {
+                                //    $("#Complete").css("background-color", "Green");
+                                //}
+                                //else {
+                                //    $("#Complete").css("background-color", "blue");
+
+                                //}
+                                //if (data[0].Color == "Coral") {
+                                //    $("#Complete").css("background-color", "Coral");
+                                //}
+                                //else {
+                                //    // $("#Complete").css("background-color", "blue");
+
+                                //}
+
+
+                                //if (data[row].UserID != null) {
+                                //    var ss = data[row].UserID;
+                                //    //alert(ss);
+                                //    $("#datatable-responsive2").append('<tr><td>' + data[row].UserID + '</td><td>' + data[row].AuthoriserName + '</td><td> ' + data[row].status + ' </td></tr>');
+                                //}
+                            }
+                            debugger
+                            var len = $("#EditParameter tbody tr").length;
+                            //    $("#datatable-responsive3 td").remove();
+
+                            debugger
+                            for (var row1 = 0; row1 < len; row1++) {
+
+                                var NLH = document.getElementById('EditParameter').tBodies[0].rows[row1].cells[3].innerHTML;
+                                if (NLH == "") {
+                                    document.getElementById('EditParameter').tBodies[0].rows[row1].cells[2].children[0].value = "";
+
+                                }
+
+
+                                var Formula = document.getElementById('datatable-responsive3_value1').tBodies[0].rows[row1].cells[5].innerHTML;
+                                if (Formula.length > 0) {
+                                    document.getElementById('datatable-responsive3_value1').tBodies[0].rows[row1].cells[2].children[0].value = "";
+                                    document.getElementById('datatable-responsive3_value1').tBodies[0].rows[row1].cells[1].children[0].style.backgroundColor = "pink";
+
+                                    document.getElementById("datatable-responsive3_value1").tBodies[0].rows[row1].style.backgroundColor = "pink";
+                                }
+
+                            }
+                        }
+                    })
+                }
+
+
+            }
+
+            @*$.ajax({
+                type: "POST",
+                url: '@Url.Action("PatientBind", "PatientWiseResultEntry")',
+                data: { FromDate: Fromdate, Todate: Todate },
+                success: function (data) {
+                    debugger
+                    $("#datatable-responsive tbody tr").remove();
+                    for (var row = 0; row < data.length; row++) {
+                        $("#datatable-responsive").append('<tr  style="overflow: scroll"><td>' + data[row].LabNo + '</td><td>' + data[row].Patientname + '</td><td>' + data[row].PatientType + '</td><td>' + data[row].LabDate + '</td></tr>')
+                    }
+                }
+            })*@
+        });
+        $("#btnclose2").click(function () {
+            debugger
+            $("#myModal2").hide();
+        });
+        $("#form1").submit(function () {
+          debugger
+            ValidationEvent();
+        })
+        function ValidationEvent() {
+            debugger
+            Caculate();
+            var LabNo1 = $("#LabNo").val();
+            var ParamiterID1 =ParamiterID;
+            var TestID21= $("#test").val();
+            var  Formula1= Formula;
+            var newValue1= newValue;
+            var NLH11 = NLH1;
+            $("#HLN").val(NLH11);
+            $("#PreID").val(ParamiterID1);
+            $("#TesID").val(TestID21);
+            $("#Formu").val(Formula1);
+            $("#Nyvalue").val(newValue1);
+            $("#LNo").val(LabNo1);
+            debugger
+            var len = $("#datatable-responsive3 tbody tr").length;
+        
+            debugger
+        //  var data=new FormData();
+        ////  data.append("footer");
+        //    var Obj="";
+        //    var arraydata = $form.serializeArray();
+            @*$.ajax({
+                type: "POST",
+                url: '@Url.Action("Completebtn", "PatientWiseResultEntry")',
+                data: { LabNo: $("#LabNo").val(), ParamiterID: ParamiterID, TestID2: $("#test").val(), Formula: Formula, newValue: newValue, NLH1: NLH1},
+                success: function (data) {
+                    debugger
+                    
+                    if (data.length > 0) 
+                    {
+                        alert(data);
+                        $("#datatable-responsive3 tr").remove();
+                        $("#RegNo").val("");
+                        $("#LabNo").val("");
+                        $("#Patientname").val("");
+                        $("#Consdr").val("");
+                    }
+                }
+
+            })*@
+       
+        }
+       
+        $("#Complete").click(function () {
+            debugger
+            Caculate();
+            var LabNo1 = $("#LabNo").val();
+            var ParamiterID1 =ParamiterID;
+            var TestID21= $("#test").val();
+            var  Formula1= Formula;
+            var newValue1= newValue;
+            var NLH11 = NLH1;
+            $("#form1").submit();
+            Temp();
+            debugger
+            var len = $("#datatable-responsive3 tbody tr").length;
+            //CKEDITOR.replace('footer');
+            //CKEDITOR.add;
+            //Footer = CKEDITOR.instances.footer.getData();
+            //alert(Footer);
+            //for (var row1 = 0; row1 < len; row1++)
+            //{
+
+           
+            //for (var instanceName in CKEDITOR.instances) {
+            //    debugger
+            //    CKEDITOR.instances[instanceName].updateElement();
+            //}
+
+            //$(".footer").each(function () {
+            //    debugger
+            //    var footervalue1 = $(this);
+            //    var footervalue = $(this).val();
+            //    if (footervalue == "") {
+            //        $(this).hide();
+            //    }
+            //    else {
+            //        var ad= CKEDITOR.editor.replace("footer");
+            //       var find=  ad.getData();
+            //    }
+            //})
+
+            //$('.footer').each(function (index, element) {
+            //    debugger
+            //  //  var editorID = $(this).attr("id");
+            //  //  var instance = CKEDITOR.instances[editorID];
+
+            //    //var txtNotes = document.getElementsByClassName('footer')[index];
+            //    //var aa = element.defaultValue;
+            //    //var ck = CKEDITOR.instances[element].getData();
+            //    //var ck = CKEDITOR.instances.element.getData();
+            //   // var self = this;
+            //    //NodeDataSessionTextarea[Element] = ck.getData();
+            //    // var nodedataencodetextarea = JSON.stringify(NodeDataSessionTextarea);
+            //  //  Footer += ck;
+            //});
+            //var NodeDataSessionTextarea = {};
+            //var a=0;
+            //$(".footer").each(function () {
+            //    debugger
+            //    var Element=   $(this).parent().find('#footer').attr("id");
+            //   // CKEDITOR.replace("footer");
+            //   // var ck = $(this).parent().find('.cke_wysiwyg_frame cke_reset').inn();
+            //    //var ck = CKEDITOR.instances[Element];
+            //    //var self = this;
+            //    ////NodeDataSessionTextarea[Element] = ck.getData();
+            //    //var nodedataencodetextarea = JSON.stringify(NodeDataSessionTextarea);
+            //Footer += ck;
+            //a++;
+            //    //  alert($(this).parent().find('#footer').attr("id"));
+            //    //    CKEDITOR.replace($(this).parent().find('#footer').attr("id"));
+            //})
+            debugger
+            //for (var row1 = 0; row1 < len; row1++)
+            //{
+
+            //var Footernew = document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[0].innerHTML;
+            //    if (Footernew == "")
+            //    {
+            //        //            document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[2].children[0].value = "";
+            //        Footer += "Blank" + ",";
+            //    }
+            //    else
+            //    {
+            //        Footer += document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[0].innerHTML + ",";
+            //    }
+               
+            //}
+         //  var s = CKEDITOR.instances.footer.setData(Footer);;
+            
+            //  alert(s);
+          
+          var Obj="";
+           
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Completebtn", "PatientWiseResultEntry")',
+                data: { LabNo: $("#LabNo").val(), ParamiterID: ParamiterID, TestID2: $("#test").val(), Formula: Formula, newValue: newValue, NLH1: NLH1 },
+                success: function (data) {
+                    debugger
+                    
+                    if (data.length > 0) 
+                    {
+                        alert(data);
+                        $("#datatable-responsive3 tr").remove();
+                        $("#RegNo").val("");
+                        $("#LabNo").val("");
+                        $("#Patientname").val("");
+                        $("#Consdr").val("");
+                    }
+                }
+
+            })
+        })
+    });
+
+    var ParamiterID = "";
+    var objectArray = "";
+    var TestID2 = "";
+    var Formula = "";
+    var newValue = "";
+    var NLH1 = "";
+    var Footer = "";
+    function Temp()
+    {
+   
+  
+
+    }
+    function Caculate() {
+        
+        var len = $("#datatable-responsive3 tbody tr").length;
+        debugger
+        ParamiterID = "";
+        NLH1 = "";
+        TestID2 = "";
+        Formula = "";
+        newValue = "";
+        //Footer = "";
+        //$(".footer").each(function () {
+        //    debugger
+        //   // CKEDITOR.replace("footer");
+        //   // var ck = $(this).parent().find('.cke_wysiwyg_frame cke_reset').inn();
+        //  var  ck= FCKeditorAPI.GetInstance(this).innerHTML;
+        //    //  alert($(this).parent().find('#footer').attr("id"));
+        //    //    CKEDITOR.replace($(this).parent().find('#footer').attr("id"));
+        //})
+      
+        for (var row1 = 0; row1 < len; row1++) {
+            debugger
+            //var Footernew = document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[0].children[0].text;
+            //if (Footernew == "") 
+            //{
+            //    //            document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[2].children[0].value = "";
+            //    Footer += "Blank" + ",";
+            //}
+            //else
+            //{
+            //    Footer += document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[0].children[0].text + ",";
+            //}
+
+            ParamiterID += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[6].innerHTML + ",";
+            TestID2 += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[9].innerHTML + ",";
+
+            if (document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML.length > 0) {
+                Formula += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[5].innerHTML + ",";
+            }
+            else {
+                Formula += "Blank" + ",";
+            }
+            if (document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].value.length > 0) {
+                newValue += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[1].children[0].value + ",";
+            }
+            else {
+                newValue += "Blank" + ",";
+            }
+            var NL = document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value;
+            if (NL == "") {
+                //            document.getElementById('datatable-responsive3').tBodies[0].rows[len].cells[2].children[0].value = "";
+                NLH1 += "Blank" + ",";
+            }
+            else {
+                NLH1 += document.getElementById('datatable-responsive3').tBodies[0].rows[row1].cells[2].children[0].value + ",";
+            }
+           
+           
+            
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Calculation", "PatientWiseResultEntry")',
+            data: { LabNo: $("#LabNo").val(), ParamiterID: ParamiterID, TestID2: TestID2, Formula: Formula, newValue: newValue, NLH1: NLH1, Footer: Footer },
+            success: function (data) {
+               // $("#datatable-responsive3 tbody td").remove();
+               // $("#datatable-responsive3 tbody tr").remove();
+                //  $("#datatable-responsive3").closest("tr").remove();
+                
+
+                for (var row = 0; row < data.length; row++) {
+                    
+                    //$("#datatable-responsive3").append('<tr><td>' + data[row].ParamiterName + '</td><td><input type="text"  id="value" name="value" value="' + data[row].ResultValue + '" class="value form-control" /></td><td>   <select  class="form-control" id="test" name="tests"><option value=""></option> <option value="Normal">Normal</option><option value="Low">Low</option> <option value="High">High</option></select> </td><td>' + data[row].Low + '</td><td>' + data[row].Hiegh + '</td><td style="display:none" >' + data[row].Formula + '</td><td style="display:none">' + data[row].ParamiterID + '</td><td style="display:none">' + data[row].ResultValue + '</td><td style="display:none"><input type="hidden" name="status" value=' + data[row].status + '/></td><td style="display:none">' + data[row].TestID + '</td></tr>');
+
+                }
+             debugger
+                var len = $("#datatable-responsive3 tbody tr").length;
+                //  $("#datatable-responsive3 td").remove();
+                
+                for (var row_num = 0; row_num < len; row_num++) {
+                    var Formula = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[5].innerHTML;
+                    
+                    if (Formula.length > 0) {
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].value = data[row_num].ResultValue;
+                        document.getElementById("datatable-responsive3").tBodies[0].rows[row_num].style.backgroundColor = "pink";
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].style.backgroundColor = "pink";
+                    }
+                    var newValue = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+                    if (newValue.length > 0) {
+                        $('#datatable-responsive3').closest('tr').next().find('td:eq(' + row_num + ')').focus();
+                        if ((parseInt(newValue) >= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML) && (parseFloat(newValue) <= parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[4].innerHTML)))) {
+
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Normal";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        }
+                        else if (parseFloat(newValue) < parseFloat(document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML)) {
+
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "Low";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        }
+                        else {
+
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "High";
+                            document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[8].children[0].value = "Y";
+                        }
+                    }
+
+                    //---------------------------
+                    
+                    var NLH = document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[3].innerHTML;
+                    if (NLH == "") {
+                        //
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+
+                    }
+
+                    if (document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[5].innerHTML != "") {
+
+                        document.getElementById('datatable-responsive3').tBodies[0].rows[row_num].cells[2].children[0].value = "";
+                    }
+                }
+            }
+        });
+        debugger
+     //   Focus();
+    }
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        var AuthorzerID = 0;
+        var AuthorzeName = "";
+        $("#btnAuth").click(function () {
+            debugger
+            if ($("#txtuser").val() != "" && $("#txtpass").val() != "")
+            {
+               
+                $.getJSON('@Url.Action("ValidateUser", "PatientWiseResultEntry")',
+                    { users: $("#txtuser").val(), password: $("#txtpass").val(), LabNo: $("#LabNo").val(), TestID: $("#test").val() },
+                    function (data) {
+                        debugger
+                        if(data[0].Message!=null)
+                        {
+                            alert(data[0].Message);
+                        }
+                        
+                        AuthorzerID = data[0].AuthorzerID;
+                        AuthorzeName = data[0].AuthorzeName;
+                        $("#btnEdit").text(data[0].btnsaveEdit);
+                        $("#txtstauts").val(data[0].cmbStatus);
+                        $("#Remark").val(data[0].txtRemark);
+                        $('#authorizationOkButtonModal').modal('show');
+                        
+                    });
+            }
+            else
+            {
+                alert("Username And Password  not Empty..");
+                return false;
+            }
+            })
+        $("#btnEdit").click(function () {
+            debugger
+            $.getJSON('@Url.Action("IUPatientLabAuthorization", "PatientWiseResultEntry")',
+                  { AuthorzerID: AuthorzerID, AuthorzeName: AuthorzeName, stauts: $("#txtstauts").val(), Remark: $("#Remark").val(), LabNo: $("#LabNo").val(), TestID: $("#test").val(), TestName: $("#test").text(),Mode: $("#btnEdit").text()},
+                  function (data) {
+                      if (data[0].Message != null) {
+                          alert(data[0].Message);
+                      }
+                  })
+             AuthorzerID = 0;
+             AuthorzeName = "";
+        })
+
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#datatable-responsive tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+
+
+    <div class="wrapper">
+
+        <form action="" id="form1"  method="post">
+            <input type="hidden" id="PreID" name="PreID" />
+            <input type="hidden" id="Formu" name="Formu" />
+            <input type="hidden" id="TesID" name="TesID" />
+            <input type="hidden" id="Nyvalue" name="Nyvalue" />
+            <input type="hidden" id="HLN" name="HLN" />
+            <input type="hidden" id="LNo" name="LNo" />
+            <div id="showdiv1" class="modal-content" style="overflow: scroll;  display: block; display: none">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <table id="datatable-responsive4"
+                       class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline   "
+                       cellspacing=" 0" width="100" role="grid"
+                       aria-describedby="datatable-responsive_info" style="width: 100%;">
+                    <thead class="navbar-inverse navbar-fixed-top">
+                        <tr role="row">
+
+                            <th class="sorting" aria-controls="datatable-responsive"
+                                rowspan="1" colspan="1">
+                                Name
+                            </th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="myModal1" style="display:none" class="" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Patient Details</h4>
+                            <button type="button" class="close" id="btnclose" data-dismiss="modal">&times;</button>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 padding0">
+                                <div class="col-lg-12 row rowmarginbottom padding0">
+
+                                    <table id="datatable-responsive" class="display" style="width:100%">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                            <input type="text" id="Search" name="Search" class="form-control" placeholder="Search">
+                                            </div>
+                                            <thead>
+                                                <tr role="row">
+
+                                                    <th class="sorting" aria-controls="datatable-responsive"
+                                                        rowspan="1" colspan="1">
+                                                        LabNo
+                                                    </th>
+
+                                                    <th class="sorting" aria-controls="datatable-responsive"
+                                                        rowspan="1" colspan="1">
+                                                        PatientName
+                                                    </th>
+                                                    <th class="sorting" aria-controls="datatable-responsive"
+                                                        rowspan="1" colspan="1">
+                                                        PatientType
+                                                    </th>
+                                                    <th class="sorting" aria-controls="datatable-responsive"
+                                                        rowspan="1" colspan="1">
+                                                        LabDate
+                                                    </th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar">
+                                                <tr>
+                                                    @*<td>1</td>
+                    <td>Help Value</td>*@
+
+                                                </tr>
+                                            </tbody>
+
+</table>
+
+                                    <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" id="colse1" class="btndivcss"><span class="fa fa-check buttoniconcss"></span>Ok</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning hidden">
+
+                                            <button type="button" id="" class="btndivcss"><span class="fa fa-times buttoniconcss"></span>Cancel</button>
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div id="myModal2" style="display:none" class="" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Recheck ParameterValue</h4>
+                            <button type="button" class="close" id="btnclose2" data-dismiss="modal">&times;</button>
+
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 padding0">
+                                <div class="col-lg-12 row rowmarginbottom padding0">
+
+                                    <table id="EditParameter" class="display display dataTable no-footer" style="width:100%">
+                                        <thead>
+
+                                            <tr role="row">
+
+                                                <th class="sorting" aria-controls="datatable-responsive"
+                                                    rowspan="1" colspan="1">
+
+                                                    ParameterName
+                                                </th>
+
+                                                <th class="sorting" aria-controls="datatable-responsive"
+                                                    rowspan="1" colspan="1">
+                                                    <input type="checkbox" id="checkvalue" name="checkvalue" />
+                                                    Result Value
+                                                </th>
+                                                <th class="sorting" aria-controls="datatable-responsive"
+                                                    rowspan="1" colspan="1">
+                                                    <input type="checkbox" id="checkvalue" name="checkvalue" />
+                                                    Value1
+                                                </th>
+                                                <th class="sorting" aria-controls="datatable-responsive"
+                                                    rowspan="1" colspan="1">
+                                                    <input type="checkbox" id="checkvalue" name="checkvalue" />
+                                                    Value2
+                                                </th>
+                                                <th class="sorting" aria-controls="datatable-responsive"
+                                                    rowspan="1" colspan="1">
+                                                    <input type="checkbox" id="checkvalue" name="checkvalue" />
+                                                    Value3
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+
+
+
+                                    @*<div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" id="colse1" class="btndivcss"><span class="fa fa-check buttoniconcss"></span>Ok</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" id="" class="btndivcss"><span class="fa fa-times buttoniconcss"></span>Cancel</button>
+
+
+                                        </div>
+
+
+                                    </div>*@
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="authorizationModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Patient Details</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 padding0">
+                                <div class="col-lg-12 row rowmarginbottom padding0">
+
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-4 padding0">
+                                            <span>User Id</span>
+
+                                        </div>
+                                        <div class="col-lg-8 padding0">
+                                            <input type="text" id="txtuser" class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 rowmargintop">
+                                        <div class="col-lg-4 padding0">
+                                            <span>Password</span>
+
+
+                                        </div>
+                                        <div class="col-lg-8 padding0">
+
+                                            <input type="text" id="txtpass" class="form-control input-sm">
+
+
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" class="btndivcss" id="btnAuth"><span class="fa fa-check buttoniconcss"></span>Ok</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" class="btndivcss">
+                                                <span class="fa fa-times buttoniconcss"></span>Cancel
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="authorizationOkButtonModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 row rowmarginbottom padding0">
+
+                                <div class="col-lg-12">
+                                    <div class="col-lg-4 padding0">
+                                        <span>Status</span>
+
+                                    </div>
+                                    <div class="col-lg-8 padding0">
+                                        <select class="form-control" id="txtstauts" name="txtstauts">
+                                            <option value="Accept">Accept</option>
+                                            <option value="Reject">Reject</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 rowmargintop">
+                                    <div class="col-lg-4 padding0">
+                                        <span>Remark</span>
+
+
+                                    </div>
+                                    <div class="col-lg-8 padding0">
+
+                                        <textarea name="Remark" id="Remark" class="form-control"></textarea>
+
+
+
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" class="btndivcss" id="btnEdit" data-toggle="modal" data-target="#authorizationOkButtonModal"><span class="fa fa-check buttoniconcss"></span>Edit</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" class="btndivcss">
+                                            <span class="fa fa-times buttoniconcss"></span>Cancel
+                                        </button>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="content-wrapper">
+                <h5 class="topheadline">
+                    Patient Wise Result Entry
+                </h5>
+                <div>
+                </div>
+
+
+                <section class="content-header">
+                    <div class="container-fluid">
+
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel-primary">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-12" style="background: #bddff7;padding:0px">
+                                                <div class="col-lg-9 padding0" style="font-family:roboto;padding:4px">
+                                                    <span> Patient Search</span>
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="pane-body">
+
+                                        <div class="row">
+                                            <div class="col-lg-12  rowmargintop" style="padding: 0px 0px 0px 5px;">
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-12 row padding0">
+
+                                                        <div class="col-lg-4">
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>Form Date</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <input type="date" required value="@DateTime.Now.ToString("yyyy-MM-dd")" id="FromDate" name="FromDate" style="Hight:25px" class="form-control input-sm" />
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>To Date</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <input type="date" required value="@DateTime.Now.ToString("yyyy-MM-dd")" id="ToDate" name="ToDate" style="Hight:25px" class="form-control input-sm" />
+
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-4">
+                                                            <div class="col-lg-6" style="padding-right:0px">
+                                                                <span>Patient UHID No. / Lab No.</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-6 padding0" style="display:flex">
+
+
+                                                                <input value="" type="hidden" class="form-control" id="RegNo" name="patient_reg_no" placeholder="">
+                                                                <input value="" type="text" class="form-control" id="printregno" name="printregno" placeholder="">
+                                                                <input value="" type="text" class="form-control" id="LabNo" name="patient_lab_no" placeholder="">
+
+                                                            </div>
+                                                        </div>
+
+
+
+
+
+                                                    </div>
+
+
+
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12  rowmargintop" style="padding: 0px 0px 0px 5px;">
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-12 row padding0">
+
+
+
+
+                                                        <div class="col-lg-4 ">
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>Patient Name</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <input value="" type="text" class="form-control" id="Patientname" name="patient_name" placeholder="">
+                                                                <input type="hidden" id="testID">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>Cons. Dr.</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <input value="" type="text" class="form-control" id="Consdr" name="consultant_dr" placeholder="" readonly>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-4">
+                                                            <div class="col-lg-12" style="padding-right:0px">
+
+                                                                <div class="btn-group dropdown-split-warning">
+
+
+                                                                    <button type="button" class="btndivcss" id="btnshow" style="width: max-content; Hight: 25px; margin-left: 3px;"><span class="fa fa-save buttoniconcss" style="padding: 5px; "></span>Show</button>
+
+                                                                </div>
+                                                                <div class="btn-group dropdown-split-warning">
+
+                                                                    <button type="button" class="btndivcss"><span class="fa fa-print buttoniconcss"></span>Print</button>   
+                                                                  
+
+                                                                </div>
+                                                                <div class="btn-group dropdown-split-warning">
+
+                                                                    <input type="checkbox" id="recheckparameter" name="recheckparameter" class="btndivcss"><span class="fa fa-save buttoniconcss" style="padding: 5px;"></span>RecheckParameterValue
+
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row ">
+
+                            <div class="col-lg-3 rowmargintop">
+                                <div class="panel-primary" style="box-shadow:none">
+                                    <div class="box-header with-border">
+                                        <h3 class="panelheading">Details</h3>
+                                    </div>
+
+                                    <div class="form-horizontal">
+                                        <div class="panel-body padding0">
+
+
+                                            <div class="col-lg-12  padding0">
+
+                                                <div class="col-lg-12" style="padding-right:0px">
+                                                    <span>Reported Date</span>
+
+
+                                                </div>
+                                                <div class="col-lg-12">
+
+
+                                                    <input type="date" id="ReportDate" name="ReportDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-sm" />
+
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="col-lg-12  padding0 rowmargintop rowmarginbottom">
+
+
+                                                <div class="col-lg-12" style="padding-right:0px">
+                                                    <span>Reported Time</span>
+
+
+                                                </div>
+                                                <div class="col-lg-12">
+
+
+                                                  
+
+                                                    <input type="time" id="ReportTime" name="ReportTime" value="now" class="form-control">
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-lg-12  padding0 rowmargintop">
+
+                                                <div class="col-lg-6">
+                                                    @*<button type="button" id="Complete" class="btndivcss" style="Hight: 26px;width:100px">Complete</button>*@
+
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <button type="button" class="btndivcss" id="Calculation" style="Hight: 26px; width: 100px">Calculation</button>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-12  padding0 rowmargintop rowmarginbottom">
+
+
+                                                <div class="col-lg-12" style="padding-right:0px">
+                                                    <span>Select Test </span>
+
+
+                                                </div>
+                                                <div class="col-lg-12">
+
+                                                    <select class="form-control" id="test" name="tests"><option value="">Select</option></select>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-lg-12 row  rowmargintop rowmarginbottom">
+                                                <div class="row ">
+                                                    <div class="col-lg-12">
+                                                        <div class=" col-md-12 rowmargintop rowmarginbottom">
+
+                                                            <button type="button" class="btndivcss" data-toggle="modal" data-target="#authorizationModal"><span class="fa fa-check buttoniconcss"></span>Authorization</button>
+                                                            <button type="button" id="AddUser" name="AddUser" onclick="window.location.href='@Url.Action("Authorised", "Authorised")'" class=" btndivcss"><span class="fa fa-plus buttoniconcss"></span>Add</button>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <table id="datatable-responsive2" class="display" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parameter Name</th>
+                                                        <th>Help Value</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="scrollbar">
+                                                    <tr>
+                                                        @*<td>1</td>
+                                                        <td>Help Value</td>*@
+
+                                                    </tr>
+
+
+
+
+
+                                                </tbody>
+
+                                            </table>
+
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-9 rowmargintop">
+
+                                <!-- Tab panes -->
+
+
+                                <div class="form-group" style="    margin-bottom: 10px;">
+                                    <fieldset class="the-fieldset">
+                                        <legend class="the-legend">Result Entry</legend>
+
+                                        <div class="col-md-12 padding0 rowmargintop">
+                                            <div class="panel-primary" style="box-shadow:none">
+                                                <div class="box-header">
+
+                                                </div>
+                                                <!-- /.box-header -->
+                                                <table id="datatable-responsive3" class="display" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            @*//<th>Footer</th>*@
+                                                            <th>Parameter Name</th>
+                                                            <th>Value</th>
+                                                            <th>N/L/H</th>
+                                                            <th>Low</th>
+                                                            <th>High</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar"></tbody>
+
+                                                </table>
+
+                                                <!-- /.box-body -->
+                                            </div>
+                                            <!-- /.box -->
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+                        <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                </section>
+
+            </div>
+        </form>
+</div>
+
+</body>
+
+
+
+

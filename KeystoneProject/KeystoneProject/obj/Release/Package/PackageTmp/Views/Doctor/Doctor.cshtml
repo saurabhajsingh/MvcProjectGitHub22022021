@@ -1,0 +1,892 @@
+﻿@model KeystoneProject.Models.Master.Doctor
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This file is edited by Mohammed -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    #ui-id-2 {
+        z-index: 1;
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    function submit1() {
+        debugger
+    }
+    function Delele(DoctorID) {
+        debugger
+        if (DoctorID != "" && $("#DoctorFName").val() != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteDoctor", "Doctor")',
+                    data: { DoctorID: DoctorID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Doctor Deleted Successfully") {
+                            alert("Doctor Deleted Successfully");
+                            location.reload(true);
+                            Restor();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#doctorTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        debugger
+
+
+        var doctor = localStorage.getItem("TemporaryDoctorID")
+
+        if (doctor != "" && doctor != null) {
+            $("#DoctorFName").val(doctor);
+            var doctor = localStorage.getItem("TemporaryDoctorID")
+            $("#DoctorPrintName").val(doctor);
+
+        }
+       
+        var Reffereddoctor = localStorage.getItem("RefferedDoctorID")
+
+        if (Reffereddoctor != "" && Reffereddoctor != null)
+        {
+       
+        $("#DoctorFName").val(Reffereddoctor);
+        var Reffereddoctor = localStorage.getItem("RefferedDoctorID")
+        $("#DoctorPrintName").val(Reffereddoctor);
+
+        }
+
+
+        var consultant = localStorage.getItem("ConsultantID")
+        var referred = localStorage.getItem("ReferredID")
+
+        if (consultant == "Consultant" || consultant != null) {
+
+            $("#DoctorType").val(consultant);
+            
+
+        }
+
+        if (referred == "Referred" || referred != null)
+        {
+            
+            $("#DoctorType").val(referred);
+           
+        }
+
+        localStorage.clear();
+
+       
+    });
+</script>
+<script>
+    var loadfile = function (event, name) {
+        debugger
+        var file = event.target.files[0];
+        if (name == "DoctorImage") {
+            document.getElementById('img1').src = window.URL.createObjectURL(event.target.files[0]);
+            // alert(window.URL.createObjectURL(event.target.files[0]));
+        }
+        // alert(window.URL.createObjectURL(event.target.files[0]));
+        var data = new FormData();
+        data.append("ImageFile", file);
+        // data.append("DoctorImage", name);
+        $.ajax({
+            url: '@Url.Action("imageuplod", "Doctor")',
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                debugger
+                // var img = document.getElementById("img")
+                if (name == "DoctorImage") {
+                    $("#DoctorImage").val(data);
+                }
+                if (name == "UploadDocuments") {
+                    alert(data);
+                    $("#UploadDocuments").val(data.replace('/MRDFiles/', ''));
+                }
+                if (name == "UploadSignature") {
+                    alert(data);
+                    $("#UploadSignature").val(data.replace('/MRDFiles/', ''));
+                }
+                //   img.src = data;
+                //document.getElementById('img').src ="D:\20-7-2019\KeystoneProject\KeystoneProject\MRDFiles/Desert.jpg";
+                // $("#DoctorImage").val = data;
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#doctorTableId").delegate('tr', 'click', function () {
+            $('#doctorTableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#doctorTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script>
+    function Date1() {
+        var dtToday = new Date();
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        $('#LevingDate').attr('min', maxDate);
+    }
+    $(document).ready(function () {
+        Date1();
+        //$("#LevingDate").datepicker({ minDate: new Date() });
+        $("#LevingDate").change(function () {
+
+            if($(this).val()<=$("#DateOfJoining").val())
+            {
+               // alert("Join Date and Leave Date Not Same..");
+                return false;
+            }
+        })
+
+        $("#UploadDownlode1").click(function () {
+            $.ajax({
+                url: '@Url.Action("DownlodeFile", "Doctor")',
+                type: "POST",
+                dataType: "json",
+                data: { DoctorID: $("#DoctorID").val() },
+                success: function (data) {
+                }
+            })
+        })
+        $('#DotorFName').keyup(function () {
+            var DoctorFname = $('#DoctorFName').val();
+            var DoctorLName = $('#DoctorLName').val();
+            $('#DoctorPrintName').val("Dr. " + DoctorFname + " " + DoctorLName);
+        });
+        $('#DoctorLName').keyup(function () {
+            var DoctorFname = $('#DoctorFName').val();
+            var DoctorLName = $('#DoctorLName').val();
+            $('#DoctorPrintName').val("Dr. " + DoctorFname + " " + DoctorLName);
+        });
+    });
+    $(document).ready(function () {
+        $("#QualifictionName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetQualificationRecord", "Doctor")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.QualifictionName, value: item.QualifictionName, id: item.QualifictionID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#QualifictionID").val(show);
+            },
+        });
+    })
+    $(document).ready(function () {
+        $("#DepartmentName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Doctor/GetDepartmentRecord",
+                    url: '@Url.Action("GetDepartmentRecord", "Doctor")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DepartmentName, value: item.DepartmentName, id: item.DepartmentID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#DepartmentID').val(i.item.id);
+            },
+        });
+    })
+    $(document).ready(function () {
+        $("#SpecializationName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Doctor/GetSpecializationRecord",
+                    url: '@Url.Action("GetSpecializationRecord", "Doctor")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.SpecializationName, value: item.SpecializationName, id: item.SpecializationID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                if (!i.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#SpecializationID').val(i.item.id);
+            },
+        });
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DataTableBind", "Doctor")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                $.each(result, function (i, obj) {
+                    $("#doctorTableId").append('<tr><td>' + count + '</td><td> ' + obj.DoctorFName + ' </td> <td> ' + obj.DoctorLName + ' </td> <td> ' + obj.DoctorType + ' </td><td style="display:none"> ' + obj.DoctorID + '</td><td style="display:none"> ' + obj.DoctorImage + '</td></tr>');
+                    count++;
+                });
+                $('#doctorTableId').DataTable({
+                    //dom: 'Bfrtip',
+                    //buttons: [{
+                    //    extend: 'excel',
+                    //    text: 'Excel',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Excel',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //},
+                    //{
+                    //    extend: 'csv',
+                    //    text: 'CSV',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Csv',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //},
+                    //{
+                    //    extend: 'pdf',
+                    //    text: 'PDF',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Pdf',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //}]
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#doctorTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#doctorExcelExport'));
+            },
+            error: function () {
+            }
+        });
+        $("#doctorTableId").delegate('tr', 'click', function () {
+            $('#doctorTableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#doctorTableId").delegate('td', 'click', function () {
+            debugger
+            Restor();
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            //$("#save").text("Update");
+            //$("save").addClass("btndivcss");
+            var row_num = parseInt($(this).parent().index());
+            var DoctorID = parseInt(document.getElementById("doctorTableId").tBodies[0].rows[row_num].cells[4].innerHTML);
+          //  var ImagePath = document.getElementById("doctorTableId").tBodies[0].rows[row_num].cells[5].innerHTML;
+          //document.getElementById('img1').src = ImagePath;
+            //
+            //   alert(ImagePath);
+            // $("#img").attr("src", ~ImagePath);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Fill", "Doctor")',
+                dataType: "json",
+                data: { DoctorID: DoctorID },
+                traditional: true,
+                contentType: 'application/json',
+                success: function (result) {
+                    $.each(result, function (i, obj) {
+                        debugger
+                        //var Date = new Date(obj.DateOfJoining);
+                        $("#DoctorID").val(DoctorID);
+                        $("#DoctorType").attr("value", obj.DoctorType);
+                        $("#DoctorType").attr("text", obj.DoctorType);
+                        // document.getElementById("DoctorType").value = obj.DoctorType
+                        if (obj.DoctorType == "Consultant") {
+                            document.getElementById("DoctorType").selectedIndex = 0;
+                        }
+                        else {
+                            document.getElementById("DoctorType").selectedIndex = 1;
+                        }
+                        if (obj.Gender == "MALE") {
+                            document.getElementById("Gender").selectedIndex = 0;
+                        }
+                        else {
+                            document.getElementById("Gender").selectedIndex = 1;
+                        }
+                        // $('#Gender').val(obj.Gender);
+                        $("#DoctorFName").val(obj.DoctorFName);
+                        $("#DoctorLName").val(obj.DoctorLName);
+                        $("#DoctorPrintName").val(obj.DoctorPrintName);
+                        $("#RegNo").val(obj.RegNo);
+                        //   $("#Gender").val(obj.Gender);
+                        //  alert(obj.Gender);
+                        $("#DepartmentID").val(obj.DepartmentID);
+                        $("#QualifictionID").val(obj.QualifictionID);
+                        $("#SpecializationID").val(obj.SpecializationID);
+                        $("#CounsultancyFees").val(obj.CounsultancyFees);
+                        $("#CounsultancyDuration").val(obj.CounsultancyDuration);
+                        $("#RenewalFee").val(obj.RenewalFee);
+                        $("#RenewalDuration").val(obj.RenewalDuration);
+                        //    $("#Commission").val(obj.DoctorPrintName);
+                        $("#CommissionType").val(obj.CommissionType);
+                        
+                        document.getElementById("LevingDate").value = obj.LevingDate;
+                        document.getElementById("DateOfJoining").value = obj.DateOfJoining;
+                        document.getElementById("DateOfBirth").value = obj.DateBirth;
+                        // $("#DateOfBirth").val(obj.DateBirth);
+                        $("#PermanentAddress").val(obj.PermanentAddress);
+                        //$("#TelephoneNo").val(obj.DoctorPrintName);
+                        $("#FaxNo").val("");
+                        $("#MobileNo").val(obj.MobileNo);
+                        $("#EmailId").val(obj.EmailId);
+                        $("#DepartmentName").val(obj.DepartmentName);
+                        $("#QualifictionName").val(obj.QualifictionName);
+                        debugger
+                        $("#SpecializationName").val(obj.SpecializationName);
+                        $("#DoctorImage").val(obj.DoctorImage);
+                        document.getElementById('img1').src = obj.DoctorImage;
+                        $("#UploadDocuments").val(obj.UploadDocuments);
+                        $("#UploadSignature").val(obj.UploadSignature);
+                        document.getElementById('UploadFile').src = obj.UploadDocuments;
+                        document.getElementById('UploadSign').src = obj.UploadSignature;
+
+                        
+                    });
+                }
+            });
+        });
+    });
+    function Restor() {
+        $("#DoctorID").val("");
+        $("#DoctorFName").val("");
+        $("#DoctorLName").val("");
+        $("#DoctorPrintName").val("");
+        //  $("#Gender").val("");
+        $("#DepartmentID").val("");
+        $("#QualifictionID").val("");
+        $("#SpecializationID").val("");
+        $("#CounsultancyFees").val("");
+        $("#CounsultancyDuration").val("");
+        $("#RenewalFee").val("");
+        $("#RenewalDuration").val("");
+        $("#Commission").val("");
+        $("#CommissionType").val("");
+        $("#ConsultancyLimit").val("");
+        $("#PresentAddrerss").val("");
+        $("#PermanentAddress").val("");
+        $("#TelephoneNo").val("");
+        $("#FaxNo").val("");
+        $("#MobileNo").val("");
+        $("#EmailId").val("");
+        $("#DepartmentName").val("");
+        $("#QualifictionName").val("");
+        $("#SpecializationName").val("");
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var chk=true;
+        $("#RegNo").keyup(function ()
+        {
+            var DoctorType = $("#DoctorType").val();
+            var RegNo = $("#RegNo").val();
+            var chk1 = "";
+            if (RegNo != "")
+            {
+                $.ajax({
+
+                    url: '@Url.Action("CheckDoctorPatientReg", "Doctor")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { RegNo: RegNo, DoctorType: DoctorType },
+                    success: function (data)
+                    {
+                        debugger;
+                        if (data == "Doctor Registration Number is Already Given To Another Doctor")
+                        {
+                            debugger
+                            alert(data);
+                            // e.preventDefault();
+                            chk = false;
+                           // return false;
+                            
+                        }
+                        else
+                        {
+                            chk = true;
+                            //return true;
+                        }
+
+                    }
+                })
+
+            }
+           // alert("1");
+        })
+        $("#Click").submit(function (e) {
+            debugger
+            if (chk)
+            {
+                return true;
+            }
+            else
+            {
+                alert("Doctor Registration Number is Already Given To Another Doctor");
+                return false;
+            }
+            debugger;
+            @*var DoctorType = $("#DoctorType").val();
+            var RegNo = $("#RegNo").val();
+            var chk1 = "";
+            if (RegNo != "") {
+                $.ajax({
+
+                    url: '@Url.Action("CheckDoctorPatientReg", "Doctor")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { RegNo: RegNo, DoctorType: DoctorType },
+                    success: function (data)
+                    {
+                        debugger;
+                        if (data == "Doctor Registration Number is Already Given To Another Doctor")
+                        {
+                            debugger
+                            alert(data);
+                           // e.preventDefault();
+                            return false;
+
+                        }
+                        else
+                        {
+                            return true;
+                        }
+
+                    }
+                })*@
+
+            //}
+           
+        });
+       
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post" id="Click">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Doctor Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Doctor</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="background: #bddff7;">
+                                        <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                            <h2 class="panelheading">Doctor Details</h2>
+                                        </div>
+                                        <div class="form-group col-lg-2 col-md-6 col-sm-12 col-xs-12 mb-2">
+                                            @*<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label style="padding-top: 5px;float: right;">Doctor Type</label>
+                                                </div>*@
+                                            @*<div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">*@
+                                            <select name="DoctorType" id="DoctorType" class="form-control" style="margin-top: 3px;">
+                                                
+                                                <option value="Consultant">Consultant</option>
+                                                <option value="Referred">Referred</option>
+                                            </select>
+                                            @*</div>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Doctor Image-->
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <div class="form-group" style="border-radius: 4px;text-align: -webkit-center;margin-bottom: 0;">
+                                                        <img src="/Vendor/dist/images/Doctor.png" id="img1" class="img-circle img-fluid" style="height: 80px;">
+                                                    </div>
+                                                    <div class="custom-file">
+                                                        <input type="file" id="file1" name="file" onchange="loadfile(event,'DoctorImage')" aria-label="File browser example" class="custom-file-input" style="font-size:12px;width:80%;padding:0px">
+                                                        <input type="hidden" name="DoctorImage" id="DoctorImage" />
+                                                        <label class="custom-file-label" for="customFile" style="overflow: hidden;"></label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                    <!--Doctor Name-->
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Name</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="DoctorFName" id="DoctorFName" class="form-control" placeholder="Doctor Name"
+                                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                                           oninvalid="this.setCustomValidity('Please Enter Doctors First Name')"
+                                                                           oninput="this.setCustomValidity('')">
+                                                                    <input type="hidden" name="DoctorID" id="DoctorID" class="form-control input-sm">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Last</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="DoctorLName" id="DoctorLName" class="form-control" placeholder="Doctor Last Name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Print Name</label>
+                                                                </div>
+                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="DoctorPrintName" id="DoctorPrintName" class="form-control" placeholder="Doctor Print Name">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="row">
+                                                            <!--Gender-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Gender</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                    <select name="Gender" id="Gender" class="form-control">
+                                                                        <option value="Male">Male</option>
+                                                                        <option value="Female">Female</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <!--Date Of Birth-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>DOB</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="date" required value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" name="DateOfBirth" id="DateOfBirth" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <!--Registraion No.-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Reg. No.</label>
+                                                                </div>
+                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="RegNo" id="RegNo" class="form-control" placeholder="Registraion Number">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="row">
+                                                            <!--Department-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Dept.</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                    <input type="hidden" name="DepartmentID" id="DepartmentID" class="form-control">
+                                                                    <input type="text" name="DepartmentName" id="DepartmentName" class="form-control" placeholder="Department">
+                                                                </div>
+                                                            </div>
+                                                            <!--Specilization-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Specn.</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="SpecializationName" id="SpecializationName" class="form-control" placeholder="Specialization">
+                                                                    <input type="hidden" name="SpecializationID" id="SpecializationID" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <!--Qualification-->
+                                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                    <label>Qualific.</label>
+                                                                </div>
+                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                    <input type="text" name="QualifictionName" id="QualifictionName" class="form-control" placeholder="Qualification">
+                                                                    <input type="hidden" name="QualifictionID" id="QualifictionID">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class=" col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card card-primary">
+                                            <h2 class="panelheading">Details</h2>
+                                            <div class="card-body pane-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <!--Joining Date-->
+                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>Join Dt</label>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" name="DateOfJoining" id="DateOfJoining" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <!--Leaving Date-->
+                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>leave Dt</label>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                <input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" name="LevingDate" id="LevingDate" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                            <!--Upload Document-->
+                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>
+                                                                    Docmt.
+                                                                    <a href="@Url.Action("DownlodeFile", "Doctor", new { UplodeDocument = "UplodeDocument" })" id="UploadFile" name="UploadFile">
+                                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" value="jpg" accept="image/*" onchange="loadfile(event,'UploadDocuments')" id="up" name="up" class="custom-file-input">
+                                                                    <input type="text" readonly name="UploadDocuments" id="UploadDocuments">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0" style="margin-bottom: 0px;">
+                                                            <!--Upload Sign-->
+                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                <label>
+                                                                    Sign
+                                                                    <a href="@Url.Action("DownlodeFile", "Doctor",  new { UplodeDocument = "UploadSign" })" id="UploadSign" name="UploadSign">
+                                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                <div class="custom-file">
+                                                                    <input type="file" accept="image/*" onchange="loadfile(event, 'UploadSignature')" id="sign" name="sign" class="custom-file-input">
+                                                                    <input type="text" readonly name="UploadSignature" id="UploadSignature">
+                                                                    <label class="custom-file-label" for="customFile">Upload</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card card-primary">
+                                            <h2 class="panelheading">Address Details</h2>
+                                            <div class="card-body pane-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            @*<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Address</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">*@
+                                                            <textarea id="PermanentAddress" name="PermanentAddress" class="form-control" placeholder="Address"></textarea>
+                                                            <input type="hidden" name="PresentAddrerss" id="PresentAddrerss" class="form-control input-sm" />
+                                                            @*</div>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12" style="margin: 0px">
+                                                            @*<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                                    <label>Mobile No.</label>
+                                                                </div>
+                                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">*@
+                                                            <input type="text" required maxlength="10" name="MobileNo" id="MobileNo" class="form-control"
+                                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                                                   placeholder="Mobile No.">
+                                                            @*</div>*@
+                                                        </div>
+                                                        <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12" style="margin: 0px">
+                                                            @*<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12"">
+                                                                    <label>Email Id</label>
+                                                                </div>
+                                                                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">*@
+                                                            <input type="text" name="EmailId" id="EmailId" class="form-control" placeholder="Email I'd">
+                                                            @*</div>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Delele(document.getElementById('DoctorID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="doctorExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="doctorTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="doctorTableId_info"
+                                       style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">Sr. no.</th>
+                                            <th scope="col">Doctor Name</th>
+                                            <th scope="col">Last Name</th>
+                                            <th scope="col">Doctor Type</th>
+                                            <th scope="col" style="display:none">Doctor Type</th>
+                                            <th scope="col" style="display:none">Doctor Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

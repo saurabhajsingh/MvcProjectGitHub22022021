@@ -1,0 +1,1241 @@
+﻿@model KeystoneProject.Models.Patient.PatientImageManager
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 2px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    th {
+        width: 25.00%;
+    }
+
+    thead {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+    }
+
+    tfoot {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+        padding: 3px;
+        border: 1px solid white !important;
+    }
+
+        tfoot td {
+            border: 1px solid white !important;
+            padding: 1px !important;
+        }
+
+    tbody {
+        height: 120px;
+        overflow: auto;
+        overflow-x: hidden;
+        display: block;
+        width: 100%;
+    }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+</style>
+
+<style>
+    label {
+        display: block;
+        margin-bottom: .5rem;
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+</style>
+<style>
+    .tab .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tab .nav-tabs > li > a {
+            border: none;
+            padding: 9px 10px;
+            color: #fff;
+            background: #4e6270;
+            border-radius: 0;
+            font-family: roboto;
+            font-size: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+            .tab .nav-tabs > li > a > i {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+        .tab .nav-tabs > li.active > a,
+        .tab .nav-tabs > li.active > a:focus,
+        .tab .nav-tabs > li.active > a:hover {
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            transition: background 0.20s linear;
+        }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -25px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #e74c3c;
+        z-index: 999;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+        border: 2px solid #bddff7;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+
+    div.dt-buttons {
+        position: relative;
+        float: left;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        display: none;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ccc8c8 !important;
+        background: #bddff7;
+        font-weight: 500 !important;
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #ebe7e7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: #333;
+        background: #d0e6f6;
+        font-family: roboto;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: inherit !important;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #41b0ff !important;
+            padding: 0px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 2px 8px 0px 8px !important;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #333 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em;
+        padding-bottom: 3px;
+    }
+</style>
+
+<script>
+    var Path = "";
+    $(document).ready(function () {
+        $('#PrintRegNo').change(function () {
+            debugger
+            var printReg = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("GetPrintNo_ToRegNo", "PatientImageManager")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: $("#PrintRegNo").val() },
+
+                success: function (data)
+                {
+                   // alert(data);
+                    debugger
+
+                  //  $('#PrintRegNo').val(printReg)
+                    $("#PatientRegNo").val(data);
+                  //  alert($("#PatientRegNo").val());
+                    FillData();
+                }
+            })
+        })
+
+        $("#PatientName").click(function () {
+
+            //  $("#patientNameTable").show();
+            $('#patientNameTable').slideDown();
+            $("#patientdataclose").show();
+            var type = $("input[name='colorRadio']").val();
+            PatientDetail(type);
+        })
+
+        var chik = "";
+        $("#chkall").click(function () {
+
+            debugger
+             chik = $(this).val();
+            chik= document.getElementById("chkall").checked;
+            var row = $("#example tbody tr").length;
+            debugger
+            if (chik == true)
+            {
+
+                for (var a = 0; a < row; a++)
+                {
+                    document.getElementById("example").tBodies[0].rows[a].cells[0].children[0].checked = true;               
+                }
+         
+            }
+            else
+            {
+                for (var a = 0; a < row; a++)
+                {
+                    document.getElementById("example").tBodies[0].rows[a].cells[0].children[0].checked = false;
+
+
+               
+                }
+            }
+  
+        })
+
+        $("#Scan").click(function () {
+            debugger
+            $("#example").show();
+            //Path = "";
+            //var row = parseInt($(this).parent().index());
+
+            //Path += document.getElementById('example').tBodies[0].rows[row].cells[8].innerHTML;
+            //alert(Path)
+            //alert("scan");
+         
+            if(PatientRegNo==0)
+            {
+                alert("select Patient Name");
+            }
+            else
+            {
+                $.ajax({
+                    url: '@Url.Action("Scan", "PatientImageManager")',
+                    type: "Get",
+                 
+                    data: { PatientRegNo: $("#PatientRegNo").val(), Email: $("#txtScan").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (d) {
+                        debugger;
+                        
+                        $("#pathshow").text(d.replace('/MRDFiles/', ''));
+                        $("#txtScan").val(d);
+                        document.getElementById("img").src = d;
+                       
+                          
+                        $("#example tbody").append('<tr><td><input type="checkbox" name="check" id="check" ><input type="hidden"  name="CasePaperID"   style="display:none" value="' + 0 + '"></td><td style="display:none">' + $("#PatientRegNo").val() + '</td><td>' + $("#OPDIPDNo").val() + '</td><td>' + d.replace('/MRDFiles/', '') + ' <input type="hidden"  value=' + d + ' name="PaperPath"></td><td> <a href="@Url.Action("DownLoadFile", "PatientImageManager")?CasePaperID=' + $("#CasePaperID").val(0) + '"><i>Download</i></a></td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td></tr>');
+
+                     
+                 
+                    },
+                });
+
+            }
+
+          
+
+        })
+        $("#Email").click(function () {
+
+            $("#EmailBox").show();
+        })
+      
+
+
+        // table click
+        //$("#example").delegate('td', 'click', function () {
+        //    debugger
+        //    Path = "";
+        //    var row = parseInt($(this).parent().index());
+
+        //    Path+= document.getElementById('example').tBodies[0].rows[row].cells[3].innerHTML;
+        //    alert(Path)
+
+
+        //})
+
+
+        //----
+        $("#btnSend").click(function () {
+            Path = "";
+            debugger
+            var row = $("#example td").closest("tr").length;
+            for (var a = 1; a < row; a++) {
+
+                if (document.getElementById("example").tBodies[0].rows[a].cells[0].children[0].checked==true)
+                {
+                    Path += document.getElementById('example').tBodies[0].rows[a].cells[5].innerHTML+",";
+                 
+                }
+           
+
+            }
+          //  alert($("#PatientRegNo").val());
+         var chk=     document.getElementById("chkall").checked;
+        
+             $.ajax({
+                 url: '@Url.Action("Email", "PatientImageManager")',
+                 type: "GET",
+                 data: { PatientRegNo: $("#PatientRegNo").val(), Path: Path, Email: $("#txtEmail").val() },
+                 contentType: "application/json; charset=utf-8",
+                 dataType: "json",
+                 success: function (data) {
+                     debugger;
+                     $("#txtEmail").val();
+                     //$("#PatientType1").val("PatientType");
+                 },
+             });
+
+         
+         
+
+        })
+        
+
+    });
+    
+   
+    function FillData() {
+        PatientRegNo = $("#PatientRegNo").val();
+        $.ajax({
+            url: '@Url.Action("BindNamebyRegNo", "PatientImageManager")',
+            type: "POST",
+            data: '{PatientRegNo:' + $("#PatientRegNo").val() + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#PatientName").val(data[0].PatientName);
+                $("#GuardianName").val(data[0].GuardianName);
+                $("#Gender").val(data[0].Gender);
+                $("#Age").val(data[0].Age);
+                $("#PatientType").val(data[0].PatientType);
+                $("#Address").val(data[0].Address);
+                $("#MobileNo").val(data[0].MobileNo);
+                $("#OPDIPDNo").val(data[0].OPDIPDID);
+                $("#OPDIPDID").val(data[0].OPDIPDID);
+                //$("#PatientType1").val("PatientType");
+            },
+        });
+
+
+        PatientRegNo = $("#PatientRegNo").val();
+
+        $.ajax({
+            url: '@Url.Action("GetFile", "PatientImageManager")',
+            type: "POST",
+            data: '{PatientRegNo:' + JSON.stringify(PatientRegNo) + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (search) {
+                debugger;
+                $("#example tbody tr").remove();
+                for (var i = 0; i < search.length; i++)
+                {
+                    $("#example tbody").append('<tr><td><input type="checkbox" name="check" id="check"><input type="hidden"  name="CasePaperID"  style="display:none" value="' + search[i].CasePaperID + '"><input type="hidden" value="' + search[i].PatientRegNo + '"></td><td>' + search[i].OPDIPDID + '</td><td><input type="hidden" value=' + search[i].PaperPath + ' name="PaperPath" >' + search[i].PaperName.replace('/MRDFiles/', '') + '</td><td> <a href="@Url.Action("DownLoadFile", "PatientImageManager")?CasePaperID=' + search[i].CasePaperID + '"><i>Download</i></a></td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td></tr>');
+                   // $("#CasePaperID").val() = document.getElementById("example").tBodies[0].rows[rows].cells[0].children[1].value;
+                    // Path+= search[i][5]+",";
+                   
+                }
+            },
+
+        });
+        $("#example").on("click", "#delrow", function () {
+          //  alert("del");
+            debugger
+            var rows = $(this).closest('tr').index();
+            CasePaperID = document.getElementById("example").tBodies[0].rows[rows].cells[0].children[1].value;
+            $(this).closest('tr').remove();
+           // alert(CasePaperID);
+                debugger;
+                    var conform = confirm("Do you Want To Delete");
+                    if (conform) 
+                    {
+                        debugger;
+                        $.ajax({
+                            url: '@Url.Action("Delete", "PatientImageManager")',
+                            type: 'POST',
+                            data: { CasePaperID: CasePaperID },
+                            success: function (data) {
+                                if (data.length > 1) {
+                                    alert("Delete Successfully");
+
+                                    //location.reload();
+
+                                }
+                                else {
+
+                                }
+
+
+                            }
+
+                        })
+
+                    
+               
+            }
+            
+            });
+       
+
+    }
+
+
+
+    $(document).ready(function () {
+        $("#patientdataclose").hide();
+        debugger;
+        $("#PatientName").autocomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+
+
+                    url: '@Url.Action("RegisteredPatient", "PatientImageManager")',
+
+                    type: "POST",
+                    dataType: "json",
+                    data: { PatientName: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, PatientRegNo: item.PatientRegNo, GuardianName: item.GuardianName, Gender: item.Gender, Age: item.Age, PatientType: item.PatientType, Address: item.Address, MobileNo: item.MobileNo
+                            };
+                        }))
+
+                    }
+
+
+                })
+            },
+
+
+            minLength: 1,
+            select: function (event, ui) {
+                debugger
+                $("#PatientName").val(ui.item.PatientName);
+                $("#PatientRegNo").val(ui.item.PatientRegNo);
+                //$("#GuardianName").val(ui.item.GuardianName);
+                //$("#Gender").val(ui.item.Gender);
+                //$("#Age").val(ui.item.Age);
+                //$("#PatientType").val(ui.item.PatientType);
+                //$("#Address").text(ui.item.Address);
+                //$("#MobileNo").val(ui.item.MobileNo);
+
+
+                FillData();
+
+
+            }
+
+
+        });
+        $("#patientdataclose").click(function () {
+            $("#patientNameTable").hide();
+            $("#patientdataclose").hide();
+        })
+        $("#FirstName").click(function () {
+
+            //  $("#patientNameTable").show();
+            $('#patientNameTable').slideDown();
+            $("#patientdataclose").show();
+            var type = $("#PatientType").val();
+            PatientDetail(type);
+        })
+      
+
+        $("#patientNameTable").delegate('td', 'click', function () {
+            debugger;
+            var row = $(this).parent().index();
+            var Print = document.getElementById('patientNameTable').tBodies[0].rows[row].cells[0].innerHTML;
+            $("#PrintRegNo").val(Print);
+            $("#PrintRegNo").change();
+            $('#patientNameTable').slideUp();
+
+        });
+
+        $("#PatientName").on("keyup", function () {
+            debugger
+            var value = $(this).val().toLowerCase();
+            $("#patientNameTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+
+    });
+
+    function PatientDetail(type) {
+        $.ajax({
+            url: '@Url.Action("GetIPDPatient", "PatientImageManager")',
+            contentType: "application/json; charset=utf-8",
+            type: "GET",
+            dataType: "json",
+            data: { prefix: "%", outside: type },
+            success: function (result) {
+                debugger
+                $("#patientNameTable tbody tr").remove();
+                $.each(result, function (i, obj) {
+                    $("#patientNameTable").append('<tr><td>' + obj.PrintRegNO + '</td><td style="display:none">' + obj.patientregNo + '</td><td>' + obj.patientname + '</td><td>' + obj.address + '</td><td>' + obj.contactno + '</td></tr>')
+
+                });
+                debugger
+            }
+        });
+    }
+    $(function () {
+        $("#PatientRegNo").change(function () {
+            debugger
+            //  var PregNo = { PatientRegNO: $("#PatientRegNo").val() }
+            PatientRegNo = $("#PatientRegNo").val();
+            FillData();
+        })
+
+
+
+
+    });
+
+</script>
+
+    
+
+<script>
+
+    var loadfile = function (event) {
+        debugger
+
+       
+        var file = event.target.files[0];
+       
+        alert = ("download");
+
+        var data = new FormData();
+        data.append("ImageFile", file);
+      
+        data.append("PaperName", "SamsungA8");
+        
+
+        $.ajax({
+           
+            url: '@Url.Action("imageuplod", "PatientImageManager")',
+            type: "POST",
+        
+            data:data,
+            contentType:false,
+            processData:false,
+            success: function (d) {
+                debugger
+               
+                $("#file1").val = d.PaperName;
+              
+                $("#txtScan").val(d.PaperName);
+                document.getElementById("img").src = d[0].PaperName;
+               // $("#CasePaperID").val(0);
+
+                $("#example tbody").append('<tr><td><input type="checkbox" name="check" id="check" ><input type="hidden" name="CasePaperID"   value="0"></td><td style="display:none"><input type="hidden" value="' + $("#PatientRegNo").val() + '" ></td><td>' + $("#OPDIPDNo").val() + '</td><td>' + d.replace('/MRDFiles/', '') + '<input type="hidden" value=' + d + ' name="PaperPath" ></td><td> <a href="@Url.Action("DownLoadFile", "PatientImageManager")?CasePaperID=' + $("#CasePaperID").val(0) + '"><i>Download</i></a></td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td></tr>');
+
+              
+            }
+        });
+
+
+
+        }
+
+
+</script>
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <div class="content-wrapper">
+            <h5 class="topheadline">Patient Image Manager</h5>
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <form action="" method="post">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-7 padding0">
+                                <!-- left column -->
+                                <div class="col-md-12">
+
+                                    <div class="panel-primary">
+                                        <div class="box-header with-border">
+                                            <h3 class="panelheading">Patient Details</h3>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <!-- Hospital Location Form Start -->
+                                        <!--<form role="form">-->
+                                        <div class="panel-body padding0">
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5 " style="padding-right:0px">
+                                                        <label>UHID No.</label>
+
+                                                    </div>
+                                                    <div class="col-lg-7 ">
+                                                        <input type="text" id="PrintRegNo" name="PrintRegNo" class="form-control" />
+                                                        <input type="hidden" id="PatientRegNo" name="PatientRegNo" class="form-control">
+                                                    @*<input type="hidden" id="CasePaperID" name="CasePaperID" class="form-control">*@
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-7 padding0">
+                                                    <div class="col-lg-4">
+                                                        <label>Patient Name</label>
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                    </div>
+                                                    <div class="patientTableDiv table-responsive" style="position: absolute;z-index: 100;max-height: 250px;overflow: scroll;background-color: #ffffff;border: 0;box-shadow: 10px 10px 10px -6px #797979;">
+                                                        <button type="button" id="patientdataclose" name="patientdataclose" value="X" class="">X</button>
+                                                        <table id="patientNameTable" class="table table-bordered display table-hover table-head-fixed" style="width: 100%; display:none;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="background-color: #bddff7;">UHID No.</th>
+                                                                    <th style="display:none">Print Reg No.</th>
+                                                                    <th style="background-color: #bddff7;">Pt.Name</th>
+                                                                    <th style="background-color: #bddff7;">Address</th>
+                                                                    <th style="background-color: #bddff7;">Mobile No.</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5">
+                                                        <label>OPD/IPD No.</label>
+
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" id="OPDIPDNo" name="OPDIPDNo" class="form-control" readonly>
+                                                        <input type="hidden" id="OPDIPDID" name="OPDIPDID" class="form-control input-sm" />
+                                                        <input type="hidden" id="path" name="path" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-7 padding0">
+                                                    <div class="col-lg-4">
+                                                        <label>Patient Type</label>
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="PatientType" name="PatientType" class="form-control" readonly>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5" style="padding-right:0px">
+                                                        <label>Guradian Name</label>
+
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" id="GuardianName" name="GuardianName" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-7">
+
+                                                    <div class="col-lg-4">
+                                                        <span>Gender</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <select name="Gender" id="Gender" class="form-control input-sm" readonly>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                          
+                                                        </select>
+
+
+                                                    </div>
+
+                                                </div>
+                                               
+                                            </div>
+
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5">
+                                                        <label>Age</label>
+
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" id="Age" name="Age" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-7 padding0">
+                                                    <div class="col-lg-4">
+                                                        <label>Address</label>
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+
+                                                        <textarea id="Address" name="Address" class="form-control" readonly></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 padding0 rowmargintop rowmarginbottom">
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5">
+                                                        <label>Mobile No.</label>
+
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <input type="text" id="MobileNo" name="MobileNo" class="form-control"  readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-7 padding0">
+                                                    <div class="col-lg-12">
+                                                        <input type="file" name="file" onchange="loadfile(event)" class="form-control" />
+
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5" style="padding-right:0px">
+                                                        <input type="button" id="Email" value="E-Mail" >
+                                                    </div>
+                                                   
+                                                </div>
+
+
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-5" style="padding-right:0px">
+                                                      <span id="pathshow"></span>
+                                                        <input type="button" id="Scan" value="Scan"><input type="hidden" id="txtScan" name="txtScan" class="form-control">
+                                                       
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-5 padding0" id="EmailBox" style="display:none">
+                                                <div class="col-lg-5" style="padding-right:0px">
+                                                    <label>Email ID</label>
+
+                                                </div>
+                                                <div class="col-lg-7">
+                                                    <input type="text" id="txtEmail" name="txtEmail" class="form-control"><input type="button" id="btnSend" value="Send" class="btn-success">
+                                                </div>
+                                              
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+
+                                <div class="panel-primary">
+                                    <div class="box-header with-border">
+                                        <h3 class="panelheading" style="background: #ffffff;">Hospital Investigation Details</h3>
+                                        <img src="" id="img" height="200px" width="200px" />
+                                    </div>
+
+                                    <div class="panel-body padding0">
+                                        <!-- /.box-header -->
+                                        <table id="example1" class="display" style="display:none" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Delete</th>
+                                                    <th>Investigation Paper ID</th>
+                                                    <th>Open</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar">
+                                              
+                                  
+                                            </tbody>
+
+                                        </table>
+
+                                        <!-- /.box-body -->
+                                    </div>
+                                    <!-- /.box -->
+                                </div>
+                                <!--/.col (right) -->
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-12 rowmargintop">
+                        <span>Patient Details</span><input type="checkbox" id="chkall" name="chkall" />All
+                    </div>
+
+                    <div class="col-lg-12 rowmargintop">
+                        <div style="text-align: center; display: block;">
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="submit" id="Save" onclick=""
+                                        class="btndivcss">
+                                    <span class="fa fa-save buttoniconcss"></span>Save
+                                </button>
+
+
+                            </div>
+                            @*<div class="btn-group dropdown-split-warning">
+
+                                <button type="button" id="btndelete" onclick="Delete(document.getElementById('PatientRegNo').value)" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                            </div>*@
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="reset" onclick="window.location.reload(true)" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" onclick="window.location.href='@Url.Action("Dashboard","Home")'" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="box-header with-border">
+                                <h3 class="panelheading" style="background: #ffffff;">Patient Details</h3>
+                            </div>
+
+                            <div class="table-responsive">
+                                <!-- /.box-header -->
+                                <table id="example" class="table table-bordered hover display dataTable table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>chk</th>
+
+                                            <th style="display:none">PatientRegNO</th>
+                                            <th>OPDIPDID</th>
+                                            @*<th style="display:none">PatientType</th>*@
+                                            <th>FileName</th>
+                                            <th>Download</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+
+                                </table>
+
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!--/.col (right) -->
+                    </div>
+
+                </section>
+
+
+</form>
+
+
+
+</div>
+    </div>
+</body>
+

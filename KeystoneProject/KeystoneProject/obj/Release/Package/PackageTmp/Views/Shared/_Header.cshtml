@@ -1,0 +1,755 @@
+﻿ <!-- ./wrapper -->
+<!-- REQUIRED JS SCRIPTS -->
+<!-- jQuery 3 -->
+@*This is Edited by Mohammed*@
+
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+<style>
+
+    @@media (max-width: 767px) {
+        .navbar-nav .open .dropdown-menu {
+            position: absolute;
+            background-color: white;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: 1px 1px 4px #121111;
+            font-size: 12px;
+            font-family: roboto;
+        }
+    }
+
+    .navbar-expand .navbar-nav .nav-link {
+        padding-right: 10px;
+        padding-left: 14px;
+    }
+
+    .navbar-badge {
+        position: absolute;
+        top: 6px !important;
+        right: 5px;
+        font-size: 10px !important;
+        font-weight: 300;
+        padding: 1px 3px;
+        border-radius: 50%;
+    }
+
+    .dropdown-item-title {
+        font-size: 14px !important;
+        padding-bottom: 10px;
+    }
+
+    .navbar {
+        padding: 0px 15px !important;
+    }
+
+    .main-header .nav-link {
+        height: auto;
+    }
+
+    #SelLocId option {
+        font-size: 14px;
+        font-family: roboto;
+        border: 1px solid rgba(0,0,0,.15);
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    }
+</style>
+@*@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}*@
+
+<script>
+    var myVar = setInterval(myTimer, 500);
+    debugger
+    function myTimer() {
+        $.ajax({
+            type: "GET",
+            //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+            url: '@Url.Action("SessionLogOut", "Application")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                if (data != "") {
+                    debugger
+                    alert("Session Out Please Login Again..");
+                    clearInterval(myVar);
+                    window.location.href = '@Url.Action("Login", "Application")';
+                    return false;
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+
+<script>
+    function LogOut() {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("UserStatusFalse", "Application")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                if (data != "") {
+                    debugger
+                    window.location.href = '@Url.Action("Login", "Application")';
+                    return false;
+                }
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+
+        window.location.href = '@Url.Action("Login", "Application")'
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".logoutclick ").addClass("show");
+        $("#Username").click(function () {
+            debugger
+            $(".logout").toggleClass("show");
+
+        })
+        $("body").click(function () {
+            $(".logout").removeClass("show");
+        });
+        var Username = localStorage.getItem("firstname");
+        //  alert(Username);
+        $("#Username").text(Username);
+        $('#SelLocId').on('change', function (e) {
+           
+            var LocationID = { LocationID: this.value }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeLocationByLocationID", "Application")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(LocationID),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (result) {
+                    //alert("hello");
+                    location.reload(true);
+                },
+                error: function () {
+                }
+            });
+        });
+
+        var UserData = "";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetLocationByUserID", "Application")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(UserData),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                $('#SelLocId').empty();
+                $.each(result, function (i, obj) {
+                    if (obj.LocationID == obj.HospitalName)
+                        var div_data = "<option value=" + obj.LocationID + " selected>" + obj.LocationName + "</option>";
+                    else
+                        var div_data = "<option value=" + obj.LocationID + ">" + obj.LocationName + "</option>";
+                    $(div_data).appendTo('#SelLocId');
+                });
+            },
+            error: function () {
+            }
+        });
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+       $("#view").click(function () {
+           debugger;
+           var a = $('#fromDate').val();
+           var b = $('#toDate').val();
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("GetAllForAuthorization", "ForAuthorization")',
+        data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val() },
+        success: function (data) {
+
+            $("#notification1 tbody tr").remove();
+            debugger
+            var count = 1;
+            var count1 = 1;
+            $.each(data, function (i, obj) {
+                $("#notification1").append('<tr><td> ' + obj.AuthorizationID + ' </td><td> ' + obj.UserName + ' </td><td> ' + obj.PatientRegNo + ' </td><td> ' + obj.PatientName + ' </td><td> ' + obj.BillNo + ' </td><td> ' + obj.PatientAccountRowID + ' </td><td> ' + obj.BillType + ' </td><td> ' + obj.Date + ' </td><td> ' + obj.AuthorationReason + ' </td><td> ' + obj.Authorise + '</td></tr>');
+
+                debugger;
+
+            });
+        },
+        error: function () { }
+    })
+       })
+        $("#authorizationSubmit").click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("IUAfterAuthorization", "ForAuthorization")',
+                data: { PatientRegNo: PatientRegNo, BillNo: BillNo, AuthorizationID: AuthorizationID, PatientAccountRowID: PatientAccountRowID, AuthorizedRemark: $("#remark").text() },
+                success: function (data) {
+
+                }
+            })
+        })
+        var AuthorizationID, row_num, PatientRegNo, BillNo, PatientAccountRowID
+        $("#tablepaymentAdd").delegate('td', 'click', function () {
+            debugger
+            
+             row_num = parseInt($(this).parent().index());
+             AuthorizationID = document.getElementById('tablepaymentAdd').rows[row_num].cells[0].innerHTML;
+             PatientRegNo = document.getElementById('tablepaymentAdd').rows[row_num].cells[2].innerHTML;
+             BillNo = document.getElementById('tablepaymentAdd').rows[row_num].cells[4].innerHTML;
+             PatientAccountRowID = document.getElementById('tablepaymentAdd').rows[row_num].cells[5].innerHTML;
+            var PatientName = document.getElementById('tablepaymentAdd').rows[row_num].cells[3].innerHTML;
+            var Authorize = document.getElementById('tablepaymentAdd').rows[row_num].cells[9].innerHTML;
+            if (Authorize.trim() == "Accept")
+            {
+                alert("Already Accepted")
+                return false;
+            }
+            $("#notificationModal").modal('hide');
+            $("#notificationInnerModal").modal('show');
+          
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDetailsBeforeAfterAuthorization", "ForAuthorization")',
+                data: { PatientRegNo: PatientRegNo, BillNo: BillNo, AuthorizationID: AuthorizationID, PatientAccountRowID: PatientAccountRowID },
+                success: function (data) {
+                    var count = 1;
+                    var count1 = 1;
+                    $("#beforeAuthorization tbody tr").remove();
+                    $("#afterAuthorization tbody tr").remove();
+                    $.each(data, function (i, obj) {
+                        $("#patientnameshow").text(PatientName);
+                        debugger
+                        if (PatientAccountRowID !== "  ")
+                        {
+                            $("#tblbill1").hide();
+                            $("#tblbill").hide();
+                            $("#tblprebalance").show();
+                            $("#tblprebalance1").show();
+                            if (obj.Rowstatus == "1") {
+                                obj.Rowstatus = "Delete"
+                            }
+                            if (obj.Rowstatus == "0") {
+                               // obj.Rowstatus = "Delete"
+                            }
+                            if (obj.AfterData == "pre1") {
+                                
+                                $("#beforeAuthorizationtbody").append('<tr><td> ' + count + ' </td><td> ' + obj.PatientAccountRowID + ' </td><td> ' + obj.BillType + ' </td><td> ' + obj.CrAmount + ' </td><td> ' + obj.DrAmount + ' </td><td>' + obj.Rowstatus + ' </td></tr>');
+                            }
+                            if (obj.AfterData == "pre2") {
+
+                                $("#afterAuthorization tbody").append('<tr><td> ' + count + ' </td><td> ' + obj.PatientAccountRowID + ' </td><td> ' + obj.BillType + ' </td><td> ' + obj.CrAmount + ' </td><td> ' + obj.DrAmount + ' </td><td>' + obj.Rowstatus + ' </td></tr>');
+                            }
+                        }
+                        else
+                        {
+                            if (obj.BeforeData == "true") {
+                                $("#tblprebalance").hide();
+                                $("#tblprebalance1").hide();
+                                $("#tblbill").show();
+                                $("#tblbill1").show();
+                                if (obj.Rowstatus == "2")
+                                {
+                                    obj.Rowstatus="Modify"
+                                }
+                                if (obj.Rowstatus == "1") {
+                                    obj.Rowstatus = "Delete"
+                                }
+                                $("#beforeAuthorizationtbody").append('<tr><td> ' + count + ' </td><td> ' + obj.BillNo + ' </td><td> ' + obj.ServiceName + ' </td><td> ' + obj.Rate + ' </td><td> ' + obj.Quantity + ' </td><td> ' + obj.TotalAmount + ' </td><td> Type</td><td> ' + obj.Rowstatus + ' </td></tr>');
+                                count++;
+                            }
+                            if (obj.AfterData == "true") {
+
+                                $("#afterAuthorization tbody").append('<tr><td> ' + count1 + ' </td><td> ' + obj.BillNo + ' </td><td> ' + obj.ServiceName + ' </td><td> ' + obj.Rate + ' </td><td> ' + obj.Quantity + ' </td><td> ' + obj.TotalAmount + ' </td><td> Type</td><td> ' + obj.Rowstatus + ' </td></tr>');
+                                count1++;
+                            }
+                        }
+                        });
+                    
+                }
+            })
+        })
+
+        $("#notificationInnerModalClose").click(function () {
+            $("#notificationModal").modal('show');
+        })
+
+        $("#accept").click(function () {
+
+            $("#divAccept").show();
+        })
+
+       
+    })
+</script>
+
+<!-- Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" ></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="notificationModalClose">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <!--From Date-->
+                    <div class="form-group col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                        <label>From Date</label>
+                        <input type="date" name="fromDate" id="fromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                    </div>
+                    <!--To Date-->
+                    <div class="form-group col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                        <label>To Date</label>
+                        <input type="date" name="toDate" id="toDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                    </div>
+                    <!--Button-->
+                    <div class="form-group col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                        <div class="btn-group dropdown-split-warning pull-right" style="padding-top: 25px;">
+                            <button type="button" id="view" class="btndivcss">
+                                View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive" style="max-height: 450px; overflow-y: scroll;">
+                    <table id="notification1" class="table table-bordered hover display table-hover" role="grid" style="width: 100%;">
+                        <thead style="background-color: #bddff7;">
+                            <tr>
+                                <th>Authorization Id</th>
+                                <th>User Name</th>
+                                <th>Patient Reg. No.</th>
+                                <th>Patient Name</th>
+                                <th>Bill No.</th>
+                                <th>Patient A/c. </th>
+                                <th>Bill Type</th>
+                                <th>Date</th>
+                                <th>Authorization</th>
+                                <th>Authorize</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablepaymentAdd"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Inner Modal -->
+<div class="modal " id="notificationInnerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientnameshow">Authorization Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="notificationInnerModalClose">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 table-responsive" style="max-height: 300px; overflow-y: scroll;">
+                    <label>Before Authorization</label>
+                    <table id="beforeAuthorization" class="table table-bordered hover display table-hover table-responsive" role="grid" style="width: 100%;">
+                        <thead id="tblbill1" style="background-color: #bddff7;">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Bill No</th>
+                                <th>Service Name</th>
+                                <th>Rate</th>
+                                <th>Qty</th>
+                                <th>TotalAmt</th>
+                                <th>Service Type</th>
+                                <th>Action</th>
+                              
+                            </tr>
+                        </thead>
+
+                        <thead id="tblprebalance" style="background-color: #bddff7; display:none">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>PatientAccountRowID</th>
+                                <th>BillType</th>
+                                <th>CrAmount</th>
+                                <th>DrAmount</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="beforeAuthorizationtbody"></tbody>
+                    </table>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 table-responsive" style="max-height: 300px; overflow-y: scroll;">
+                    <label>After Authorization</label>
+                    <table id="afterAuthorization" class="table table-bordered hover display table-hover table-responsive" role="grid" style="width: 100%;">
+                        <thead id="tblbill" style="background-color: #bddff7;">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Bill No</th>
+                                <th>Service Name</th>
+                                <th>Rate</th>
+                                <th>Qty</th>
+                                <th>TotalAmt</th>
+                                <th>Service Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <thead id="tblprebalance1" style="background-color: #bddff7; display:none">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>PatientAccountRowID</th>
+                                <th>BillType</th>
+                                <th>CrAmount</th>
+                                <th>DrAmount</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 card-body">
+                        <!--Reason Of User-->
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Reason Of User</label>
+                            <p></p>
+                        </div>
+                        <!--Authorise-->
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Authorise</label>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" id="accept" class="btndivcss">
+                                    Accept
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" id="reject" class="btndivcss">
+                                    Reject
+                                </button>
+                            </div>
+                           
+                        </div>
+                        <!--Button-->
+                        <div id="divAccept" style="display:none" class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <label>Remark</label>
+                                <textarea class="form-control" id="remark" name="remark"></textarea>
+                            </div>
+                            <div class="btn-group dropdown-split-warning pull-right">
+                                <button type="button" id="authorizationSubmit" class="btndivcss">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header Navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom" style="background: #35a4f1;">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item" style="padding-left:15px;padding-top:5px">
+            <a data-widget="pushmenu" href="#"><i class="fa fa-bars" style="color:#ffffff"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block" style="margin-left:20px;margin-right:20px;padding-top:5px">
+            <a href="#">
+                <i class="fa fa-arrows-alt" style="color:#ffffff"></i>
+            </a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <img src="~/Vendor/dist/images/kplus.png" style="height: 30px;width: 30px;background: #2452b5;border-radius: 50%;border: 2px solid white;padding: 1px;" />
+            <span style="color: white; font-family: roboto; font-size: 18px; font-weight: 500;">Keystone Solution Technology</span>
+        </li>
+    </ul>
+
+    <!-- SEARCH FORM -->
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+        <li class="" style="padding-right:20px">
+            <ul class="nav-link">
+                <li style="display: -webkit-inline-box;padding-top:6px">
+                    <i class="fa fa-map-marker" style=" font-size: 17px; color: white; padding-right: 10px; padding-top: 5px; border: 1px solid white; padding: 4px 10px 4px 10px; border-radius: 4px 0px 0px 4px;"></i>
+                    <select name="select" id="SelLocId" class="form-control"
+                            style="background: #35a4f1; border: 1px solid #fffefe !important; font-family: roboto; border-radius: 4px; height: 27px; color: white; border-left: 0px solid #ffffff !important; border-radius: 0px; box-shadow: none; border-radius: 0px 4px 4px 0px !important; font-size: 14px; padding: 0px; "></select>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Messages Dropdown Menu -->
+        <li class="nav-item dropdown">
+            <a class="nav-link" href="#">
+                <i class="fa fa-bell-o" id="notification" data-toggle="modal" data-target="#notificationModal" style="color:#ffffff"></i>
+                <span class="badge badge-danger navbar-badge">3</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <a href="#" class="dropdown-item">
+                    <!-- Message Start -->
+                    <div class="media">
+                        <img src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                        <div class="media-body" style="width: 150px;">
+                            <h3 class="dropdown-item-title">
+                                Brad Diesel
+                                <span class="float-right text-sm text-danger"><i class="fa fa-star"></i></span>
+                            </h3>
+                            <p class="text-sm">Call me whenever you can...</p>
+                            <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                        </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                    <!-- Message Start -->
+                    <div class="media">
+                        <img src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <div class="media-body" style="width: 150px;">
+                            <h3 class="dropdown-item-title">
+                                John Pierce
+                                <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                            </h3>
+                            <p class="text-sm">I got your message bro</p>
+                            <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                        </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                    <!-- Message Start -->
+                    <div class="media">
+                        <img src="https://adminlte.io/themes/dev/AdminLTE/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <div class="media-body" style="width: 150px;">
+                            <h3 class="dropdown-item-title">
+                                Nora Silvester
+                                <span class="float-right text-sm text-warning"><i class="fa fa-star"></i></span>
+                            </h3>
+                            <p class="text-sm">The subject goes here</p>
+                            <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i> 4 Hours Ago</p>
+                        </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer" style="color: #fefffd;font-size: 11px;background: #35a3f0;">See All Messages</a>
+            </div>
+        </li>
+
+        <!-- Notifications Dropdown Menu -->
+        <li class="logoutclick nav-item dropdown ">
+            <a class="nav-link" data-toggle="dropdown" href="#" style="padding-top:8px;padding-bottom:0px">
+                <img src="http://html.codedthemes.com/guru-able/files/assets/images/avatar-4.jpg" class="img-radius"
+                     alt="User-Profile-Image" style="height:33px;width:33px;border-radius:4px">
+                <span id="Username" style=" text-transform: uppercase; color:#ffffff; padding-right: 5px; font-size: 13px"></span>
+                <i class="fa fa-angle-down" style="color:#ffffff;font-size:13px"></i>
+            </a>
+            <div class="logout dropdown-menu dropdown-menu-lg dropdown-menu-right ">
+                <a href="#" class="dropdown-item" style="color: #7e8a93;">
+                    <i class="fa fa-user mr-2"></i> Edit Profile
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" style="color: #7e8a93;">
+                    <i class="fa fa-lock mr-2"></i> Change Password
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" onclick="LogOut()" class="dropdown-item" style="color: #7e8a93;">
+                    <i class="fa fa-sign-out mr-2"></i> Logout
+                </a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+                <i class="fa fa-cog" style="color:#ffffff"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Left side column. contains the logo and sidebar -->
+@*<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="@Url.Content("~/Vendor/dist/img/user2-160x160.jpg")" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>Ridhish Thakor</p>
+                <!-- Status -->
+                <a href="starter.html#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+        <!-- search form (Optional) -->
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- /.search form -->
+        <!-- Sidebar Menu -->
+       @*<ul class="sidebar-menu" data-widget="tree">
+            <li class="header">HEADER</li>
+            <!-- Optionally, you can add icons to the links -->
+            <li class="active"><a href="starter.html#"><i class="fa fa-link"></i> <span>Link</span></a></li>
+            <li><a href="starter.html#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
+            <li class="treeview">
+                <a href="starter.html#">
+                    <i class="fa fa-link"></i> <span>Multilevel</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="starter.html#">Link in level 2</a></li>
+                    <li><a href="starter.html#">Link in level 2</a></li>
+                </ul>
+            </li>
+        </ul>*@
+<!-- /.sidebar-menu -->
+@* </section>*@
+<!-- /.sidebar -->
+@* </aside>*@
+<!-- Content Wrapper. Contains page content -->
+@*<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Page Header
+                <small>Optional description</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="starter.html#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content container-fluid">
+            <!--------------------------
+              | Your Page Content Here |
+              -------------------------->
+        </section>
+        <!-- /.content -->
+    </div>*@
+<!-- /.content-wrapper -->
+<!-- Main Footer -->
+@*<footer class="main-footer">
+        <!-- To the right -->
+        <div class="pull-right hidden-xs">
+            Anything you want
+        </div>
+        <!-- Default to the left -->
+        <strong>Copyright &copy; 2016 <a href="starter.html#">Company</a>.</strong> All rights reserved.
+    </footer>*@
+<!-- Control Sidebar -->
+@*<aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li class="active">
+                <a href="starter.html#control-sidebar-home-tab" data-toggle="tab">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <a href="starter.html#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <!-- Home tab content -->
+            <div class="tab-pane active" id="control-sidebar-home-tab">
+                <h3 class="control-sidebar-heading">Recent Activity</h3>
+                <ul class="control-sidebar-menu">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                            <div class="menu-info">
+                                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                                <p>Will be 23 on April 24th</p>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <!-- /.control-sidebar-menu -->
+                <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                <ul class="control-sidebar-menu">
+                    <li>
+                        <a href="javascript:;">
+                            <h4 class="control-sidebar-subheading">
+                                Custom Template Design
+                                <span class="pull-right-container">
+                                    <span class="label label-danger pull-right">70%</span>
+                                </span>
+                            </h4>
+                            <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <!-- /.control-sidebar-menu -->
+            </div>
+            <!-- /.tab-pane -->
+            <!-- Stats tab content -->
+            <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+            <!-- /.tab-pane -->
+            <!-- Settings tab content -->
+            <div class="tab-pane" id="control-sidebar-settings-tab">
+                <form method="post">
+                    <h3 class="control-sidebar-heading">General Settings</h3>
+                    <div class="form-group">
+                        <label class="control-sidebar-subheading">
+                            Report panel usage
+                            <input type="checkbox" class="pull-right" checked>
+                        </label>
+                        <p>
+                            Some information about this general settings option
+                        </p>
+                    </div>
+                    <!-- /.form-group -->
+                </form>
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+    </aside>*@
+<!-- /.control-sidebar -->
+<!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+@*<div class="control-sidebar-bg"></div>
+    </div>*@
+
+
+

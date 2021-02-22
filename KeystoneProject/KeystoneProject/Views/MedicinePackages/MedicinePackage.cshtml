@@ -1,0 +1,316 @@
+﻿@model KeystoneProject.Models.Master.MedicinePackage
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    #medicineListTableId_filter {
+        float: right;
+    }
+
+    #medicinePackageDetailTableId_filter {
+        float: right;
+    }
+
+        #medicinePackageDetailTableId_filter label input[type=search] {
+            width: 100px;
+        }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("ShowAllMedicines", "MedicinePackages")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#medicineListTableId").append('<tr><td style="display:none">' + SrNo + '</td><td>' + data[i].Medicines + '</td><td style="display:none">' + data[i].MedicineLibraryID + '</td></tr>');
+                };
+                $('#medicineListTableId').DataTable({
+                    "fixedHeader": false,
+                    "paging": false,
+                    "lengthChange": false,
+                    "searching": true,
+                    "ordering": false,
+                    "info": false,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#medicinePackageDetailTableId').delegate('td', 'click', function () {
+            $('#addMedicineTableId tbody tr').remove();
+            var row_num = parseInt($(this).parent().index());
+            var packageID = parseInt(document.getElementById("medicinePackageDetailTableId").tBodies[0].rows[row_num].cells[2].innerHTML);
+
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger
+            $("#PackagesID").val(packageID);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMedicinePackage", "MedicinePackages")',
+                data: { id: packageID },
+                dataType: "json",
+                success: function (data) {
+                    var count1 = 1;
+                    $.each(data, function (i, obd) {
+                        //alert(obd.DepartmentName);
+                        // $("#PackagesID").val(obd.packageID);
+                        $("#Package").val(obd.Package);
+                        debugger
+                        var MedicineID = obd.MedicinesID;
+                        var MedicineName = obd.Medicines;
+                        //   $("#MedicineID").val(MedicineID);
+                        $("#addMedicineTableId").append('<tr><td style="display:none">' + MedicineID + '<input type="hidden" value=' + MedicineID + ' name="MedicineID"> </td><td >' + MedicineName + '<input type="hidden" value=' + MedicineName + ' name="MedicineName"></td> <td><input type="button" value="X" id="delrow" class="btn btn-danger" style="height: 25px;padding: 1px 10px 0px 10px !important;" /></td></tr>');
+                    });
+                },
+            });
+        })
+    })
+    $(document).ready(function () {
+        $("#addMedicineTableId").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("ShowAllPackages", "MedicinePackages")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#medicinePackageDetailTableId").append('<tr><td >' + SrNo + '</td><td>' + data[i].Package + '</td><td style="display:none">' + data[i].PackagesID + '</td></tr>');
+                };
+                $('#medicinePackageDetailTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#medicinePackageDetailTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#medicinePackageDetailExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#medicineListTableId').delegate('td', 'click', function () {
+            var row_num = parseInt($(this).parent().index());
+            var MedicineID = document.getElementById('medicineListTableId').tBodies[0].rows[row_num].cells[2].innerHTML;
+            var MedicineName = document.getElementById('medicineListTableId').tBodies[0].rows[row_num].cells[1].innerHTML;
+            $("#addMedicineTableId").append('<tr><td style="display:none">' + MedicineID + '<input type="hidden" value=' + MedicineID + ' name="MedicineID"> </td><td >' + MedicineName + '<input type="hidden" value=' + MedicineName + ' name="MedicineName"></td> <td><input type="button" value="X" id="delrow" class="btn btn-danger" style="padding:1px 10px 0px 10px !important;height: 25px;" /></td></tr>');
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#Delete").click(function () {
+            debugger;
+
+            var ans = confirm("Are you sure you want to Delete this Record ?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    
+                    url: '@Url.Action("DeleteMedicinePackage", "MedicinePackages")',
+                    data: { PackagesID: $("#PackagesID").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Medicine Package Deleted Successfully !") {
+                            alert("Medicine Package Deleted Successfully !");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Medicine Package Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Medicine Package</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Medicine Package Details</h2>
+                                    <input type="hidden" id="MedicineLibraryID" name="MedicineLibraryID" />
+                                    <input type="hidden" id="PackagesID" name="PackagesID" />
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 rowmargintop">
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Medicine Package</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Package" name="Package" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Package Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" id="PackagesID" name="PackagesID" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="medicinePackageDetailExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Medicines List</h2>
+                                    <div class="card-body table-responsive" style="height: 300px;overflow-y: scroll;">
+                                        <table id="medicineListTableId" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col">Medicines</th>
+                                                    <th scope="col" style="display:none">Medicines</th>
+                                                    <th scope="col" style="display:none">Medicines</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Add Medicines</h2>
+                                    <div class="card-body table-responsive" style="height: 300px;overflow-y: scroll;">
+                                        <table id="addMedicineTableId" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col" style="display:none">Medicines</th>
+                                                    <th scope="col">Medicines</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Packages Details</h2>
+                                    <div class="card-body table-responsive" style="height: 300px;overflow-y: scroll;">
+                                        <table id="medicinePackageDetailTableId" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col">Sr. No</th>
+                                                    <th scope="col">Packages Details</th>
+                                                    <th scope="col" style="display:none">Medicines</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

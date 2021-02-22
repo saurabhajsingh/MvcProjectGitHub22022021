@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Financial Module";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    .tab .nav-tabs > li > a {
+        border: none;
+        padding: 10px 15px;
+        color: #000;
+        background: #bddff7;
+        border-radius: 0;
+        font-family: roboto;
+    }
+
+    .tab .nav-tabs > li.active > a,
+    .tab .nav-tabs > li.active > a:focus {
+        border: none;
+        background: #1a5e8e;
+        color: #fff !important;
+        transition: background 0.20s linear;
+    }
+
+    .nav > li > a:hover {
+        color: #000 !important;
+    }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -30px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #1a5e8e;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        border: 1px solid #ddd;
+        border-top: 2px solid #1a5e8e;
+        border-bottom: 2px solid #1a5e8e;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+</style>
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1>Financial Account Module</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                            <li class="breadcrumb-item active">Financial Account Module</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tab" role="tabpanel">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a href="#Section1" aria-controls="home" role="tab" data-toggle="tab">
+                                        <i class="fa fa-inr"></i> Financial Account
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("ChequePrint", "ChequePrint")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Cheque Print
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("VoucherEntry", "VoucherEntry")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Voucher Entry
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("AccountStatement", "AccountStatement")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Account Statement
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="" href="@Url.Action("ChequeLayout", "ChequeLayout")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Cheque Layout
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("UserPaymentAccount", "UserPaymentAccount")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>User Payment Account
+                                                </a>
+                                            </div>
+                                            @*<li class="nav-item">
+                                                    <a href="../../starter.html" class="nav-link">
+                                                        <i class="fa fa-circle-o nav-icon"></i>
+                                                        <p>Cash Receipt</p>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="../examples/legacy-user-menu.html" class="nav-link">
+                                                        <i class="fa fa-circle-o nav-icon"></i>
+                                                        <p>Journal Vouchar Entry</p>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="../examples/legacy-user-menu.html" class="nav-link">
+                                                        <i class="fa fa-circle-o nav-icon"></i>
+                                                        <p>Cash Payment</p>
+                                                    </a>
+                                                </li>
+                                                                                        <li class="nav-item">
+                                                                        <a href="../examples/legacy-user-menu.html" class="nav-link">
+                                                                            <i class="fa fa-circle-o nav-icon"></i>
+                                                                            <p>Customer Prebalance & Deposit</p>
+                                                                        </a>
+                                                                    </li>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,290 @@
+﻿
+@{
+    ViewBag.Title = "TPA Document Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Bind_parameter_table", "TPADocumentMaster")',
+            dataType: "json",
+            success: function (data) {   
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var SrNo = i + 1;
+                    $("#ParameterTable").append('<tr><td  style="width:60px !important">' + SrNo + '</td><td>' + data[i].ParameterName + '</td></tr>');
+                };
+                $('#ParameterTable').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+               
+            },
+            error: function (result) {
+                alert("Error Grid Bind !");
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Bind_table", "TPADocumentMaster")',
+            dataType: "json",
+            success: function (data) {
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var SrNo = i + 1;
+                    $("#TPADocumentMasterTable").append('<tr><td  style="width:80px !important">' + SrNo + '</td><td>' + data[i].DocumentName + '</td><td style="display:none">' + data[i].LetterID + '</td></tr>');
+                };
+                $('#TPADocumentMasterTable').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#TPADocumentMasterTable').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#TPADocumentMasterTableExcelExport'));
+            },
+            error: function (result) {
+                alert("Error Grid Bind !");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ParameterTable').delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var parameter = document.getElementById('ParameterTable').tBodies[0].rows[row_num].cells[1].innerHTML;
+
+
+            var text = document.getElementById('DocumentName').innerText;
+
+            text = text + parameter;
+
+            $("#DocumentName .ql-editor").html(text);
+
+
+            //var DocumentID = $(".ql-editor").html() + parameter;
+            //$("#DocumentID").val(DocumentID);
+            //$("#DocumentName").html(DocumentID);
+
+            $("#DocumentID").val($("#DocumentName").val());
+           
+
+
+            @*$.ajax({
+                type: "GET",
+                url: '@Url.Action("Insert_Parameter", "TPADocumentMaster")',
+                data: { parameter: parameter },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $("#DocumentName").val(data[0].ParameterName);
+                },
+            });*@
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#form1").submit(function () {
+            debugger
+            var DocumentID = $(".ql-editor").html();
+            $("#DocumentID").val(DocumentID);
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#TPADocumentMasterTable').delegate('td', 'click', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var LetterID = document.getElementById('TPADocumentMasterTable').tBodies[0].rows[row_num].cells[2].innerHTML;
+            var data = document.getElementById('TPADocumentMasterTable').tBodies[0].rows[row_num].cells[1].innerHTML;
+
+            $("#LetterID").val(LetterID);
+            $("#DocumentName .ql-editor").html(data);
+
+
+            @*$.ajax({
+                type: "GET",
+                url: '@Url.Action("Insert_Parameter", "TPADocumentMaster")',
+                data: { parameter: parameter },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $("#DocumentName").val(data[0].ParameterName);
+                },
+            });*@
+        });
+    });
+</script>
+<script>
+    function Delete(LetterID) {
+        debugger
+        if (LetterID != "") {
+            var ans = confirm("Are you sure you want to Delete this Record ?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete_letter", "TPADocumentMaster")',
+                    data: { LetterID: LetterID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "TPA Covering Letter Deleted Successfully !") {
+                            alert("TPA Covering Letter Deleted Successfully !");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                });
+            }
+        }
+    }
+</script>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TPADocumentMaster</title>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post" id="form1">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>TPA Covering Letter</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">TPADocumentMaster</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Covering Letter</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div id="DocumentName" name="DocumentName" style="height:400px"></div>
+                                                    <input type="hidden" id="DocumentID" name="DocumentID" class="form-control" />
+                                                    <input type="hidden" id="LetterID" name="LetterID" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                    <table id="ParameterTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                        <thead style="background-color: #bddff7;">
+                                                            <tr>
+                                                                <th>Sr. no.</th>
+                                                                <th>Parameter Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Delete(document.getElementById('LetterID').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Dashboard", "Home")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="TPADocumentMasterTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="TPADocumentMasterTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. no.</th>
+                                            <th>TPA Covering Letter Name</th>
+                                            <th style="display:none">TPA Covering Letter ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

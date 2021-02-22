@@ -1,0 +1,430 @@
+﻿@model KeystoneProject.Models.Report.MISPatientIPDDischargeSummary
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+@*<style>
+
+        input[type=file] {
+            display: block;
+            background: #ffffff;
+            padding: 0px 2px 0px 0px;
+            color: #868f95 !important;
+            font-family: roboto;
+        }
+
+        .btn-group {
+            margin-bottom: 4px;
+        }
+
+        .btn {
+            padding: 0px;
+        }
+
+        .padding0 {
+            padding: 0px;
+        }
+
+        .btndivcss:hover {
+            color: #fff;
+            background-color: #03578e;
+            border-color: #106dca;
+        }
+
+        .btndivcss {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 6px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+
+        .buttoniconcss {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 0px 0px 4px;
+            margin-right: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #35a4f1;
+            border-radius: 23px;
+        }
+
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .btn-group {
+            padding-right: 4px;
+        }
+
+        .topheadline {
+            background: white;
+            padding: 3px;
+            color: #1e2123;
+            box-shadow: 1px 1px 11px 1px #cecece;
+            font-family: roboto;
+            padding-left: 12px;
+            font-size: 19px;
+            margin-top: 0px;
+        }
+
+        .panelheading {
+            background: rgb(189, 223, 247);
+            color: #22292d;
+            font-family: roboto;
+            font-size: 15px;
+            padding: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .panel-primary {
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            box-shadow: 1px 1px 11px 1px #eae4e4;
+            background: #ffffff;
+        }
+
+        .content-wrapper {
+            background: #F6F7FB !important;
+        }
+
+        span {
+            font-family: roboto;
+            font-size: 14px;
+        }
+
+        .rowmargintop {
+            margin-top: 5px;
+        }
+
+        .form-control {
+            height: 26px;
+            padding: 1px 1px 1px 6px;
+        }
+
+        .rowmarginbottom {
+            margin-bottom: 4px;
+        }
+
+        .btn-warning {
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            font-family: roboto;
+        }
+
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+    </style>*@
+<script>
+    $(document).ready(function () {
+        $('#deptID').DataTable({
+            "fixedHeader": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": false,
+        });
+        var buttons = new $.fn.dataTable.Buttons($('#deptID').DataTable(), {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                }
+            ]
+        }).container().appendTo($('#deptIDExcelExport'));
+    })
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#deptID').delegate('tr', 'click', function () {
+            $('#deptID').DataTable();
+            $('#deptID tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        //  var table = $('#deptID').DataTable();
+        $('#deptID tbody').on('click', 'td', function () {
+            var row_num = parseInt($(this).parent().index());
+            var DepartmentID = parseInt(document.getElementById("deptID").tBodies[0].rows[row_num].cells[3].innerHTML);
+        });
+        $('#save').on('click', function () {
+            debugger
+            var UserData = { DateFrom: $("#FromDate").val(), DateTo: $("#ToDate").val(), PatientType: $("#PatientType").val(), SearchName: $("#PatientRegNO").val(), EndResult: $("#EndResult").val() }
+            alert($("#PatientType").val());
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MISPatientIPDDischargeSummary", "MISPatientIPDDischargeSummary")',
+                data: { DateFrom: $("#FromDate").val(), DateTo: $("#ToDate").val(), PatientType: $("#PatientType").val(), SearchName: $("#PatientRegNO").val(), EndResult: $("#EndResult").val() },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#tbl tr").remove();
+                    $.each(data, function (i, obd) {
+                  
+                        debugger
+                        if ($("#PatientType").val() == "UnDischarge") {
+                            debugger
+
+
+                          
+                            debugger
+                            $("#deptID").append('<tr><td>' + obd.PatientRegNo + '</td><td>' + obd.IPDID + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientStatus + '</td><td>' + obd.Ward + '</td><td>' + obd.ConsultantDr + '</td><td >' + obd.ReffDocName + '</td><td>' + obd.AddmissionDate + '</td><td>' + obd.BillsAmount + '</td><td>' + obd.PaidAmount + '</td><td>' + obd.BalanceAmount + '</td></tr>')
+
+                            $("#EndResult1").hide();
+                            $("#FinalDiagnosis").hide();
+                            $("#DischargeDate").hide();
+                          
+                        }
+                        if  ($("#PatientType").val() == "Discharge")
+                            {
+                            debugger
+                            $("#deptID").append('<tr><td>' + obd.PatientRegNo + '</td><td>' + obd.IPDID + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientStatus + '</td><td>' + obd.Ward + '</td><td>' + obd.EndResult + '</td><td>' + obd.FinalDiagnosis + '</td><td>' + obd.ConsultantDr + '</td><td>' + obd.ReffDocName + '</td><td>' + obd.AddmissionDate + '</td><td>' + obd.Dischargedate + '</td><td>' + obd.BillsAmount + '</td><td>' + obd.PaidAmount + '</td><td>' + obd.BalanceAmount + '</td></tr>')
+                            $("#EndResult1").show();
+                            $("#FinalDiagnosis").show();
+                            $("#ConsultantDr").show();
+                            $("#DischargeDate").show();
+                          
+                        }
+                        if ($("#PatientType").val() == "FinalBill")
+                        {
+                            debugger
+                            $("#deptID").append('<tr><td>' + obd.PatientRegNo + '</td><td>' + obd.IPDID + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientStatus + '</td><td>' + obd.Ward + '</td><td>' + obd.EndResult + '</td><td>' + obd.FinalDiagnosis + '</td><td>' + obd.ConsultantDr + '</td><td>' + obd.ReffDocName + '</td><td>' + obd.AddmissionDate + '</td><td>' + obd.Dischargedate + '</td><td>' + obd.BillsAmount + '</td><td>' + obd.PaidAmount + '</td><td>' + obd.BalanceAmount + '</td></tr>')
+                            $("#EndResult1").show();
+                            $("#FinalDiagnosis").show();
+                            $("#ConsultantDr").show();
+                            $("#DischargeDate").show();
+
+
+
+
+}
+                       
+                    });
+                    $('.ex-btn').css('display', 'inline-flex');
+                   
+                },
+            });
+        })
+    });
+    $(document).ready(function () {
+        debugger
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientNameValue", "MISPatientIPDDischargeSummary")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNO
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#PatientRegNO').val(i.item.id);
+            },
+        });
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>MIS Patient IPD Discharge Summary Report</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("MISReports", "Application")">MIS Report</a></li>
+                                    <li class="breadcrumb-item active">MIS Patient IPD Discharge Summary</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">MIS Patient IPD Discharge Summary Report</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="FromDate" name="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="ToDate" name="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="Patient_Name" class="form-control">
+                                                        <input type="hidden" id="PatientRegNO" name="PatientRegNO">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--End Result-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>End Result</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="EndResult" name="EndResult" class="form-control">
+                                                            <option value="">Select</option>
+                                                            <option value="Relieved">Relieved</option>
+                                                            <option value="Absconded">Absconded</option>
+                                                            <option value="Expired">Expired</option>
+                                                            <option value="Transfer">Transfer</option>
+                                                            <option value="Transfer To ICU">Transfer To ICU</option>
+                                                            <option value="On Request">On Request</option>
+                                                            <option value="Against Medical Advice">Against Medical Advice</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Patient Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="PatientType" name="Patient_Type" class="form-control">
+                                                            <option value="Discharge">Discharge</option>
+                                                            <option value="UnDischarge">UnDischarge</option>
+                                                            <option value="FinalBill">All (Final Bill Wise)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" id="save" name="save" class="btn btn-app">
+                                        <i class="fa fa-search"></i>Search
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("MISReports", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning ex-btn" style="display: none;">
+                                    <a class="btn btn-app" id="deptIDExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="deptID" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>RegNo</th>
+                                            <th>IPDID</th>
+                                            <th >Patient Details</th>
+                                            <th >Patient Status</th>
+                                            <th>Ward</th>
+                                            <th id="EndResult1" name="EndResult1" >End Result</th>
+                                            <th  id="FinalDiagnosis" name="FinalDiagnosis" >Final Diagnosis</th>
+                                            <th  id="ConsultantDr" name="ConsultantDr" >Consultant Dr</th>
+                                            <th>ReffDocName</th>
+                                            <th >Addmission Date</th>
+                                            <th id="DischargeDate" name="DischargeDate" >Discharge Date</th>
+                                            <th >Bills Amount</th>
+                                            <th >Paid Amount</th>
+                                            <th  >Balance Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

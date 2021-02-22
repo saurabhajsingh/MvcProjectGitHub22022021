@@ -1,0 +1,250 @@
+﻿@{
+    ViewBag.Title = "Manufacture Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+          $.ajax({
+
+                   type: "POST",
+                    url: '@Url.Action("ShowmManufacture", "Manufacture")',
+                    dataType: "json",
+                    success: function (data) {
+                       
+                       for (var i = 0; i < data.length; i++) {
+
+                           var SrNo = i+1;
+                           $("#manufactureTable").append('<tr><td style="width:60px !important">' + SrNo + '</td><td>'  + data[i].ManufactureName + '</td><td style="display:none">' + data[i].ManufactureID + '</td></tr>');
+                       };
+                       $('#manufactureTable').DataTable({
+                           "fixedHeader": true,
+                           "paging": true,
+                           "lengthChange": true,
+                           "searching": true,
+                           "ordering": true,
+                           "info": true,
+                           "autoWidth": true,
+                           "responsive": false,
+                       });
+                       var buttons = new $.fn.dataTable.Buttons($('#manufactureTable').DataTable(), {
+                           buttons: [
+                               {
+                                   extend: 'excel',
+                                   text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                               }
+                           ]
+                       }).container().appendTo($('#manufactureTableExcelExport'));
+                   },
+                   error: function (result) {
+                       alert("Error grd bind");
+                   }
+               });
+    });
+</script>
+@*<script>
+    $(document).ready(function () {
+        debugger
+       
+        $('#manufactureTable tbody').delegate('td', 'click', function () {
+            debugger
+
+            var row = $(this).parent().index();
+
+            var ManufactureID = document.getElementById("manufactureTable").tBodies[0].rows[row].cells[2].innerHTML;
+
+            var ManufactureName = document.getElementById("manufactureTable").tBodies[0].rows[row].cells[1].innerHTML;
+
+            $('#ManufactureID').val(ManufactureID);
+            $('#ManufactureName').val(ManufactureName);
+        })
+    });
+                    
+
+        
+   
+</script>*@
+
+<script>
+    $(document).ready(function () {
+
+
+    $('#manufactureTable tbody').delegate('td', 'click', function () {
+        //alert("mndmsbm");
+        debugger
+        $("#save").html("<i class='fa fa-save'></i>Update");
+        //var con;
+        var row_num = parseInt($(this).parent().index());
+        var ManufactureID = parseInt(document.getElementById('manufactureTable').tBodies[0].rows[row_num].cells[2].innerHTML);
+        if (ManufactureID > 0) {
+            debugger
+            //$("#save").val("Update");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EDIT", "Manufacture")',
+                data: { id: ManufactureID },
+                dataType: "json",
+                success: function (data) {
+
+                    $.each(data, function (i, obd) {
+                        //alert(obd.DepartmentName);
+                        $("#ManufactureID").val(obd.ManufactureID);
+                        $("#ManufactureName").val(obd.ManufactureName);
+
+                    });
+
+
+
+                }
+            });
+               
+        }
+    });
+       
+    })
+
+                 
+</script>
+    <script>
+        $(document).ready(function () {
+            $("#Delete").click(function () {
+                // alert($("#OutSourceLabID").val());
+                var conform = confirm("Do you Want To Delete");
+                if (conform) {
+                    debugger
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Manufacture")',
+                        type: 'POST',
+                        data: { ManufactureID: $("#ManufactureID").val() },
+
+                        success: function (data) {
+                            if (data.length > 1) {
+                                alert("Manufacture Deleted Successfully");
+                                location.reload();
+
+                            }
+                            else {
+
+                            }
+
+
+                        }
+
+                    })
+
+                }
+            });
+        });
+    </script>
+   
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Manufacture Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Manufacture</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Manufacture Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Manufacture Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="hidden" id="ManufactureID" name="ManufactureID" />
+                                                    <input type="text" id="ManufactureName" name="ManufactureName" class="form-control" required
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter ManufactureName  ')"
+                                                           oninput="this.setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="manufactureTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="manufactureTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. no.</th>
+                                            <th>Manufacture Name</th>
+                                            <th style="display:none">Manufacture ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

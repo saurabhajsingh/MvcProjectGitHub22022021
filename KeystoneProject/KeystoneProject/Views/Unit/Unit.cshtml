@@ -1,0 +1,249 @@
+﻿@model KeystoneProject.Models.Master.Unit
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This is edited by Mohammed -->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetAllUnit", "Unit")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#unitTatableId").append('<tr><td style="width:104px">' + SrNo + '</td><td>' + data[i].UnitName + '</td><td style="display:none">' + data[i].UnitID + '</td></tr>');
+                };
+                $('#unitTatableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#unitTatableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#unitExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#unitTatableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#unitTatableId").delegate('tr', 'click', function () {
+            $('#unitTatableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //  var table = $('#deptID').DataTable();
+        $('#unitTatableId tbody').on('click', 'td', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            // alert('hello');
+            var row_num = parseInt($(this).parent().index());
+            var UnitID = parseInt(document.getElementById("unitTatableId").tBodies[0].rows[row_num].cells[2].innerHTML);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditUnit", "Unit")',
+                data: { id: UnitID },
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, obd) {
+                        //alert(obd.DepartmentName);
+                        $("#UnitID").val(obd.UnitID);
+                        $("#UnitName").val(obd.UnitName);
+                    });
+                },
+            });
+        });
+    });
+</script>
+<script>
+    function Unit(UnitID) {
+        debugger;
+        var ans = confirm("Are you sure you want to delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                //url: "/Department/DeleteDepartment?DepartmentID=" + DepartmentID,
+                url: '@Url.Action("DeleteUnit", "Unit")',
+                data: { UnitID: UnitID },
+                dataType: "json",
+                success: function (data) {
+                    if (data == "Unit Deleted Successfully") {
+                        alert("Unit Deleted Successfully");
+                        window.location.reload(true);
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<script>
+    function Delele(UnitID) {
+        debugger
+        var ans = confirm("Are you sure you want to Delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteUnit", "Unit")',
+                data: { UnitID: UnitID },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    if (data =="Unit Deleted Successfully") {
+                        alert("Unit Deleted Successfully");
+                        window.location.reload(true);
+
+
+                        //return false;
+
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <form action="" method="post">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1>Unit Master</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Unit</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Unit Details</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Unit Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="UnitName" name="UnitName" class="form-control"
+                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Unit Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" id="UnitID" name="UnitID" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="Delele(document.getElementById('UnitID').value)">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="unitExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="unitTatableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Unit Name</th>
+                                        <th style="display:none">UnitID</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </form>
+</div>

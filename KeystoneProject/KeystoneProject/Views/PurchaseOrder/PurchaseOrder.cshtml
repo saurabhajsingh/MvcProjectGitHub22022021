@@ -1,0 +1,1108 @@
+﻿@{
+    ViewBag.Title = "Purchase Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $('html').bind('keypress', function (e) {
+        if (e.keyCode == 13) {
+            return false;
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#supplierName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Get_supplier", "PurchaseOrder")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.supplierName, value: item.supplierName, id: item.supplierNameID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#supplierName").val('');
+                }
+                $('#supplierNameID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#supplierName").change(function () {
+            debugger
+            var supplier = $("#supplierName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_SUPP", "PurchaseOrder")',
+                data: '{supplierName: ' + JSON.stringify(supplier) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#address").val(searchList[0].address);
+                },
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_OldBill", "PurchaseOrder")',
+                data: '{supplierName: ' + JSON.stringify(supplier) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#oldBillNumber").find("option").remove();
+                    $("#oldBillNumber").append('<option value="--New--">--New--</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        $("#oldBillNumber").append($("<option value=" + searchList[i].oldBillNumber + ">" + searchList[i].oldBillNumber + "</option>"));
+                    }
+                },
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("#oldBillNumber").change(function () {
+            debugger;
+            var id = $("#oldBillNumber").val();
+
+            if (id != "--New--") {
+                $("#save").html("<i class='fa fa-save'></i>Update");
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Rebind_BillDetail", "PurchaseOrder")',
+                    data: { id: id },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $("#PoId").val(data[0].PoId);
+                        $("#orderDate").val(data[0].orderDate);
+                        $("#address").val(data[0].address);
+                        $("#supplierNameID").val(data[0].supplierNameID);
+                        $("#supplierName").val(data[0].supplierName);
+                        $("#referenceDate").val(data[0].referenceDate);
+                        $("#referenceNumber").val(data[0].referenceNumber);
+                        $("#valueBy").val(data[0].valueBy);
+                        $("#grossTotal").val(data[0].grossTotal);
+                        $("#addAmount").val(data[0].addAmount);
+                        $("#lessAmount").val(data[0].lessAmount);
+                        $("#netAmount").val(data[0].netAmount);
+                        $("#payMode").val(data[0].payMode);
+                        $("#creditDays").val(data[0].creditDays);
+                        $("#purchaseType").val(data[0].purchaseType.trim());
+                        $("#purchaseTypeMode").val(data[0].purchaseTypeMode.trim());
+                    },
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Rebind_BillDetailProduct", "PurchaseOrder")',
+                    data: { id: id },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#purchaseOrderTable tbody tr').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            var SrNo = i + 1;
+                            $("#purchaseOrderTable").append(
+
+                            '<tr><td style="display:none">' + '<input type="text" value="' + data[i].productNameID1 + '"  class="form-control" name="productNameID1">' + '</td><td>' + '<input type="text" value="' + data[i].productName1 + '"  class="form-control" placeholder="Search Product" name="productName1">' + '</td><td>' + '<input type="text" value="' + data[i].manufacturerName1 + '" class="form-control" placeholder="Search Manufacturer" name="manufacturerName1">' + '</td><td>' + '<input type="text" value="' + data[i].packing1 + '" class="form-control" name="packing1">' + '</td><td>' + '<input type="number" value="' + data[i].currentQuantity1 + '" class="form-control" name="currentQuantity1">' + '</td><td>' + '<input type="number" value="' + data[i].maxLevel1 + '"  class="form-control" name="maxLevel1">' + '</td><td>' + '<input type="number" value="' + data[i].minLevel1 + '" class="form-control" name="minLevel1">' + '</td><td>' + '<input type="number" value="' + data[i].quantity1 + '" onchange="myCalQty(this)" class="form-control" name="quantity1">' + '</td><td>' + '<input type="number" value="' + data[i].freeQuantity1 + '" class="form-control" name="freeQuantity1">' + '</td><td>' + '<input type="number" value="' + data[i].rate1 + '" onchange="myCalRate(this)" class="form-control" name="rate1">' + '</td><td>' + '<input type="text" readonly value="' + data[i].totalAmount1 + '" class="form-control" name="totalAmount1">' + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td><td><button type="button" onclick="AddProduct(this)" id="addProduct" name="addProduct" class="addProduct" title="Add New Product" class="btndivcss" style="height: 25px;"><span class="fa fa-plus"></span></button></td></tr>'
+
+                           );
+                        }
+
+                        productNameID1 = "";
+                        productName1 = "";
+                        manufacturerName1 = "";
+                        packing1 = "";
+                        currentQuantity1 = "0";
+                        maxLevel1 = "0";
+                        minLevel1 = "0";
+                        quantity1 = "0";
+                        freeQuantity1 = "0";
+                        rate1 = "0.00";
+                        totalAmount1 = "0.00";
+
+                        $("#purchaseOrderTable").append('<tr><td style="display:none">' + '<input type="text" value="' + productNameID1 + '"  class="form-control"  name="productNameID1" id="productNameID1">' + '</td><td>' + '<input type="text" value="' + productName1 + '" class="form-control" placeholder="Search Product" name="productName1" id="productName1">' + '</td><td>' + '<input type="text" value="' + manufacturerName1 + '" class="form-control" placeholder="Search Manufacturer" name="manufacturerName1" id="manufacturerName1">' + '</td><td>' + '<input type="text" value="' + packing1 + '" class="form-control" name="packing1" id="packing1">' + '</td><td>' + '<input type="number" value="' + currentQuantity1 + '" class="form-control" name="currentQuantity1" id="currentQuantity1">' + '</td><td>' + '<input type="number" value="' + maxLevel1 + '"  class="form-control" name="maxLevel1" id="maxLevel1">' + '</td><td>' + '<input type="number" value="' + minLevel1 + '" class="form-control" name="minLevel1" id="minLevel1">' + '</td><td>' + '<input type="number" value="' + quantity1 + '" onchange="myCalQty(this)" class="form-control" name="quantity1" id="quantity1">' + '</td><td>' + '<input type="number" value="' + freeQuantity1 + '" class="form-control" name="freeQuantity1" id="freeQuantity1">' + '</td><td>' + '<input type="number" value="' + rate1 + '" onchange="myCalRate(this)" class="form-control" name="rate1" id="rate1">' + '</td><td>' + '<input type="text" readonly value="' + totalAmount1 + '" class="form-control" name="totalAmount1" id="totalAmount1">' + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td><td><button type="button" onclick="AddProduct(this)" id="addProduct" name="addProduct" class="addProduct" title="Add New Product" class="btndivcss" style="height: 25px;"><span class="fa fa-plus"></span></button></td></tr>');
+
+                    },
+                });
+            }
+            else {
+
+                $("#PoId").val("0");
+                $("#orderDate").val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                $("#referenceDate").val("@DateTime.Now.ToString("yyyy-MM-dd")");
+                $("#referenceNumber").val("");
+                $("#valueBy").val("Purchase Rate");
+                $("#grossTotal").val("0.00");
+                $("#addAmount").val("0.00");
+                $("#lessAmount").val("0.00");
+                $("#netAmount").val("0.00");
+                $("#payMode").val("Cash");
+                $("#creditDays").val("");
+                $("#purchaseType").val("Select");
+                $("#purchaseTypeMode").val("");
+
+                $("#save").html("<i class='fa fa-save'></i>Save");
+                $('#purchaseOrderTable tbody tr').remove();
+                productNameID1 = "";
+                productName1 = "";
+                manufacturerName1 = "";
+                packing1 = "";
+                currentQuantity1 = "0";
+                maxLevel1 = "0";
+                minLevel1 = "0";
+                quantity1 = "0";
+                freeQuantity1 = "0";
+                rate1 = "0.00";
+                totalAmount1 = "0.00";
+
+                $("#purchaseOrderTable").append('<tr><td style="display:none">' + '<input type="text" value="' + productNameID1 + '"  class="form-control"  name="productNameID1" id="productNameID1">' + '</td><td>' + '<input type="text" value="' + productName1 + '" class="form-control" placeholder="Search Product" name="productName1" id="productName1">' + '</td><td>' + '<input type="text" value="' + manufacturerName1 + '" class="form-control" placeholder="Search Manufacturer" name="manufacturerName1" id="manufacturerName1">' + '</td><td>' + '<input type="text" value="' + packing1 + '" class="form-control" name="packing1" id="packing1">' + '</td><td>' + '<input type="number" value="' + currentQuantity1 + '" class="form-control" name="currentQuantity1" id="currentQuantity1">' + '</td><td>' + '<input type="number" value="' + maxLevel1 + '"  class="form-control" name="maxLevel1" id="maxLevel1">' + '</td><td>' + '<input type="number" value="' + minLevel1 + '" class="form-control" name="minLevel1" id="minLevel1">' + '</td><td>' + '<input type="number" value="' + quantity1 + '" onchange="myCalQty(this)" class="form-control" name="quantity1" id="quantity1">' + '</td><td>' + '<input type="number" value="' + freeQuantity1 + '" class="form-control" name="freeQuantity1" id="freeQuantity1">' + '</td><td>' + '<input type="number" value="' + rate1 + '" onchange="myCalRate(this)" class="form-control" name="rate1" id="rate1">' + '</td><td>' + '<input type="text" readonly value="' + totalAmount1 + '" class="form-control" name="totalAmount1" id="totalAmount1">' + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td><td><button type="button" onclick="AddProduct(this)" id="addProduct" name="addProduct" class="addProduct" title="Add New Product" class="btndivcss" style="height: 25px;"><span class="fa fa-plus"></span></button></td></tr>');
+
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        debugger
+        $("#addAmount").change(function () {
+
+            if($("#addAmount").val() == "")
+            {
+                addAmt = 0;
+            }
+            else
+            {
+                addAmt = $("#addAmount").val();
+            }
+
+            if ($("#lessAmount").val() == "") {
+                lessAmt = 0;
+            }
+            else {
+                lessAmt = $("#lessAmount").val();
+            }
+
+            grossAmt = $("#grossTotal").val();
+            $("#netAmount").val(parseInt(grossAmt) + parseInt(addAmt) - parseInt(lessAmt));
+        });
+    });
+</script>
+<script>
+    $(function () {
+        debugger
+        $("#lessAmount").change(function () {
+            if ($("#addAmount").val() == "") {
+                addAmt = 0;
+            }
+            else {
+                addAmt = $("#addAmount").val();
+            }
+
+            if ($("#lessAmount").val() == "") {
+                lessAmt = 0;
+            }
+            else {
+                lessAmt = $("#lessAmount").val();
+            }
+
+            grossAmt = $("#grossTotal").val();
+            $("#netAmount").val(parseInt(grossAmt) + parseInt(addAmt) - parseInt(lessAmt));
+        });
+    });
+</script>
+<script>
+
+    function myCalQty(row) {
+        debugger;
+
+        var GrossTotal = 0;
+        var rowcount = purchaseOrderTable.rows.length;
+        var status = "True";
+        var level = $("#level").val();
+
+        if (level == "Max Level") {
+
+            for (var i = 0; i < rowcount - 1 ; i++) {
+
+                qtyMax = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+                maxLvl = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[5].children[0].value);
+                minLvl = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[6].children[0].value);
+
+                if (qtyMax == "") {
+                    qtyMax = 0;
+                }
+
+                if (maxLvl == "") {
+                    maxLvl = 0;
+                }
+
+                if (minLvl == "") {
+                    minLvl = 0;
+                }
+
+                if (maxLvl < qtyMax) {
+                    alert("Kindly enter the valid Quantity for Max. level !");
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value = 0;
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = 0;
+                    status = "False";
+                }
+
+            }
+
+            if (status = "True") {
+                for (var i = 0; i < rowcount - 1 ; i++) {
+
+                    qtyAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+                    rateAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[9].children[0].value);
+
+                    if (qtyAmt == "") {
+                        qtyAmt = 0;
+                    }
+
+                    if (rateAmt == "") {
+                        rateAmt = 0;
+                    }
+
+                    var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = totamount;
+
+                    GrossTotal = parseInt(GrossTotal) + parseInt(totamount);
+
+                }
+
+                addAmt = $("#addAmount").val();
+                lessAmt = $("#lessAmount").val();
+
+                if (addAmt == "") {
+                    addAmt = 0;
+                }
+
+                if (lessAmt == "") {
+                    lessAmt = 0;
+                }
+
+                $("#grossTotal").val(GrossTotal);
+                $("#netAmount").val(parseInt(GrossTotal) + parseInt(addAmt) - parseInt(lessAmt));
+            }
+
+        }
+        else if (level == "Min Level") {
+
+            for (var i = 0; i < rowcount - 1 ; i++) {
+
+                qtyMax = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+                maxLvl = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[5].children[0].value);
+                minLvl = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[6].children[0].value);
+
+                if (qtyMax == "") {
+                    qtyMax = 0;
+                }
+
+                if (maxLvl == "") {
+                    maxLvl = 0;
+                }
+
+                if (minLvl == "") {
+                    minLvl = 0;
+                }
+
+                if (minLvl > qtyMax) {
+                    alert("Kindly enter the valid Quantity for Min. level !");
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value = 0;
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = 0;
+                    status = "False";
+                }
+
+            }
+
+            if (status = "True") {
+                for (var i = 0; i < rowcount - 1 ; i++) {
+
+                    qtyAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+                    rateAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[9].children[0].value);
+
+                    if (qtyAmt == "") {
+                        qtyAmt = 0;
+                    }
+
+                    if (rateAmt == "") {
+                        rateAmt = 0;
+                    }
+
+                    var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = totamount;
+
+                    GrossTotal = parseInt(GrossTotal) + parseInt(totamount);
+
+                }
+
+                addAmt = $("#addAmount").val();
+                lessAmt = $("#lessAmount").val();
+
+                if (addAmt == "") {
+                    addAmt = 0;
+                }
+
+                if (lessAmt == "") {
+                    lessAmt = 0;
+                }
+
+                $("#grossTotal").val(GrossTotal);
+                $("#netAmount").val(parseInt(GrossTotal) + parseInt(addAmt) - parseInt(lessAmt));
+            }
+
+        }
+        else {
+            for (var i = 0; i < rowcount - 1 ; i++) {
+
+                qtyAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+                rateAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[9].children[0].value);
+
+                if (qtyAmt == "") {
+                    qtyAmt = 0;
+                }
+
+                if (rateAmt == "") {
+                    rateAmt = 0;
+                }
+
+                var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+                document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = totamount;
+
+                GrossTotal = parseInt(GrossTotal) + parseInt(totamount);
+
+            }
+
+            addAmt = $("#addAmount").val();
+            lessAmt = $("#lessAmount").val();
+
+            if (addAmt == "") {
+                addAmt = 0;
+            }
+
+            if (lessAmt == "") {
+                lessAmt = 0;
+            }
+
+            $("#grossTotal").val(GrossTotal);
+            $("#netAmount").val(parseInt(GrossTotal) + parseInt(addAmt) - parseInt(lessAmt));
+        }
+        
+        if ($("#purchaseType").val() == "Select")
+        {
+            alert("Kindly Select Purchase Type !");
+            $("#purchaseType").focus();
+        }
+    }
+
+
+
+</script>
+<script>
+
+    function myCalRate(row) {
+        debugger;
+
+        var GrossTotal = 0;
+        var rowcount = purchaseOrderTable.rows.length;
+
+        for (var i = 0; i < rowcount - 1 ; i++) {
+
+            qtyAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[7].children[0].value);
+            rateAmt = parseInt(document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[9].children[0].value);
+
+            if (qtyAmt == "") {
+                qtyAmt = 0;
+            }
+
+            if (rateAmt == "") {
+                rateAmt = 0;
+            }
+
+            var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+            document.getElementById('purchaseOrderTable').tBodies[0].rows[i].cells[10].children[0].value = totamount;
+
+            GrossTotal = parseInt(GrossTotal) + parseInt(totamount);
+
+        }
+
+        addAmt = $("#addAmount").val();
+        lessAmt = $("#lessAmount").val();
+
+        if (addAmt == "") {
+            addAmt = 0;
+        }
+
+        if (lessAmt == "") {
+            lessAmt = 0;
+        }
+
+        $("#grossTotal").val(GrossTotal);
+        $("#netAmount").val(parseInt(GrossTotal) + parseInt(addAmt) - parseInt(lessAmt));
+
+
+
+        debugger
+        productNameID1 = "";
+        productName1 = "";
+        manufacturerName1 = "";
+        packing1 = "";
+        currentQuantity1 = "0";
+        maxLevel1 = "0";
+        minLevel1 = "0";
+        quantity1 = "0";
+        freeQuantity1 = "0";
+        rate1 = "0.00";
+        totalAmount1 = "0.00";
+
+
+
+        $("#purchaseOrderTable").append('<tr><td style="display:none">' + '<input type="text" value="' + productNameID1 + '"  class="form-control"  name="productNameID1" id="productNameID1">' + '</td><td>' + '<input type="text" value="' + productName1 + '" placeholder="Search Product" class="form-control newproduct newproductChange"  name="productName1" id="productName1">' + '</td><td>' + '<input type="text" value="' + manufacturerName1 + '" class="form-control" placeholder="Search Manufacturer" name="manufacturerName1" id="manufacturerName1">' + '</td><td>' + '<input type="text" value="' + packing1 + '" class="form-control" name="packing1" id="packing1">' + '</td><td>' + '<input type="number" value="' + currentQuantity1 + '" class="form-control" name="currentQuantity1" id="currentQuantity1">' + '</td><td>' + '<input type="number" value="' + maxLevel1 + '"  class="form-control" name="maxLevel1" id="maxLevel1">' + '</td><td>' + '<input type="number" value="' + minLevel1 + '" class="form-control" name="minLevel1" id="minLevel1">' + '</td><td>' + '<input type="number" value="' + quantity1 + '" onchange="myCalQty(this)" class="form-control" name="quantity1" id="quantity1">' + '</td><td>' + '<input type="number" value="' + freeQuantity1 + '" class="form-control" name="freeQuantity1" id="freeQuantity1">' + '</td><td>' + '<input type="number" value="' + rate1 + '" onchange="myCalRate(this)" class="form-control" name="rate1" id="rate1">' + '</td><td>' + '<input type="text" readonly value="' + totalAmount1 + '" class="form-control" name="totalAmount1" id="totalAmount1">' + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td><td><button type="button" onclick="AddProduct(this)" id="addProduct" name="addProduct" class="addProduct" title="Add New Product" class="btndivcss" style="height: 25px;"><span class="fa fa-plus"></span></button></td></tr>');
+    }
+    $(document).ready(function () {
+        $("#purchaseOrderTable").on('click', '#productName1', function () {
+
+            $(this).autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Get_Product", "PurchaseOrder")',
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            debugger
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.productName1, value: item.productName1, id: item.productNameID1,
+                                };
+                            }))
+                        },
+                    })
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    if (!ui.item) {
+                        this.value = "";
+                    }
+                },
+                select: function (event, i) {                  
+                    $(this).closest('tr').find('#productNameID1').val(i.item.id);                   
+                }
+            })
+        });
+
+        $("#purchaseOrderTable").on('click', '#manufacturerName1', function () {
+
+            $(this).autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Get_Manufacturer", "PurchaseOrder")',
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            debugger
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.manufacturerName1, value: item.manufacturerName1, 
+                                };
+                            }))
+                        },
+                    })
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    if (!ui.item) {
+                        this.value = "";
+                    }
+                },
+                //select: function (event, i) {
+                //    $(this).closest('tr').find('#productNameID1').val(i.item.id);
+                //}
+            })
+        });
+
+        $("#purchaseOrderTable").on('change', '#productName1', function () {
+            debugger
+          //  var row_num = parseInt($(this).parent().index());
+            debugger
+            var row_num = $(this).closest('tr').index();
+           // var productID = $(this).parent().find('#productNameID1').val();
+           productID =document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[0].children[0].value;
+            document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[0].children[0].value = productID;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_CheckProduct", "PurchaseOrder")',
+                data: '{productNameID1: ' + JSON.stringify(productID) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (list_po) {
+                    debugger
+                    if (list_po[0] == "" || list_po[0] == null) {
+                    }
+                    else {
+                        var mfrname = list_po[0];
+                        document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[2].children[0].value = mfrname;
+                     //   $(this).parent().find('#manufacturerName1').val(mfrname);
+                    }
+
+                    if (list_po[1] == "" || list_po[1] == null) {
+                    }
+                    else {
+                        var pack = list_po[1];
+                       document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[3].children[0].value = pack;
+                       // $(this).parent().find('#packing1').val(pack);
+                    }
+
+                    if (list_po[2] == "" || list_po[2] == null) {
+                    }
+                    else {
+                        var max = list_po[2];
+                       document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[5].children[0].value = max;
+                       // $(this).parent().find('#maxLevel1').val(max);
+                    }
+
+                    if (list_po[3] == "" || list_po[3] == null) {
+                    }
+                    else {
+                        var min = list_po[3];
+                        document.getElementById('purchaseOrderTable').tBodies[0].rows[row_num].cells[6].children[0].value = min;
+                       // $(this).parent().find('#minLevel1').val(min);
+                    }
+
+                    if (list_po[4] == "" || list_po[4] == null) {
+                    }
+                    else {                       
+                        var Pid = list_po[4];                     
+                    }
+
+                },
+            });
+        });       
+    });
+</script>
+<script>
+    $(function () {
+        debugger
+        $("#createEntry").change(function () {
+            if (document.getElementById("createEntry").checked == true) {
+                document.getElementById("level").disabled = false;
+            }
+            else {
+                document.getElementById("level").disabled = true;
+                $("#level").val("No Level");
+            }
+        });
+
+        $("#payMode").change(function () {
+            if ($("#payMode").val() == "Cash") {
+                document.getElementById("creditDays").disabled = true;
+                $("#creditDays").val("");
+            }
+            else {
+                document.getElementById("creditDays").disabled = false;
+                $("#creditDays").val("");
+            }
+        });
+        //debugger
+        //$("#purchaseType").change(function () {
+        //    debugger
+        //    if ($("#purchaseType").val() == "Assets") {
+        //        $("#purchaseTypeMode").val("DEPRICIABLE PROPERTY");
+        //    }
+        //    else if ($("#purchaseType").val() == "Consumable") {
+        //        $("#purchaseTypeMode").val("CONSUMABLE PRODUCTS");
+        //    }
+        //    else if ($("#purchaseType").val() == "Medicine") {
+        //        $("#purchaseTypeMode").val("MEDICINE PURCHASE");
+        //    }
+        //    else if ($("#purchaseType").val() == "Stationary") {
+        //        $("#purchaseTypeMode").val("CONSUMABLE PRODUCTS");
+        //    }
+        //    else {
+        //        $("#purchaseTypeMode").val("");
+        //    }
+        //});
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#purchaseOrderTable").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+
+        })
+    });
+</script>
+<script>
+    function myFunction(row) {
+        debugger;
+        var totamount = 0;
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        var totamount = document.getElementById('purchaseOrderTable').tBodies[0].rows[rowIndex].cells[10].children[0].value;
+
+        grossAmt = $("#grossTotal").val();
+        netAmt = $("#netAmount").val();
+
+        $("#grossTotal").val(parseInt(grossAmt) - totamount);
+        $("#netAmount").val(parseInt(netAmt) - totamount);
+    }
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger
+        productNameID1 = "";
+        productName1 = "";
+        manufacturerName1 = "";
+        packing1 = "";
+        currentQuantity1 = "0";
+        maxLevel1 = "0";
+        minLevel1 = "0";
+        quantity1 = "0";
+        freeQuantity1 = "0";
+        rate1 = "0.00";
+        totalAmount1 = "0.00";
+        
+        $("#purchaseOrderTable").append('<tr><td style="display:none">' + '<input type="text" value="' + productNameID1 + '"  class="form-control"  name="productNameID1" id="productNameID1">' + '</td><td>' + '<input type="text" value="' + productName1 + '"  class="form-control" placeholder="Search Product" name="productName1" id="productName1">' + '</td><td>' + '<input type="text" value="' + manufacturerName1 + '" class="form-control" placeholder="Search Manufacturer" name="manufacturerName1" id="manufacturerName1">' + '</td><td>' + '<input type="text" value="' + packing1 + '" class="form-control" name="packing1" id="packing1">' + '</td><td>' + '<input type="number" value="' + currentQuantity1 + '" class="form-control" name="currentQuantity1" id="currentQuantity1">' + '</td><td>' + '<input type="number" value="' + maxLevel1 + '"  class="form-control" name="maxLevel1" id="maxLevel1">' + '</td><td>' + '<input type="number" value="' + minLevel1 + '" class="form-control" name="minLevel1" id="minLevel1">' + '</td><td>' + '<input type="number" value="' + quantity1 + '" onchange="myCalQty(this)" class="form-control" name="quantity1" id="quantity1">' + '</td><td>' + '<input type="number" value="' + freeQuantity1 + '" class="form-control" name="freeQuantity1" id="freeQuantity1">' + '</td><td>' + '<input type="number" value="' + rate1 + '" onchange="myCalRate(this)" class="form-control" name="rate1" id="rate1">' + '</td><td>' + '<input type="text" readonly value="' + totalAmount1 + '" class="form-control" name="totalAmount1" id="totalAmount1">' + '</td><td><a onclick="myFunction(this)" href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td><td><button type="button" onclick="AddProduct(this)" id="addProduct" name="addProduct" class="addProduct" title="Add New Product" class="btndivcss" style="height: 25px;"><span class="fa fa-plus"></span></button></td></tr>');
+
+        
+        //    $('#purchaseOrderTable').DataTable({
+        //        "fixedHeader": true,
+        //        "paging": true,
+        //        "lengthChange": true,
+        //        "searching": true,
+        //        "ordering": true,
+        //        "info": true,
+        //        "autoWidth": true,
+        //        "responsive": false,
+        //    });
+        //    var buttons = new $.fn.dataTable.Buttons($('#purchaseOrderTable').DataTable(), {
+        //        buttons: [
+        //            {
+        //                extend: 'excel',
+        //                text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+        //            }
+        //        ]
+        //    }).container().appendTo($('#purchaseOrderTableExcelExport'));
+    });
+</script>
+<script>
+    function AddProduct(row) {
+        debugger;
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        var product = document.getElementById('purchaseOrderTable').tBodies[0].rows[rowIndex].cells[1].children[0].value;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AjaxMethod_AddProduct", "PurchaseOrder")',
+            data: '{productName1: ' + JSON.stringify(product) + '}',
+            contentType: "application/json; charset=utf-8",
+            success: function (list_po) {
+                debugger
+                if (list_po[0] == "" || list_po[0] == null) {
+                }
+                else {                           
+                    var Pid = list_po[0];
+                    document.getElementById('purchaseOrderTable').tBodies[0].rows[rowIndex].cells[0].children[0].value = Pid;
+                }
+            },
+        });
+    }
+</script>
+<script>
+    $(function () {
+        $("#purchaseType").change(function () {
+            debugger
+            var purType = $("#purchaseType").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_PurType", "PurchaseOrder")',
+                data: '{purchaseType: ' + JSON.stringify(purType) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    
+                  //  $("#purchaseTypeMode td").remove();
+                    $("#purchaseTypeMode").find("option").remove();
+                    for (var i = 0; i < searchList.length; i++) {
+
+                        $("#purchaseTypeMode").append($("<option value=" + searchList[i].purchaseTypeMode + ">" + searchList[i].purchaseTypeMode + "</option>"));
+
+                        debugger;
+                    }
+
+                },
+            });            
+        });
+    });
+</script>
+<script>
+    function Delete(PoId) {
+        debugger
+        if (PoId != "") {
+            var ans = confirm("Are you sure you want to Delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete_PO", "PurchaseOrder")',
+                    data: { PoId: PoId },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "Purchase Order Deleted Successfully !") {
+                            alert("Purchase Order Deleted Successfully !");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                });
+            }
+        }
+    }
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Purchase Order</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Pharmacy","Application")">Pharmacy</a></li>
+                                    <li class="breadcrumb-item active">Purchase Order</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Vendor Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Supplier Name-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Supplier</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="padding-left:0px; padding-right:0px">
+                                                    <input type="text" id="supplierName" name="supplierName" placeholder="Search Supplier" class="form-control" required
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Supplier Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" id="supplierNameID" name="supplierNameID" class="form-control" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addSupplierName" name="addSupplierName" onclick="window.location.href='@Url.Action("ProductSupplier", "ProductSupplier")'" class="btndivcss" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Address-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Address</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12" style="padding-left:0px; padding-right:0px">
+                                                    <textarea id="address" name="address" class="form-control" readonly></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Order Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Old Bill Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Old Bill</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                        <select id="oldBillNumber" name="oldBillNumber" class="form-control"></select>
+                                                        <input type="hidden" id="PoId" name="PoId" class="form-control" />
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cpb-10 padding0">
+                                                        <button type="button" id="convertOldBillNumber" name="convertOldBillNumber" onclick="window.location.href='@Url.Action("Purchase", "Purchase")'" class="btndivcss" style="height: 25px;" disabled>
+                                                            <i class="fa fa-exchange" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!--Order Date-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Ord. Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="date" id="orderDate" name="orderDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Reference Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Ref. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="referenceNumber" name="referenceNumber" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Reference Date-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Ref. Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="date" id="referenceDate" name="referenceDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Value By-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Value By</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="valueBy" name="valueBy" class="form-control">
+                                                            <option value="Purchase Rate">Purchase Rate</option>
+                                                            <option value="Sales Rate">Sales Rate</option>
+                                                            <option value="MRP">MRP</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Create Entry-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" class="form-check-input" id="createEntry" name="createEntry">Create Entry
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="level" name="level" class="form-control" disabled>
+                                                            <option value="No Level">No Level</option>
+                                                            <option value="Max Level">Max Level</option>
+                                                            <option value="Min Level">Min Level</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Payment Mode-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <label>Payment Mode</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="payMode" name="payMode" class="form-control">
+                                                            <option value="Cash">Cash</option>
+                                                            <option value="Credit">Credit</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Credit Days-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <label>Credit Days</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="number" id="creditDays" name="creditDays" disabled class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Purchase Type-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <label>Purchase Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="purchaseType" name="purchaseType" class="form-control">
+                                                            <option value="Select">Select</option>
+                                                            <option value="Assets">Assets</option>
+                                                            <option value="Consumable">Consumable</option>
+                                                            <option value="Medicine">Medicine</option>
+                                                            <option value="Stationary">Stationary</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">                                                  
+                                                        <select id="purchaseTypeMode" name="purchaseTypeMode" class="form-control">
+                                                            </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Amount Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Gross Total-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Gross Total</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="grossTotal" name="grossTotal" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <!--Add Amount-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Add Amount</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="addAmount" name="addAmount" value="0.00" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Less Amount-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Less Amount</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="lessAmount" name="lessAmount" value="0.00" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Net Amount-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Net Amount</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="netAmount" name="netAmount" value="0.00" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                            <table id="purchaseOrderTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th style="display:none">Product Name ID</th>
+                                                        <th>Product Name</th>
+                                                        <th>Manufacturer Name</th>
+                                                        <th>Packing</th>
+                                                        <th>Cur. Quantity</th>
+                                                        <th>Max Level</th>
+                                                        <th>Min Level</th>
+                                                        <th>Quantity</th>
+                                                        <th>Free Quantity</th>
+                                                        <th>Rate</th>
+                                                        <th>Total Amount</th>
+                                                        <th>Delete</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('PoId').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Pharmacy", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                @*<div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" id="purchaseOrderTableExcelExport"></a>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

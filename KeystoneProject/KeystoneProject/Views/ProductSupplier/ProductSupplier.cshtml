@@ -1,0 +1,663 @@
+﻿@model KeystoneProject.Models.PharmacyMaster.ProductSupplier
+
+@{
+    ViewBag.Title = "Product Supplier";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#City").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetCityBind", "ProductSupplier")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.City, value: item.City, id: item.CityID
+                            };
+                        }));
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                $("#CityID").val(ui.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#City").change(function () {
+            debugger
+            var City = $("#City").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod", "ProductSupplier")',
+                data: '{City: ' + JSON.stringify(City) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#State").val(searchList[0]);
+                    $("#Country").val(searchList[1]);
+                    $("#StateID").val(searchList[2]);
+                    $("#CountryID").val(searchList[3]);
+                },
+            });
+        });
+        $("#postingAccount").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindPostindAccount", "ProductSupplier")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.AccountName, value: item.AccountName, id: item.AccountsID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#AccountsID").val(show);
+            },
+        });
+        $("#ProductCompanyName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindCompanyName", "ProductSupplier")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                       
+                        debugger
+                        response($.map(data, function (item) {
+                            debugger
+                            return {
+                                label: item.ProductCompanyName, value: item.ProductCompanyName, id: item.ProductCompanyNameID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#ProductCompanyNameID").val(show);
+            },
+        });
+        $('#ProductSupplierName').change(function () {
+            $('#ShortName').val($('#ProductSupplierName').val());
+        });
+        $("#mobileNumber").keyup(function () {
+            $("#mobileNumber").val(this.value.match(/[0-9]*/));
+            var MobileNo = $("#mobileNumber").val();
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowAllProductSupplier", "ProductSupplier")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#productSupplierTable").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].ProductSupplierName + '</td><td>' + data[i].AccountName + '</td><td style="display:none">' + data[i].ProductSupplierID + '</td></tr>');
+                };
+                $('#productSupplierTable').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#productSupplierTable').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#accountsExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+        $('#addProductSupplierDetail').click(function () {
+            debugger       
+
+           
+            ProductCompanyName1 = $("#ProductCompanyName").val();
+
+            if (ProductCompanyName1 =="") {
+              alert('First add Company Name');
+            }
+            else {
+
+                cashDiscount1 = $("#cashDiscount").val();
+                creditDiscount1 = $("#creditDiscount").val();
+                lessBy1 = $("#lessBy").val();
+                ProductCompanyNameID1 = $('#ProductCompanyNameID').val();
+
+                $("#productSupplierDetailTable").append('<tr><td>' + '<input type="text" readonly value="' + ProductCompanyName1 + '"  class="form-control"  name="ProductCompanyName1">' + '<input type="hidden" readonly value="' + ProductCompanyNameID1 + '" name="ProductCompanyNameID1">' + '</td><td>' + '<input type="text" readonly value="' + cashDiscount1 + '" class="form-control" name="cashDiscount1">' + '</td><td>' + '<input type="text" readonly value="' + creditDiscount1 + '" class="form-control" name="creditDiscount1">' + '</td><td>' + '<input type="text" readonly value="' + lessBy1 + '"  class="form-control" name="lessBy1">' + '</td><td><a href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>');
+
+                $("#ProductCompanyName").val("");
+                $("#cashDiscount").val("");
+                $("#creditDiscount").val("");
+                $("#lessBy").val("");
+            }
+           
+        });
+       
+        $("#productSupplierDetailTable").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+
+        $('#productSupplierTable').delegate('td', 'click', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var ProductSupplierID = parseInt(document.getElementById("productSupplierTable").tBodies[0].rows[row_num].cells[3].innerHTML);
+           
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditProductSupplier", "ProductSupplier")',
+                data: { id: ProductSupplierID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#ProductSupplierName").val(data[0].ProductSupplierName);
+                    $("#ShortName").val(data[0].ShortName);
+                    $("#DLNo").val(data[0].DLNo);
+                    $("#FoodLicNo").val(data[0].FoodLicNo);
+                    $("#CreditDay").val(data[0].CreditDay);
+                    $("#CSTNo").val(data[0].CSTNo);
+                    $("#TINNO").val(data[0].TINNO);
+                    $("#TINDate").val(data[0].TINDate);
+                    $("#AccountsID").val(data[0].AccountsID);
+                    $("#postingAccount").val(data[0].AccountName);
+                    $("#ContactPerson").val(data[0].ContactPerson);
+                    $("#Satus").val(data[0].Satus);
+                    $("#Days").val(data[0].Days);
+                    $("#Address").val(data[0].Address);                   
+                    $("#PinCode").val(data[0].PinCode);
+                    $("#City").val(data[0].CityName);
+                    $("#State").val(data[0].StateName);
+                    $("#Country").val(data[0].CountryName);
+                    $("#CityID").val(data[0].CityID);
+                    $("#StateID").val(data[0].StateID);
+                    $("#CountryID").val(data[0].CountryID);
+                    $("#EmailID").val(data[0].EmailID);
+                    $("#PhoneNo").val(data[0].PhoneNo);
+                    $("#MobileNo").val(data[0].MobileNo);
+                    $("#Pan").val(data[0].Pan);
+                    $("#ProductSupplierID").val(data[0].ProductSupplierID);
+                    //$("#ProductSupplierDetailID").val(data[0].ProductSupplierDetailID);
+
+                    $('#productSupplierDetailTable tbody tr').remove();
+                    $.each(data, function (i, obd) {
+                        debugger;
+ 
+                        $("#productSupplierDetailTable").append('<tr><td>' + '<input type="text" readonly value="' + obd.ProductCompanyName1 + '"  class="form-control"  name="ProductCompanyName1">' + '<input type="hidden" readonly value="' + obd.ProductCompanyNameID1 + '" name="ProductCompanyNameID1">' + '</td><td>' + '<input type="text" readonly value="' + obd.cashDiscount1 + '" class="form-control" name="cashDiscount1">' + '</td><td>' + '<input type="text" readonly value="' + obd.creditDiscount1 + '" class="form-control" name="creditDiscount1">' + '</td><td>' + '<input type="text" readonly value="' + obd.lessBy1 + '"  class="form-control" name="lessBy1">' + '</td><td><a href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>');
+
+                       
+                    });
+                },
+            });
+        })
+    });
+</script>
+
+<script>
+    function Delete(ProductSupplierID) {
+        debugger
+        var ans = confirm("Are you sure you want to Delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteProductSupplier", "ProductSupplier")',
+                data: { ProductSupplierID: ProductSupplierID },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    if (data == "ProductSupplier Deleted Successfully") {
+                        alert("ProductSupplier Deleted Successfully");
+                        window.location.reload(true);
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Product Supplier Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Product Supplier</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Supplier</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ProductSupplierName" name="ProductSupplierName" class="form-control" required
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" name="ProductSupplierID" id="ProductSupplierID" />
+                                                    <input type="hidden" name="ProductSupplierDetailID" id="ProductSupplierDetailID" />
+                                                </div>
+                                            </div>
+                                            <!--Short Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Short Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ShortName" name="ShortName" class="form-control" 
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Short Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                            <!--D.L Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>D.L No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="DLNo" name="DLNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Food License Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Food Lic. No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="FoodLicNo" name="FoodLicNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Credit Day-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Credit Day</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="CreditDay" name="CreditDay" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--CTN Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>CTN No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="CSTNo" name="CSTNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--GST Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>GST No.</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="TINNO" name="TINNO" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--TIN Date-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>TIN Date</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="TINDate" name="TINDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Posting Account-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Posting A/c.</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                    <input type="text" id="postingAccount" name="postingAccount" class="form-control" required placeholder="PostingAccount Search"
+                                                           style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Posting Account')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" name="AccountsID" id="AccountsID" />
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <button type="button" id="addPostingAccount" name="addPostingAccount" class="btndivcss pull-right" style="height: 25px;">
+                                                        <span class="fa fa-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--Contact Person-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Contact Person</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ContactPerson" name="ContactPerson" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Status-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Status</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select id="Satus" name="Satus" class="form-control">
+                                                        <option value="active">Active</option>
+                                                        <option value="inactive">Inactive</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--Days-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Days</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select id="Days" name="Days" class="form-control">
+                                                        <option value="allDays">All Days</option>
+                                                        <option value="monday">Monday</option>
+                                                        <option value="tuesday">Tuesday</option>
+                                                        <option value="wednesday">Wednesday</option>
+                                                        <option value="thursday">Thursday</option>
+                                                        <option value="friday">Friday</option>
+                                                        <option value="saturday">Saturday</option>
+                                                        <option value="sunday">Sunday</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Address Detail</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Address-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Address</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <textarea id="Address" name="Address" class="form-control" required
+                                                              style="border-left-color: red;border-left-width: thick;"
+                                                              oninvalid="this.setCustomValidity('Please Enter Address')"
+                                                              oninput="this.setCustomValidity('')"></textarea>
+                                                </div>
+                                            </div>
+                                            <!--City-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>City</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="City" name="City" class="form-control">
+                                                    <input type="hidden" name="CityID" id="CityID" />
+                                                </div>
+                                            </div>
+                                            <!--Pin Code-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Pin Code</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="PinCode" name="PinCode" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--State-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>State</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="State" name="State" class="form-control">
+                                                    <input type="hidden" name="StateID" id="StateID" />
+                                                </div>
+                                            </div>
+                                            <!--Country-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Country</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="Country" name="Country" class="form-control">
+                                                    <input type="hidden" name="CountryID" id="CountryID" />
+                                                </div>
+                                            </div>
+                                            <!--Email I'd-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Email I'd</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="email" id="EmailID" name="EmailID" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Phone Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Phone Number</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="PhoneNo" name="PhoneNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Mobile Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Mobile Number</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="MobileNo" name="MobileNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Pan Number-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Pan Number</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="Pan" name="Pan" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Supplier Detail</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Company Name-->
+                                            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Company Name</label>
+                                                <input type="text" id="ProductCompanyName" name="ProductCompanyName" class="form-control" placeholder="ProductCompanyName Search">
+                                                <input type="hidden" name="ProductCompanyNameID" id="ProductCompanyNameID" />
+                                                <input type="hidden" name="ProductSupplierDetailID" id="ProductSupplierDetailID" />
+                                            </div>
+                                            <!--Cash Discount-->
+                                            <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Cash Discount</label>
+                                                <input type="number" id="cashDiscount" name="cashDiscount" class="form-control" value="0.00">
+                                            </div>
+                                            <!--Credit Discount-->
+                                            <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Credit Discount</label>
+                                                <input type="number" id="creditDiscount" name="creditDiscount" class="form-control" value="0.00">
+                                            </div>
+                                            <!--Less By-->
+                                            <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Less By</label>
+                                                <input type="number" id="lessBy" name="lessBy" class="form-control"  value="0.00">
+                                            </div>
+                                            <!--Add Button-->
+                                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding-top: 25px;">
+                                                <button type="button" id="addProductSupplierDetail" name="addProductSupplierDetail" class="btndivcss pull-right" style="height: 25px;">
+                                                    Add
+                                                </button>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                <table id="productSupplierDetailTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                         
+                                                            <th>Company Name</th>
+                                                            <th>Cash Discount</th>
+                                                            <th>Credit Discount</th>
+                                                            <th>Less By</th>
+                                                            <th>Remove</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="Delete(document.getElementById('ProductSupplierID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="productSupplierTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="productSupplierTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>                                           
+                                            <th>ProductSupplierName</th>
+                                            <th>AccountName</th>      
+                                            <th style="display:none">ProductSupplierID</th>                                     
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

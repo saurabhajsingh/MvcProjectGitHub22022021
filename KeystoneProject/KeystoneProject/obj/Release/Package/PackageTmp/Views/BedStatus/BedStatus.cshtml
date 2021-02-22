@@ -1,0 +1,1023 @@
+﻿@model KeystoneProject.Models.Patient.BedStatus
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+
+@*<style>
+    @@media screen and (max-width: 867px) {
+
+        .paddingleft {
+            padding-left: 15px !important;
+        }
+    }
+
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+
+    .colname {
+    }
+</style>
+<style>
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+        display: block;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 145px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table-bordered > tbody > tr > td {
+        border: 0px solid #e1eff9;
+    }
+
+    td {
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    #example3_wrapper {
+        width: 1600px;
+    }
+
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+        text-align: left;
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper {
+            width: max-content;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        div.dt-buttons {
+            text-align: left !important;
+        }
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+
+    .btndivcss1 {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 0px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .buttoniconcss1 {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 4px 4px 4px;
+        margin-right: 0px;
+    }
+
+    #datatable-responsive_wrapper {
+        background: #ffffff;
+    }
+
+    input {
+        border: 1px solid #ccc;
+        border-radius: 1px;
+        padding: 3px;
+    }
+
+
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>*@
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example3').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Price Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <label>Price Name</label>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <input type="text" id="doc_first_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <label>Price</label>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <table style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:50%">
+                                                <input type="text" id="doc_first_name" class="form-control input-sm" style="width:100%">
+                                            </td>
+                                            <td style="padding-left: 2px;">
+                                                <button type="button" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Bed Status</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient Module</a></li>
+                                <li class="breadcrumb-item active">Bed Status</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row ">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="table-responsive">
+                                <table id="example3" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Ward Name</th>
+                                            <th>Room Name</th>
+                                            <th>Bed Number</th>
+                                            <th>Admition Date</th>
+                                            <th>Registration Date</th>
+                                            <th>IPD No.</th>
+                                            <th>Patient Name</th>
+                                            <th>Consultant Doctor</th>
+                                            <th>Refference Doctor</th>
+                                            <th>Deposit</th>
+                                            <th>TPA Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (Model.dsView != null)
+                                            {
+                                                for (int i = 0; i < Model.dsView.Tables[0].Rows.Count; i++)
+                                                {
+                                                    string WardName = Model.dsView.Tables[0].Rows[i]["WardName"].ToString();
+                                                    string RoomName = Model.dsView.Tables[0].Rows[i]["RoomName"].ToString();
+                                                    string BedNO = Model.dsView.Tables[0].Rows[i]["BedNO"].ToString();
+                                                    string AdmitDate = Model.dsView.Tables[0].Rows[i]["AdmitDate"].ToString();
+                                                    string RegNO = Model.dsView.Tables[0].Rows[i]["RegNO"].ToString();
+                                                    string IPDNO = Model.dsView.Tables[0].Rows[i]["IPDNO"].ToString();
+                                                    string PatientName = Model.dsView.Tables[0].Rows[i]["PatientName"].ToString();
+                                                    string ConsDoctor = Model.dsView.Tables[0].Rows[i]["ConsDoctor"].ToString();
+                                                    string ReffDoctor = Model.dsView.Tables[0].Rows[i]["ReffDoctor"].ToString();
+                                                    string Deposit = Model.dsView.Tables[0].Rows[i]["Deposit"].ToString();
+                                                    string TPAName = Model.dsView.Tables[0].Rows[i]["TPA Name"].ToString();
+                                                    <tr role="row" class="odd">
+                                                        <td>@WardName</td>
+                                                        <td>@RoomName</td>
+                                                        <td>@BedNO</td>
+                                                        <td>@AdmitDate</td>
+                                                        <td>@RegNO</td>
+                                                        <td>@IPDNO</td>
+                                                        <td>@PatientName</td>
+                                                        <td>@ConsDoctor</td>
+                                                        <td>@ReffDoctor</td>
+                                                        <td>@Deposit</td>
+                                                        <td>@TPAName</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="example3ExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+

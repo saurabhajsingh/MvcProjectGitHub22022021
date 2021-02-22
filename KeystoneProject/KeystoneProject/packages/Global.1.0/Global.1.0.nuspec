@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Global</id>
+    <version>1.0</version>
+    <title>Global</title>
+    <authors>Andre da Silva Carrilho</authors>
+    <owners>Andre da Silva Carrilho</owners>
+    <licenseUrl>http://global.codeplex.com/license</licenseUrl>
+    <projectUrl>http://global.stainlessdot.com/</projectUrl>
+    <iconUrl>https://api.nuget.org/v3-flatcontainer/global/1.0.0/icon</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>44KB of Helpers: Http/Rest, Serialization/Deserialization, Extensions, IO, Email, Security and a light curl/wget like cli for windows users!</description>
+    <summary>44KB of Helpers: Http/Rest, Serialization/Deserialization, Extensions, IO, Email, Security and a light curl/wget like cli for windows users!</summary>
+    <releaseNotes>44KB of Helpers: Http/Rest, Serialization/Deserialization, Extensions, IO, Email, Security and a light curl/wget like cli for windows users!</releaseNotes>
+    <tags>global http rest mail serialization serializer xml json</tags>
+  </metadata>
+</package>

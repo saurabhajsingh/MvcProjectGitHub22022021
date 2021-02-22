@@ -1,0 +1,2054 @@
+﻿@model KeystoneProject.Models.Patient.BirthCertificate
+
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@*<style>
+    @@media screen and (max-width: 867px) {
+
+        .paddingleft {
+            padding-left: 15px !important;
+        }
+    }
+
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+
+    .colname {
+    }
+</style>
+<style>
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+        display: block;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table-bordered > tbody > tr > td {
+        border: 0px solid #e1eff9;
+    }
+
+    td {
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+        text-align: left;
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper {
+            width: max-content;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        div.dt-buttons {
+            text-align: left !important;
+        }
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+
+    .btndivcss1 {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 0px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .buttoniconcss1 {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 4px 4px 4px;
+        margin-right: 0px;
+    }
+
+    #datatable-responsive_wrapper {
+        background: #ffffff;
+    }
+
+    input {
+        border: 1px solid #ccc;
+        border-radius: 1px;
+        padding: 3px;
+    }
+
+
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+</style>*@
+
+
+
+
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+            window.onload(true);
+    </script>
+}
+
+<script>
+
+    function Delete(CertificateNo) {
+        debugger
+        if (CertificateNo != "" && $("#PatientName").val() != "") {
+
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeletePatientBirthCertificate", "BirthCertificate")',
+                    data: { CertificateNo: CertificateNo },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Certificate Deleted Successfully") {
+                            alert("Certificate Deleted Successfully");
+                        }
+                        else {
+                            alert(data);
+                        }
+                        location.reload(true);
+                      },
+                            error: function (errormessage) {
+                            alert(errormessage.responseText);
+                            location.reload(true);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+
+<script>
+    $(function () {
+        $("#chk1").click(function () {
+            debugger
+            var isChecked = $("#chk1").is(":checked");
+            if (isChecked) {
+                document.getElementById("DOB1").disabled = false;
+                document.getElementById("TOB1").disabled = false;
+                document.getElementById("Weight1").disabled = false;
+                document.getElementById("Sex1").disabled = false;
+
+            } else {
+                document.getElementById("DOB1").disabled = true;
+                document.getElementById("TOB1").disabled = true;
+                document.getElementById("Weight1").disabled = true;
+                document.getElementById("Sex1").disabled = true;
+            }
+        });
+    });
+    $(function () {
+        $("#chk2").click(function () {
+            debugger
+            var isChecked = $("#chk2").is(":checked");
+            if (isChecked) {
+                document.getElementById("DOB2").disabled = false;
+                document.getElementById("TOB2").disabled = false;
+                document.getElementById("Weight2").disabled = false;
+                document.getElementById("Sex2").disabled = false;
+            } else {
+                document.getElementById("DOB2").disabled = true;
+                document.getElementById("TOB2").disabled = true;
+                document.getElementById("Weight2").disabled = true;
+                document.getElementById("Sex2").disabled = true;
+            }
+        });
+    });
+    $(function () {
+        $("#chk3").click(function () {
+            debugger
+            var isChecked = $("#chk3").is(":checked");
+            if (isChecked) {
+                document.getElementById("DOB3").disabled = false;
+                document.getElementById("TOB3").disabled = false;
+                document.getElementById("Weight3").disabled = false;
+                document.getElementById("Sex3").disabled = false;
+            }
+            else
+            {
+                document.getElementById("DOB3").disabled = true;
+                document.getElementById("TOB3").disabled = true;
+                document.getElementById("Weight3").disabled = true;
+                document.getElementById("Sex3").disabled = true;
+            }
+        });
+    });
+    $(function () {
+        $("#chk4").click(function () {
+            debugger
+            var isChecked = $("#chk4").is(":checked");
+            if (isChecked) {
+                document.getElementById("DOB4").disabled = false;
+                document.getElementById("TOB4").disabled = false;
+                document.getElementById("Weight4").disabled = false;
+                document.getElementById("Sex4").disabled = false;
+            } else {
+                document.getElementById("DOB4").disabled = true;
+                document.getElementById("TOB4").disabled = true;
+                document.getElementById("Weight4").disabled = true;
+                document.getElementById("Sex4").disabled = true;
+            }
+        });
+    });
+    //function myFunction() {
+    //    var checkBox = document.getElementById("chk1");
+    //    var DOB1 = document.getElementById("DOB1");
+    //    if (checkBox.checked == true) {
+    //        DOB1.style.display = "show";
+    //    } else {
+    //        //DOB1.style.display = "disabled";
+    //    }
+    //}
+    //function myFunction() {
+    //    if (document.getElementById("chkAssociation").checked == true)
+    //        document.getElementById("DOB1").disabled = false;
+    //    else
+    //        document.getElementById("DOB1").disabled = true;
+    //}
+</script>
+
+<script>
+    $(function () {
+        $("#PatientRegNoprint").change(function () {
+            debugger
+
+            var printReg = $(this).val();
+            // fin_year_id = $("#fin_year_id").val();
+            $.ajax({
+                url: '@Url.Action("GetPatientPrintNo_ToRegNo", "PatientOPD")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: $("#PatientRegNoprint").val(), PatientType: "%" },
+
+                success: function (data) {
+                    debugger
+                    $("input[type=text],input[type=number] ,hidden").val("");
+                    $('#PatientRegNoprint').val(printReg);
+                    // $('#fin_year_id').val(fin_year_id);
+                    if (data == "") {
+                        alert("Patient RegNo Does Not Exists");
+                        return false;
+                    }
+                    $("#PatientRegNo").val(data)
+
+
+
+                    var PregNo = { PatientRegNo: $("#PatientRegNo").val() }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetPatientRegNo", "BirthCertificate")',
+                        data: JSON.stringify(PregNo),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (searchList) {
+                            $("#PatientName").val(searchList[0]);
+                            $("#Address").val(searchList[1]);
+                            document.getElementById("CertificateNo").disabled = true;
+                        },
+                    });
+                }
+            })
+                });
+        
+       
+        })
+    
+    
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientName", "BirthCertificate")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNo, printReg: item.printReg
+
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                var d = ui.item.id;
+            
+                if (d > 0) {
+                    $("#PatientRegNo").val(d);
+                    $("#PatientRegNoprint").val(ui.item.printReg);
+                    //$("#Address").val(d);
+                    document.getElementById("CertificateNo").disabled = true;
+                }
+            }
+        });
+
+        $.ajax({
+           
+            url: '@Url.Action("GetAllFinancialYear", "BirthCertificate")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllBirthCert", "BirthCertificate")',
+            dataType: "json",
+            success: function (data) {
+                var table = "";
+                var tr = "";
+                for (var i = 0; i < data.length; i++) {
+
+                    var SrNo = i + 1;
+                    $("#GetAllBirthCert").append('<tr><td>' + SrNo + '</td><td>' + data[i].CertificateNo + '</td><td>' + data[i].PatientRegNo + '</td><td>' + data[i].PatientName + '</td></tr>');
+                };
+                $(".table").append(tr);
+                $('#GetAllBirthCert').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#deptID').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#deptExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+        $("#GetAllBirthCert").delegate('td', 'click', function () {
+            debugger;
+
+            $("#save").text("Update");
+            $("save").addClass("btndivcss");
+
+            var row_num = parseInt($(this).parent().index());
+            var CertificateNo = parseInt(document.getElementById("GetAllBirthCert").tBodies[0].rows[row_num].cells[0].innerHTML);
+
+            $("#CertificateNo").val(CertificateNo);
+
+            $.ajax
+               ({
+                   type: "GET",
+                   url: '@Url.Action("DataBind", "BirthCertificate")',
+                   data: { CertificateNo: CertificateNo },
+
+                   success: function (result) {
+                       debugger;
+                       $.each(result, function (i, obj) {
+                           debugger;
+
+                           $("#PatientName").val(obj.PatientName);
+                           $("#PatientRegNo").val(obj.PatientRegNo);
+                           $("#Cast").val(obj.Cast);
+                           $("#Date").val(obj.Date);
+                           $("#Date").val(obj.Date);
+                           $("#MotherName").val(obj.MotherName);
+                           $("#FatherName").val(obj.FatherName);
+                           $("#Address").val(obj.Address);
+                           $("#MAge").val(obj.MAge);
+                           $("#MNationality").val(obj.MNationality);
+                           $("#MReligion").val(obj.MReligion);
+                           $("#MOccuption").val(obj.MOccuption);
+                           $("#MQualification").val(obj.MQualification);
+                           $("#FAge").val(obj.FAge);
+                           $("#FNationality").val(obj.FNationality);
+                           $("#FReligion").val(obj.FReligion);
+                           $("#FOccuption").val(obj.FOccuption);
+                           $("#FQualification").val(obj.FQualification);
+                           $("#DOB1").val(obj.DOB1);
+                           $("#DOB2").val(obj.DOB2);
+                           $("#DOB3").val(obj.DOB3);
+                           $("#DOB4").val(obj.DOB4);
+                           $("#TOB1").val(obj.TOB1);
+                           $("#TOB2").val(obj.TOB2);
+                           $("#TOB3").val(obj.TOB3);
+                           $("#TOB4").val(obj.TOB4);
+                           $("#Weight1").val(obj.Weight1);
+                           $("#Weight2").val(obj.Weight2);
+                           $("#Weight3").val(obj.Weight3);
+                           $("#Weight4").val(obj.Weight4);
+                           $("#Sex1").val(obj.Sex1);
+                           $("#Sex2").val(obj.Sex2);
+                           $("#Sex3").val(obj.Sex3);
+                           $("#Sex4").val(obj.Sex4);
+                           $("#BirthPlace").val(obj.BirthPlace);
+                           $("#DeliveryType").val(obj.DeliveryType);
+                           $("#HODone").val(obj.HODone);
+                           $("#Remarks").val(obj.Remarks);
+                           $("#NoOfChild").val(obj.NoOfChild);
+                           debugger
+
+                           if ($("#Weight1").val() != "") {
+
+                               document.getElementById("chk1").checked = true;
+                               document.getElementById("DOB1").disabled = false;
+                               document.getElementById("TOB1").disabled = false;
+                               document.getElementById("Weight1").disabled = false;
+                               document.getElementById("Sex1").disabled = false;
+                           }
+                        
+                           if ($("#Weight2").val() != "") {
+                               document.getElementById("chk2").checked = true;
+                               document.getElementById("DOB2").disabled = false;
+                               document.getElementById("TOB2").disabled = false;
+                               document.getElementById("Weight2").disabled = false;
+                               document.getElementById("Sex2").disabled = false;
+                           }
+                          
+                           if ($("#Weight3").val() != "") {
+                               document.getElementById("chk3").checked = true;
+                               document.getElementById("DOB3").disabled = false;
+                               document.getElementById("TOB3").disabled = false;
+                               document.getElementById("Weight3").disabled = false;
+                               document.getElementById("Sex3").disabled = false;
+                           }
+                          
+                           if ($("#Weight4").val() != "") {
+                               document.getElementById("chk4").checked = true;
+                               document.getElementById("DOB4").disabled = false;
+                               document.getElementById("TOB4").disabled = false;
+                               document.getElementById("Weight4").disabled = false;
+                               document.getElementById("Sex4").disabled = false;
+                           }
+                       });
+                   }
+               })
+
+        })
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+    $("#CertificateNo").change(function () {
+        var CertificateNo = { CertificateNo: $("#CertificateNo").val() }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DataBind", "BirthCertificate")',
+            data: JSON.stringify(CertificateNo),
+            contentType: "application/json; charset=utf-8",
+            success: function (searchList) {
+                debugger
+
+                $("#PatientName").val(searchList[0].PatientName);
+                $("#PatientRegNo").val(searchList[0].PatientRegNo);
+                $("#Cast").val(searchList[0].Cast);
+                $("#Date").val(searchList[0].Date);
+                $("#Date").val(searchList[0].Date);
+                $("#MotherName").val(searchList[0].MotherName);
+                $("#FatherName").val(searchList[0].FatherName);
+                $("#Address").val(searchList[0].Address);
+                $("#MAge").val(searchList[0].MAge);
+                $("#MNationality").val(searchList[0].MNationality);
+                $("#MReligion").val(searchList[0].MReligion);
+                $("#MOccuption").val(searchList[0].MOccuption);
+                $("#MQualification").val(searchList[0].MQualification);
+                $("#FAge").val(searchList[0].FAge);
+                $("#FNationality").val(searchList[0].FNationality);
+                $("#FReligion").val(searchList[0].FReligion);
+                $("#FOccuption").val(searchList[0].FOccuption);
+                $("#FQualification").val(searchList[0].FQualification);
+                $("#DOB1").val(searchList[0].DOB1);
+                $("#DOB2").val(searchList[0].DOB2);
+                $("#DOB3").val(searchList[0].DOB3);
+                $("#DOB4").val(searchList[0].DOB4);
+                $("#TOB1").val(searchList[0].TOB1);
+                $("#TOB2").val(searchList[0].TOB2);
+                $("#TOB3").val(searchList[0].TOB3);
+                $("#TOB4").val(searchList[0].TOB4);
+                $("#Weight1").val(searchList[0].Weight1);
+                $("#Weight2").val(searchList[0].Weight2);
+                $("#Weight3").val(searchList[0].Weight3);
+                $("#Weight4").val(searchList[0].Weight4);
+                $("#Sex1").val(searchList[0].Sex1);
+                $("#Sex2").val(searchList[0].Sex2);
+                $("#Sex3").val(searchList[0].Sex3);
+                $("#Sex4").val(searchList[0].Sex4);
+                $("#BirthPlace").val(searchList[0].BirthPlace);
+                $("#DeliveryType").val(searchList[0].DeliveryType);
+                $("#HODone").val(searchList[0].HODone);
+                $("#Remarks").val(searchList[0].Remarks);
+                $("#NoOfChild").val(searchList[0].NoOfChild);
+             //   $("#Weight1").val(searchList[0].Weight1);
+                debugger
+
+
+                if ($("#Weight1").val()!= "") {
+
+                    document.getElementById("chk1").checked = true;
+                    document.getElementById("DOB1").disabled = false;
+                    document.getElementById("TOB1").disabled = false;
+                    document.getElementById("Weight1").disabled = false;
+                    document.getElementById("Sex1").disabled = false;
+                }
+                //else if ($("#Weight1").val(searchList[0].Weight1) != null) {
+                //    document.getElementById("chk1").checked = true;
+                //    document.getElementById("DOB1").disabled = false;
+                //    document.getElementById("TOB1").disabled = false;
+                //    document.getElementById("Weight1").disabled = false;
+                //    document.getElementById("Sex1").disabled = false;
+                //}
+                if ($("#Weight2").val() != "")
+                {
+                    document.getElementById("chk2").checked = true;
+                    document.getElementById("DOB2").disabled = false;
+                    document.getElementById("TOB2").disabled = false;
+                    document.getElementById("Weight2").disabled = false;
+                    document.getElementById("Sex2").disabled = false;
+                }
+                //else if ($("#Weight2").val(searchList[0].Weight2) == null) {
+                //    document.getElementById("chk2").checked = false;
+                //    document.getElementById("DOB2").disabled = true;
+                //    document.getElementById("TOB2").disabled = true;
+                //    document.getElementById("Weight2").disabled = true;
+                //    document.getElementById("Sex2").disabled = true;
+                //}
+                if ($("#Weight3").val() != "")
+                {
+                    document.getElementById("chk3").checked = true;
+                    document.getElementById("DOB3").disabled = false;
+                    document.getElementById("TOB3").disabled = false;
+                    document.getElementById("Weight3").disabled = false;
+                    document.getElementById("Sex3").disabled = false;
+                }
+                //else if ($("#Weight3").val(searchList[0].Weight3) == null) {
+                //    document.getElementById("chk3").checked = false;
+                //    document.getElementById("DOB3").disabled = true;
+                //    document.getElementById("TOB3").disabled = true;
+                //    document.getElementById("Weight3").disabled = true;
+                //    document.getElementById("Sex3").disabled = true;
+                //}
+                if ($("#Weight4").val() != "")
+                {
+                    document.getElementById("chk4").checked = true;
+                    document.getElementById("DOB4").disabled = false;
+                    document.getElementById("TOB4").disabled = false;
+                    document.getElementById("Weight4").disabled = false;
+                    document.getElementById("Sex4").disabled = false;
+                }
+                //else if ($("#Weight4").val(searchList[0].Weight4) != null) {
+                //    document.getElementById("chk4").checked = true;
+                //    document.getElementById("DOB4").disabled = false;
+                //    document.getElementById("TOB4").disabled = false;
+                //    document.getElementById("Weight4").disabled = false;
+                //    document.getElementById("Sex4").disabled = false;
+                //}
+
+
+                //if ($("#TOB1").val(searchList[0].TOB1) != null) {
+                //    $("#TOB1").removeAttr('disabled');
+                //}
+                //if ($("#TOB3").val(searchList[0].TOB3) != null) {
+                //    $("#TOB3").removeAttr('disabled');
+                //}
+                //if ($("#TOB2").val(searchList[0].TOB2) != null) {
+                //    $("#TOB2").removeAttr('disabled');
+                //}
+                //if ($("#TOB4").val(searchList[0].TOB4) != null) {
+                //    $("#TOB4").removeAttr('disabled');
+                //}
+
+                    //if (document.getElementById("DOB1") != null)
+                    //{
+                    //    document.getElementById("DOB1").disabled = true;
+                    //}
+                    //if (document.getElementById("TOB1") != null)
+                    //{
+                    //    document.getElementById("TOB1").disabled = true;
+                    //}
+                    //if(document.getElementById("Weight1") != null)
+                    //{
+                    //    document.getElementById("Weight1").disabled = true;
+                    //}
+                    //if (document.getElementById("Sex1") != null)
+                    //{
+                    //   document.getElementById("Sex1").disabled = true;
+                    //}
+                    //if (document.getElementById("DOB2") != null)
+                    //{
+                    //    document.getElementById("DOB2").disabled = true;
+                    //}
+                    //if (document.getElementById("TOB2") != null)
+                    //{
+                    //    document.getElementById("TOB2").disabled = true;
+                    //}
+                    //if(document.getElementById("Weight2") != null)
+                    //{
+                    //    document.getElementById("Weight1").disabled = true;
+                    //}
+                    //if (document.getElementById("Sex1") != null)
+                    //{
+                    //    document.getElementById("Sex1").disabled = true;
+                    //}
+                    //    if (isChecked) {
+                    //        document.getElementById("DOB2").disabled = false;
+                    //        document.getElementById("TOB2").disabled = false;
+                    //        document.getElementById("Weight2").disabled = false;
+                    //        document.getElementById("Sex2").disabled = false;
+                    //    } else {
+                    //        document.getElementById("Weight2").disabled = true;
+                    //        document.getElementById("Sex2").disabled = true;
+                    //    }
+                    //});
+                //});
+            },
+        });
+    });
+    });
+
+    @*$(document).ready(function () {
+        $("#CertificateNo").change(function () {
+            $.ajax
+                 ({
+                     type: "GET",
+                     url: '@Url.Action("Fill", "BirthCertificate")',
+                     data: { CertificateNo: CertificateNo },
+
+                     success: function (result) {
+
+                         $.each(result, function (i, obj) {
+                             $("#CertificateNo").val(obj.CertificateNo);
+                             $("#PatientRegNO").val(obj.PatientRegNo);
+                             $("#PatientName").val(obj.PatientName);
+                             //$("#GuardianName").val(obj.GuardianName);
+                             //$("#ReferenceCode").val(obj.ReferenceCode);
+                             //$('#DateOfDeath').val(obj.DateOfDeath);
+                             //$('#TimeOfDeath').val(obj.TimeOfDeath);
+                             //$("#DeathType").val(obj.DeathType);
+                             //$("#ReasonOfDeath").val(obj.ReasonOfDeath);
+                             //$("#Discription").val(obj.Discription);
+                             $("#Address").val(obj.Address);
+                         });
+                     }
+                 });
+        });*@
+    //});
+
+</script>
+@*<script>
+        function Restore()
+        {
+            $("#PatientName").val("");
+            $("#PatientRegNo").val("");
+            $("#Cast").val("");
+            $("#Date").val("");
+            $("#MotherName").val("");
+            $("#FatherName").val("");
+            $("#Address").val("");
+            $("#MAge").val("");
+            $("#MNationality").val("");
+            $("#MReligion").val("");
+            $("#MOccuption").val("");
+            $("#MQualification").val("");
+            $("#FAge").val("");
+            $("#FNationality").val("");
+            $("#FReligion").val("");
+            $("#FOccuption").val("");
+            $("#FQualification").val("");
+            $("#DOB1").val("");
+            $("#DOB2").val("");
+            $("#DOB3").val("");
+            $("#DOB4").val("");
+            $("#TOB1").val("");
+            $("#TOB2").val("");
+            $("#TOB3").val("");
+            $("#TOB4").val("");
+            $("#Weight1").val("");
+            $("#Weight2").val("");
+            $("#Weight3").val("");
+            $("#Weight4").val("");
+            $("#Sex1").val("");
+            $("#Sex2").val("");
+            $("#Sex3").val("");
+            $("#Sex4").val("");
+            $("#BirthPlace").val("");
+            $("#DeliveryType").val("");
+            $("#HODone").val("");
+            $("#Remarks").val("");
+            $("#NoOfChild").val("");
+        }
+    </script>*@
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Birth Certificate</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient Module</a></li>
+                                    <li class="breadcrumb-item active">Birth Certificate</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Information</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient Reg No.-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                        <label>Pt. Reg. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                        <select class="form-control">
+                                                            <option value="">2017-2018</option>
+                                                            <option value="">2018-2019</option>
+                                                            <option value="">2019-2020</option>
+                                                            <option value="">2020-2021</option>
+                                                            <option value="">2021-2022</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="hidden col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="number" id="PatientRegNo" name="PatientRegNo" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Patient Registration Number')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="number" id="PatientRegNoprint" name="PatientRegNoprint" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Patient Registration Number')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+
+                                                </div>
+                                                <!--Certificate Number-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Cert. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="number" id="CertificateNo" name="CertificateNo" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Certificate Number')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Date-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="date" id="Date" name="Date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient Name-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Patient Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Cast-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Cast</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Cast" name="Cast" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Cast')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Address-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Address</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <textarea id="Address" name="Address" class="form-control" required
+                                                                  style="border-left-color: red;border-left-width: thick;"
+                                                                  oninvalid="this.setCustomValidity('Please Enter Address')"
+                                                                  oninput="this.setCustomValidity('')"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Father name-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Father name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="FatherName" name="FatherName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Father Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Mother Name-->
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Mother Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MotherName" name="MotherName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Mother Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Mother Details</h2>
+                                    <div class="card-body panel-body">
+                                        <!--Mother's Age-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Age</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="number" id="MAge" name="MAge" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Mothers Age')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Mother's Nationality-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Nationality</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="MNationality" name="MNationality">
+                                                    <option value="Hinduismm">Hinduism</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Christianity">Christianity</option>
+                                                    <option value="Buddhism">Buddhism</option>
+                                                    <option value="Sikhism">Sikhism</option>
+                                                    <option value="Jainism">Jainism</option>
+                                                    <option value="Zoroastrianism">Zoroastrianism</option>
+                                                    <option value="Ayyavazhi">Ayyavazhi</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Mother's Religion-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Religion</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="MReligion" name="MReligion" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Religion')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Mother's Occupation-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Occupation</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="MOccuption" name="MOccuption" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Mothers Occupation')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Mother's Qualification-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Qualification</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="MQualification" name="MQualification" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Mothers Qualification')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Father Details</h2>
+                                    <div class="card-body panel-body">
+                                        <!--Father's Age-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Age</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="number" id="FAge" name="FAge" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Fathers Age')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Father's Nationality-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Nationality</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="FNationality" name="FNationality">
+                                                    <option value="Hinduismm">Hinduism</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Christianity">Christianity</option>
+                                                    <option value="Buddhism">Buddhism</option>
+                                                    <option value="Sikhism">Sikhism</option>
+                                                    <option value="Jainism">Jainism</option>
+                                                    <option value="Zoroastrianism">Zoroastrianism</option>
+                                                    <option value="Ayyavazhi">Ayyavazhi</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Father's Religion-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Religion</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="FReligion" name="FReligion" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Religion')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Father's Occupation-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Occupation</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="FOccuption" name="FOccuption" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Mothers Occupation')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Father's Qualification-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Qualification</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="FQualification" name="FQualification" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Mothers Qualification')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Birth Details</h2>
+                                    <div class="card-body panel-body">
+                                        <!--Birth Place-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Birth Place</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="BirthPlace" name="BirthPlace" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Birth Place')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Delivery Type-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Delivery Type</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="DeliveryType" name="DeliveryType">
+                                                    <option value="Normal Delivery">Normal Delivery</option>
+                                                    <option value="Vaginal Delivery">Vaginal Delivery</option>
+                                                    <option value="Caesarian Section">Caesarian Section</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--HO's Done/Dr.-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>HO's Done/Dr.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="HODone" name="HODone" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter HO Done/Dr.')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Remarks-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Remarks</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="text" id="Remarks" name="Remarks" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Remark')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!--Number of child-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>No. of child</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                <input type="number" id="NoOfChild" name="NoOfChild" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter No. of Child')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Child Details</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Check Box-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" id="chk1" onclick="myFunction()" value="">
+                                                </div>
+                                            </div>
+                                            <!--Date Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>DOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="DOB1" name="DOB1" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Time Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>TOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="TOB1" name="TOB1" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Weight-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Weight</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="Weight1" name="Weight1" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Gender-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gender</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="Sex1" name="Sex1" disabled>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Check Box-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" id="chk2" value="">
+                                                </div>
+                                            </div>
+                                            <!--Date Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>DOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="DOB2" name="DOB2" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Time Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>TOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="TOB2" name="TOB2" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Weight-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Weight</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="Weight2" name="Weight2" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Gender-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gender</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="Sex2" name="Sex2" disabled>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Check Box-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" id="chk3" value="">
+                                                </div>
+                                            </div>
+                                            <!--Date Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>DOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="DOB3" name="DOB3" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Time Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>TOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="TOB3" name="TOB3" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Weight-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Weight</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="Weight3" name="Weight3" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Gender-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gender</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="Sex3" name="Sex3" disabled>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Check Box-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" id="chk4" value="">
+                                                </div>
+                                            </div>
+                                            <!--Date Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>DOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="DOB4" name="DOB4" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Time Of Birth-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>TOB</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="TOB4" name="TOB4" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Weight-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Weight</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="number" id="Weight4" name="Weight4" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <!--Gender-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gender</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="Sex4" name="Sex4" disabled>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="Delete(document.getElementById('CertificateNo').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="ExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+
+

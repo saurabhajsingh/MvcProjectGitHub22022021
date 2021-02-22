@@ -1,0 +1,1007 @@
+﻿@model KeystoneProject.Models.Report.MISPatientAccountStatus
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+<style>
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+        text-align: left;
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper {
+            width: max-content;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        div.dt-buttons {
+            text-align: left !important;
+        }
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    th {
+        width: 33.33%;
+    }
+
+    thead {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+    }
+
+    tfoot {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+        padding: 3px;
+        border: 1px solid white !important;
+    }
+
+        tfoot td {
+            border: 1px solid white !important;
+            padding: 1px !important;
+        }
+
+    tbody {
+        overflow: auto;
+        overflow-x: hidden;
+        display: block;
+        width: 100%;
+    }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger
+        $("#PatientstatusDgv2").hide();
+        $("#PatientstatusDgv3").hide();
+        $("#PatientstatusDgv1").hide();
+        $("#Close1").hide();
+        $("#Close2").hide();
+       $("#btnReport").hide();
+        $("#Report").hide();
+
+        $('#save').on('click', function () {
+            debugger
+            $("#PatientstatusDgv1").show();
+            $("#Report").show();
+
+            var UserData = { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: $('#DisplayType').val(), PatientRegNo: "%", BillNo: "%",OPDIPDID:"%" }
+            //  alert(" " + DateFrom + " " + UserID);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MISPatientAccountStatus", "MISPatientAccountStatus")',
+                data: { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: "PatientWise", PatientRegNo: "%", BillNo: "%",OPDIPDID:"%" },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#PatientstatusDgv1 tbody tr").remove();
+                    $.each(data, function (i, obd)
+                    
+                    {
+                        debugger
+                        if (obd.PatientType == "OPD") {
+                            debugger
+                            $("#PatientstatusDgv1").append('<tr><td >' + obd.PatientRegNo + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientType + '</td><td>' + obd.OPDIPDID + '</td><td>' + obd.BillAmount + '</td><td>' + obd.Discount + '</td><td>' + obd.PaidAmount + '</td><td>' + obd.BalanceAmount + '<td></tr>')
+                            debugger
+                            $("#AdmDate").hide();
+                            $("#DisDate").hide();
+                            $("#Orgname").hide();
+                            $("#TPACash").hide();
+                            $("#TDSAmt").hide();
+                            $("#TPAOther").hide();
+                       }
+                        
+                    else{
+                        $("#PatientstatusDgv1").append('<tr><td >' + obd.PatientRegNo + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientType + '</td><td>' + obd.OPDIPDID + '</td><td>' + obd.AddmissionDate + '</td><td>' + obd.Dischargedate + '</td><td>' + obd.OrganizationName + '</td><td>' + obd.TPA_CASH + '</td><td>' + obd.BillAmount + '</td><td>' + obd.TDSAmount + '</td><td>' + obd.TPAOtherDeduction + '</td><td>' + obd.Discount + '</td><td>' + obd.PaidAmount + '</td><td>' + obd.BalanceAmount + '<td></tr>')
+                        $("#AdmDate").show();
+                        $("#DisDate").show();
+                        $("#Orgname").show();
+                        $("#TPACash").show();
+                        $("#TDSAmt").show();
+                        $("#TPAOther").show();
+                        }
+
+
+                       
+                 })
+
+              }
+
+         })
+
+     })
+
+
+    });
+
+    $(document).ready(function () {
+        debugger
+        $('#PatientstatusDgv1').delegate('td', 'click', function () {
+            $("#PatientstatusDgv1").hide();
+            $("#PatientstatusDgv2").show();
+            $("#PatientstatusDgv3").hide();
+
+            debugger
+            var UserData = { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: "BillWise", PatientRegNo: "%", BillNo: "%" ,OPDIPDID:"%"}
+            var row_num = parseInt($(this).parent().index());
+            var PatientRegNo = document.getElementById("PatientstatusDgv1").tBodies[0].rows[row_num].cells[0].innerHTML;
+            var OPDIPDID = document.getElementById("PatientstatusDgv1").tBodies[0].rows[row_num].cells[3].innerHTML;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MISPatientAccountStatusDgv1","MISPatientAccountStatus")',
+                data: { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: "BillWise", PatientRegNo: PatientRegNo, BillNo: "%", OPDIPDID: OPDIPDID },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#PatientstatusDgv2 tbody tr").remove();
+                    $.each(data, function (i, obd) {
+                        $("#PatientstatusDgv2").append('<tr><td><a href="#" id="print">Print</a></td><td>' + obd.PatientRegNo + '</td><td>' + obd.PatientOPDIPDNo + '</td><td>' + obd.BillNo + '</td><td>' + obd.PatientName + '</td><td>' + obd.PatientAccountRowID + '</td><td>' + obd.BillType + '</td><td>' + obd.DrAmount + '</td><td>' + obd.CrAmount + '</td><td>' + obd.PaymentType + '</td><td></tr>')
+                        $("#Close1").show();
+                    })
+
+                }
+
+            })
+
+        })
+
+        $("#PatientstatusDgv2").on('click', '#print', function (e) {
+             debugger
+             var chk = confirm("With Balance Amount");
+             var row_num = $(this).closest('tr').index();
+           //  alert(row_num);
+            var BillNo = document.getElementById('PatientstatusDgv2').tBodies[0].rows[row_num].cells[3].innerHTML;
+            var RegNo = document.getElementById('PatientstatusDgv2').tBodies[0].rows[row_num].cells[1].innerHTML;
+            var BillType = document.getElementById('PatientstatusDgv2').tBodies[0].rows[row_num].cells[6].innerHTML;
+            var OPDIPDNO = document.getElementById('PatientstatusDgv2').tBodies[0].rows[row_num].cells[2].innerHTML;
+            var PatientAccountRowID = document.getElementById('PatientstatusDgv2').tBodies[0].rows[row_num].cells[5].innerHTML;
+            //  $("#old_bill_no_id").val(BillNo)
+
+            //$("#myModal").hide();
+            //  OLdBillSelect();
+           if (BillType == "OPD PreBalanceBills" || BillType == "IPD PreBalanceBillsTPA" || BillType == "IPD PreBalanceBills" || BillType == "IPDRefundBills") {
+
+               alert(PatientAccountRowID);
+                window.open('@Url.Action("RptbtnPreBalanceAmount", "PreBalanceAmount")?PatientAccountRowID=' + PatientAccountRowID + '&BillType=' + BillType + '&RegNo=' + RegNo + '&OPDIPDNO=' + OPDIPDNO);
+            }
+            if (BillType == "IPDFinalBill" || BillType == "IPDBill") {
+                var BillNo = BillNo;
+                var UserData = { IPDNo: OPDIPDNO, BillType: BillType, BillNo: BillNo, RegNo: RegNo }
+                $.ajax({
+                    url: '@Url.Action("OldBillReport", "IPDBill")',
+                    dataType: "json",
+                    type: 'POST',
+                    data: JSON.stringify(UserData),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        debugger
+                        if (BillType == "IPDBill") {
+                            window.open('@Url.Action("RptPatientIPDBill", "IPDBill")');
+                        }
+                        if (BillType == "IPDFinalBill") {
+                            window.open('@Url.Action("RptPatientIPDFinalBillsSummaryNew", "PatientReport")');
+                        }
+
+                        if (BillType == "Provisional") {
+                            window.open('@Url.Action("RptPatientIPDProvisionalBills", "PatientReport")');
+                        }
+                    }
+                });
+
+            }
+
+            if (BillType == "OPDBill") {
+                var BillNo = BillNo;
+                var UserData = { BillNo: BillNo }
+                $.ajax({
+                    url: '@Url.Action("OldBillReport", "OPDBill")',
+                    dataType: "json",
+                    type: 'POST',
+                    data: JSON.stringify(UserData),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        debugger
+                        window.open('@Url.Action("RptPatientOPDBills", "PatientReport")');
+
+                    }
+                });
+
+            }
+        })
+        $("#btnReport").click(function () {
+     
+            debugger;
+            window.location.href = '@Url.Action("RptMISPatientAccountStatusServiceWise", "MISPatientAccountStatus")';
+        })
+            
+    });
+    $(document).ready(function () {
+        debugger
+        $('#PatientstatusDgv2').delegate('td', 'click', function () {
+            $("#PatientstatusDgv1").hide();
+            $("#PatientstatusDgv2").hide();
+            $("#PatientstatusDgv3").show();
+
+            debugger
+            var UserData = { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: "ServiceWise", PatientRegNo: "%", BillNo: "%", OPDIPDID: "%" }
+            var row_num = parseInt($(this).parent().index());
+            var BillNo = document.getElementById("PatientstatusDgv2").tBodies[0].rows[row_num].cells[2].innerHTML;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MISPatientAccountStatusDgv2","MISPatientAccountStatus")',
+                data: { DateFrom: $('#FromDate').val(), DateTo: $('#ToDate').val(), PatientType: $('#PatientType').val(), DisplayType: "ServiceWise", PatientRegNo: "%", BillNo: BillNo, OPDIPDID: "%" },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#PatientstatusDgv3 tbody tr").remove();
+                    $.each(data, function (i, obd) {
+                        $("#PatientstatusDgv3").append('<tr><td>' + obd.BillNo + '</td><td>' + obd.ServiceName + '</td><td>' + obd.Quantity + '</td><td>' + obd.Rate + '</td><td>' + obd.BillAmount +  '</td><td></tr>')
+                        $("#Close1").hide();
+                        $("#Close2").show();
+                    })
+
+                }
+
+            })
+
+        })
+
+
+    });
+
+
+
+    //$("#Close2").click(function () {
+    //    debugger
+    //    // $("#hideshow").hide();
+
+    //    $("#PatientstatusDgv3").hide();
+
+    //})
+
+
+
+    $(document).ready(function () {
+        $("#Close2").click(function () {
+            debugger
+
+            $("#PatientstatusDgv3").hide();
+            $("#Close2").hide();
+            $("#PatientstatusDgv2").show();
+            $("#Close1").show();
+        });
+        $("#Close1").click(function () {
+            debugger
+
+            $("#PatientstatusDgv2").hide();
+            $("#Close1").hide();
+            $("#PatientstatusDgv1").show();
+        });
+    });
+</script>
+
+
+
+
+
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <form action="" method="post">
+            <div class="content-wrapper">
+
+                <h5 class="topheadline">MIS Patient Account Status Report</h5>
+
+
+                <section class="content-header">
+                    <div class="container-fluid">
+
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                                <div class="panel-primary">
+
+
+
+                                    <h2 class="panelheading">MIS Patient Account Status Report</h2>
+
+
+
+
+                                    <div class="pane-body">
+
+                                        <div class="row">
+                                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 rowmargintop rowmarginbottom padding0">
+
+
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <span>From Date</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+                                                        <input type="Date" value=@DateTime.Now.ToString("yyyy-MM-dd") required id="FromDate" name="FromDate" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <span>To Date</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="Date" value=@DateTime.Now.ToString("yyyy-MM-dd") required id="ToDate" name="ToDate" class="form-control input-sm" />
+
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <span>Patient Type</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+                                                        <select id="PatientType" class="form-control" name="Patienttype">
+                                                            <option value="All">All</option>
+                                                            <option value="OPD">OPD</option>
+                                                            <option value="IPD">IPD</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <span>Display Type</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+                                                        <select id="DisplayType" class="form-control" name="DisplayType">
+                                                            <option value="All">All</option>
+                                                            <option value="TPA">TPA</option>
+                                                            <option value="CASH">CASH</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="row rowmargintop" style="border: 1px solid #e9ecef; background: #ffffff; padding-top: 5px;">
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+
+
+
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center; display: block;">
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" id="save" class="btndivcss"><span class="fa fa-search buttoniconcss"></span>View</button>
+
+
+                                        </div>
+
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="reset" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" onclick="window.location.href='@Url.Action("Dashboard","Home")'" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 pull-right" style="text-align:right;margin-bottom:4px;display:block;padding-top:0px">
+
+
+                                    </div>
+                                    <div id="CustomerTableContainer">
+
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" id="data-responsive" style=" padding-bottom: 10px;overflow:auto">
+
+                                        <table class="table  table-striped" id="PatientstatusDgv1">
+                                            <thead>
+                                                <tr>
+
+
+                                                    <th scope="col">UHID No.</th>
+                                                    <th scope="col">Patient Name.</th>
+                                                    <th scope="col">Patient Type</th>
+                                                    <th scope="col">OPD IPD No</th>
+                                                     <th scope="col" id="AdmDate" name="AdmDate">Addmission Date</th>
+                                                    <th scope="col" id="DisDate" name="DisDate">Discharge date</th>
+                                                    <th scope="col" id="Orgname" name="Orgname">Organization Name</th>
+                                                     <th scope="col" id="TPACash" name="TPACash">TPA_CASH</th>
+                                                    <th scope="col">BillAmount</th>
+                                                    <th scope="col" id="TDSAmt" name="TDSAmt">TDSAmount</th>
+                                                    <th scope="col" id="TPAOther" name="TPAOther">TPAOtherDeduction</th>
+
+                                                    <th scope="col">Discount</th>
+                                                    <th scope="col">PaidAmount</th>
+                                                    <th scope="col">BalanceAmount</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+
+                                            <tr>
+
+                                                <td>
+
+                                                    <a href="#">&laquo;</a>
+                                                    <a href="#">1</a>
+                                                    <a href="#" class="active">2</a>
+                                                    <a href="#">3</a>
+                                                    <a href="#">4</a>
+
+
+                                                    <a href="#">&raquo;</a>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </table>
+
+                                        .  
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" id="data-responsive" style=" padding-bottom: 10px;overflow:auto">
+                                        <input type="button" style="float:right" id="Close1" value="Close" class="btn-danger" />
+                                        <input type="button" style="float:right" id="btnReport" value="Report" class="btn btn-success" />
+                                        <table class="table  table-striped" id="PatientstatusDgv2">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Print</th>
+                                                    <th scope="col">Reg No.</th>
+                                                    <th scope="col">OPD IPD No</th>
+                                                    <th scope="col">Bill No</th>
+                                                    <th scope="col">Patient Name</th>
+                                                    <th scope="col">PatientAccountRowID</th>
+                                                    <th scope="col">Bill Type</th>
+                                                    <th scope="col">Dr Amount</th>
+                                                    <th scope="col">Cr Amount</th>
+                                                    <th scope="col">Payment Type</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="#">&laquo;</a>
+                                                    <a href="#">1</a>
+                                                    <a href="#" class="active">2</a>
+                                                    <a href="#">3</a>
+                                                    <a href="#">4</a>
+                                                    <a href="#">&raquo;</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" id="data-responsive" style=" padding-bottom: 10px;overflow:auto">
+                                        <input type="button" style="float:right" id="Close2" value="Close" class="btn-danger" />
+                                        <table class="table  table-striped" id="PatientstatusDgv3">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">BillNo</th>
+                                                    <th scope="col">ServiceName</th>
+                                                    <th scope="col">Quantity</th>
+                                                    <th scope="col">Rate</th>
+                                                    <th scope="col">BillAmount</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="#">&laquo;</a>
+                                                    <a href="#">1</a>
+                                                    <a href="#" class="active">2</a>
+                                                    <a href="#">3</a>
+                                                    <a href="#">4</a>
+                                                    <a href="#">&raquo;</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+
+</body>

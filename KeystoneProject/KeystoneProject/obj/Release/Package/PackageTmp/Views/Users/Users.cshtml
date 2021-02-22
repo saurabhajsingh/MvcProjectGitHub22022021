@@ -1,0 +1,1242 @@
+﻿@model KeystoneProject.Models.Keystone.Users 
+
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+
+    .colname {
+    }
+</style>
+<style>
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+        display: block;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table-bordered > tbody > tr > td {
+        border: 0px solid #e1eff9;
+    }
+
+    td {
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+
+
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+
+    element.style {
+        width: 383px;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 16px;
+        font-weight: 500 !important;
+    }
+
+
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+        text-align: left;
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper {
+            width: max-content;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+            text-align: left !important;
+        }
+    }
+
+    @@media screen and (max-width: 767px) {
+
+        div.dt-buttons {
+            text-align: left !important;
+        }
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7;
+        border-top: 1px solid #bddff7;
+        padding-left: 20px !important;
+    }
+
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+
+
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background:#bddff7;
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script>
+    function Delete(UserID) {
+        debugger
+        if (UserID != '' && $("#FullName").val() != "")
+        {
+            var ans = confirm("Are you sure you want to delete this record...???");
+            if(ans)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteUser", "Users")',
+                    data: { UserID: UserID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "User Deleted Successfully") {
+                            alert("User Deleted Successfully");
+                          
+                        }
+                        else {
+                            alert(data);
+                        }
+                        window.location.reload(true);
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("#save").click(function () {
+            var password = $("#Password").val();
+            var confirmPassword = $("#RePassword").val();
+            if (password != confirmPassword) {
+                alert("Passwords do not match.");
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#RoleName,#RoleName2").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetRoleRecord", "Users")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.RoleName, value: item.RoleName, id: item.RoleID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                //var show = i.item.id;
+                debugger
+                var chk = $(this).attr("id");
+                if (chk == "RoleName2") {
+                    $("#RoleID2").val(i.item.id);
+                }
+                else {
+                    $("#RoleID").val(i.item.id);
+                }
+                if ($("#RoleID").val() == 1) {
+                    $("#adminrole").show();
+                }
+                else
+                {
+                    $("#adminrole").hide();
+                    $("#RoleID2").val("");
+                }
+            },
+        });
+        $.ajax
+            ({
+                type: "POST",
+                url: '@Url.Action("DatatableBind", "Users")',
+                dataType: "json",
+
+                success: function (result) {
+                    var Srno = 1;
+                    $.each(result, function (i, obj) {
+                        $("#datatable-responsive").append('<tr><td>' + Srno + '</td><td style="display:none">' + obj.UserID + '</td><td>' + obj.FullName + '</td><td <td style="display:none">>' + obj.LoginName + '</td><td style="display:none">' + obj.EmailID + '</td><td style="display:none">' + obj.Password + '</td><td style="display:none">' + obj.Password + '</td><td <td style="display:none">>' + obj.RowInternal + '</td><td <td style="display:none">>' + obj.RoleName + '</td></tr>')
+                        Srno++;
+                    });
+
+                    $('#datatable-responsive').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [{
+                            extend: 'excel',
+                            text: 'Excel',
+                            className: 'exportExcel',
+                            filename: 'Test_Excel',
+                            exportOptions: { modifier: { page: 'all' } }
+                        },
+                        {
+                            extend: 'csv',
+                            text: 'CSV',
+                            className: 'exportExcel',
+                            filename: 'Test_Csv',
+                            exportOptions: { modifier: { page: 'all' } }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: 'PDF',
+                            className: 'exportExcel',
+                            filename: 'Test_Pdf',
+                            exportOptions: { modifier: { page: 'all' } }
+                        }]
+                    });
+                },
+                error: function () {
+                }
+            });
+
+        $(document).ready(function () {
+            $('#datatable-responsive tbody').on('click', 'td', function () {
+                debugger;
+         
+                $("#save").text("Update");
+                $("save").addClass("btndivcss");
+                var row_num = parseInt($(this).parent().index());
+                var UserID = parseInt(document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[1].innerHTML);
+                var FullName = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[2].innerHTML;
+                var LoginName = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[3].innerHTML;
+                var EmailID = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[4].innerHTML;
+                var Password = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[5].innerHTML;
+                var RePassword = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[6].innerHTML;
+                var RowInternal = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[7].innerHTML;
+                var RoleName = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[8].innerHTML;
+
+                $("#UserID").val(UserID);
+                $("#FullName").val(FullName);
+                $("#LoginName").val(LoginName);
+                $("#EmailID").val(EmailID);
+                $("#Password").val(Password);
+                $("#RePassword").val(Password);
+                $("#RowInternal").val(RowInternal);
+                $("#RoleID").val(RoleID);
+
+                $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Fill", "Users")',
+                        data: { UserID: UserID },
+                        success: function (result) {
+                            $.each(result, function (i, obj) {
+                                $("#UserID").val(obj.UserID);
+                                $("#FullName").val(obj.FullName);
+                                $("#LoginName").val(obj.LoginName);
+                                $("#EmailID").val(obj.EmailID);
+                                $("#Password").val(obj.Password);
+                                $("#RePassword").val(obj.Password);
+                                $("#RoleName").val(obj.RoleName);
+                                $("#RoleID").val(obj.RoleID);
+                                $("#UserDetailsID").val(obj.UserDetailsID);
+                                debugger
+                                if (obj.chbAuthorizationRights=="True")
+                                {
+                                    $("#divAuth").show();
+                                     $("#chbAuthorizationRights").prop('checked', true);
+                                    
+                                }
+                                else
+                                {
+                                    $("#divAuth").hide();
+                                    $("#chbAuthorizationRights").prop('checked', false);
+                                }
+                               
+
+                                if (obj.RoleID == 1) {
+                                    $("#adminrole").show();
+                                    $("#RoleName2").val(obj.RoleName2);
+                                    $("#RoleID2").val(obj.RoleID2);
+                                    $("#Password2").val(obj.Password2);
+                                }
+                                else {
+                                    $("#adminrole").hide();
+                                    $("#RoleName2").val("");
+                                    $("#RoleID2").val("");
+                                    $("#Password2").val("");
+                                }
+                               
+                            });
+                        }
+                    })
+            });
+        });
+
+        $.ajax
+          ({
+              type: "POST",
+              url: '@Url.Action("GetAllHospitalLocation", "Users")',
+              dataType: "json",
+
+              success: function (result) {
+                  var Srno = 1;
+                  $.each(result, function (i, obj) {
+                      $("#Hospital-table").append('<tr><td>' + Srno + '</td><td style="display:none">' + obj.HospitalID + '</td><td>' + obj.HospitalName + '</td></tr>')
+                      Srno++;
+                  });
+              },
+              error: function () {
+              }
+          });
+    });
+
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <div class="content-wrapper">
+            <h5 class="topheadline">User Master</h5>
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content-header">
+                <form action="" method="post">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-4 padding0">
+                                <!-- left column -->
+                                <div class="col-md-12">
+
+                                    <div class="panel-primary">
+                                        <div class="box-header with-border">
+                                            <h3 class="panelheading">User Details Master</h3>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <!-- Hospital Location Form Start -->
+                                        <!--<form role="form">-->
+                                        <div class="panel-body padding0">
+
+                                            <div class="col-lg-12 padding0">
+                                                <div class="rowmargintop rowmarginbottom">
+                                                    <div class="col-lg-12 padding0">
+                                                        <div class="col-lg-4">
+                                                            <label>Full Name</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="text" id="FullName" class="form-control" name="FullName">
+                                                            <input type="hidden" class="form-control" id="UserID" name="UserID">
+                                                            <input type="hidden" name="UserDetailsID" id="UserDetailsID" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 padding0 rowmargintop">
+                                                        <div class="col-lg-4">
+                                                            <label>Email ID</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="Email" class="form-control" id="EmailID" name="EmailID">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 padding0 rowmargintop">
+                                                        <div class="col-lg-4">
+                                                            <label>User Name/ID</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="text" class="form-control" id="LoginName" name="LoginName">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 padding0 rowmargintop">
+                                                        <div class="col-lg-4">
+                                                            <label>Password</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="password" class="form-control" id="Password" name="Password">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 padding0 rowmargintop">
+                                                        <div class="col-lg-4">
+                                                            <label>Re-Password</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="password" class="form-control" id="RePassword" name="Password">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 padding0 rowmargintop rowmarginbottom">
+                                                        <div class="col-lg-4">
+                                                            <label>Role Name</label>
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input type="text" class="form-control" id="RoleName" name="RoleName">
+                                                            <input type="hidden" class="form-control" id="RoleID" name="RoleID">
+                                                        </div>
+                                                    </div>
+                                                    <div id="adminrole" style="display:none">
+
+                                                        <div class="col-lg-12 padding0 rowmargintop rowmarginbottom">
+                                                            <div class="col-lg-4">
+                                                                <label>Role Name 2</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="text" class="form-control" id="RoleName2" name="RoleName2">
+                                                                <input type="hidden" class="form-control" id="RoleID2" name="RoleID2">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 padding0 rowmargintop rowmarginbottom">
+                                                            <div class="col-lg-4">
+                                                                <label>Password 2</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="password" class="form-control" id="Password2" name="Password2">
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="divAuth" style="display:none" class="col-lg-12 padding0 rowmargintop rowmarginbottom">
+                                                            <div class="col-lg-4">
+                                                                <label>Authorization Rights</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="checkbox" class="checked form-control" id="chbAuthorizationRights" name="chbAuthorizationRights">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                             
+                                    
+                                    <!-- /.box-header -->
+                                    <div class="col-lg-12 margin-r-5" style=" padding-bottom: 10px; overflow: auto; padding: 0px; background: white;">
+                                        <table id="datatable-responsive" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sno.</th>
+                                                    <th>User Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+                                                    <th style="display:none">Country Name</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+
+                                        </table>
+
+                                        <!-- /.box-body -->
+                                    </div>
+                               
+                                <!-- /.box -->
+                            </div>
+                            <!--/.col (right) -->
+                            <div class="col-md-4">
+                                <div class="panel-primary">
+                                    <div class="box-header">
+
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <table id="Hospital-table" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Sno.</th>
+                                                <th>Hospital Name</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody class="scrollbar">
+                                            <tr></tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-lg-12 rowmargintop" style="padding-top:10px">
+                            <div style="text-align: center; display: block;">
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="submit" id="save" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss" onclick="Delete(document.getElementById('UserID').value)"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="reset" class="btndivcss" ><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    </form>
+               </section>
+        </div>
+    </div>
+</body>
+

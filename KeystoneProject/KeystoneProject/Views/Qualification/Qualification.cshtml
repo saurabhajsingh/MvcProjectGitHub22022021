@@ -1,0 +1,213 @@
+﻿@model KeystoneProject.Models.Master.Qualification
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This fiel is edited by Mohammed -->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        TempData["Msg"] = null;
+        window.onload(true);
+
+        Restore();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#qualificationTabelId").delegate('tr', 'click', function () {
+            $('#qualificationTabelId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#qualificationTabelId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script>
+    function Delele(QualifictionID) {
+        debugger
+        if (QualifictionID != "" && $("#QualifictionName").val() != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteQualification", "Qualification")',
+                    data: { QualifictionID: QualifictionID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Qualification Deleted Successfully") {
+                            alert("Qualification Deleted Successfully");
+                            location.reload(true);
+                            Restor();
+                            return false;
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#QualifictionID").val("");
+        $("#QualifictionName").val("");
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("QualificationGetAll", "Qualification")',
+            dataType: "json",
+            data: JSON.stringify(""),
+            contentType: 'application/json',
+            success: function (result) {
+                debugger
+                var count = 1;
+                $.each(result, function (i, obj) {
+                    $("#qualificationTabelId").append('<tr><td style="width:130px">' + count + '</td><td> ' + obj.QualifictionName + ' </td>  <td style="display:none"> ' + obj.QualifictionID + '</td></tr>');
+                    count++;
+                });
+                $('#qualificationTabelId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#qualificationTabelId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#qualificationExcelExport'));
+            },
+            error: function () { }
+        })
+        $("#qualificationTabelId").delegate('td', 'click', function () {
+            debugger
+            //Restor();
+            var j = 0;
+            var row_num = parseInt($(this).parent().index());
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var QualifictionID = parseInt(document.getElementById("qualificationTabelId").tBodies[0].rows[row_num].cells[2].innerHTML);
+            var Qualification = document.getElementById("qualificationTabelId").tBodies[0].rows[row_num].cells[1].innerHTML.trim();
+            $("#QualifictionID").val(QualifictionID);
+            $("#QualifictionName").val(Qualification);
+        })
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <div class="content-wrapper">
+        <form action="" method="post">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1>Qualification Master</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Qualification</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Qualification Details</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Qualification Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="QualifictionName" name="QualifictionName" class="form-control"
+                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Qualification Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" id="QualifictionID" name="QualifictionID">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="Delele(document.getElementById('QualifictionID').value)">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="qualificationExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="qualificationTabelId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Qualification Name</th>
+                                        <th scope="col" style="display:none">QualificationID</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>

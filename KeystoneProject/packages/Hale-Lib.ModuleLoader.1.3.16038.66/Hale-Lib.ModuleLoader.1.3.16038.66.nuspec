@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Hale-Lib.ModuleLoader</id>
+    <version>1.3.16038.66</version>
+    <title>Hale-Lib.ModuleLoader</title>
+    <authors>Hale Project</authors>
+    <owners>Hale Project</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Module loader for Hale Project</description>
+    <summary />
+    <copyright>Copyright ©  2016</copyright>
+    <dependencies>
+      <dependency id="Hale-Lib" version="1.3.16035.158" />
+    </dependencies>
+  </metadata>
+</package>

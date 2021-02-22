@@ -1,0 +1,254 @@
+﻿@model KeystoneProject.Models.Master.ServiceGroup
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ShowAllServiceGroup", "ServiceGroup")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                $.each(result, function (i, obj) {
+                    $("#serviceGroupTableId").append('<tr><td>' + count + '</td><td> ' + obj.ServiceGroupName + ' </td> <td> ' + obj.ServicesOrder + ' </td> <td style="display:none"> ' + obj.ServiceGroupID + '</td></tr>');
+                    count++;
+                });
+                $('#serviceGroupTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#serviceGroupTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#serviceGroupExcelExport'));
+            },
+            error: function () {
+            }
+        });
+        //----------------------------
+        $("#serviceGroupTableId").delegate('td', 'click', function () {
+            debugger
+            //Restor();
+            var j = 0;
+            var row_num = parseInt($(this).parent().index());
+            var ServiceGroupID = parseInt(document.getElementById("serviceGroupTableId").tBodies[0].rows[row_num].cells[3].innerHTML);
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditServiceGroupData", "ServiceGroup")',
+                dataType: "json",
+                data: { ServiceGroupID: ServiceGroupID },
+                contentType: 'application/json',
+                success: function (result) {
+                    $.each(result, function (i, obj) {
+                        $("#ServiceGroupName").val(obj.ServiceGroupName);
+                        $("#ServiceType").val(obj.ServiceType);
+                        $("#ServicesOrder").val(obj.ServicesOrder);
+                        $("#ServiceGroupID").val(ServiceGroupID);
+                        $("#HSNCode").val(obj.HSNCode);
+                    });
+                    debugger
+                }
+            })
+        })
+    })
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#serviceGroupTableId td").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#serviceGroupTableId").delegate('tr', 'click', function () {
+            $('#serviceGroupTableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+    });
+    function Delele(ServiceGroupID) {
+        debugger
+        if (ServiceGroupID != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteDoctorAppointment", "ServiceGroup")',
+                    data: { ServiceGroupID: ServiceGroupID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "ServiceGroup Deleted Successfully") {
+                            alert("ServiceGroup Deleted Successfully");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    //error: function (errormessage) {
+                    //    alert(errormessage.responseText);
+                    // }
+                });
+            }
+        }
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <div class="content-wrapper">
+        <form action="" method="post">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1>Service Group Master</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Service Group</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Service Group Details</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                    <label>Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="hidden" name="ServiceGroupID" id="ServiceGroupID" />
+                                                    <input type="text" id="ServiceGroupName" name="ServiceGroupName" class="form-control" placeholder="Service Group Name"
+                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Service Group Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                    <label>Srvc. Type</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <select id="ServiceType" name="ServiceType" class="form-control">
+                                                        <option selected="selected">Both</option>
+                                                        <option value="IPD">IPD</option>
+                                                        <option value="OPD">OPD</option>
+                                                        <option value="LAB">LAB</option>
+                                                        <option value="Package">Package</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-3 col-md-36 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                    <label>Serv. Ord</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" name="ServicesOrder" id="ServicesOrder" class="form-control"
+                                                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-lg-3 col-md-36 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                    <label>HSN Code</label>
+
+
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" name="HSNCode" id="HSNCode" class="form-control input-sm" />
+                                                </div>
+                                            </div>
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="Delete" onclick="Delele(document.getElementById('ServiceGroupID').value)">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="serviceGroupExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="serviceGroupTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Service Group Name</th>
+                                        <th scope="col">Service Order</th>
+                                        <th style="display:none">Id</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>

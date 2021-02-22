@@ -1,0 +1,859 @@
+﻿@model KeystoneProject.Models.Master.Organization
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media screen and (max-width: 867px) {
+        .paddingleft {
+            padding-left: 15px !important;
+        }
+    }
+
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+
+    #organizationTableId_filter label input[type=search] {
+        width: 50%;
+    }
+
+    .card-body {
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.25rem !important;
+    }
+</style>
+
+<script>
+
+    function Delele(OrganizationID) {
+        debugger
+        if (OrganizationID != "" && $("#OrganizationName").val() != "") {
+
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteOrganization", "Organization")',
+                    data: { OrganizationID: OrganizationID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Doctor Deleted Successfully") {
+                            alert("Organization Deleted Successfully");
+                            location.reload(true);
+                            Restor();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+
+    $(document).ready(function () {
+        $("#datatable-responsive").delegate('tr', 'click', function () {
+
+            $('#datatable-responsive tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#datatable-responsive tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        Restor();
+        $("#CityName,#secondCityName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindCity", "Organization")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.CityName, value: item.CityName, id: item.CityID, StateID: item.StateID, StateName: item.StateName, CountryID: item.CountryID, CountryName: item.CountryName
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                debugger
+                $("#CountryName").val(i.item.CountryName);
+                $("#CountryID").val(i.item.CountryID);
+                $("#secondCountryName").val(i.item.CountryName);
+                $("#secondCountryID").val(i.item.CountryID);
+                $("#StateName").val(i.item.StateName);
+
+                $("#StateID").val(i.item.StateID);
+                $("#secondStateName").val(i.item.StateName);
+
+                $("#secondStateID").val(i.item.StateID);
+                $("#CityID").val(i.item.id);
+                $("#secondCityID").val(i.item.id);
+
+            },
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ShowAllOrganization", "Organization")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+
+                $.each(result, function (i, obj) {
+                    $("#datatable-responsive").append('<tr><td>' + count + '</td><td> ' + obj.OrganizationName + ' </td> <td> ' + obj.ReferenceCode + ' </td> <td style="display:none"> ' + obj.OrganizationID + '</td></tr>');
+                    count++;
+                });
+                $('#datatable-responsive').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#datatable-responsive').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#organizationExcelExport'));
+            },
+            error: function () {
+
+            }
+        });
+        var count = 1;
+        $("#datatable-responsive").delegate('td', 'click', function () {
+            debugger
+            Restor();
+            $('#datatable-responsive1 tbody tr').remove();
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row_num = parseInt($(this).parent().index());
+            var OrganizationID = parseInt(document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[3].innerHTML);
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Edit_Organization", "Organization")',
+                dataType: "json",
+
+                data: { OrganizationID: OrganizationID },
+
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+                    $.each(data, function (i, obj) {
+
+                        if (obj.OrganizationName != null) {
+                            $("#OrganizationID").val(obj.OrganizationID);
+                            $("#OrganizationName").val(obj.OrganizationName);
+                            //Date    $("#ContactFrom").attr("text", obj.DoctorType);
+                            $("#Address").val(obj.Address);
+                            $("#StateName").val(obj.StateName);
+                            $("#StateID").val(obj.StateID);
+                            $("#FaxNo").val(obj.FaxNo);
+                            $("#MobileNo").val(obj.MobileNo);
+                            $("#CityName").val(obj.CityName);
+                            $("#CityID").val(obj.CityID);
+                            $("#CountryName").val(obj.CountryName);
+                            $("#CountryID").val(obj.CountryID);
+                            $("#PinCode").val(obj.PinCode);
+                            $("#EmailID").val(obj.EmailID);
+                            $("#EnrollmentStatus").val(obj.EnrollmentStatus);
+                            $("#ContactFrom").val(obj.ContactFrom1 + ' - ' + obj.ContactUpTo1);
+                            //  $("#ContactUpTo").val(obj.ContactUpTo1);
+                            // $("#OrganizationType").val(obj.OrganizationType);
+                            // document.getElementById("OrganizationType").innet = obj.OrganizationType;
+                            document.getElementById("OrganizationType").value = obj.OrganizationType;
+                            $("#OrganizationType").prop("disabled", "disabled");
+                            $("#CutForTPA").val(obj.CutForTPA);
+                            $("#GSTNO").val(obj.GSTNO);
+                            $("#PhoneNo1").val(obj.PhoneNo1);
+                            $("#URL").val(obj.URL);
+                            $("#EmailId").val(obj.EmailId);
+                        }
+                        });
+                            debugger
+                            for (var i = 0; i < data.length; i++) {
+                                debugger
+                                //alert("abc");
+                               // alert(data[].ContactPersonID);
+                                if (data[i].ContactPersonName1 != null) {
+                                    debugger
+                                    //$("#datatable-responsive1").append('<tr><td>' + count + '</td><td> <input type="text" name="con_name" value= ' + obj.ContactPersonName + '> </td> <td><input type="text" name="con_desig" value=  ' + obj.Designation + ' ></td> <td> <input type="text" name="con_contact" value=  ' + obj.ContactPersonPhoneNO + ' > </td><td style=""> <input type="text" name="con_email" value=  ' + obj.ContactPersonEmailID + ' > </td><td style="">   <button type="button" id="delrow" class="btndivcss1"><span class="fa fa-trash buttoniconcss1" title="remove"></span></button></td></tr>');
+                                    $("#ContactPersonID").val(data[i].ContactPersonID);
+                                    if (data[i].ContactPersonName1 != null) {
+                                        var name = data[i].ContactPersonName1.split(",");
+                                        $("#personNameOne").val(name[0]);
+                                        $("#personNameTwo").val(name[1]);
+                                    }
+
+
+                                    if (data[i].Designation1 != null) {
+                                        var dsgn = data[i].Designation1.split(",");
+                                        $("#designationOne").val(dsgn[0]);
+                                        $("#designationTwo").val(dsgn[1]);
+                                    }
+                                    if (data[i].ContactPersonPhoneNO1 != null) {
+                                        var phone = data[i].ContactPersonPhoneNO1.split(",");
+                                        $("#phoneNumberOne").val(phone[0]);
+                                        $("#phoneNumberTwo").val(phone[1]);
+                                    }
+                                    if (data[i].ContactPersonEmail1 != null) {
+                                        var email = data[i].ContactPersonEmail1.split(",");
+                                        $("#emailIdOne").val(email[0]);
+                                        $("#emailIdTwo").val(email[1]);
+                                    }
+
+                                    //$("#ContactPersonID").val();
+                                    //$("#ContactPersonID").val();
+
+
+
+
+                                    //   alert(document.getElementById("OrganizationType").value);
+                                }
+                            }
+                }
+            });
+
+        });
+
+        $("#Add").click(function () {
+
+            $("#datatable-responsive1").append('<tr><td>' + count + '</td><td> <input type="text" name="con_name" value= ""/> </td> <td><input type="text" name="con_desig" value=  "" /></td> <td> <input type="text" name="con_contact" value=  "" /> </td><td style=""> <input type="text" name="con_email" value=  "" /> </td><td> <button type="button" id="delrow" class="btndivcss1"><span class="fa fa-trash buttoniconcss1"></span></button></td></tr>');
+
+        })
+        $("#datatable-responsive1").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+        $("#clickme").submit('click', function () {
+            debugger
+            $("#OrganizationType").prop("disabled", false);
+        });
+    })
+
+    function Restor() {
+
+        $("#OrganizationID").val("");
+        $("#OrganizationName").val("");
+        $("#ContactFrom").val("");
+        $("#ContactUpTo").val("");
+        //  $("#Gender").val("");
+        $("#Address").val("");
+        $("#StateName").val("");
+        $("#StateID").val("");
+        $("#FaxNo").val("");
+        $("#MobileNo").val("");
+        $("#CityName").val("");
+        $("#CityID").val("");
+        $("#CountryName").val("");
+        $("#CountryID").val("");
+        $("#PinCode").val("");
+        $("#EmailID").val("");
+        $("#CutForTPA").val("");
+        $("#GSTNO").val("");
+        $("#PhoneNo1").val("");
+        $("#URL").val("");
+        $("#EmailId").val("");
+        $("#ContactPersonID").val("");
+        $("#personNameOne").val("");
+        $("#personNameTwo").val("");
+        $("#designationOne").val("");
+        $("#designationTwo").val("");
+        $("#phoneNumberOne").val("");
+        $("#phoneNumberTwo").val("");
+        $("#emailIdOne").val("");
+        $("#emailIdTwo").val("");
+
+
+    }
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post" id="clickme">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Organization</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Organization</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Organization Detail</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  rowmargintop" style="padding: 0px 0px 0px 5px;">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row padding0">
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Org. Name</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="hidden" name="OrganizationID" id="OrganizationID" class="form-control">
+                                                            <input type="text" name="OrganizationName" id="OrganizationName" class="form-control" placeholder="Organization Name"
+                                                                   required style="border-left-color: red;border-left-width: thick;"
+                                                                   oninvalid="this.setCustomValidity('Please Enter Organization Name')"
+                                                                   oninput="this.setCustomValidity('')">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Type</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <select id="OrganizationType" name="OrganizationType" class="form-control">
+                                                                <option value="T.P.A">T.P.A</option>
+                                                                <option value="Organization">Organization</option>
+                                                                <option value="Insurance">Insurance</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Enroll Status</label>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <select name="EnrollmentStatus" id="EnrollmentStatus" class="form-control">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row rowmargintop padding0">
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" style="padding-right: 0px;">
+                                                            <label>Contract From & To</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                            @*<input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" name="ContactFrom" id="ContactFrom" class="form-control">*@
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <input type="text" name="ContactFrom" id="ContactFrom" class="form-control"
+                                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                                           oninvalid="this.setCustomValidity('Please Enter ContactFrom')"
+                                                                           oninput="this.setCustomValidity('')">
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Up To</label>
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="date" required="" value="@DateTime.Now.ToString("yyyy-MM-dd")" name="ContactUpTo" id="ContactUpTo" class="form-control">
+                                                            </div>
+                                                        </div>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary card-tabs">
+                                    <div class="card-header p-0 pt-1">
+                                        <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                                            <li class="px-2"></li>
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="addressDetail-addresOne-tab" data-toggle="pill" href="#addressDetail-addresOne" role="tab" aria-controls="addressDetail-addresOne" aria-selected="true">
+                                                    Address
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <input type="hidden" id="ContactPersonID" name="ContactPersonID" />
+                                                <a class="nav-link" id="contactPersonOne-tab" data-toggle="pill" href="#contactPersonOne" role="tab" aria-controls="contactPersonOne" aria-selected="false">
+                                                    Contact Person 1
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="contactPersonTwo-tab" data-toggle="pill" href="#contactPersonTwo" role="tab" aria-controls="contactPersonTwo" aria-selected="false">
+                                                    Contact Person 2
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content" id="custom-tabs-two-tabContent">
+                                            <div class="tab-pane fade show active" id="addressDetail-addresOne" role="tabpanel" aria-labelledby="addressDetail-addresOne-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Permenant Address-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12  padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Address</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <textarea id="Address" name="Address" class="form-control"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <!--City-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>City</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" id="CityName" name="CityName" class="form-control">
+                                                                <input type="hidden" id="CityID" name="CityID" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--MOU-->
+                                                        <div class="form-group col-lg-4  col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>MOU</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-percent"></i>
+                                                                        </span>
+                                                                        <input type="text" placeholder="00.00" name="CutForTPA" id="CutForTPA" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <!--State-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>State</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" name="StateName" id="StateName" readonly class="form-control">
+                                                                <input type="hidden" name="StateID" id="StateID" class="form-control input-sm">
+                                                            </div>
+                                                        </div>
+                                                        <!--Country-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Country</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" name="CountryName" id="CountryName" readonly class="form-control">
+                                                                <input type="hidden" name="CountryID" id="CountryID" class="form-control input-sm">
+                                                            </div>
+                                                        </div>
+                                                        <!--Pin code-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Pin Code</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="number" name="PinCode" id="PinCode" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <!--GST No.-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0 ">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>GST No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" name="GSTNO" id="GSTNO" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Fax No.-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Fax No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="number" name="FaxNo" id="FaxNo" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Phone No.-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Phone No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="number" name="PhoneNo1" id="PhoneNo1" onkeydown="if(this.value.length==12 && event.keyCode!=8) return false;" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <!--Email I'd-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Email Id</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="email" name="EmailID" id="EmailID" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--URL-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Url</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" name="URL" id="URL" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <!--Mobile No.-->
+                                                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                <label>Mobile No.</label>
+                                                            </div>
+                                                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" maxlength="10" name="MobileNo" id="MobileNo" class="form-control"
+                                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                                       oninvalid="this.setCustomValidity('Please Enter Organization Name')"
+                                                                       oninput="this.setCustomValidity(''); this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="contactPersonOne" role="tabpanel" aria-labelledby="contactPersonOne-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Person Name One-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Person Name</label>
+                                                            <input type="text" id="personNameOne" name="personNameOne" class="form-control">
+                                                        </div>
+                                                        <!--Designation One-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Designation</label>
+                                                            <input type="text" id="designationOne" name="designationOne" class="form-control">
+                                                        </div>
+                                                        <!--Phone Number One-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Phone No.</label>
+                                                            <input type="number" name="phoneNumberOne" id="phoneNumberOne" onkeydown="if(this.value.length==12 && event.keyCode!=8) return false;" class="form-control">
+                                                        </div>
+                                                        <!--Email I'd One-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Email Id</label>
+                                                            <input type="email" name="emailIdOne" id="emailIdOne" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="contactPersonTwo" role="tabpanel" aria-labelledby="contactPersonTwo-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <!--Person Name Two-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Person Name</label>
+                                                            <input type="text" id="personNameTwo" name="personNameTwo" class="form-control">
+                                                        </div>
+                                                        <!--Designation Two-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Designation</label>
+                                                            <input type="text" id="designationTwo" name="designationTwo" class="form-control">
+                                                        </div>
+                                                        <!--Phone Number Two-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Phone No.</label>
+                                                            <input type="number" name="phoneNumberTwo" id="phoneNumberTwo" onkeydown="if(this.value.length==12 && event.keyCode!=8) return false;" class="form-control">
+                                                        </div>
+                                                        <!--Email I'd Two-->
+                                                        <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Email Id</label>
+                                                            <input type="email" name="emailIdTwo" id="emailIdTwo" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;s">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="Delele(document.getElementById('OrganizationID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="organizationExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="datatable-responsive" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="organization_info"
+                                       style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">Sr. No.</th>
+                                            <th scope="col">Organization Name</th>
+                                            <th scope="col">Reference Code</th>
+                                            <th style="display:none">Organization ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar" id="tablebind"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(function () {
+            //Date range picker
+            $('#ContactFrom').daterangepicker()
+        })
+    </script>
+
+</body>
+
+
+
+<script type="text/javascript">
+    function GetDynamicTextBoxEdit(value) {
+        debugger
+
+        var div = $("<div />");
+
+        var div0 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox = $("<input />").attr("type", "textbox").attr("name", "con_name").addClass("form-control text-uppercase");
+        var divend0 = $("</div>");
+        textBox.val(value);
+        div0.append(textBox);
+        div.append(div0);
+        div.append(divend0);
+
+
+        var div1 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox1 = $("<input />").attr("type", "textbox").attr("name", "con_desig").addClass("form-control text-uppercase");
+        var divend1 = $("</div>");
+        textBox1.val(value);
+        div1.append(textBox1);
+        div.append(div1);
+        div.append(divend1);
+
+        var div2 = $("<div >").addClass("col-md-2 col-sm-2 col-xs-12 form-group");
+        var textBox2 = $("<input />").attr("type", "textbox").attr("name", "con_contact").addClass("form-control");
+        var divend2 = $("</div>");
+        textBox2.val(value);
+        div2.append(textBox2);
+        div.append(div2);
+        div.append(divend2);
+
+
+
+        //textBox3.val(value);
+        //div.append(textBox3);
+        var div3 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox3 = $("<input />").attr("type", "email").attr("name", "con_email").addClass("form-control");
+        var divend3 = $("</div>");
+        textBox3.val(value);
+        div3.append(textBox3);
+        div.append(div3);
+        div.append(divend3);
+
+        var div4 = $("<div >").addClass("col-md-1 col-sm-1 col-xs-12 form-group");
+        var button = $("<input />").attr("type", "button").attr("value", "Remove").addClass("btn btn-primary");
+        button.attr("onclick", "RemoveTextBox(this)");
+        var divend4 = $("</div>");
+        div4.append(button);
+        div.append(div4);
+
+        debugger
+
+
+        //  $('[name=con_email]').val();
+
+        return div;
+
+    }
+
+
+
+
+
+    function GetDynamicTextBox(value) {
+        debugger
+
+        var div = $("<div />");
+
+        var div0 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox = $("<input />").attr("type", "textbox").attr("name", "con_name").addClass("form-control text-uppercase");
+        var divend0 = $("</div>");
+        textBox.val(value);
+        div0.append(textBox);
+        div.append(div0);
+        div.append(divend0);
+
+
+        var div1 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox1 = $("<input />").attr("type", "textbox").attr("name", "con_desig").addClass("form-control text-uppercase");
+        var divend1 = $("</div>");
+        textBox1.val(value);
+        div1.append(textBox1);
+        div.append(div1);
+        div.append(divend1);
+
+        var div2 = $("<div >").addClass("col-md-2 col-sm-2 col-xs-12 form-group");
+        var textBox2 = $("<input />").attr("type", "textbox").attr("name", "con_contact").addClass("form-control");
+        var divend2 = $("</div>");
+        textBox2.val(value);
+        div2.append(textBox2);
+        div.append(div2);
+        div.append(divend2);
+
+
+
+        //textBox3.val(value);
+        //div.append(textBox3);
+        var div3 = $("<div >").addClass("col-md-3 col-sm-3 col-xs-12 form-group");
+        var textBox3 = $("<input />").attr("type", "email").attr("name", "con_email").addClass("form-control");
+        var divend3 = $("</div>");
+        textBox3.val(value);
+        div3.append(textBox3);
+        div.append(div3);
+        div.append(divend3);
+
+        var div4 = $("<div >").addClass("col-md-1 col-sm-1 col-xs-12 form-group");
+        var button = $("<input />").attr("type", "button").attr("value", "Remove").addClass("btn btn-primary");
+        button.attr("onclick", "RemoveTextBox(this)");
+        var divend4 = $("</div>");
+        div4.append(button);
+        div.append(div4);
+
+        debugger
+
+
+        //  $('[name=con_email]').val();
+
+        return div;
+
+    }
+
+
+    function AddTextBox() {
+        var div = GetDynamicTextBox("");
+        $("#contact").append(div);
+    }
+
+    function RemoveTextBox(button) {
+        $(button).parent().parent().remove();
+    }
+
+    $(function () {
+        var values = eval('@Html.Raw(ViewBag.Values)');
+        if (values != null) {
+            $("#contact").html("");
+            $(values).each(function () {
+                $("#contact").append(GetDynamicTextBox(this));
+            });
+        }
+    });
+
+
+
+</script>

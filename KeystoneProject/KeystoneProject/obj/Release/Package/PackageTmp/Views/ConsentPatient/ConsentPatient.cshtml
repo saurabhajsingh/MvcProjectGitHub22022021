@@ -1,0 +1,724 @@
+﻿@model KeystoneProject.Models.Patient.ConsentPatient
+@{
+    ViewBag.Title = "Consent Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This file is edited by Mohammed -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    .input-group-addon {
+        padding: 0px 5px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#consentPatientTableId').DataTable({
+            "fixedHeader": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": false,
+        });
+        var buttons = new $.fn.dataTable.Buttons($('#consentPatientTableId').DataTable(), {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                }
+            ]
+        }).container().appendTo($('#consentPatientExcelExport'));
+    })
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        debugger
+
+        $.ajax({
+            //url: "/PatientOPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "ConsentPatient")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        debugger
+        $("#PatientRegNo").change(function () {
+            debugger
+            var printReg = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("GetPrintNo_ToRegNo", "ConsentPatient")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: printReg },
+
+                success: function (data) {
+                    debugger
+                    $("input[type=text],input[type=number] ,hidden").val("");
+                    $('#PatientRegNo').val(printReg);
+                   
+                    if (data == "") {
+                        alert("Patient RegNo Does Not Exists");
+                        return false;
+                    }
+                    $("#RegNo").val(data)
+                    var d = "";
+
+
+
+                    d = $("#RegNo").val();
+
+                    $.ajax({
+                        url: '@Url.Action("FillRegDetails", "ConsentPatient")',
+                        type: "POST",
+                        datatype: "Json",
+                        data: { PregNo: d },
+                        success: function (data) {
+                            debugger
+
+                            $("#patientName").val(data[0].PatientName);
+                            $("#opdIpdNumber").val(data[0].OPDIPDID);
+                            $("#opdIpdNumberID").val(data[0].OPDIPDID);
+                            $("#PatientType").text(data[0].PatientType);
+                            $("#PatientType1").text(data[0].PatientType);
+                            $("#dateOfBirth").val(data[0].DateOfBirth);
+                            CalGetDaysAge();
+                            $("#Address").val(data[0].Address);
+                            $("#Gender").val(data[0].Gender);
+                            $("#guardianName").val(data[0].GuardianName);
+                            $("#mobileNumber").val(data[0].MobileNo);
+                            $("#ConsultantDoctor").val(data[0].DoctorPrintName);
+                            $("#ConsultantDrID").val(data[0].ConsultantDrID);
+                            $("#referredBy").val(data[0].ReffDoctorName);
+                            $("#ReferredDrID").val(data[0].ReferredByDoctorID);
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("FillPatientConsentOLDBillsNO", "ConsentPatient")',
+                        type: "POST",
+                        datatype: "Json",
+                        data: { RegNo: d },
+                        success: function (data) {
+                            debugger
+                            $('#oldBill').append('<option value="0">New</option>');
+
+                            $(data).each(function (index, d) {
+                                $("#oldBill").append($("<option value=" + d.oldBill + ">" + d.oldBill + "</option>"));
+                                $("#BillNo").val(data[0].oldBill);
+                               
+                            });
+                        }
+                    });
+
+                    var consentID;
+                    $.ajax({
+                        url: '@Url.Action("GetConsentMaster", "ConsentPatient")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: "%" },
+                        success: function (data) {
+                            debugger
+                            $('#ConsentName').append('<option value="0">Select</option>');
+                          
+                            for (var i = 0; i < data.length; i++) {
+                               
+                                debugger
+                                $("#ConsentName").append($("<option value=" + data[i].ConsentID + ">" + data[i].ConsentName + "</option>"));
+                                consentID = data[i].ConsentID;
+                                $("#ConsentNameform").val(data[0].ConsentName);
+                            }
+                        }
+                    })
+                }
+            })
+
+       
+
+        });
+        $("#ConsentName").change(function () {
+            debugger
+            SelectFillDataAll();
+        })
+
+        $("#oldBill").change(function () {
+            debugger
+            FillOldBillDetails();
+        })
+     
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllConsentPatient", "ConsentPatient")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#consentPatientTableId tbody tr").remove();
+                var SrNo = 1;
+                for (var i = 0; i < data.length; i++) {
+
+                    $("#consentPatientTableId").append('<tr><td>' + SrNo + '</td><td>' + data[i].ConsentName + '</td><td style="display:none">' + data[i].ConsentID + '</td><td style="display:none">' + data[i].ConsentDetailID + '</td><td style="display:none">' + data[i].PatientRegNo + '</td></tr>');
+                    SrNo++;
+                };
+            },
+            error: function (result) {
+                alert("Error in bindgrid");
+            }
+        });
+
+        $("#patientName").autocomplete({
+
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetPatientName", "ConsentPatient")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            debugger
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNo, PrintRegNo: item.PrintRegNo
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                debugger;
+                var d = ui.item.id;
+                  alert(d);
+               
+                  if (d > 0) {
+                      debugger;
+                    $("#RegNo").val(d);
+                    $("#PatientRegNo").val(ui.item.PrintRegNo);
+                    FillRegNo();
+                }
+            },
+        });
+
+        $("#form1").submit(function () {
+            debugger
+            var description = $(".ql-editor").html();
+            $("#Description").val(description);
+
+        });
+    });
+    function FillRegNo() {
+     debugger
+     var PregNo = { PatientRegNo: $("#RegNo").val() }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetPatientRegNo", "ConsentPatient")',
+            data: JSON.stringify(PregNo),
+            contentType: "application/json; charset=utf-8",
+            success: function (searchList) {
+                debugger
+                if (searchList == "Record Not Found") {
+                    alert("Record Not Found");
+                    $("#PatientName").val("");
+                    window.relaod(true);
+                }
+                else {
+
+                    $("#patientName").val(searchList[0].PatientName);
+                    $("#RegNo").val(searchList[0].PatientRegNo);
+
+                }
+
+      
+
+                var PregNo = $("#RegNo").val();
+        $.ajax({
+            url: '@Url.Action("FillRegDetails", "ConsentPatient")',
+            type: "POST",
+            datatype: "Json",
+            data: { PregNo: PregNo },
+            success: function (data) {
+                debugger
+
+                $("#patientName").val(data[0].PatientName);
+                $("#opdIpdNumber").val(data[0].OPDIPDID);
+                $("#opdIpdNumberID").val(data[0].OPDIPDID);
+                $("#PatientType").text(data[0].PatientType);
+
+                $("#PatientRegNo").val(data[0].PrintRegNO);
+
+                $("#PatientType1").text(data[0].PatientType);
+                $("#dateOfBirth").val(data[0].DateOfBirth);
+                CalGetDaysAge();
+                $("#Address").val(data[0].Address);
+                $("#Gender").val(data[0].Gender);
+                $("#guardianName").val(data[0].GuardianName);
+                $("#mobileNumber").val(data[0].MobileNo);
+                $("#ConsultantDoctor").val(data[0].DoctorPrintName);
+                $("#ConsultantDrID").val(data[0].ConsultantDrID);
+                $("#referredBy").val(data[0].ReffDoctorName);
+                $("#ReferredDrID").val(data[0].ReferredByDoctorID);
+            }
+        });
+
+                $.ajax({
+                    url: '@Url.Action("FillPatientConsentOLDBillsNO", "ConsentPatient")',
+                    type: "POST",
+                    datatype: "Json",
+                    data: { RegNo: PregNo },
+                    success: function (data) {
+                        debugger
+                        $('#oldBill').append('<option value="0">New</option>');
+
+                        $(data).each(function (index, d) {
+                            $("#oldBill").append($("<option value=" + d.oldBill + ">" + d.oldBill + "</option>"));
+                            $("#BillNo").val(data[0].oldBill);
+
+                        });
+                    }
+                });
+
+
+                var consentID;
+                $.ajax({
+                    url: '@Url.Action("GetConsentMaster", "ConsentPatient")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: "%" },
+                    success: function (data) {
+                        debugger
+                        $('#ConsentName').append('<option value="0">Select</option>');
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            debugger
+                            $("#ConsentName").append($("<option value=" + data[i].ConsentID + ">" + data[i].ConsentName + "</option>"));
+                            consentID = data[i].ConsentID;
+                            $("#ConsentNameform").val(data[0].ConsentName);
+                        }
+                    }
+                })
+       },
+    });
+    }
+    function CalGetDaysAge()  {
+
+        $.ajax({
+            url: '@Url.Action("CalGetDaysAge", "PatientOPD")',
+            type: "GET",
+            data: { datebirth: $("#dateOfBirth").val() },
+            dataType: "json",
+            success: function (data) {
+               
+                $("#Day").val(data[0].day);
+
+                $("#Month").val(data[0].Month);
+
+                $("#Year").val(data[0].year);
+            }
+        })
+    }
+    function SelectFillDataAll() {
+        debugger       
+        if ($("#ConsentName").val() > 0) {
+            var consentID = $("#ConsentName").val()
+            alert(consentID);
+            debugger
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetConsentPatient", "ConsentPatient")',
+                data: { ConsentID: consentID, },
+                success: function (searchlist) {
+                    debugger
+                    $("#Description").val(searchlist[0].Path);
+                    $(".ql-editor").html(searchlist[0].Path);
+                     
+                    $("#ConsentID").val(searchlist[0].ConsentID);
+                  
+                }
+            })
+        }
+
+    }
+
+    function FillOldBillDetails() {
+        debugger
+        var BillNo = $("#oldBill").val()
+        alert(BillNo);
+        $.ajax({
+            url: '@Url.Action("OLDBillDataFill", "ConsentPatient")',
+            type: "GET",
+            data: { BillNo: BillNo },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                $("#billDate").val(data[0].billDate);
+                $("#billTime").val(data[0].billTime);
+                $("#Description").val(data[0].Footer);
+                $(".ql-editor").html(data[0].Footer);
+                $("#ConsentDetailID").val(data[0].ConsentDetailID);
+
+                $("#ConsentName").val(data[0].ConsentID);
+                $("#ConsentID").val(data[0].ConsentName);
+            }
+               
+        })
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        var d = new Date(),
+            h = d.getHours(),
+            m = d.getMinutes();
+        if (h < 10) h = '0' + h;
+        if (m < 10) m = '0' + m;
+        $('input[type="time"][value="now"]').each(function () {
+            $(this).attr({ 'value': h + ':' + m });
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "ConsentPatient")',
+                    type: 'POST',
+                    data: { ConsentDetailID: $("#oldBill").val() },
+
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Delete Successfully");
+                            location.reload();
+                        }
+                        else {
+
+                        }
+                    }
+
+                })
+
+            }
+        });
+    });
+</script>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<!-- ico font -->
+@*</head>*@
+<div class="wrapper">
+    <div class="content-wrapper">
+        <form action="" method="post" id="form1">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h1>Consent Patient</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient Module</a></li>
+                                <li class="breadcrumb-item active">Consent Patient</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="background: #bddff7;">
+                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                        <h2 class="panelheading">Consent Patient Details</h2>
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <h2 class="panelheading">Old Bill No.</h2>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <select name="oldBill" id="oldBill" class="form-control" style="margin-top: 3px;">
+                                                
+                                               
+                                            </select>
+                                            <input type="hidden" id="BillNo" name="BillNo" class="form-control" />
+                                            <input type="hidden" id="ConsentDetailID" name="ConsentDetailID">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <!-- Registration Number -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>UHID No.</label>
+                                            </div>
+                                            <div class="col-lg-5 col-md-4 col-sm-12 col-xs-12">
+                                                <input type="hidden" id="FinancialYearID" name="FinancialYearID">
+
+                                                <select id="FinancialYear" name="FinancialYear" class="form-control" disabled></select>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                <input type="number" id="PatientRegNo" name="PatientRegNo" class="form-control">
+                                                <input type="hidden" id="RegNo" name="RegNo" class="form-control" />
+                                               
+                                            </div>
+                                        </div>
+                                        <!-- OPD / IDP Number -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>OPD / IPD No.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="number" id="opdIpdNumber" name="opdIpdNumber" class="form-control" readonly>
+                                                <input type="hidden" id="opdIpdNumberID" name="opdIpdNumberID" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <!-- Date and Time -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Bill Dt / Tm.</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 padding0">
+                                                <input type="date" id="billDate" name="billDate" class="form-control input-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" />
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+
+                                                <input type="time" id="billTime" name="billTime" value="now" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!-- Patient Name -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Patient Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="patientName" name="patientName" class="form-control" required
+                                                       style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Patient Name')"
+                                                       oninput="this.setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <!-- Patient Type -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Patient Type</label>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                <label class="lbl" id="PatientType" name="patienttypeall">OPD</label>
+                                                <input type="hidden" value="OPD" name="PatientType1" id="PatientType1">
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <label>Gender</label>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <select name="Gender" id="Gender" class="form-control">
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Date Of Birth -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>DOB.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control input-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" />
+                                            </div>
+                                        </div>
+                                        <!-- Address -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Address</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <textarea id="Address" name="Address" class="form-control" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <!-- Guardian Name -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Gdn. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="guardianName" name="guardianName" class="form-control" placeholder="Guardian Name" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Age -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12">
+                                                <label>Age</label>
+                                            </div>
+                                            <div class="col-lg-3 col-md-2 col-sm-12 col-xs-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <span>Y</span>
+                                                    </div>
+                                                    <input type="number" required id="Year" name="Year" class="form-control" placeholder="Y" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding0 cpb-10">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <span>M</span>
+                                                    </div>
+                                                    <input type="number" id="Month" name="Month" class="form-control" placeholder="M" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <span>D</span>
+                                                    </div>
+                                                    <input type="number" id="Day" name="Day" class="form-control" placeholder="D" readonly>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <!-- Mobile Number -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Mobile No.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="number" id="mobileNumber" name="mobileNumber" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Consultant Doctor -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Cons. Dr.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ConsultantDoctor" name="ConsultantDoctor" class="form-control" placeholder="Consultant Doctor" readonly>
+                                                <input type="hidden" id="ConsultantDrID" name="ConsultantDrID">
+                                            </div>
+                                        </div>
+                                        <!-- Referred Doctor -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Refr. By</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="referredBy" name="referredBy" class="form-control" placeholder="Referred By" readonly>
+                                                <input type="hidden" id="ReferredDrID" name="ReferredDrID">
+                                            </div>
+                                        </div>
+                                        <!-- Consent Form -->
+                                        <div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Consent Form</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                                                <input type="hidden" id="ConsentID" name="ConsentID">
+                                                <select id="ConsentName" name="ConsentName" class="form-control"></select>
+                                                <input type="hidden" name="ConsentNameform" id="ConsentNameform" class="form-control" />
+
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                <button type="button" id="addConsentForm" class="btndivcss" onclick="window.location.href='@Url.Action("ConsentMaster", "ConsentMaster")'">
+                                                    <span class="fa fa-plus buttoniconcss"></span>
+                                                </button>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6">
+                                                <div id="consentpatient" name="consentpatient"></div>
+                                                <input type="hidden" name="Description" id="Description" class="form-control" />
+
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="btndelete">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="consentPatientExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <table id="consentPatientTableId" class="table table-bordered hover display dataTable table-hover" style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>Consent Name</th>
+                                        <th style="display:none">ConsentID</th>
+                                        <th style="display:none">ConsentDetailID</th>
+                                        <th style="display:none">PatientRegNo</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </form>
+</div>
+</div>

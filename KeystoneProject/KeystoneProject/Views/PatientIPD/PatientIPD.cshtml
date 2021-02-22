@@ -1,0 +1,1178 @@
+﻿@model KeystoneProject.Models.Patient.PatientIPD
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<style>
+    div.dt-buttons {
+        position: relative;
+        float: left;
+        display: none;
+    }
+
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+        display: none;
+    }
+
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ccc8c8 !important;
+        background: #bddff7;
+        font-weight: 500 !important;
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #ebe7e7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: #333;
+        background: #d0e6f6;
+        font-family: roboto;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: inherit !important;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #41b0ff !important;
+            padding: 0px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 2px 8px 0px 8px !important;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #333 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em;
+        padding-bottom: 3px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        padding: 3px;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            border: 1px solid #a6abaf;
+            border-radius: 2px;
+        }
+
+
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        background: white;
+    }
+
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .tab .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tab .nav-tabs > li > a {
+            border: none;
+            padding: 6px 10px;
+            color: #fff;
+            background: #4e6270;
+            border-radius: 0;
+            font-family: roboto;
+            font-size: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+            .tab .nav-tabs > li > a > i {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+        .tab .nav-tabs > li.active > a,
+        .tab .nav-tabs > li.active > a:focus,
+        .tab .nav-tabs > li.active > a:hover {
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            transition: background 0.20s linear;
+        }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -25px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #e74c3c;
+        z-index: 999;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+        border: 2px solid #bddff7;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+</style>
+
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+
+        <div class="content-wrapper">
+
+            <h5 class="topheadline">IPD Registration</h5>
+
+
+            <section class="content-header">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel-primary">
+
+                                <div class="row">
+
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-12" style="background: #bddff7;">
+                                            <div class="col-lg-9 padding0">
+                                                <h2 class="panelheading">IPD Registration Details</h2>
+
+                                            </div>
+                                            <div class="col-lg-2 padding0" style="    margin-top: 3px;">
+                                                <span>IPD No:-</span>
+                                                <span style="padding: 0px; font-size: 14px; height: 23px; margin-top: 2px;font-weight:600;margin-right:20px">345</span>
+                                                <span>OPD No:-</span>
+                                                <span style="padding: 0px; font-size: 14px; height: 23px; margin-top: 2px;font-weight:600">245</span>
+
+                                            </div>
+                                            <div class="col-lg-2">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="pane-body">
+
+                                    <div class="row">
+                                        <div class="col-lg-12  rowmargintop" style="padding: 0px 0px 0px 5px;">
+                                            <div class="col-lg-2 rowmarginbottom">
+
+                                                <div style=" text-align: -webkit-center; border: 1px solid #bddff7; background: white;">
+
+                                                    <img src="https://www.freeiconspng.com/uploads/patient-icon-8.png" style=" height: 150px; width: 145px; border: 1px solid #bddff7; margin-top: 10px; border-bottom: 0px solid red; padding: 10px;" />
+                                                    <table style=" border-top: 0px solid #bddff7; width: 81.4%; border: 1px solid #bddff7; margin-bottom: 5px;">
+                                                        <tr>
+                                                            <td style=" width: 60%; border-right: 1px solid #bddff7;">
+                                                                <input type="file" id="file" aria-label="File browser example" class="form-control input-sm" style="font-size: 13px; width: 86%; padding: 1px; border: 0px solid red;">
+
+                                                            </td>
+                                                            <td style=" width: 20%;">
+                                                                <img src=" https://www.shareicon.net/data/2016/07/19/798511_cam_512x512.png" style="height: 30px; width: 30px;" />
+
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </table>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-10 padding0">
+                                                <div class="col-lg-12 row padding0">
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Patient Type</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Adm. Date</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <table style="width:100%">
+                                                                <tr>
+
+                                                                    <td style="width:40%">
+
+                                                                        <input type="date" id="doc_first_name" class="form-control input-sm" style="width:90%" />
+                                                                    </td>
+                                                                    <td style="width:30%">
+                                                                        <span>Reg. Time</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="datetime" id="doc_first_name" class="form-control input-sm" />
+                                                                    </td>
+                                                                </tr>
+
+
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-12 row padding0 rowmargintop">
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Patient Reg. No.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <table>
+                                                                <tr>
+
+                                                                    <td style="width:50%">
+
+                                                                        <select class="form-control input-sm" disabled></select>
+                                                                    </td>
+                                                                    <td style="padding-left:5px"><input type="text" id="doc_first_name" class="form-control input-sm" /></td>
+                                                                </tr>
+
+
+                                                            </table>
+
+
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Patient Name</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+                                                            <table style="width:100%">
+                                                                <tr>
+                                                                    <td style="width:20%">
+                                                                        <select class="form-control input-sm" disabled></select>
+                                                                    </td>
+                                                                    <td style="padding-left:5px">
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </td>
+                                                                </tr>
+
+
+                                                            </table>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-lg-12 row rowmargintop padding0">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Guardian Name</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <table style="width:100%">
+                                                                <tr>
+                                                                    <td style="width:20%">
+                                                                        <select class="form-control input-sm" disabled></select>
+                                                                    </td>
+                                                                    <td style="padding-left:5px">
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </td>
+                                                                </tr>
+
+
+                                                            </table>
+
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-lg-6">
+
+                                                        <div class="col-lg-3">
+                                                            <span>Age</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" placeholder="Day" />
+
+
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" placeholder="Month" />
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" placeholder="Year" />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="col-lg-12 row rowmargintop padding0">
+
+                                                    <div class="col-lg-6">
+
+                                                        <div class="col-lg-4">
+                                                            <span>Gender</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <select name="cars" class="form-control input-sm">
+                                                                <option value="volvo">Male</option>
+                                                                <option value="saab">Female</option>
+                                                                <option value="fiat"></option>
+                                                                <option value="audi"></option>
+                                                            </select>
+
+
+                                                        </div>
+
+                                                        <div class="col-lg-1">
+                                                            <span>DOB.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-4">
+
+                                                            <input type="date" id="doc_first_name" class="form-control input-sm" style="padding:1px 1px 1px 1px" />
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Blood Group</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+
+                                                            <select name="cars" class="form-control input-sm" disabled>
+                                                             
+                                                            </select>
+
+                                                        </div>
+
+                                                        <div class="col-lg-3" style="padding-right:0px">
+                                                            <span>Blood Pressure</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 row rowmargintop padding0">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Weight</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <span>Height</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Cons. Doctor</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+
+                                                <div class="col-lg-12 row rowmargintop padding0">
+
+
+
+
+
+
+
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Department</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Referred By</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-lg-12 row rowmargintop padding0 rowmarginbottom">
+
+
+
+
+
+
+
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Organization</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>TPA Name</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 row  padding0 rowmarginbottom">
+
+                                                  <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>CCN/Claim No.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3" style="padding-right:0px">
+                                                            <span>Insurance com.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 row  padding0 rowmarginbottom">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-4">
+                                                            <span>Policy No</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-8">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>Reason</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-9">
+
+                                                            <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row rowmargintop">
+                        <div class="col-md-12">
+                            <div class="tab" role="tabpanel">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#Section1" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-map-marker"></i>Address Details</a></li>
+                                    <li role="presentation"><a href="#Section2" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-file-text-o"></i>Ward Details</a></li>
+
+                                </ul>
+                                <!-- Tab panes -->
+                                <div class="tab-content" style="padding:0px">
+                                    <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+
+
+
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="" style="box-shadow:none">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="panelheading">Address Details</h3>
+                                                    </div>
+                                                    <!-- /.box-header -->
+                                                    <!-- Address Form Start -->
+                                                    <div class="form-horizontal">
+                                                        <div class="panel-body padding0">
+                                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                                <!--Hospital Address Start-->
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>Address</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <textarea class="form-control" name="hospitalAddress" rows="3"></textarea>
+                                                                    </div>
+
+                                                                </div>
+                                                                <!--Hospital Address End-->
+                                                                <!--Hospital City Start-->
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>  City</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" name="hospitalCity" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+
+
+                                                            </div>
+
+                                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                                <!--Hospital City End-->
+                                                                <!--Hospital Pin code Start-->
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>Pin code</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="number" name="hospitalPincode" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+                                                                <!--Hospital Pin code End-->
+                                                                <!--Hospital State Start-->
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>    State</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" name="hospitalState" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <!--Hospital State End-->
+                                                            <!--Hospital Country Start-->
+
+                                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>Country</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" name="hospitalCountry" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+                                                                <!--Hospital Country End-->
+                                                                <!--Hospital Phone number 1 Start-->
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span> Phone No.</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="number" name="hospitalPhoneNumber1" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <!--Hospital Phone number 1 End-->
+                                                            <!--Hospital Fax Number Start-->
+                                                            <div class="col-lg-12 padding0 rowmargintop">
+
+                                                                <!--Hospital Fax Number End-->
+                                                                <!--Hospital Phone number 2 Start-->
+
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>  Mobile No.</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="number" name="hospitalMobileNumber" class="form-control">
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="col-lg-6 padding0">
+
+                                                                    <div class="col-sm-4">
+                                                                        <span>   Email I'd</span>
+                                                                    </div>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="email" name="hospitalEmailId" class="form-control">
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!--Hospital Email I'd End-->
+                                                            <!--Hospital URL Start-->
+                                                            <!--Hospital URL End-->
+                                                        </div>
+                                                        <!-- /.box-body -->
+                                                    </div>
+                                                    <!-- Address Form Ends -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="Section2">
+                                        <div class="row">
+                                            <div class="col-lg-12 ">
+                                                <div class="" style="box-shadow:none">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="panelheading">Ward Details</h3>
+                                                    </div>
+                                                    <!-- /.box-header -->
+                                                    <!-- Address Form Start -->
+                                                    <div class="form-horizontal">
+                                                        <div class="panel-body padding0">
+
+                                                            <div class="col-lg-12 row  padding0 rowmarginbottom">
+
+                                                                <div class="col-lg-6">
+                                                                    <div class="col-lg-4">
+                                                                        <span>Ward Name</span>
+
+
+                                                                    </div>
+                                                                    <div class="col-lg-8">
+
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-6">
+                                                                    <div class="col-lg-3" style="padding-right:0px">
+                                                                        <span>Room No.</span>
+
+
+                                                                    </div>
+                                                                    <div class="col-lg-9">
+
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-12 row  padding0 rowmarginbottom">
+
+                                                                <div class="col-lg-6">
+                                                                    <div class="col-lg-4">
+                                                                        <span>Bed No.</span>
+
+
+                                                                    </div>
+                                                                    <div class="col-lg-8">
+
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-6">
+                                                                    <div class="col-lg-3" style="padding-right:0px">
+                                                                        <span>Room No.</span>
+
+
+                                                                    </div>
+                                                                    <div class="col-lg-9">
+
+                                                                        <input type="text" id="doc_first_name" class="form-control input-sm" />
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--Hospital Address End-->
+                                                            <!--Hospital City Start-->
+
+
+
+                                                        </div>
+
+
+                                                        <!--Hospital State End-->
+                                                        <!--Hospital Country Start-->
+
+                                                    </div>
+                                                    <!-- /.box-body -->
+                                                </div>
+                                                <!-- Address Form Ends -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+
+                                    <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        
+                    </div>
+
+
+
+
+
+            </section>
+
+        </div>
+
+    </div>
+
+</body>
+
+
+
+

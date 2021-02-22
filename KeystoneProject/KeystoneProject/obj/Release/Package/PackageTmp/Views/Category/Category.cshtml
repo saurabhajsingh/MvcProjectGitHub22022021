@@ -1,0 +1,279 @@
+﻿@model KeystoneProject.Models.MasterLaboratory.Category
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        data();
+    });
+    function data() {
+        debugger
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ShowCategory", "Category")',
+            dataType: "json",
+            success: function (data) {
+                var table = "";
+                debugger
+                var tr = "";
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#categoryTableId").append('<tr><td>' + SrNo + '</td><td>' + data[i].CategoryName + '</td><td>' + data[i].ParentCategoryName + '</td><td>' + data[i].Description + '</td><td style="display:none">' + data[i].CategoryID + '</td><td style="display:none">' + data[i].level + '</td><td  style="display:none">' + data[i].HSNCode + '</td></tr>');
+                };
+                // $(".table").append(tr);
+                $('#categoryTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#categoryTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#categoryExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#categID tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#categID').delegate('tr', 'click', function () {
+            $('#categID').DataTable();
+            $('#categID tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        })
+        //  var table = $('#deptID').DataTable();
+        $('#categoryTableId').delegate('td', 'click', function () {
+            debugger
+            var row_num = parseInt($(this).parent().index());
+            $("#save").html("<i class='fa fa-save'></i>Update");
+
+            var CategoryID = parseInt(document.getElementById("categoryTableId").tBodies[0].rows[row_num].cells[4].innerHTML);
+            $("#CategoryID").val(CategoryID);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditCategory1", "Category")',
+                data: { id: CategoryID },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    //alert(obd.DepartmentName);
+                    $("#CategoryID").val(data[0].CategoryID);
+                    $("#category_Name").val(data[0].CategoryName);
+                    $("#ParentCategoryName").val(data[0].ParentCategoryName);
+                    $("#Description").val(data[0].Description);
+                    $("#HSNCode").val(data[0].HSNCode);
+                    $("#level").val(data[0].level);
+                },
+            });
+        });
+    });
+</script>
+<script>
+    function Category(CategoryID) {
+        debugger
+        if (CategoryID != "" && $("#category_Name").val() != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteCategory", "Category")',
+                    data: { CategoryID: CategoryID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Category Deleted Successfully") {
+                            alert("Category Deleted Successfully");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                            window.location.reload(true);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                        window.location.reload(true);
+                    }
+                });
+            }
+        }
+    }
+</script>
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Category Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Category</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Category Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Category Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Cat. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="CategoryID" name="CategoryID" class="form-control">
+                                                        <input type="text" id="category_Name" name="CategoryName" required="required" class="form-control input-sm" placeholder="Category Name" />
+                                                    </div>
+                                                </div>
+                                                <!--HSN Code-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>HSN Code</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="HSNCode" name="HSNCode" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Level Category-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Level Cat.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" name="level" id="level">
+                                                            <option value="1">Parent</option>
+                                                            <option value="2">Child</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Under Category-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Under Cat.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="ParentCategoryName" name="ParentCategoryName" class="form-control" placeholder="Under Category"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Description-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Description</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="Description" name="Description" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Category(document.getElementById('CategoryID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="categoryExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="categoryTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">SrNo</th>
+                                            <th scope="col">Category Name</th>
+                                            <th scope="col">Under Category</th>
+                                            <th scope="col">Description</th>
+                                            <th style="display:none">Category Id</th>
+                                            <th style="display:none">Level</th>
+                                            <th style="display:none">HSN Code</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

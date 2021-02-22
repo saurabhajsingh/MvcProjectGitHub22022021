@@ -1,0 +1,405 @@
+﻿@model KeystoneProject.Models.Master.WardRoomsDetails
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This file is edited by Mohammed -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tblHospitalExpenceAll").delegate('tr', 'click', function () {
+            $('#tblHospitalExpenceAll tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tblHospitalExpenceAll tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetHospitaExpences", "HospitalExpences")',
+            data:  {ServiceGroupID: 0},
+            dataType: "json",
+            success: function (data) {
+                var tr = "";
+                var SrNo = 1;
+                $.each(data, function (i, obj) {
+                    tr += '<tr><td>' + SrNo + '</td><td>' + obj.ServiceGroupName + '</td><td>' + obj.expenceName + '</td><td>' + obj.Expenceper + '</td><td style="display:none">' + obj.HospitalExpencesID + '</td><td style="display:none">' + obj.ServiceGroupID + '</td></tr>';
+                    SrNo++;
+                });
+                $("#tblHospitalExpenceAll").append(tr)
+                $('#tblHospitalExpenceAll').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#tblHospitalExpenceAll').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight:600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#wardRoomExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+    $(document).ready(function () {
+        var SrNo = 1;
+        $("#Add").click(function () {
+            debugger;
+            $("#HospitalExpencetbl").append('<tr><td><input type="hidden" name="ServiceGroupNametbl" value=' + $("#ServiceGroupName").val() + '> <input type="hidden" name="ServiceGroupIDtbl" value=' + $("#ServiceGroupID").val() + '> ' + $("#ServiceGroupName").val() + '</td><td style="border-right:1px solid #bddff7"><input type="hidden" name="HospitalExpenceID" value="0"><input type="text" name="expenceNametbl"  class="form-control input-sm" required style="border-left-color: red;border-left-width: thick;"  oninvalid="this.setCustomValidity(`Please Enter Bad Number`)" oninput="this.setCustomValidity(``)"> </td><td style="display:none">' + 0 + '</td><td style="border-right:1px solid #bddff7"> <input type="text" id="Expencepertbl" name="Expencepertbl"  /> </td><td><button type="button" id="delrow" onclick="delete1(0)" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+            SrNo++;
+
+            $("input[name=expenceNametbl]").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        //url: "/Doctor/GetDepartmentRecord",
+                        url: '@Url.Action("BindHospitaExpences", "HospitalExpences")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { ExpenceName: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.expenceName, value: item.expenceName
+                                };
+                            }))
+                        }
+                    })
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    if (!ui.item) {
+                        this.value = "";
+                    }
+                },
+                select: function (event, i) {
+                    //$('#ServiceGroupID').val(i.item.ServiceGroupID);
+
+
+
+                },
+            });
+
+
+
+
+        })
+        var row = 0;
+        $("#Delele").click(function () {
+            var pro = confirm("Do you Want To Delete")
+            if (pro) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteWardRoomsDetails", "WardRoomsDetails")',
+                    data: { 'RoomID': $("#RoomID").val(), WardID: $("#WardID").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Record Delete successfully") {
+                            alert(data);
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    }
+                })
+            }
+        })
+        $("#HospitalExpencetbl").on('click', '#delrow', function () {
+            debugger;
+            row = $(this).closest('tr').index();
+
+            var ExpenceID = parseInt(document.getElementById("HospitalExpencetbl").tBodies[0].rows[row].cells[1].children[0].value);
+
+            var pro = confirm("Do you Want To Delete")
+            if (pro) {
+                if (ExpenceID > 0)
+                {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("DeleteHospitaExpences", "HospitalExpences")',
+                        data: { HospitalExpencesID: ExpenceID },
+                        dataType: "json",
+                        success: function (data) {
+                            if(data==1)
+                            {
+                                $(this).closest('tr').remove();
+                                alert("Record Delete successfully");
+                            }
+                        }
+                    })
+                }
+                else
+
+                {
+                    $(this).closest('tr').remove();
+                }
+            }
+            //$(this).closest('tr').remove();
+            //$(this).closest('tr').text();
+        });
+    });
+    //function delete1(BedID) {
+    //    debugger;
+    //    if (BedID==0)
+    //    {
+    //        document.getElementById("Responsivebody1").deleteRow(row);
+    //        alert("Dfs")
+    //    }
+    //    //var row_num = $("#ResponsiveWardID1 tr").index(this);
+    //    //var BedID = document.getElementById("ResponsiveWardID1").tBodies[0].rows[0].cells[1].innerHTML;
+    //    //alert(BedID);
+    //}
+    $(document).ready(function () {
+        $("#tblHospitalExpenceAll").on('click', 'td', function () {
+            debugger;
+            $("#Responsivebody1 tr").remove();
+            var row_num = parseInt($(this).parent().index());
+            var WardID = parseInt(document.getElementById("tblHospitalExpenceAll").tBodies[0].rows[row_num].cells[4].innerHTML);
+            var RoomName = document.getElementById("tblHospitalExpenceAll").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var RoomID = document.getElementById("tblHospitalExpenceAll").tBodies[0].rows[row_num].cells[5].innerHTML;
+            $("#RoomName").val(RoomName);
+            $("#RoomID").val(RoomID);
+            var WardName = document.getElementById("tblHospitalExpenceAll").tBodies[0].rows[row_num].cells[1].innerHTML;
+            $("#WardID").val(WardID);
+            $("#WardName").val(WardName);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetWardRoomDetails", "WardRoomsDetails1")',
+                data: { RoomID: RoomID },
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, obd) {
+                        debugger
+                        var BedNo = obd.BedNo;
+                        var status = data[i].BedStatus;
+                        if (status==false)
+                        {
+                            data[i].BedStatus = "";
+                        }
+                        $("#HospitalExpencetbl").append('<tr><td style="border-right:1px solid #bddff7"><input type="text" name="BedNo" class="form-control input-sm" value=' + BedNo + '> </td><td style="display:none">' + data[i].BedID + '</td><td style="border-right:1px solid #bddff7"><input type="checkbox" class="largerCheckbox" id=""  name="BedStatus" value=' + data[i].BedStatus + ' checked=' + data[i].BedStatus + '/></td><td><button type="button" id="delrow" onclick="delete1(' + data[i].BedID + ')" class="btn btn-danger"><span class="fa fa-trash"></span></button></td><td style="display:none">' + obd.WardID + '</td><td style="display:none">' + data[i].RoomID + '</td></tr>');
+                    });
+                },
+            });
+            //------------------
+        });
+        $("#HospitalExpencetbl").on('click', 'td', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+        })
+
+        $("#ServiceGroupName").keyup(function () {
+
+            if ($("#ServiceGroupName").val() == "")
+            {
+                $('#ServiceGroupID').val(0);
+            }
+        })
+
+        $("#ServiceGroupName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Doctor/GetDepartmentRecord",
+                  url: '@Url.Action("GetServiceGrpRecord", "Services")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupName, value: item.ServiceGroupName, id: item.ServiceGroupID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+         debugger
+
+                $('#ServiceGroupID').val(ui.item.id);
+                if (ui.item.id > 0) {
+                    $.ajax({
+                        //url: "/Doctor/GetDepartmentRecord",
+                        url: '@Url.Action("GetHospitaExpences", "HospitalExpences")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { ServiceGroupID: ui.item.id },
+                        success: function (data) {
+                            $("#HospitalExpencetbl tbody tr").remove();
+                            $("#save").html("<i class='fa fa-save'></i>Update");
+                            debugger
+                            $.each(data, function (i, obj) {
+                                debugger
+                                $("#HospitalExpencetbl").append('<tr><td><input type="hidden" name="ServiceGroupNametbl" value=' + $("#ServiceGroupName").val() + '> <input type="hidden" name="ServiceGroupIDtbl" value=' + $("#ServiceGroupID").val() + '> ' + $("#ServiceGroupName").val() + '</td><td style="border-right:1px solid #bddff7"><input type="hidden" name="HospitalExpenceID" value=' + obj.HospitalExpencesID + '><input type="text" name="expenceNametbl" value="' + obj.expenceName + '" class="form-control input-sm" required style="border-left-color: red;border-left-width: thick;"  oninvalid="this.setCustomValidity(`Please Enter Bad Number`)" oninput="this.setCustomValidity(``)"> </td><td style="display:none">' + 0 + '</td><td style="border-right:1px solid #bddff7"> <input type="text" id="Expencepertbl" name="Expencepertbl" value=' + obj.Expenceper + ' /> </td><td><button type="button" id="delrow" onclick="delete1(0)" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+
+                            })
+                        }
+                    })
+                }
+            },
+        });
+
+
+      
+    });
+</script>
+
+<div class="wrapper">
+    <form action="" method="post">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>HospitalExpenses</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">HospitalExpenses</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">HospitalExpenses</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Service Group</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ServiceGroupName" name="ServiceGroupName" class="form-control"
+                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter GroupName Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    <input type="hidden" id="ServiceGroupID" name="ServiceGroupID" class="form-control input-sm" />
+                                                </div>
+                                            </div>
+                                            @*<div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Expence Name</label>
+                                                <input type="text" id="Expencename" name="Expencename" class="form-control"
+                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Expence Name')"
+                                                       oninput="this.setCustomValidity('')">
+                                               
+                                            </div>*@
+                                            @*<div class="form-group col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Expence %</label>
+                                                <input type="text" id="Expenceper" name="Expenceper" class="form-control"
+                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Expence %')"
+                                                       oninput="this.setCustomValidity('')">
+                                                
+                                            </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <table id="HospitalExpencetbl" class="table table-bordered hover display table-hover" style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Service Group Name</th>
+                                        <th scope="col">Hospital Expenses Name</th>
+                                        <th scope="col">Expence %</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="Responsivebody1"></tbody>
+                            </table>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" id="Add" class="btndivcss"><span class="fa fa-plus buttoniconcss"></span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="Delele">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="wardRoomExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="tblHospitalExpenceAll" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="wradRoom_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Service Group</th>
+                                        <th scope="col">Expenses Name</th>
+                                        <th scope="col">Expenses(%)</th>
+                                        <th style="display:none">Expenses Name ID</th>
+                                        <th style="display:none">Service Group ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </form>
+</div>

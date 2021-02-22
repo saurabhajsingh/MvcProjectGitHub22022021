@@ -1,0 +1,3467 @@
+﻿@model KeystoneProject.Models.Patient.OPDBill
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        //Restor();
+    </script>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        //$("#DateOfBirth").datepicker();
+        var d = "";
+
+        var date = new Date();
+
+        $("#age_day").keyup(function () {
+            debugger
+
+           // var date = new Date(fromDate).toDateString('yyyy-MM-dd');
+           //// $("#DateOfBirth").val(date.);
+           // document.getElementById("DateOfBirth").value = fromDate.toString("yyyy-MM-dd");
+            d = "";
+            debugger;
+            var days = parseInt($("#age_day").val(), 10);
+
+            var month = parseInt($("#Month").val(), 10);
+
+            var year = parseInt($("#Year").val(), 10);
+
+            var date = new Date();
+            if (days == "NaN")
+            {
+                days = 0;
+            }
+              if (days > 0) {
+              var dat=    date.setDate(date.getDate() - parseInt(days));
+              }
+                if (year > 0) {
+                    var b = date.setFullYear(date.getFullYear() - year);
+                }
+                if (month > 0) {
+                  var m=  date.setMonth(date.getMonth() - month);
+                }
+
+                 d = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+
+
+                $.ajax({
+                    url: '@Url.Action("BindCaculteAge", "OPDBill")',
+                    type: "GET",
+                    data: { date: d },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#DateOfBirth").val(data);
+                    }
+                })
+
+
+              //  $("#DateOfBirth").val(date.toLocaleDateString("indian"));
+                debugger
+
+                year = "";
+
+
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#age_day").val() == "") {
+
+                $("#DateOfBirth").val(date.toString("yyyy-MM-dd"));
+
+            }
+        })
+
+        $("#Month").keyup(function () {
+            debugger;
+
+            // $.get("/Add_Patient_Registration/Day", { name: month, Birth: "Month" }, function (data) {
+
+            debugger;
+            d = "";
+
+            var days = parseInt($("#age_day").val(), 10);
+
+            var month = parseInt($("#Month").val(), 10);
+
+            var year = parseInt($("#Year").val(), 10);
+
+            var date = new Date();
+            if (month > 0) {
+                date.setMonth(date.getMonth() - month);
+            }
+                if (year > 0) {
+                    var b = date.setFullYear(date.getFullYear() - year);
+                }
+                if (days > 0) {
+                    date.setDate(date.getDate() - days);
+                }
+
+                 d = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+
+                $.ajax({
+                    url: '@Url.Action("BindCaculteAge", "OPDBill")',
+                    type: "GET",
+                    data: { date: d},
+                    dataType: "json",
+                    success: function (data) {
+                        $("#DateOfBirth").val(data);
+                    }
+                })
+
+
+                year = "";
+
+
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#age_day").val() == "") {
+
+                $("#DateOfBirth").val(date.toString('dd M yy'));
+            }
+
+        })
+
+
+
+        $("#Year").keyup(function () {
+            debugger;
+            d = "";
+            date = new Date();
+            var days = parseInt($("#age_day").val(), 10);
+
+            var month = parseInt($("#Month").val(), 10);
+
+            var year = parseInt($("#Year").val(), 10);
+
+              var date = new Date();
+              if (year > 0) {
+                  var b = date.setFullYear(date.getFullYear() - year);
+              }
+                if (month > 0) {
+                    date.setMonth(date.getMonth() - month);
+                }
+                if (days > 0) {
+                    date.setDate(date.getDate() - days);
+                }
+                 d = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+
+                $.ajax({
+                    url: '@Url.Action("BindCaculteAge", "OPDBill")',
+                    type: "GET",
+                    data: { date: d },
+                    dataType: "json",
+                    success: function (data) {
+
+                        $("#DateOfBirth").val(data);
+                    }
+                })
+
+
+                year = "";
+
+
+
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#age_day").val() == "") {
+
+                $("#DateOfBirth").val(date.toString('dd M yy'));
+
+            }
+        })
+
+
+        $("#DateOfBirth").change(function () {
+    debugger
+         var birth=   $("#DateOfBirth").val();
+         var date = new Date(birth);
+         var d = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+        })
+
+    });
+
+
+
+</script>
+
+
+
+
+
+<script>
+    function RoleRight(FormName) {
+        //FormName = "Keystone.Patient.OPDBills";
+
+        @*$.ajax({
+            url: '@Url.Action("RoleRightEditAdd", "RolesRight")',
+            type: "GET",
+            data: { FormName: FormName },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                // $(".btn-primary").hide();
+                $(".btn-danger").hide();
+
+                $("#OldBillNo").prop('disabled', true);
+                //$("#prints").hide();
+
+                $(data).each(function (index, d) {
+                    if (d != "") {
+
+                        //if (d == "Add") {
+                        //    $(".btn-primary").show();
+                        //}
+
+                        if (d == "Edit") {
+                            $("#OldBillNo").prop('disabled', false);
+                        }
+
+                        if (d == "Delete") {
+                            $(".btn-danger").show();
+                            $("#OldBillNo").prop('disabled', false);
+                        }
+
+                    }
+                });
+                //  $("#FinancialYearID").val(data[0].FinancialYearID);
+            },
+
+        })*@
+    }
+    $(document).ready(function () {
+        $('.input').keyup(function (e) {
+            if (event.keyCode == 13) {
+                debugger
+
+                jQuery('#submit').focus().click();
+            }
+        });
+
+
+        RoleRight("Keystone.Patient.OPDBills");
+        Restore();
+        $('#Save').click(function () {
+            debugger;
+            var patientname = $("#PatientName").val();
+            var patregno = $("#PatientRegNO").val();
+            //alert(patientname);
+            if (patientname == "" && patregno == "") {
+                alert("Input Proper PatientName");
+                $("#PatientName").focus();
+                return false;
+            }
+
+            var rowcount = $('#datatable-responsive tbody tr').length;
+            if (rowcount == 0) {
+                alert("Select Proper ServiceRow");
+                return false;
+                $("#quantity").focus();
+            }
+
+            var DoctorName = $("#DoctorID").text();
+            if (DoctorName == "") {
+                alert("Input Proper Doctor Name");
+                return false;
+            }
+
+            var day = $("#age_day").text();
+            var month = $("#Month").text();
+            var year = $("#Year").text();
+            //  alert(day + month + year);
+            if (day == "" || month == "" || year == "") {
+                alert("Input Proper DateOfBirth");
+                return false;
+            }
+
+            var disper = $("#DiscountPercent").val();
+            var disamt = $("#DiscountAmount").val();
+            if (disper != 0 || disamt != 0) {
+                var disReason = $("#DiscountReason").val();
+                if (disReason == "") {
+                    alert("Select proper Discount Reason");
+                    $("#DiscountReason").focus();
+                    return false;
+                }
+            }
+
+            var rpt = confirm("With Balance Amount..");
+            debugger;
+            if (rpt) {
+                $("#rpt").val(rpt);
+            }
+            else {
+                $("#rpt").val(rpt);
+            }
+
+
+        });
+
+
+
+    });
+
+    $(document).ready(function () {
+
+        var DiscountAmount = 0;
+        $('#datatable-responsive tbody td').remove();
+        $("#OldBillNo").change(function () {
+            debugger;
+            var BillId = $("#OldBillNo").val();
+            if (BillId > 0) {
+                //  $('#PaidAmount').prop('disabled', true);
+                $.ajax({
+                    //   url: "/OPDBill/OldBillNo_IndexChange",
+                    url: '@Url.Action("OldBillNo_IndexChange", "OtherBilling")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { BillNo: BillId },
+                    success: function (data) {
+                        debugger;
+                        $("#payment_type").val(data[0].PaymentType);
+                        //  $("#bill_date").val(Date.parse(data[0].BillDate).toString('yyyy-MM-dd'));
+                        //  $("#bill_time").val(Date.parse(data[0].BillDate).toString('hh:mm:ss tt'));
+                        $("#grosstotal").val(data[0].grosstotal);
+                        $("#ServiceTax").val(data[0].TaxPercent);
+                        $("#SerTaxAmount").val(data[0].SerTaxAmount);
+                        $("#TotalAmount").val(data[0].TotalAmount);
+                        $("#DiscountPercent").val(data[0].DiscountPercent);
+                        //   ForAuthorization
+                        $("#ForAuthorization").val(data[0].ForAuthorization);
+                        $("#DiscountAmount").val(data[0].DiscountAmount);
+                        DiscountAmount = data[0].DiscountAmount
+                        $("#DiscountAmountAdd").val(data[0].DiscountAmount);
+                        $("#DiscountReason").val(data[0].DiscountReason);
+                        $('#PreBalance').val(data[0].PreBalance);
+                        $('#PreBalanceandDiposit').val(data[0].PreBalance);
+                        if (parseFloat(data[0].PreBalance) < 0) {
+                            //alert("Deposit");
+
+                            $("#priPalanceDeposit").text("Deposit");
+
+                            $("#priPalanceDeposit").css("color", "blue");
+
+
+                            $("#PreBalance").val(data[0].PreBalance);
+
+                            var pre = $("#PreBalance").val().replace("-", "");
+                            $("#PreBalance").val(pre);
+
+                        }
+                        else {
+                            $("#priPalanceDeposit").text("Pre.Balance");
+                            $("#priPalanceDeposit").css("color", "black");
+                            // $("#Deposit").text("0.00")
+                        }
+
+
+                        $("#NetPayableAmount").val(data[0].NetPayableAmount);
+                        $("#PaidAmount").val(data[0].PaidAmount);
+                        $("#BalanceAmount").val(data[0].BalanceAmount);
+                        $("#BillNoId").val(data[0].BillNo);
+
+                        $("#Number").val(data[0].Number);
+                        $("#Name").val(data[0].Name);
+
+
+                         $("#paymentDate").val(data[0].Date);
+
+                        $("#Remarks").val(data[0].Remarks);
+
+                    },
+
+                });
+              
+                $.ajax({
+                    //url: "/OPDBill/GetBill",
+                    url: '@Url.Action("GetBill", "OtherBilling")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { BillNo: $("#OldBillNo").val()},
+                    success: function (data) {
+                        debugger
+                        //  $("#datatable-responsive").html('');
+                        $('#datatable-responsive tbody tr').remove();
+                        debugger;
+                        $(data).each(function (index, d) {
+                            //    $('#datatable-responsive').append('<tr><td>' + d.servicename + '<input value="' + d.ServiceID +
+                            //'" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + d.servicename +
+                            //'" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d.Doctor +
+                            //'" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + d.UnitID +
+                            //'" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + d.Rate +
+                            //'"/><input type="hidden" name="svc_qty_hid" id="svc_qty_hid" value="' + d.Quantity + '"/></td><td>' + d.Rate +
+                            //'</td><td>' + d.Quantity + '</td><input value="' + d.Quantity * d.Rate +
+                            //'" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + d.Quantity * d.Rate +
+                            //'</td></tr>');
+                            debugger;
+                            var a = d.Doctor;
+
+                            EditRateAmt(d, "Edit");
+                            debugger;
+
+                        });
+
+                       // CaculateDescount();
+                    },
+
+                });
+                BindDr();
+            }
+            else {
+                Bind();
+                $('#datatable-responsive tbody tr').remove();
+                $("#grosstotal").val("0.00");
+                $("#DiscountPercent").val("0.00");
+                $("#DiscountAmount").val("0.00");
+                debugger;
+                var show = $("#PreBalance").val();
+                if (show < 0) {
+                    $("#PreBalance").val(show);
+                }
+            }
+        });
+    });
+
+    function Calculate() {
+
+
+        debugger
+
+        var GrossTotal = $("#grosstotal").val();
+        var show = $("#ServiceTax").val();
+        var TaxAmount = 0.00;
+        if (show > 0) {
+            TaxAmount = parseFloat(GrossTotal) * parseFloat(show / 100);
+        }
+        $("#SerTaxAmount").val(TaxAmount);
+        var TotalAmount = parseFloat(GrossTotal) + parseFloat(TaxAmount);
+        var Prebalance = $("#PreBalance").val();
+
+
+        if (Prebalance > 0) {
+            TotalAmount = parseFloat(TotalAmount) + parseFloat(Prebalance);
+        }
+        if ($("#priPalanceDeposit").text() == "Pre.Balance") {
+            TaxAmount = parseInt(GrossTotal) + parseInt(Prebalance);
+        }
+        else {
+            TaxAmount = parseInt(GrossTotal) - parseInt(Prebalance);
+        }
+
+        $("#TotalAmount").val(TaxAmount);
+        var TAmt = $("#TotalAmount").val();
+        var DAmt = $("#DiscountAmount").val();
+        if (DAmt == '') {
+            DAmt = "0";
+            $("#DiscountPercent").val('');
+        }
+        var NetAmountPayable = (parseFloat(TAmt) - parseFloat(DAmt));
+        $("#NetPayableAmount").val(NetAmountPayable.toFixed(2));
+        var NetPayAmt = NetAmountPayable;
+
+        var PaidAmount = $("#PaidAmount").val();
+        var BalAmount = (NetPayAmt - PaidAmount);
+
+        $("#BalanceAmount").val(BalAmount.toFixed(2));
+    };
+
+    function DiscountAmt() {
+        var DiscountAmt = $("#DiscountAmount").val();
+        var GrossTotal = $("#grosstotal").val();
+        var DiscountPer = ((DiscountAmt * 100) / (GrossTotal));
+        $("#DiscountPercent").val(DiscountPer.toFixed(2));
+    };
+
+    function DiscountPer() {
+        var GrossTotal = $("#grosstotal").val();
+        debugger;
+        var DiscountAmt = $("#DiscountPercent").val();
+        var DiscountPer = ((GrossTotal * DiscountAmt) / 100);
+        $("#DiscountAmount").val("");
+        $("#DiscountAmount").val(DiscountPer);
+    };
+
+    $(document).ready(function () {
+        $.ajax({
+            //url: "/OPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "OPDBill")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $("#FinancialYear").change(function () {
+            var FinancialY = $("#FinancialYear option:selected").text();
+            $.ajax({
+                //url: "/OPDBill/GetFinancialYearID",
+                url: '@Url.Action("GetFinancialYearID", "OPDBill")',
+                type: "GET",
+                data: { prefix: FinancialY },
+                dataType: "json",
+                success: function (data) {
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                },
+                error: function (data) {
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        debugger;
+        $("#DiscountReason").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetDiscountReason", "OPDBill")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DiscountReason, value: item.DiscountReason, id: item.DiscountReasonID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, i) {
+                debugger;
+                var show = i.item.id;
+                $("#DiscountReasonID").val(show);
+            },
+        });
+    });
+
+    $(document).ready(function () {
+        debugger;
+        $("#DoctorPrintName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //  url: "/OPDBill/GetDoctorConsRecord",
+                    url: '@Url.Action("GetDoctorName", "IPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorName, value: item.DoctorName, id: item.DoctorID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#DoctorPrintNameID").val(show);
+                if (show > 0) {
+                    $("#doctorAmountshow").show();
+                }
+                else {
+                    $("#doctorAmountshow").hide();
+                }
+            },
+        });
+    });
+
+    $(document).ready(function () {
+        $("#DiscountReason").change(function () {
+            debugger;
+            var prefix = $("#DiscountReason").val();
+            if (prefix == "") {
+                $("#DiscountPercent").val('');
+                $("#DiscountAmount").val('');
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("GetDiscountReasonID", "OPDBill")',
+                    type: "GET",
+                    data: { DisReason: prefix },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $("#DiscountReason").val(data[0].DiscountReason);
+                        $("#DiscountReasonID").val(data[0].DiscountReasonID);
+                    },
+                });
+            }
+        });
+    });
+    var SerGroupID = 0;
+    $(document).ready(function () {
+        $("#ServiceGroupName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/OPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetServiceGrp", "OPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupName, value: item.ServiceGroupName.replace("   ( Lab )", ""), id: item.ServiceGroupID, ServiceType: item.ServiceType
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var show = i.item.id;
+                SerGroupID = show;
+                debugger
+                if (i.item.ServiceType == "Lab") {
+                    $("#rdTest").prop("checked", 'checked');
+                }
+                else {
+                    $("#rdService").prop("checked", 'checked');
+
+                }
+                $("#ServiceGroupID").val(show);
+                /// alert($("#ServiceGroupID").val())
+                $("#servicename").val("");
+                $("#ServiceID").val("");
+                $("#servicename1").val("");
+                $("#rate").val("");
+            },
+            //minlength: 1,
+            //change: function (event, ui) {
+            //    if (!ui.item) {
+            //        this.value = '';
+            //    }
+            //},
+            //select: function (event, i) {
+            //    var show = i.item.id;
+            //    $("#ServiceGroupID").val(show);
+            //    SerGroupID = show;
+            //},
+        });
+    });
+
+
+    //Doctor Bind
+    $(document).ready(function () {
+        $("#DoctorID").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/OPDBill/GetServiceGrp",
+                    url: '@Url.Action("BindConsultant_dr", "OPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID,
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#Doctor").val(show);
+                //  SerGroupID = show;
+            },
+        });
+
+        //----------------
+
+        $("#DepartmentName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/OPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetDepartment", "OPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DepartmentName, value: item.DepartmentName, id: item.DepartmentID,
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#DepartmentID").val(show);
+                //  SerGroupID = show;
+            },
+        });
+
+        //-------------
+
+        $("#RDoctorPrintName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/OPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetReferred_DrBind", "OPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.RDoctorPrintName, value: item.RDoctorPrintName, id: item.ReferredByDoctorID,
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#ReferredByDoctorID").val(show);
+                //  SerGroupID = show;
+            },
+        });
+
+    });
+
+
+
+    //End
+
+
+
+    $(document).ready(function () {
+
+        var outside_patient = "";
+        debugger
+        outside_patient = $("#OutsidePatientID").prop("checked");
+        $("#OutsidePatientID").click(function () {
+
+            debugger;
+            outside_patient = $(this).prop("checked");
+
+
+
+            var out = "on";
+            $.ajax({
+                url: '@Url.Action("NXtRegNO", "OPDBill")',
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                datatype: "Json",
+                //  data: { chk: outside_patient },
+                success: function (searchList) {
+                    debugger;
+
+                    Restore();
+                    $("#PatientRegNO").val(searchList);
+
+                    if ($("#OutsidePatientID").prop("checked") == false) {
+                        debugger
+                        $("#PatientRegNO").val("");
+                        $("#PatientName").val("");
+
+                    }
+
+                }
+
+
+            })
+
+        });
+
+     //   if ($("#OutsidePatientID").prop("checked") == false) {
+
+            $("#PatientName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        //  url: "/OPDBill/OPDBill",govind
+                        url: '@Url.Action("GetOPDPatient", "OPDBill")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term, outside: $("#OutsidePatientID").prop("checked") },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.PatientName + "    " + item.PatientRegNO, value: item.PatientName, id: item.PatientRegNO
+                                };
+                            }))
+                        }
+                    })
+                },
+                minlength: 1,
+                change: function (event, ui) {
+                    if (!ui.item) {
+                        // this.value = '';
+                        Bind();
+                    }
+                },
+                select: function (event, i) {
+                    var show = i.item.id;
+                    $("#PatientRegNO").val(show);
+                    Bind();
+                },
+            });
+      //  }
+    });
+
+
+
+
+    $(document).ready(function () {
+        $("#PatientName").change(function () {
+            debugger
+            $('#datatable-responsive tbody td').remove();
+            $('#datatable-responsive tbody tr').remove();
+
+            if ($("#PatientRegNO").val() == "") {
+                $("#OutsidePatientID").prop("checked", true);
+
+                $.ajax({
+                    url: '@Url.Action("NXtRegNO", "OPDBill")',
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    datatype: "Json",
+                    //  data: { chk: outside_patient },
+                    success: function (searchList) {
+                        debugger;
+
+                        Restore();
+                        $("#PatientRegNO").val(searchList);
+
+                        if ($("#OutsidePatientID").prop("checked") == false) {
+                            debugger
+                            $("#PatientRegNO").val("");
+                            $("#PatientName").val("");
+
+                        }
+
+                    }
+
+
+                })
+            }
+            if ($("#OutsidePatientID").prop("checked") == false) {
+                Bind();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        var id = 0;
+        //$("#TestID").change(function () {
+
+        //    var chk = document.getElementById("TestID").checked;
+
+        //    debugger
+        //    $("#ServiceGroupName").val("");
+        //    if(chk==true)
+        //    {
+        //        $("#ServiceGroupName").prop("disabled", true);
+        //        if (chk == false) {
+        //            debugger
+        //            SerGroupID = 0;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        $("#ServiceGroupName").prop("disabled", false);
+        //    }
+        //})
+
+        $("#servicename").autocomplete({
+            source: function (request, response) {
+
+                var URL = "";
+                var var1 = "";
+
+                if (document.getElementById("TPA").checked == true) {
+                    //if ($('input[name=ServiceInfoChk]:checked').val() == "Service") {
+                    URL = '@Url.Action("GetServiceNameTPA", "OPDBill")';
+                    var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val(), OrganizationID: $("#TPAnameID").val(), drID: $("#Doctor").val() }
+               // }
+                @*else {
+                    if ($('input[name=ServiceInfoChk]:checked').val() == "Test") {
+                        URL = '@Url.Action("GetServiceName", "OPDBill")';
+                        var1 = { prefix: $("#servicename").val(), id: $("#ServiceGroupID").val(), chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val() }
+
+                    }
+
+                }*@
+                }
+                else
+                {
+                URL = '@Url.Action("GetServiceName", "OPDBill")';
+                var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: $('input[name=ServiceInfoChk]:checked').val(),  charges: $('input[name=RadioCharge]:checked').val() }
+             }
+
+                //if (document.getElementById("TestID").checked == true) {
+                //    $("#ServiceGroupID").val(0);
+                //}
+               // var var1 = { prefix: $("#servicename").val(), id: $("#ServiceGroupID").val(), chk: $('input[name=ServiceInfoChk]:checked').val(), charges: $('input[name=RadioCharge]:checked').val() }
+                $.ajax({
+                    url: URL,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify(var1),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.servicename, value: item.servicename, Serviceid: item.ServiceID, GenralCharge: item.GeneralCharges, EmergencyCharges: item.EmergencyCharges
+                            };
+                        }));
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var show = i.item.Serviceid;
+                debugger
+                var show1 = i.item.value;
+                $("#rate").val("");
+                $('#quantity').val(1);
+
+                $('#quantity1').val(1);
+                if (i.item.GenralCharge > 0) {
+                    if ($("#GeneralCharges").prop("checked") == true) {
+
+                        $("#rate").val(i.item.GenralCharge);
+                    }
+
+                }
+                if (i.item.EmergencyCharges > 0) {
+                    if ($("#EmergencyCharges").prop("checked") == true) {
+
+
+                        $("#rate").val(i.item.EmergencyCharges);
+                    }
+                }
+
+                $("#ServiceID").val(show);
+                $("#servicename1").val(show1)
+            },
+        });
+
+
+        //----------------------------Code HSN
+        //var charges = $('input[name=RadioCharge]:checked').val();
+        //alert()
+        //if (charges == "GeneralCharges") {
+
+        //}
+        //if (charges == "EmergencyCharges") {
+
+        //}
+        //if (charges == "TPACharges") {
+
+        //}
+        $("#ServiceCode").change(function () {
+            alert("abs");
+            debugger
+            $("#ServiceID").val("");
+
+          //  $("#servicename1").val("")
+            $("#ServiceGroupID").val("");
+            $("#ServiceGroupName").val("");
+            $("#servicename").val("");
+            $("#Unit").val("");
+            //alert($(this).val());
+            //  var var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: document.getElementById("TestID").checked, HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val() }
+            var var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val() }
+            var URL = "";
+            var var1 = "";
+            if (document.getElementById("TPA").checked == true) {
+                if ($('input[name=ServiceInfoChk]:checked').val() == "Service") {
+                    URL = '@Url.Action("GetServiceNameTPA", "OPDBill")';
+                var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val(), OrganizationID: $("#TPAnameID").val(), drID: $("#Doctor").val() }
+               }
+                else {
+                    if ($('input[name=ServiceInfoChk]:checked').val() == "Test") {
+                        URL = '@Url.Action("GetServiceName", "OPDBill")';
+                        var1 = { prefix: $("#servicename").val(), id: $("#ServiceGroupID").val(), chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val() }
+
+                    }
+
+                }
+            }
+            else {
+                URL = '@Url.Action("GetServiceName", "OPDBill")';
+                var1 = { prefix: $("#servicename").val(), id: SerGroupID, chk: $('input[name=ServiceInfoChk]:checked').val(), HSNCode: $("#ServiceCode").val(), charges: $('input[name=RadioCharge]:checked').val() }
+            }
+
+            $.ajax({
+                url: URL,
+                dataType: "json",
+                type: "POST",
+                data: JSON.stringify(var1),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+                    $('#quantity').val(1);
+
+                    $('#quantity1').val(1);
+                    if (data[0].GeneralCharges > 0) {
+                        if ($("#GeneralCharges").prop("checked") == true) {
+
+                            $("#rate").val(data[0].GeneralCharges);
+                        }
+
+                    }
+                    if (data[0].EmergencyCharges > 0) {
+                        if ($("#EmergencyCharges").prop("checked") == true) {
+
+
+                            $("#rate").val(data[0].EmergencyCharges);
+                        }
+                    }
+                    $("#ServiceGroupID").val(0);
+                    $("#ServiceID").val(data[0].ServiceID);
+                    $("#servicename1").val(data[0].servicename)
+                    $("#servicename").val(data[0].servicename)
+
+
+                }
+            })
+        });
+    });
+
+
+
+
+
+
+    @*$(document).ready(function () {
+        $("#servicename").change(function () {
+        debugger
+
+            var rb = $('input[name=RadioCharge]:checked').val();
+            alert(rb);
+            var id = $("#ServiceID").val();
+            var Drid = $("#Doctor").val();
+            $.ajax({
+                // url: "/OPDBill/GetServicename",
+                url: '@Url.Action("GetServicename", "OPDBill")',
+                type: "GET",
+                data: { prefix: id, DoctorID: Drid, Charges: rb },
+                dataType: "json",
+                success: function (data) {
+                    //$('#rate').val('');
+                    $('#UnitID').val(data[0].UnitID);
+                    $('#rate').val(data[0].Rate);
+                    $('#quantity').val(data[0].Quantity);
+                    //$('#rate1').val(data[0].Rate);
+                    //$('#quantity1').val(data[0].Quantity);
+                },
+
+            });
+        });
+    });*@
+
+    function Restore() {
+        // $("#datatable-responsive").html('');
+
+        $("#grosstotal").val(0.00);
+        $("#ServiceTax").val(0.00);
+        $("#SerTaxAmount").val(0.00);
+        $("#PreBalance").val(0.00);
+        $("#TotalAmount").val(0.00);
+        $("#DiscountPercent").val(0.00);
+        $("#DiscountAmount").val(0.00);
+        $("#DiscountReason").val(0.00);
+        $("#NetPayableAmount").val(0.00);
+        $("#PaidAmount").val(0.00);
+        $("#BalanceAmount").val(0.00);
+        $("#TotalAmount").val(0.00);
+
+    }
+    ServiceGroupBind();
+    function Bind() {
+        // $(document).ready(function () {
+        //   $("#PatientName").change(function () {
+        //   Restore();
+        debugger
+
+        var id = $("#PatientRegNO").val();
+        var GrossTotal = $("#grosstotal").val();
+        var ServiceTax = $("#ServiceTax").val();
+        var DiscountPercent = $("#DiscountPercent").val();
+        var DisAmount = $("#DiscountAmount").val();
+        var BalAmount = $("#BalanceAmount").val();
+        var PdAmount = $("#PaidAmount").val();
+        var TAmount = $("#TotalAmount").val();
+
+        $.ajax({
+            //   url: "/OPDBill/PatientRegNO_Leave",
+            url: '@Url.Action("PatientRegNO_Leave", "OtherBilling")',
+            type: "GET",
+            data: {
+                RegistrationNO: id, GTotal: GrossTotal, STax: ServiceTax, DisPercent: DiscountPercent, DiscountAmount: DisAmount, BalanceAmount: BalAmount,
+                PaidAmount: PdAmount, TotalAmount: TAmount
+            },
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $('#PatientType').val(data[0].PatientType);
+                $('#showPatienttype').text('Patient Type - '+data[0].PatientType);
+                $('#PatientRegNO').val(data[0].PatientRegNO);
+                $('#PatientOPDNo').val((data[0].PatientOPDNo));
+                $('#PrintOPDNo').val((data[0].PrintOPDNo));
+                $('#PatientName').val(data[0].PatientName);
+                $('#GuardianName').val(data[0].GuardianName);
+                $('#Address').val(data[0].Address);
+                $('#MobileNo').val(data[0].MobileNo);
+                $('#DoctorID').val(data[0].DoctorPrintName);
+                $('#Doctor').val(data[0].DoctorID);
+                $('#Gender').val(data[0].Gender);
+                $("#gen").val(data[0].Gender);
+
+                $('#DateOfBirth').val(data[0].DateOfBirth);
+                $('#age_day').val(data[0].TotalDay);
+                $('#Month').val(data[0].TotalMonth);
+                $('#Year').val(data[0].Year);
+                $('#DepartmentName').val(data[0].DepartmentName);
+                $('#RDoctorPrintName').val(data[0].RDoctorPrintName);
+                $('#ReferredByDoctorID').val(data[0].RDoctorID);
+                $('#TPAName').val(data[0].TPA_Name);
+
+                $('#TPAnameID').val(data[0].TPA_ID);
+
+                //if(parseInt(data[0].TPA_ID)>0)
+                //{
+                //    ServiceGroupBind(data[0].TPA_ID)
+
+
+                //}
+
+                var Tpaid = $("#TPAnameID").val();
+                if (Tpaid != 0) {
+                    $("#TPA").prop("checked", true);
+                }
+                else {
+                    $("#GeneralCharges").prop("checked", true);
+                }
+                if (data[0].BloodGroup == "Select Blood Group") {
+                    $('#BloodGroup').text("");
+                }
+                else {
+                    $('#BloodGroup').text(data[0].BloodGroup);
+                }
+                $('#PreBalance').val(data[0].PreBalance);
+                $('#SerTaxAmount').val(data[0].SerTaxAmount);
+                $('#NetPayableAmount').val(data[0].NetPayableAmount);
+                $('#BalanceAmount').val(data[0].BalanceAmount);
+                $('#TotalAmount').val(data[0].TotalAmount);
+                var PatientOPDIPDNO = $("#PatientOPDNo").val();
+                var PatRegno = $("#PatientRegNO").val();
+                var BillT = "OPDBill";
+                $("#OldBillNo").text("");
+                $("#PreBalance").val(data[0].PreBalance);
+                $("#PreBalanceandDiposit").val(data[0].PreBalance);
+                if (parseFloat(data[0].PreBalance) < 0) {
+                    //alert("Deposit");
+
+                    $("#priPalanceDeposit").text("Deposit");
+
+                    $("#priPalanceDeposit").css("color", "blue");
+
+
+                    $("#PreBalance").val(data[0].PreBalance);
+
+                    var pre = $("#PreBalance").val().replace("-", "");
+                    $("#PreBalance").val(pre);
+                }
+                else {
+                    $("#priPalanceDeposit").text("Pre.Balance");
+                    $("#priPalanceDeposit").css("color", "black");
+                    // $("#Deposit").text("0.00")
+                }
+                Calculate();
+
+
+
+
+                //var name = $("#priPalanceDeposit").text();
+
+                //if ($("#priPalanceDeposit").text() == "Pre.Balance") {
+                //    var tot = parseInt(sum) + parseInt(prebal);
+                //}
+                //else {
+                //    var tot = parseInt(sum) - parseInt(prebal);
+                //}
+
+
+                //     $("#datatable-responsive").html('');
+             
+                debugger
+                var a = PatientOPDIPDNO;
+                var b = PatRegno;
+                var c = BillT;
+                $.ajax({
+                    //  url: "/OPDBill/GetOldBill",
+                    url: '@Url.Action("GetOldBill", "OtherBilling")',
+                    type: "GET",
+                    data: { PatientOPDNo: PatientOPDIPDNO, PatientRegNO: PatRegno, BillType: BillT },
+                    dataType: "json",
+                    success: function (data) {
+
+                        $("#OldBillNo").empty().append('<option selected="selected" value="0">SELECT OLD BILLS</option>');
+                        $("#OldbillView td").remove();
+                        $(data).each(function (index, d) {
+                            $("#OldBillNo").append($("<option value =" + d.BillNo + ">" + d.BillNoDate + " </option>"));
+                            $("#btndelete").prop('disabled', false);
+
+                            $("#OldbillView").append('<tr data-dismiss="modal"><td>' + $("#PatientRegNO").val() + '</td> <td>OPDBill</td> <td> ' + d.BillNoDate + '</td><td> <a href="#" id="print"><i class="fa fa-print fa-1x" aria-hidden="true"></i></a>  </td><td style="display:none">' + d.BillNo + '</td></tr>')
+                        });
+                    },
+                    error: function (data) {
+                    },
+
+                });
+            },
+        });
+
+        //  });
+
+    }
+    $(document).ready(function () {
+        $("#PatientRegNO").change(function () {
+            $('#datatable-responsive tbody td').remove();
+            $('#datatable-responsive tbody tr').remove();
+
+
+
+            Bind();
+        });
+
+        $("#priPalanceDeposit").click(function () {
+
+            debugger
+            var a = $("#priPalanceDeposit").text().trim();
+            if ($("#priPalanceDeposit").text().trim() != "Pre.Balance") {
+               
+
+                window.location.href = ('@Url.Action("OtherRefundAmount", "OtherRefundAmount")?Reg=' + $("#PatientRegNO").val());
+               // window.open('@Url.Action("PaymentAndDeposit", "PaymentAndDeposit")?IPDNo=' + IPDNo);
+            }
+
+        })
+
+
+    });
+
+    function EditRateAmt(d, Mode) {
+        var chk = document.getElementById("TestID").checked;
+        debugger
+        var ServiceType = "";
+        if (chk == true) {
+
+            ServiceType = "OPDLabBills";
+        }
+        else {
+            ServiceType = "OPD";
+        }
+        debugger
+        if (Mode == "Add") {
+            $('#tbl').append('<tr><td >' + $("#servicename").val() + " " + $("#DoctorPrintName").val() +
+                           '<input value="' + $("#ServiceID").val() + '" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + $("#servicename").val() + " " + $("#DoctorPrintName").val() +
+                          '" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d[0].Doctor +
+                          '" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + $("#UnitID").val() +
+                          '" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + $("#rate").val() +
+                          '"/><input type="hidden" name="svc_qty_hid" id="svc_qtyi_hd" value="' + $("#quantity").val() + '"/></td><td value="' + $("#" + i).val() + '"><input type="text" class="nr form-control" name="rate1table"  value="' + $("#rate").val() + '" id="' + i + 'rate"/></td><td  value="' + $("#CalQuantity").val() + '" ><input type="text" name="qty" class="nr form-control" value="' + $("#quantity").val() + '" id="qty"/></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"><option value="Rs">Rs</option><option value="%">%</option></select></td> <td><input value="0" class="nr form-control" type="text" id="Discount_Service" name="Discount_Service" /></td> <input value="' + $("#quantity").val() * $("#rate").val() +
+                          '" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + $("#quantity").val() * $("#rate").val() +
+                          '</td><td><input value="' + ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"><input type="hidden" value="Add" name="Mode"/></a><input type="hidden" name="DoctorCharges" value="' + $("#drcharges").val() + '"</td></tr>');
+        }
+        else {
+            //    $('#datatable-responsive').append('<tr><td>' + d.servicename + '<input value="' + d.ServiceID +
+            //'" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + d.servicename +
+            //'" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d.Doctor +
+            //'" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + d.UnitID +
+            //'" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + d.Rate +
+            //'"/><input type="hidden" name="svc_qty_hid" id="svc_qty_hid" value="' + d.Quantity + '"/></td><td>' + d.Rate +
+            //'</td><td>' + d.Quantity + '</td><input value="' + d.Quantity * d.Rate +
+            //'" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + d.Quantity * d.Rate +
+            //'</td></tr>');
+            ServiceType = d.ServiceType;
+
+            $('#datatable-responsive').append('<tr><td >' + d.servicename +
+                '<input value="' + d.ServiceID + '" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + d.servicename +
+               '" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d.Doctor +
+               '" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + d.UnitID +
+               '" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + d.Rate +
+               '"/><input type="hidden" name="svc_qty_hid" id="svc_qtyi_hd" value="' + d.Quantity + '"/></td><td value="' + $("#" + i).val() + '"><input type="text" class="nr form-control" name="rate1table"  value="' + d.Rate + '" id="' + i + 'rate"/></td><td  value="' + d.Quantity + '" ><input type="text" name="qty" class="nr form-control" value="' + d.Quantity + '" id="qty"/></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"><option value=' + d.DiscountServiceType + '>' + d.DiscountServiceType + '</option><option value="Rs">Rs</option><option value="%">%</option></select></td><td><input class="nr form-control" value=' + parseFloat(d.Discount_Service).toFixed(0) + ' type="text" id="Discount_Service" name="Discount_Service" /></td></td><input value="' + d.Quantity * d.Rate +
+               '" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + d.Quantity * d.Rate +
+               '</td><td><input value="' + ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><a href="#" class="fa fa-trash-o"  aria-hidden="true" id="delrow" class="delrow"></a><input type="hidden" value="Edit" name="Mode"/><input type="hidden" name="DoctorCharges" value="' + d.DoctorCharges + '"/></td></tr>');
+        }
+        //$("#datatable-responsive").delegate('td', 'keyup', function () {
+        //    debugger;
+        //    var row_num = parseInt($(this).parent().index());
+
+        //    var a = Qty;
+        //    // var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].innerHTML;
+
+        //    var newqty = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[2].children[0].value;
+        //    var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+        //    var Total = parseFloat(newqty) * parseFloat(rate);
+
+
+        //    document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML = Total;
+
+        //    // document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].innerHTML = Total;
+
+        //    var child = $("#datatable-responsive td").closest("tr").length;
+
+        //    var gross = 0;
+        //    var Discount_ServiceTotal = 0;
+        //    var DiscountPercent = 0;
+        //    var TotalPer = 0;
+        //    for (var row = 0; row < child; row++) {
+        //        //var aa = aa + document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML;
+
+        //        // if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML != "Total Amount") {
+        //        gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+        //        $("#grosstotal").val(gross);
+        //        //    }
+
+        //        if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].children[0].value == "%") {
+        //            DiscountPercent = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+        //            if (DiscountPercent <= 100) {
+        //                var Amount = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+        //                TotalPer = TotalPer + ((Amount * DiscountPercent) / 100);
+
+        //                $("#DiscountAmount").val(TotalPer.toFixed(2));
+        //            }
+        //            else {
+        //                alert("Discount Not Less " + DiscountPercent);
+        //                return false;
+        //            }
+        //        }
+        //        else {
+        //            TotalPer = TotalPer + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+
+        //            $("#DiscountAmount").val(TotalPer);
+
+        //        }
+
+
+
+        //    }
+
+        //    Calculate();
+        //    DiscountPer();
+        //});
+
+
+
+
+
+    }
+    i++;
+    //}
+    var Qty = 0;
+    var i = 0;
+
+
+    $(document).ready(function () {
+
+        $('#submit').click(function () {
+            debugger;
+
+
+            var id = $("#ServiceID").val();
+            var DoctorName = $("#DoctorPrintName").val();
+            var ServiceName = $("#servicename").val();
+            var ServiceGroupID = $("#ServiceGroupID").val();
+            var Doctorcharges = $("#drcharges").val();
+            $("#doctorAmountshow").hide();
+
+            if ($("#PatientName").val() == "") {
+                alert("PatientName Enter .. ");
+                return false;
+            }
+            if (id == "") {
+                alert("Please Enter Service.. ")
+                return false;
+            }
+            var test = $('input[name=Test]:checked').val();
+            if (test != "on") {
+                if (ServiceGroupID == "") {
+                    alert("Please Enter ServiceGroup.. ")
+                    return false;
+                }
+            }
+            var Rate = $("#rate").val();
+            var Qty = $("#quantity").val();
+            var Unit = $("#UnitID").val();
+            var rb = $('input[name=RadioCharge]:checked', '#form1').val();
+            if (DoctorName != '') {
+                var cons_dr_hidden = $("#DoctorPrintNameID").val();
+            }
+            else {
+                var cons_dr_hidden = $("#Doctor").val();
+            }
+            var Doctor = $("#Doctor").val();
+            var GrossTotal = $("#grosstotal").val();
+            var TotalAmt = $("#TotalAmount").val();
+            var NetPayableAmt = $("#NetPayableAmount").val();
+            var BalAmount = $("#BalanceAmount").val();
+            var TAmt1 = $("#TotalAmount1").val();
+
+
+            $.ajax({
+                //    url: "/OPDBill/Add",
+                url: '@Url.Action("Add", "OPDBill")',
+                type: "GET",
+                data: {
+                    ServiceID: id, DName: DoctorName, SName: ServiceName, Rate: Rate, Quantity: Qty, Unit: Unit, Charges: rb, DoctorID: cons_dr_hidden,
+                    UpDoctorID: Doctor, TAmt: TotalAmt, NetPayableAmount: NetPayableAmt, BalanceAmt: BalAmount, GTotal: GrossTotal,
+                    TotalAmt1: TAmt1
+                },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+
+                    //Calculate();
+
+                    $(".total").each(function () {
+                        debugger
+
+                        var qty = $(this).parent().find('#qty').val();
+                        var svcid = $(this).parent().find('#svc_hid').val();
+                        if (svcid == id) {
+
+                            $(this).parent().find('#qty').val(parseFloat($(this).parent().find('#qty').val()) + (1));
+                            CaculateDescount();
+                            id = 0;
+                            return false;
+                        }
+
+                    });
+                    if (id > 0) {
+                        EditRateAmt(data, "Add");
+                    }
+                    //$("#datatable-responsive").on('click', '#delrow', function () {
+                    //    debugger;
+                    //    $(this).closest('tr').remove();
+                    //    $(this).closest('tr').text();
+
+                    //    var child = $("#datatable-responsive td").closest("tr").length;
+
+                    //    var gross = 0;
+                    //    for (var row = 0; row < child; row++) {
+                    //        var aa = aa + document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML;
+
+                    //        if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML != "Total Amount") {
+                    //            gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+
+                    //        }
+
+                    //    }
+                    //    $("#grosstotal").val(gross);
+                    //    debugger
+                    //    Calculate();
+                    //});
+
+                    $("#datatable-responsive").on('click', '#Editrow', function () {
+                        debugger;
+                        var row = $(this).parent().parent();
+                        row.find('input').attr("readonly", false).addClass("delrow");
+
+                    });
+
+
+                    //$(".nr").on('change', function () {
+                    //    debugger;
+                    //    Qty = $(this).val();
+
+                    //    // var row_num = parseInt($(this).parent().index()) + 1;
+                    //});
+
+
+                    //  $("#datatable-responsive tr").on('change', '#qty', function () {
+
+
+
+                    // alert(data[1]);
+
+                    $("#ServiceGroupName").val("");
+                    $("#ServiceGroupID").val("");
+                    $("#servicename").val("");
+                    $("#rate").val("");
+                    $("#rate1").val(data[0].Rate);
+                    $("#quantity").val("");
+                    $("#Quantity1").val(data[0].Quantity);
+                    $("#DoctorPrintName").val("");
+                    $("#grosstotal").val(data[0].TotalAmount1);
+                    $("#TotalAmount").val(data[0].TotalAmount);
+                    $("#NetPayableAmount").val(data[0].NetPayableAmount);
+                    $("#BalanceAmount").val(data[0].BalanceAmount);
+                    $("#grosstotal").val(data[0].grosstotal);
+                },
+            });
+        });
+        //------------------------------------------
+
+
+
+        $("#datatable-responsive").delegate('td', 'keyup', function () {
+            debugger;
+            var row_num = $(this).parent().index();
+
+            CaculateDescount();
+
+
+
+        })
+
+        $("#datatable-responsive").delegate('td', 'change', function () {
+            debugger;
+            var row_num = $(this).parent().index();
+            CaculateDescount();
+            debugger
+         var id=   document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[6].children[0].value;
+            document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[6].children[1].value = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[6].children[0].value;
+        })
+
+
+        // $('#datatable-responsive tbody tr').change(function () {
+        $("#datatable-responsive").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+
+            var child = $("#datatable-responsive td").closest("tr").length;
+
+            var gross = 0;
+            var Discount_ServiceTotal = 0;
+            var DiscountPercent = 0;
+            var TotalPer = 0;
+            for (var row = 0; row < child; row++) {
+                //  var aa = aa + document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML;
+
+                if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML != "Total Amount") {
+                    gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+                    if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].children[0].value == "%") {
+                        DiscountPercent = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+                        if (DiscountPercent <= 100) {
+                            var Amount = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+                            TotalPer = TotalPer + ((Amount * DiscountPercent) / 100);
+
+                            $("#DiscountAmount").val(TotalPer.toFixed(2));
+                        }
+                        else {
+                            alert("Discount Not Less " + DiscountPercent);
+                            return false;
+                        }
+                    }
+
+                    else {
+                        TotalPer = TotalPer + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+
+                        $("#DiscountAmount").val(TotalPer);
+
+                    }
+                }
+
+            }
+            $("#grosstotal").val(gross);
+            $("#DiscountAmount").val(TotalPer.toFixed(2));
+            if (parseFloat($("#DiscountAmount").val()) == 0) {
+                $("#DiscountPercent").val(0);
+            }
+            Calculate();
+            DiscountPer();
+            CaculateDescount();
+        });
+
+    });
+
+    $(function () {
+        $('input[type="radio"]').click(function () {
+            if ($(this).attr('id') == 'Radio') {
+
+                //   $("#ServiceGroupName").val("");
+                //    $("#ServiceGroupName").focus();
+
+                $("#servicename").val("");
+                $("#rate").val("");
+                $("#quantity").val("");
+                $("#DoctorPrintName").val("");
+            }
+        });
+    });
+
+    $(document).ready(function () {
+
+        $('#PaidAmount').keyup(function () {
+
+            var PaidAmount = $("#PaidAmount").val().replace("-", "");
+
+            $("#PaidAmount").val(PaidAmount);
+
+            // $("#PaidAmount").val(PaidAmount)
+            var PreBalance = $("#PreBalance").val();
+            Calculate();
+        });
+
+        $('#ServiceTax').keyup(function () {
+            Calculate();
+        })
+
+        $('#DiscountAmount').keyup(function () {
+            var show = $("#DiscountReason").val();
+            debugger;
+            if (show == "") {
+                alert("Select Proper Discount Reason");
+                $('#DiscountAmount').val('');
+                $('#DiscountReason').focus();
+            }
+            else {
+                var show = $('#DiscountAmount').val();
+                if (show == '') {
+                    Calculate();
+                }
+                else {
+                    $("#DiscountAmountAdd").val($(this).val());
+                    DiscountAmt();
+                    Calculate();
+                }
+
+            }
+        });
+
+        $('#DiscountPercent').keyup(function () {
+            debugger;
+            var show = $("#DiscountReason").val();
+            var show1 = $("#DiscountPercent").val();
+            if (show1 == "") {
+                alert("Select Proper Discount Reason");
+                $("#DiscountPercent").val('');
+                $("#DiscountReason").focus();
+            }
+            else {
+                if (show1 == "") {
+                    Calculate();
+                }
+                else {
+                    DiscountPer();
+                    Calculate();
+                    $("#DiscountAmountAdd").val($('#DiscountAmount').val());
+                }
+            }
+        });
+
+        $("#OldbillView").delegate('td', 'click', function () {
+            var row_num = parseInt($(this).parent().index());
+            debugger
+            //   var a = Qty;
+
+            // var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].innerHTML;
+            var BillNo = document.getElementById('OldbillView').tBodies[0].rows[row_num].cells[4].innerHTML;
+
+
+            var BillType = document.getElementById('OldbillView').tBodies[0].rows[row_num].cells[1].innerHTML;
+
+
+            //  $("#old_bill_no_id").val(BillNo)
+
+            //$("#myModal").hide();
+            //  OLdBillSelect();
+
+            var UserData = { BillNo: BillNo }
+            $.ajax({
+                url: '@Url.Action("OldBillReport", "OPDBill")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+
+                    window.location.href = '@Url.Action("RptPatientOPDBills", "PatientReport")';
+
+                }
+            });
+        })
+    })
+
+
+    var tbl = document.getElementById("datatable-responsive");
+
+    if (tbl != null) {
+
+        for (var i = 0; i < tbl.rows.length; i++) {
+            for (var j = 0; j < tbl.rows[i].cells.length; j++)
+
+                tbl.rows[i].cells[j].onclick = function () { getval(this); };
+        }
+
+    }
+
+    function getval(cel) {
+        alert(cel.innerHTML);
+    }
+
+    $(document).ready(function () {
+        $("#btnclose").click(function () {
+            $("#myModal1").hide(200);
+        })
+        $("input[name=ServiceInfoChk]").click(function () {
+            debugger
+            if ($(this).val() == "Test") {
+                $("#serviceGorup").hide();
+                $("#Group").hide();
+                $("#serviceGorup").hide();
+                $("#ServiceGroupID").val(0)
+                $("#ServiceGroupID").val(0)
+            }
+            else {
+                $("#serviceGorup").show();
+                $("#Group").show();
+            }
+        })
+
+        $("#BillNo").change(function () {
+            debugger;
+            var UserData = { BillNo: $("#BillNo").val(), BillType: "OPDBill" };
+            $.ajax({
+                url: '@Url.Action("SearchPrintBillNo", "IPDBill")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger
+                    $('#PrintOPDNo').val(data);
+
+                    FillData();
+
+                    //$("#old_bill_no_id").val($(this).val());
+
+                    //  CaculateDescount();
+                }
+            })
+            debugger
+
+        })
+        $('#PrintOPDNo').change(function () {
+            FillData();
+        })
+
+        $("#btnPriBalance1").click(function () {
+            debugger
+
+            $("#myModal1").show(200);
+            var UserData = { PatientRegNo: $("#PatientRegNO").val() }
+            var DrAmount = 0;
+            var CrAmount = 0;
+            var TotalAmount = 0;
+            $.ajax({
+                url: '@Url.Action("GetBalanceAmountRegistration", "IPDBill")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    $("#OldBalanceView  tbody tr").remove();
+                    $("#OldBalanceView  tbody th").remove();
+
+                    $(data).each(function (index, billsitem) {
+                        $("#OldBalanceView").append('<tr><td>' + billsitem.OPDIPDNO + '</td><td>' + billsitem.Date + '</td><td>' + billsitem.BalanceAmount + '</td><td><i id="paidamtdgv" class="fa fa-credit-card"></i></td></tr>')
+                        $("#namepatient").text(billsitem.PatientName);
+                        $("#nameUHID").text(billsitem.PatientRegNo);
+                        DrAmount += parseFloat(billsitem.DrAmount);
+                        CrAmount += parseFloat(billsitem.CrAmount);
+                        TotalAmount += parseFloat(billsitem.BalanceAmount);
+                    })
+
+                    $("#OldBalanceView").append('<tr><th colspan="2"> Total </th><th>  ' + TotalAmount + '</th></tr>')
+
+
+                }
+            })
+
+        })
+    })
+            function FillData()
+            {
+            var UserData = { IPDNo: $("#PrintOPDNo").val() };
+            $.ajax({
+                url: '@Url.Action("GetPatientForOPDNoBills", "OPDBill")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(UserData),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#PatientRegNO').val(data[0].PatientRegNO)
+
+                    Bind();
+                }
+
+            })
+
+
+        //  $('#datatable-responsive').click(function () {
+
+        //      var $row = $(this).closest("tr");    // Find the row
+        //      var $text = $row.find(".nr").text(); // Find the text
+
+        //      // Let's test it out
+        //      alert($text);
+        //      });
+        //// alert(document.getElementById("datatable-responsive").rows[1].cells[2].innerHTML);
+
+    }
+
+    $(document).ready(function () {
+        $('#datatable-responsive').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+
+
+
+        $("#OldBalanceView").on('dblclick', '#paidamtdgv', function () {
+            debugger
+            var row = $(this).closest('tr').index();
+            var BillType_OPDIPDNo = document.getElementById('OldBalanceView').tBodies[0].rows[row].cells[0].innerHTML.replace("/", ",");
+           //localStorage.setItem('BillType_OPDIPDNo', BillType_OPDIPDNo);
+            localStorage.setItem('IPDOPDRegNo', $("#PatientRegNO").val());
+            window.open('@Url.Action("PreBalanceAmount", "PreBalanceAmount")');
+
+        })
+
+        //OPDBill
+
+
+
+
+
+    });
+
+    function CaculateDescount() {
+        debugger
+        //   var a = Qty;
+
+        // var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].innerHTML;
+        var gross = 0;
+        var DiscountAmt1 =0;
+        var TotalPer = 0;
+        var child = $("#tbl td").closest("tr").length;
+
+       // var DiscountAmount=  $("#DiscountAmount").val();
+        for (var row_num = 0; row_num < child; row_num++) {
+
+            var Discount_ServiceTotal = 0;
+            var DiscountPercent = 0;
+
+            var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+            var newqty = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[2].children[0].value;//$("#" + row_num).val();
+            // rate = $("#" + row_num + "rate").val();
+            var Total = parseFloat(newqty) * parseFloat(rate);
+
+            document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML = Total;
+            // document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].innerHTML = Total;
+
+
+            if (document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML != "Total Amount") {
+
+
+                if (document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[3].children[0].value == "%") {
+                    DiscountPercent = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value);
+                    if (DiscountPercent <= 100) {
+
+                       var Amount = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML);
+                      // $("#grosstotal").val(Amount.toFixed(2));
+                       TotalPer =TotalPer+ ((Amount * DiscountPercent) / 100);
+                    //   var Disc1 = $("#DiscountAmount").val(TotalPer);
+                    //   document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML = Amount - TotalPer;
+                    //   // $("#DiscountAmount").val(TotalPer.toFixed(2));
+                    }
+                    else {
+                        document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value = 0;
+                      alert("Discount Not Greater " + DiscountPercent);
+                      return false;
+                    }
+
+
+                }
+                else {
+                    var TotalAmt = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML);
+                    //TotalPer = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value);
+                    //document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML = TotalAmt - TotalPer;
+                    ////  $("#DiscountAmount").val(TotalPer);
+                  //  gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML);
+                //    $("#grosstotal").val(gross.toFixed(2));
+
+                    DiscountPercent = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value);
+
+                    if (TotalAmt => parseFloat(DiscountPercent))
+                    {
+                        TotalPer += parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value);
+
+                    }
+                    else
+                    {
+                        document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].children[0].value = 0;
+                        alert("Discount Amount Not Greater " + DiscountPercent);
+                        return false;
+                    }
+
+                  //  var Disc = $("#DiscountAmount").val(TotalPer);
+
+
+                }
+
+            }
+            gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML);
+            $("#grosstotal").val(gross.toFixed(2));
+            }
+
+
+
+        $("#DiscountAmount").val(parseFloat(TotalPer));
+        DiscountAmt();
+        Calculate();
+
+
+
+    }
+
+    function ServiceGroupBind()
+    {
+        $.ajax({
+            //url: "/OPDBill/GetServiceGrp",
+            url: '@Url.Action("GetServiceGrp", "OPDBill")',
+            type: "GET",
+            dataType: "json",
+            data: { prefix: "%" },
+            success: function (data) {
+                $("#dgvGroup tr").remove();
+                $(data).each(function (index, d) {
+
+                    debugger
+                    $("#dgvGroup").append('<tr><td><input type="radio" id="grID"  name="grID" value=' + d.ServiceGroupID + '></td> <td> ' + d.ServiceGroupName + '</td><td style="display:none"> ' + d.ServiceType + '</td><td>'+d.ServiceGroupCode+'</td></tr>');
+
+                });
+
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $('#datatable-responsive tbody td').remove();
+        $('#datatable-responsive tbody tr').remove();
+
+        //govind
+
+
+        // Packege Service
+        $('input[name=ServiceInfoChk]').change(function(){
+            debugger
+            if($('input[name=ServiceInfoChk]:checked').val()=="Package")
+            {
+                ServicePackege();
+                $("#divgp").hide();
+
+            }
+            else
+            { $("#dgvService tr").remove();
+                $("#divgp").show();
+                ServiceGroupBind();
+            }
+        })
+
+        function ServicePackege(){
+
+            $.ajax({
+                url: '@Url.Action("GetServiceDetailsPackage", "OPDBill")',
+                dataType: "json",
+                type: "POST",
+               // data: JSON.stringify(var1),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger;
+                    var Rate = 0;
+                    $("#dgvService tr").remove();
+                    RadioCharge = $('input[name=RadioCharge]:checked').val();
+                    $(data).each(function (index, i) {
+                        var Rate=0;
+                        if (RadioCharge == "GeneralCharges") {
+                            $("#rate").val(i.GeneralCharges);
+                            Rate = i.GeneralCharges;
+                        }
+
+                        if (RadioCharge == "Emergency") {
+
+                            $("#rate").val(i.EmergencyCharges);
+                            Rate = i.EmergencyCharges;
+                        }
+
+                        $("#dgvService").append('<tr><td style="display:none">' + i.ServiceGroupID + '</td><td><input type="checkbox" id="chk1"  name="" value=' + i.ServiceID + '></td> <td> ' + i.ServiceGroupName + '</td><td> ' + i.servicename + '</td><td>'+i.ServiceHSNCode+'</td><td> ' + Rate + '</td></tr>')
+
+                    })
+                }
+            })
+        }
+
+        //#End
+        document.onkeyup = function (e) {
+            debugger
+            if (e.keyCode == 13)
+                e.preventDefault();
+            return false;
+
+        }
+
+        var isCtrl = false;
+        document.onkeyup = function (e) {
+
+            if (e.keyCode == 17)
+                debugger
+            isCtrl = false;
+
+        }
+        //document.onkeydown = function (e) {
+        //    if (e.keyCode == 13) {
+        //        e.preventDefault();
+        //        return false;
+        //    }
+
+        //    debugger
+        //    if (e.keyCode == 17) isCtrl = true;
+        //    if (e.keyCode == 83 && isCtrl == true) {
+        //        //run code for CTRL+S -- ie, save!
+        //        var conform = confirm("Do you Want To Save");
+        //        if (conform)
+        //            $("#form").submit();
+
+        //      //  e.preventDefault();
+        //        return false;
+        //    }
+        //}
+
+
+    $("#dgvGroup").on('click', '#grID', function () {
+        debugger
+        var URL = "";
+        var var1 = "";
+        var row_num = $(this).closest('tr').index();
+
+        var GrpName = document.getElementById('dgvGroup').rows[row_num].cells[1].innerHTML;
+        var lab = document.getElementById('dgvGroup').rows[row_num].cells[2].innerHTML;
+        if (lab == " Lab") {
+
+            $('#TestID').prop("checked", 'checked');
+        }
+        else {
+            $('#Servicechk').prop("checked", 'checked');
+        }
+        if (document.getElementById("TPA").checked == true) {
+            if ($('input[name=ServiceInfoChk]:checked').val() == "Service") {
+                URL = '@Url.Action("GetServiceNameTPA", "OPDBill")';
+                var1 = { prefix: "%", id: $(this).val(), chk: $('input[name=ServiceInfoChk]:checked').val(), OrganizationID: $("#TPAnameID").val() }
+            }
+            else {
+                if ($('input[name=ServiceInfoChk]:checked').val() == "Test") {
+                    URL = '@Url.Action("GetServiceName", "OPDBill")';
+                    var1 = { prefix: "%", id: $(this).val(), chk: $('input[name=ServiceInfoChk]:checked').val(), RegNo: $("#PatientRegNO").val(), OPDNo: $("#patient_opd_no_id").val(), BillDate: $("#bill_date").val() }
+                }
+            }
+        }
+        else {
+            URL = '@Url.Action("GetServiceName", "OPDBill")';
+            var1 = { prefix: "%", id: $(this).val(), chk: $('input[name=ServiceInfoChk]:checked').val(), RegNo: $("#PatientRegNO").val(), OPDNo: $("#patient_opd_no_id").val(), BillDate: $("#bill_date").val() }
+        }
+        //govind
+        $.ajax({
+            url: URL,
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify(var1),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (data) {
+                debugger;
+                var Rate = 0;
+                $("#dgvService tr").remove();
+                $(data).each(function (index, i) {
+
+
+                    debugger
+                    // TestLabDetailInTPA(i.item.Serviceid)
+                    var show = i.Serviceid;
+
+                    var show1 = i.value;
+
+                    RadioCharge = $('input[name=RadioCharge]:checked').val();
+                    $("#Unit").val(i.Unit);
+                    $("#UnitID").val(i.UnitID);
+                    if (i.ServceTrue == "True") {
+                        $("#quantity").val(i.Quantity);
+                        //  $("#quantity").val(
+                    }
+                    else {
+
+                        $("#quantity").val(1);
+                    }
+
+                    if (RadioCharge == "GeneralCharges") {
+                        $("#rate").val(i.GeneralCharges);
+                        Rate = i.GeneralCharges;
+                    }
+
+
+                    if (RadioCharge == "Emergency") {
+
+                        $("#rate").val(i.EmergencyCharges);
+                        Rate = i.EmergencyCharges;
+                    }
+
+                    //TPA Charge
+
+                    if (RadioCharge == "TPACharges") {
+
+                            Rate = i.EmergencyCharges;
+
+                        $("#quantity").val(i.Quantity);
+                    }
+                    debugger;
+
+                    //----------------
+
+                    $("#servicename1").val(show1)
+
+                    $("#dgvService").append('<tr><td style="display:none">' + i.ServiceGroupID + '</td><td><input type="checkbox" id="chk1"  name="" value=' + i.ServiceID + '></td> <td> ' + GrpName + '</td><td> ' + i.servicename + '</td><td>'+i.ServiceHSNCode+'</td><td> ' + Rate + '</td></tr>')
+
+                })
+
+            }
+        })
+    })
+
+        var rowEditAll = 0;
+        $("#datatable-responsive").on('change', '#chkIPDBill', function (e) {
+            debugger
+            // var aaaa =$("#datatable-responsive tr").not("thead tr").index();
+            //var aaaa = $(this).closest('tr').not("tr th").index();
+            //var $tr = $(this).closest('th');
+            rowEditAll = $(this).closest('tr').index(); //parseInt($tr.index()) + parseInt(1);
+        })
+
+        $("#datatable-responsive").on('change', '.DoctorPrintNamedgv', function () {
+            // $("#DoctorPrintName").val()
+            debugger
+            var row_num = $(this).closest('tr').index(); //parseInt($(this).parent().index());
+
+
+            var DoctorID_Name = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[6].children[0].value;// = "govind";
+            document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[0].children[2].value = DoctorID_Name;
+
+
+
+        })
+        $("#dgvService").on('change', '#chk1', function () {
+
+            debugger;
+            var row_num = $(this).closest('tr').index(); //parseInt($(this).parent().index());
+            var GrpID = document.getElementById('dgvService').rows[row_num].cells[0].innerHTML;
+            var rate = document.getElementById('dgvService').rows[row_num].cells[5].innerHTML.trim();
+            var servicename = document.getElementById('dgvService').rows[row_num].cells[3].innerHTML;
+
+
+            var ServiceID = $(this).val();
+            document.getElementById("ServiceID").value = ServiceID;
+            var DoctorName = $("#DoctorPrintName").val();
+            var ServiceName = document.getElementById("servicename").value = servicename;
+            var ServiceGroupID = document.getElementById("ServiceGroupID").value= GrpID;
+            var Doctorcharges = $("#drcharges").val();
+            $("#doctorAmountshow").hide();
+            if ($("#PatientName").val() == "") {
+                alert("PatientName Enter .. ");
+                return false;
+            }
+            if (ServiceID == "") {
+                alert("Please Enter Service.. ")
+                return false;
+            }
+            var test = $('input[name=Test]:checked').val();
+            if (test != "on") {
+                if (ServiceGroupID == "") {
+                    alert("Please Enter ServiceGroup.. ")
+                    return false;
+                }
+            }
+            var Rate =document.getElementById("rate").value =rate;
+            var Qty = $("#quantity").val(1);
+            var Unit = 0;//$("#UnitID").val(0);
+
+            var rb = $('input[name=RadioCharge]:checked').val();
+
+            if (DoctorName != '') {
+                var cons_dr_hidden = 0;
+            }
+            else {
+                var cons_dr_hidden = 0;
+            }
+            var Doctor = $("#Doctor").val();
+            var GrossTotal = $("#grosstotal").val();
+            var TotalAmt = $("#TotalAmount").val();
+            var NetPayableAmt = $("#NetPayableAmount").val();
+            var BalAmount = $("#BalanceAmount").val();
+            var TAmt1 = $("#TotalAmount1").val();
+           // alert(id, DoctorName, ServiceName, Rate, Qty, Unit, rb, cons_dr_hidden,Doctor);
+            $.ajax({
+                //    url: "/OPDBill/Add",
+                url: '@Url.Action("Add", "OPDBill")',
+                type: "GET",
+                data: {
+                    ServiceID: ServiceID, DName: DoctorName, SName: ServiceName, Rate: rate, Quantity: 1, Unit: 1, Charges: rb, DoctorID: cons_dr_hidden,
+                    UpDoctorID: Doctor, TAmt: TotalAmt, NetPayableAmount: NetPayableAmt, BalanceAmt: BalAmount, GTotal: GrossTotal,
+                    TotalAmt1: TAmt1
+                },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    //Calculate();
+                    $(".total").each(function () {
+                        debugger
+
+                        var qty = $(this).parent().find('#qty').val();
+                        var svcid = $(this).parent().find('#svc_hid').val();
+
+                        if (svcid == ServiceID) {
+
+                            $(this).parent().find('#qty').val(parseFloat($(this).parent().find('#qty').val()) + (1));
+                            CaculateDescount();
+                            // id = 0;
+                            ServiceID=0;
+                            return false;
+                        }
+                    });
+                    if (ServiceID > 0) {
+
+                        EditRateAmt(data, "Add");
+
+                    }
+                }
+
+            });
+            return false;
+        })
+
+    })
+
+    function EditRateAmt(d, Mode) {
+        var chk = document.getElementById("TestID").checked;
+
+
+        debugger
+        var ServiceType = "";
+        if (chk == true) {
+
+            ServiceType = "OPDLabBills";
+        }
+        else {
+            ServiceType = "OPD";
+            }
+        debugger
+        if (Mode == "Add") {
+            $('#tbl').append('<tr><td >' + $("#servicename").val() + " " + $("#DoctorPrintName").val() +
+                           '<input value="' + $("#ServiceID").val() + '" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + $("#servicename").val() + " " + $("#DoctorPrintName").val() +
+                          '" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d[0].Doctor +
+                          '" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + $("#UnitID").val() +
+                          '" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + $("#rate").val() +
+                          '"/><input type="hidden" name="svc_qty_hid" id="svc_qtyi_hd" value="' + $("#quantity").val() + '"/></td><td value="' + $("#" + i).val() + '"><input type="text" class="nr form-control" name="rate1table"  value="' + $("#rate").val() + '" id="' + i + 'rate"/></td><td  value="' + $("#CalQuantity").val() + '" ><input type="text" name="qty" class="nr form-control" value="' + $("#quantity").val() + '" id="qty"/></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"><option value="Rs">Rs</option><option value="%">%</option></select></td> <td><input value="0" class="nr form-control" type="text" id="Discount_Service" name="Discount_Service" /></td> <input value="' + $("#quantity").val() * $("#rate").val() +
+                          '" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + $("#quantity").val() * $("#rate").val() +
+                          '</td><td style=" display: flex;"><input type="text" size="4" name="doctorID" id="doctorID" placeholder="Doctor ID.."><select  class="DoctorPrintNamedgv form-control" ></select></td><td><input value="' + ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td><td><input type="hidden" value="Add" name="Mode"/></a><input type="hidden" name="DoctorCharges" value="' + $("#drcharges").val() + '"></td><input type="hidden" name="Authorization" value="1"></tr>');
+        }
+        else {
+
+            ServiceType = d.ServiceType;
+
+            $('#datatable-responsive').append('<tr><td >' + d.servicename +
+                '<input value="' + d.ServiceID + '" type="hidden" id="svc_hid" name="svc_hid" /><input value="' + d.servicename +
+               '" type="hidden" id="svc_nm_name" name="svc_nm_name" /><input type="hidden" value="' + d.Doctor +
+               '" id="doc_hid" name="doc_hid" /><input type="hidden" value="' + d.UnitID +
+               '" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + d.Rate +
+               '"/><input type="hidden" name="svc_qty_hid" id="svc_qtyi_hd" value="' + d.Quantity + '"/></td><td value="' + $("#" + i).val() + '"><input type="text" class="nr form-control" name="rate1table"  value="' + d.Rate + '" id="' + i + 'rate"/></td><td  value="' + d.Quantity + '" ><input type="text" name="qty" class="nr form-control" value="' + d.Quantity + '" id="qty"/></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"><option value=' + d.DiscountServiceType + '>' + d.DiscountServiceType + '</option><option value="Rs">Rs</option><option value="%">%</option></select></td><td><input class="nr form-control" value=' + parseFloat(d.Discount_Service).toFixed(0) + ' type="text" id="Discount_Service" name="Discount_Service" /></td></td><input value="' + d.Quantity * d.Rate +
+               '" type="hidden" id="tot_hid" name="tot_hid"/><td class="total">' + d.Quantity * d.Rate +
+               '</td><td style=" display: flex;"><input type="text" size="4" name="doctorID" id="doctorID" placeholder="Doctor ID.."><select size="4" class="DoctorPrintNamedgv form-control" ></select></td><td><input value="' + ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><a href="#" class="fa fa-trash-o"  aria-hidden="true" id="delrow" class="delrow"></a><input type="hidden" value="Edit" name="Mode"/><input type="hidden" name="DoctorCharges" value="' + d.DoctorCharges + '"/><input type="hidden" name="Authorization" value="0"></td></tr>');
+        }
+        BindDr();
+        //$("#datatable-responsive").delegate('td', 'keyup', function () {
+        //    debugger;
+        //    var row_num = parseInt($(this).parent().index());
+
+        //    var a = Qty;
+        //    // var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].innerHTML;
+
+        //    var newqty = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[2].children[0].value;
+        //    var rate = document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[1].children[0].value;
+
+        //    var Total = parseFloat(newqty) * parseFloat(rate);
+
+
+        //    document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[5].innerHTML = Total;
+
+        //    // document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].innerHTML = Total;
+
+        //    var child = $("#datatable-responsive td").closest("tr").length;
+
+        //    var gross = 0;
+        //    var Discount_ServiceTotal = 0;
+        //    var DiscountPercent = 0;
+        //    var TotalPer = 0;
+        //    for (var row = 0; row < child; row++) {
+        //        //var aa = aa + document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML;
+
+        //        // if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].innerHTML != "Total Amount") {
+        //        gross = gross + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+        //        $("#grosstotal").val(gross);
+        //        //    }
+
+        //        if (document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[3].children[0].value == "%") {
+        //            DiscountPercent = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+        //            if (DiscountPercent <= 100) {
+        //                var Amount = parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[5].innerHTML);
+
+        //                TotalPer = TotalPer + ((Amount * DiscountPercent) / 100);
+
+        //                $("#DiscountAmount").val(TotalPer.toFixed(2));
+        //            }
+        //            else {
+        //                alert("Discount Not Less " + DiscountPercent);
+        //                return false;
+        //            }
+        //        }
+        //        else {
+        //            TotalPer = TotalPer + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[row].cells[4].children[0].value);
+
+
+
+        Calculate();
+        DiscountPer();
+        if (Mode == "Add") {
+
+            CaculateDescount();
+        }
+        //$(".total").each(function () {
+        //    debugger
+
+        //    $(this).parent().find('#rate1table').attr('placeholder', 0);
+        //    $(this).parent().find('#Discount_Service').attr('placeholder', 0);
+        //    var rate = $(this).parent().find('#rate1table').val();
+        //    if (rate == 0) {
+        //        $(this).parent().find('#rate1table').val('0');
+        //        $(this).html(0);
+        //    }
+        //    var Discount_Service = $(this).parent().find('#Discount_Service').val();
+        //    var doctorID = $(this).parent().find('#doctorID').val();
+        //    if (Discount_Service == 0) {
+        //        $(this).parent().find('#Discount_Service').val('');
+        //    }
+        //    if (doctorID == 0) {
+        //        $(this).parent().find('#doctorID').val('');
+        //    }
+        //})
+
+    }
+
+    function BindDr() {
+        debugger
+
+
+        var var1 = { name:"%" }
+        $.ajax({
+            url: '@Url.Action("GetDoctorName", "IPDBill")',
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify(var1),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (data) {
+                $(".DoctorPrintNamedgv").append('<option value=' +0+ '></option>');
+
+                $(data).each(function (index, i) {
+
+                    $(".DoctorPrintNamedgv").append('<option value=' + i.DoctorID + '>' + i.DoctorName + '</option>');
+
+                })
+                $('.DoctorPrintNamedgv').children('input[type=text], select').each(function () {  });
+                var child = $("#datatable-responsive td").closest("tr").length;
+                if ($("#old_bill_no_id").val()!= "-2") {
+                    //var t = $("#DoctorPrintNameID").val();
+                    //$(".DoctorPrintNamedgv").val($("#DoctorPrintNameID").val());
+                    //$("#DoctorPrintNameID").val("0");
+                    for (var a = 0; a < child; a++) {
+                        var DoctorID = document.getElementById('datatable-responsive').tBodies[0].rows[a].cells[0].children[2].value;
+                        debugger
+                        // document.getElementById('datatable-responsive').tBodies[0].rows[row_num].cells[4].innerHTML
+
+                        document.getElementById('datatable-responsive').tBodies[0].rows[a].cells[6].children[1].value = DoctorID;
+                        if (DoctorID == "0")
+                        {
+                            DoctorID = "";
+                        }
+                        document.getElementById('datatable-responsive').tBodies[0].rows[a].cells[6].children[0].value = DoctorID;
+                    }
+                    // $('#datatable-responsive tbody').
+                }
+            }
+        })
+
+
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#txtdgvGroup").on("keyup", function () {
+            debugger;
+            var value = $(this).val().toLowerCase();
+            $("#dgvGroup tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#txtdgvService").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#dgvService tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#btnclose1").click(function () {
+            debugger
+            $("#myModal1").hide(100);
+        })
+    })
+</script>
+
+
+<!-- ico font -->
+@*</head>*@
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <form id="form" action="" method="post">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Other Billing</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient</a></li>
+                                    <li class="breadcrumb-item active">Other Billing</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0 panelheading">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <h2 class="panelheading">Other Billing</h2>
+                                        </div>
+                                       @* <input class="hidden icheckbox_flat-green tp" type="checkbox" id="OutsidePatientID" name="outside_patient" value="Outside Pateint">Outside Patient&nbsp;&nbsp;&nbsp;*@
+                                        <h3 id="showPatienttype">Patient Type</h3>
+                                        <input type="hidden" id="PatientType" />
+                                        @*<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div style="display:none">
+                                                    <input type="checkbox">Revisit Patient&nbsp;&nbsp;&nbsp;
+                                                    <input class="icheckbox_flat-green tp" type="checkbox" id="OutsidePatientID" name="outside_patient" value="Outside Pateint">Outside Patient&nbsp;&nbsp;&nbsp;
+                                                    <input type="checkbox">Send SMS
+                                                </div>
+                                            </div>*@
+                                        <div  class="hide col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <button type="button" class="btndivcss pull-right" data-toggle="modal" data-target="#myModal1" id="btnPriBalance1" style="width: max-content; font-size: 15px;">
+                                                <span class="fa fa-rupee buttoniconcss"></span> Old Balance Amount
+                                            </button>
+
+                                            <!-- Old Balance Amount Modal -->
+                                            <div id="myModal1" class="modal fade" role="dialog">
+                                                <div class="modal-dialog modal-lg">
+                                                    <!-- Modal content-->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Bills Details</h4>
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                                    <h5><strong>UHID No.</strong></h5>
+                                                                </div>
+                                                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                    <h5><strong>Patient Name:-</strong></h5>
+                                                                </div>
+                                                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                    <h5 id="namepatient"></h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="table-responsive">
+                                                                    <table id="OldBalanceView" class="table table-bordered hover display table-hover" role="grid" style="width: 100%;font-size: 15px;">
+                                                                        <thead style="background-color: #bddff7;">
+                                                                            <tr>
+                                                                                <th>OPD IPD / Bill Type </th>
+                                                                                <th>Admission Date</th>
+                                                                                <th>Balance Amount</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody class="scrollbar"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient UHID Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>UHID No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="hidden" id="FinancialYearID" name="FinancialYearID">
+                                                        <select class="form-control" id="FinancialYear" name="FinancialYear"></select>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input value="" type="number" class="form-control" id="PatientRegNO" name="PatientRegNO">
+                                                        <input type="hidden" id="rpt" name="rpt" />
+                                                    </div>
+                                                </div>
+                                                <!--Patient OPD Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>OPDIPD No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                        <input value="" style="display:none" type="text" id="PatientOPDNo" class="form-control" name="PatientOPDNo" placeholder="">
+                                                        <input value="" type="text" id="PrintOPDNo" class="form-control" name="PrintOPDNo" placeholder="PrintOPDNo">
+                                                        <input type="hidden" name="patient_opd_no_id" id="patient_opd_no_id" />
+                                                    </div>
+                                                    <div class="hidden col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input value="" type="text" id="BillNo" class="form-control" name="BillNo" placeholder="BillNo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Bill Date-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Bill Dt. / Tm.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="date" required id="bill_date" name="bill_date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="text" required id="bill_time" name="bill_time" value="@DateTime.Now.ToString("hh:mm:ss tt")" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Old Bill Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Old Bill No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="hidden" id="BillNoId" name="BillNoId" />
+                                                        <select class="form-control" id="OldBillNo" name="OldBillNo">
+                                                            <option value="SELECT">SELECT</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <button type="button" data-toggle="modal" data-target="#myModal" class="btndivcss pull-right" style="height: 25px;">
+                                                            <span class="fa fa-tasks buttoniconcss"></span> Old Bill Receipt
+                                                        </button>
+
+                                                        <!-- Old Bill Receipt Modal -->
+                                                        <div id="myModal" class="modal fade" role="dialog">
+                                                            <div class="modal-dialog">
+                                                                <!-- Modal content-->
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Bills Details</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                            <div class="table-responsive">
+                                                                                @*<div class="box-header">
+                                                                                        <button type="button" id="btnclose" class="close">X</button>
+                                                                                    </div>*@
+                                                                                <table id="OldbillView" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                                    <thead style="background-color: #bddff7;">
+                                                                                        <tr>
+                                                                                            <th>Reg No</th>
+                                                                                            <th>Bill Type</th>
+                                                                                            <th>BillNo & Date</th>
+                                                                                            <th>Action</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody class="scrollbar"></tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" value="" id="PatientName" name="PatientName" class="form-control" placeholder="Patient Name" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Patient Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                    <div id="dgvpatientbind">
+
+                                                    </div>
+                                                </div>
+                                                <!--Guardian Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Guardian Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="GuardianName" name="GuardianName" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Gender-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Gender</label>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cpb-10">
+                                                        <select name="Gender" id="Gender" class="form-control">
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 cf-l">
+                                                        <label class="pull-right">DOB.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                        <input type="date" required id="DateOfBirth" name="DateOfBirth" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Age-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Age</label>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <span>D</span>
+                                                            </div>
+                                                            <input type="text" id="age_day" name="age_day" class="form-control" placeholder="D">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <span>M</span>
+                                                            </div>
+                                                            <input type="text" id="Month" name="Month" class="form-control" placeholder="M">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon padding0">
+                                                                <span>Y</span>
+                                                            </div>
+                                                            <input type="text" id="Year" name="Year" class="form-control" placeholder="Y">
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>BP.</span>
+                                                        </div>*@
+                                                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="text" id="doc_first_name" class="form-control" placeholder="BP" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Consultant Doctor-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Cons. Doctor</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="Doctor" name="Doctor" class="form-control" />
+                                                        <input type="text" id="DoctorID" name="DoctorID" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <!--Department-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Department</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="DepartmentID" name="DepartmentID" class="form-control" />
+                                                        <input type="text" id="DepartmentName" name="DepartmentName" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Address-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Address</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <textarea id="Address" name="Address" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Referred By-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Referred By</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="RDoctorPrintName" name="RDoctorPrintName" class="form-control" />
+                                                        <input type="hidden" id="ReferredByDoctorID" name="ReferredByDoctorID" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Charge Based On</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" style="font-family:roboto">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="GeneralCharges" id="GeneralCharges" name="RadioCharge" checked="checked">General
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="EmergencyCharges" id="EmergencyCharges" name="RadioCharge">Emergency
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" id="TPA" value="TPACharges" name="RadioCharge" />TPA
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>TPA Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="text" name="TPAName" id="TPAName" class="form-control">
+                                                        <input type="hidden" name="TPAnameID" id="TPAnameID">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label" style="margin-right: 5px;">Privilege Card</label>
+                                                        <input type="checkbox" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card card-primary panel-primary">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="background: #bddff7;">
+                                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 padding0">
+                                            <h2 class="panelheading">Service Info</h2>
+                                        </div>
+                                        <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12" style="padding-top: 5px;">
+                                            <div class="form-check-inline">
+                                                <span class="form-check-label">
+                                                    <input type="radio" class="form-check-input" value="Service" id="Servicechk" name="ServiceInfoChk" checked="checked">Service
+                                                </span>
+                                            </div>
+                                            <div class="form-check-inline">
+                                                <span class="form-check-label">
+                                                    @*  <input type="radio" />Test*@
+                                                    <input type="radio" class="form-check-input" value="Test" id="TestID" name="ServiceInfoChk">Test
+                                                </span>
+                                            </div>
+                                            <div class="form-check-inline">
+                                                <span class="form-check-label">
+                                                    <input type="radio" class="form-check-input" value="Package" id="Packagechk" name="ServiceInfoChk" />Package
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div style="display:none">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0" id="serviceGorup">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>Service Group</span>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 ">
+                                                            <input type="hidden" value="" id="ServiceGroupID" name="ServiceGroupID">
+                                                            <input type="text" value="" id="ServiceGroupName" name="ServiceGroupName" class="form-control input-sm" placeholder="Service Grp Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Service</span>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 ">
+                                                            <input type="hidden" value="" id="ServiceID" name="ServiceID">
+                                                            <input type="hidden" id="servicename1" name="servicename1">
+                                                            <input type="text" value="" id="servicename" name="servicename" class="form-control input-sm" placeholder="Service Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Code</span>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" value="" id="ServiceCode" name="ServiceCode" class="form-control input-sm" placeholder="HSN Code">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding0 rowmargintop">
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Unit</span>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 ">
+                                                            <input type="hidden" id="UnitID" name="UnitID">
+                                                            <input readonly="readonly" type="text" value="" id="Unit" name="Unit" class="form-control input-sm" placeholder="Unit">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Rate</span>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+                                                            <input type="number" value="00" id="rate" name="rate" class="form-control input-sm" placeholder="Rate">
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Qty.</span>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="number" value="1" id="quantity" name="quantity" class="form-control input-sm" placeholder="Qty">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Cons.Dr.</span>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style=" display flex;">
+                                                            <input type="hidden" id="DoctorPrintNameID" name="DoctorPrintNameID">
+                                                            <input type="text" value="" id="DoctorPrintName" name="DoctorPrintName" class="form-control input-sm" placeholder="Consultant Dr.">
+                                                            &nbsp;&nbsp; <button type="button" id="submit" title="add" class="btndivcss" style="height: 26px; width: 50px; padding: 0px !important;">+</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="table-bordered" id="divgp">
+                                                        <div class="card-body">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" class="form-control" id="txtdgvGroup" placeholder="Search Service Group..." style="margin-bottom: 10px;">
+                                                                <div class="table-responsive" style="max-height: 350px; overflow-y: scroll;">
+                                                                    <table class="table table-bordered hover display table-hover table-head-fixed" role="grid" style="width: 100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="background-color: #bddff7;">Select</th>
+                                                                                <th style="background-color: #bddff7;">Service Group</th>
+                                                                                <th style="background-color: #bddff7;">Service Code</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="dgvGroup" class="scrollbar"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="table-bordered">
+                                                        <div class="card-body">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                <input type="text" class="form-control" id="txtdgvService" placeholder="Search Services..." style="margin-bottom: 10px;">
+                                                                <div class="table-responsive" style="max-height: 350px; overflow-y: scroll;">
+                                                                    <table class="table table-bordered hover display table-hover table-head-fixed" role="grid" style="width: 100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="background-color: #bddff7;"><span class="fa fa-check"></span></th>
+                                                                                <th style="background-color: #bddff7;">Group</th>
+                                                                                <th style="background-color: #bddff7;">Service Name</th>
+                                                                                <th style="background-color: #bddff7;">Service Code</th>
+                                                                                <th style="background-color: #bddff7;">Rate</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="dgvService" class="scrollbar"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Bill Details</h2>
+                                    <div class="form-horizontal">
+                                        <div class="card-body panel-body">
+                                            <div class="row">
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Gross Total</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="grosstotal" name="grosstotal" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Surcharge</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="ServiceTax" id="ServiceTax" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Tax Amt.</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="SerTaxAmount" name="SerTaxAmount" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label id="priPalanceDeposit">Pre Balance</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="" readonly="readonly" type="hidden" id="PreBalanceandDiposit" class="form-control" name="PreBalanceandDiposit" placeholder="0.00">
+                                                        <input value="" readonly="readonly" type="text" id="PreBalance" class="form-control" name="PreBalance" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Total Amt.</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="hidden" id="TotalAmount1" name="TotalAmount1">
+                                                        <input readonly value="0.00" type="text" class="form-control" id="TotalAmount" name="TotalAmount" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Discount%</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" id="DiscountPercent" name="DiscountPercent" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Disc. Amt.</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" id="DiscountAmount" name="DiscountAmount" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Disc.Reason</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="DiscountReason" name="DiscountReason" placeholder="SELECT DISCOUNT" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Net Pay</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" class="form-control" id="NetPayableAmount" name="NetPayableAmount" placeholder="0.00" readonly="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Amt. Paid</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="number" class="form-control" id="PaidAmount" name="PaidAmount" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Bal Amt.</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="0.00" type="text" readonly="readonly" class="form-control" id="BalanceAmount" name="BalanceAmount" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Pay Type</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="payment_type" name="payment_type">
+                                                            <option value="Cash">Cash</option>
+                                                            <option value="Cheque">Cheque</option>
+                                                            <option value="Credit Card">Credit Card</option>
+                                                            <option value="Debit Card">Debit Card</option>
+                                                            <option value="E-Money">E-Money</option>
+                                                            <option value="EFT">EFT</option>
+                                                        </select>
+                                                        <div class="modal" id="DoctorSaveDivs">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <!-- Modal body -->
+                                                                    <div class="modal-body">
+                                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                            <div class="form-group">
+                                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <label id="PaymentNo1">Cheque No</label>
+                                                                                </div>
+                                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <input type="number" class="form-control" id="Number" name="Number">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <span id="paymentName1">Bank Name</span>
+                                                                                </div>
+                                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <input type="text" class="form-control" id="Name" name="Name">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <span id="paymentDate1">Cheque Date</span>
+                                                                                </div>
+                                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" id="paymentDate" name="paymentDate">
+                                                                                    @*// <input type="date" required="" id="" name="" value="2020-03-03" class="form-control input-sm" style="width: 50%;">*@
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <span id="paymentRemark1">Remark</span>
+                                                                                </div>
+                                                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                    <input type="text" class="form-control" id="Remarks" name="Remarks">
+                                                                                </div>
+                                                                            </div>
+                                                                            <button type="button" id="cl" class="btn btn-danger pull-rights" data-dismiss="modal" style="font-size: 15px;">
+                                                                                Close
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <button type="button" class="btndivcss" style="width: 100%;">Product Expense</button>
+                                                </div>
+                                                @* Payment Type Box *@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="datatable-responsiveExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive">
+                                    @* <button type="button" class="btndivcss" data-toggle="modal" data-target="#myModal12" style="height:26px;"><span class="fa fa-user buttoniconcss" style="padding:5px"></span>Patient Show</button>*@
+                                    <table id="datatable-responsive" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                        <thead style="background-color: #bddff7;">
+                                            <tr>
+                                                <th>Service Name</th>
+                                                <th>Rate</th>
+                                                <th>Qty.</th>
+                                                <th>Discount Type </th>
+                                                <th>Discount Amount</th>
+                                                <th>Total Amount</th>
+                                                <th>Cons. Dr.</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="scrollbar" id="tbl"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <input type="hidden" value="" name="txtinput" id="txtinput" />
+                <input type="hidden" value="0" name="ForAuthorization" id="ForAuthorization" />
+            </form>
+        </div>
+
+
+    </div>
+</body>
+
+
+
+
+
+<script>
+    var chk = false;
+
+
+    function myFunction() {
+        debugger
+
+                debugger
+                if (chk == "True") {
+                    var con = confirm("Send For Authorization Confirmation");
+                    if (con) {
+                        var person = prompt("Reason For Authorization");
+                        if (person) {
+                            $("#txtinput").val(person);
+                            $("#ForAuthorization").val(1);
+                            return true;
+                        }
+                        else {
+                            $("#ForAuthorization").val(0);
+                            $("#txtinput").val('');
+                            return false;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
+
+
+
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            var conform = confirm("Do you Want To Delete");
+
+
+            if (conform) {
+                debugger
+                var r = myFunction();
+                //if (r) {
+                //    return true;
+                //}
+
+                $.ajax({
+                    url: '@Url.Action("Delete", "OtherBilling")',
+                    type: 'POST',
+                    data: { PatientRegNO: $("#PatientRegNO").val(), BillNo: $("#OldBillNo").val() },
+                    success: function (data) {
+                        if (data.length > 1) {
+
+
+                            alert("Delete Successfully");
+                            Bind();
+                            window.location.reload(true);
+                            Restore();
+                            $('#datatable-responsive tbody tr').remove();
+                            $("#PreBalance").val(0.00);
+                            $("#TotalAmount").val(0.00);
+                            $("#NetPayableAmount").val(0.00);
+                            $("#BalanceAmount").val(0.00);
+                        }
+                        else {
+
+                        }
+
+
+                    }
+
+                })
+
+            }
+        })
+        $('#form').on('submit', function (e) {
+            debugger
+
+         var r= myFunction();
+            if(r)
+            {
+                return true;
+            }
+         else
+            {
+                return false;
+            }
+        })
+        $("#OldBillNo").change(function () {
+            debugger
+            if($(this).val()>0)
+            {
+
+                $.ajax({
+                    //url: "/OPDBill/GetServiceGrp",
+                    url: '@Url.Action("chkAurthorise", "OPDBill")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: "" },
+                    success: function (data) {
+                        debugger
+                       // alert(data[0]);
+                        chk = data[0];
+                        if(data[1]=="True")
+                        {
+                            chk = false;
+                        }
+
+                    }
+                })
+            }
+            else
+            {
+                chk = false;
+            }
+        })
+        $("#DoctorSaveDivs").hide();
+
+        $("#cl").click(function () {
+            $("#DoctorSaveDivs").hide();
+        });
+
+        $("#payment_type").change(function () {
+            debugger
+            var select = document.getElementById("payment_type").value;
+            switch (select) {
+                case 'Cheque':
+                    $("#DoctorSaveDivs").show(300);
+                    $("#PaymentNo1").text("Cheque No");
+
+
+                    $("#paymentName1").text("Bank Name");
+
+                    $("#paymentDate1").text("Cheque Date");
+
+                    $("#paymentRemark1").text("Remark");
+                    break;
+
+
+                case 'Debit Card':
+                    $("#DoctorSaveDivs").show(300);
+                    $("#PaymentNo1").text("Debit Card No");
+
+
+                    $("#paymentName1").text("Holder Name");
+
+                    $("#paymentDate1").text("Valid UPTO");
+
+                    $("#paymentRemark1").text("Remark");
+                    break;
+
+
+
+                case 'Credit Card':
+                    $("#DoctorSaveDivs").show(300);
+                    $("#PaymentNo1").text("Credit Card No");
+                    $("#paymentName1").text("Holder Name");
+                    $("#paymentDate1").text("Valid UPTO");
+                    $("#paymentRemark1").text("Remark");
+                    break;
+
+                case 'E-Money':
+                    $("#DoctorSaveDivs").show(300);
+                    $("#PaymentNo1").text("Code");
+                    $("#paymentName1").text("Bank Name");
+                    $("#paymentDate1").text("Date");
+                    $("#paymentRemark1").text("Remark");
+                    break;
+
+                case 'EFT':
+                    $("#DoctorSaveDivs").show(300);
+                    $("#PaymentNo1").text("Code");
+                    $("#paymentName1").text("Bank Name");
+                    $("#paymentDate1").text("Date");
+                    $("#paymentRemark1").text("Remark");
+                    break;
+
+                case 'CASH':
+
+                    $("#DoctorSaveDivs").hide(300);
+                    break;
+            }
+        });
+
+        // DateBirh Cal
+        $("#DateOfBirth").change(function () {
+            debugger
+          $.ajax({
+            //url: "/OPDBill/GetServiceGrp",
+            url: '@Url.Action("DateOfBirthCal", "OtherBilling")',
+            type: "POST",
+            dataType: "json",
+            data: { DateOfBirth:$(this).val() },
+            success: function (data) {
+                debugger
+                $("#age_day").val(data.Day);
+                $("#Month").val(data.Month);
+                $("#Year").val(data.Years);
+            }
+        })
+        })
+        //End
+    });
+
+</script>
+

@@ -1,0 +1,1362 @@
+﻿@model KeystoneProject.Models.Master.DoctorCommissionSetting
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--this file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    .modal-header {
+        background: #1a5e8e;
+    }
+
+    @@media screen and (max-width: 425px) {
+        .fixServiceSection {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        var sr = 1;
+        var srIPD = 1;
+        var srLAB = 1;
+        var ServiceName = "";
+        $("#btnOPD").click(function () {
+            $("input[name=ServiceIDdgv]").each(function () {
+
+                if ($(this).val() == $("#ServiceID").val()) {
+                    alert("Service Name already exist's");
+                    $("#ServiceName").val("");
+                    $("#ServiceID").val("");
+
+                }
+            
+            })
+                //else {
+            if ($("#CommissionOPD").val() == "") {
+                alert("Fees cann't be empty");
+            }
+            else {
+                debugger
+                if ($("#ServiceID").val() != "") {
+                    alert($("#ServiceGroupID").val());
+                    // ServiceName+= $("#ServiceName").val();
+                    $("#tableOPD").append('<tr><td>' + $("#ServiceGroupName").val() + '<input type="hidden" value=' + $("#ServiceGroupName").val() + '  name="ServiceGroupNamedgv"><input type="hidden" value=' + $("#ServiceGroupID").val() + ' name="ServiceGroupIDdgv"></td><td>' + $("#ServiceName").val() + '<input type="hidden" value=' + $("#ServiceName").val() + ' id="ServiceNamedgv"  name="ServiceNamedgv"><input type="hidden" value=' + $("#ServiceID").val() + ' id="ServiceIDdgv" name="ServiceIDdgv"></td><td>' + $("#IEOPD").val() + '<input type="hidden" value=' + $("#IEOPD").val() + ' name="IEOPDdgv"></td><td>' + $("#CommissionOPD").val() + "" + $("#CommissionOPDRsType").val() + '<input type="hidden" value=' + $("#CommissionOPD").val() + ' name="CommissionOPDdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionOPDRsType").val() + ' name="CommissionOPDRsTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td><td style="display:none"><input type="hidden" id="ModeDgvOPD" name="ModeDgvOPD" value="Add"></td></tr>')
+                    $("#ServiceName").val("");
+                    $("#ServiceID").val("");
+                    $("#ServiceGroupName").val("");
+                    $("#ServiceGroupID").val("");
+                    //  $("input[name = 'ServiceName1']").val(ServiceName);
+                    sr++;
+                }
+                else {
+                    $("#tableOPD").append('<tr><td>' + $("#ServiceGroupName").val() + '<input type="hidden" value=' + $("#ServiceGroupName").val() + '  name="ServiceGroupNamedgv"><input type="hidden" value=' + $("#ServiceGroupID").val() + ' name="ServiceGroupIDdgv"></td><td>All<input type="hidden" value=All  name="ServiceNamedgv"><input type="hidden" value=0 name="ServiceIDdgv"></td><td>' + $("#IEOPD").val() + '<input type="hidden" value=' + $("#IEOPD").val() + ' name="IEOPDdgv"></td><td>' + $("#CommissionOPD").val() + "" + $("#CommissionOPDRsType").val() + '<input type="hidden" value=' + $("#CommissionOPD").val() + ' name="CommissionOPDdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionOPDRsType").val() + ' name="CommissionOPDRsTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td><td style="display:none"><input type="hidden" id="ModeDgvOPD" name="ModeDgvOPD" value="Add"></td></tr>')
+
+                    $("#tableOPD").on('click', '#del', function () {
+                        debugger;
+                        $(this).closest('tr').remove();
+                        var row = $("#tableOPD td").closest("tr").length;
+                    })
+                }
+
+            }
+
+                //}
+           
+              
+   
+                
+        })
+        $("#btnIPD").click(function () {
+            $("input[name=ServiceIDIPDdgv]").each(function () {
+
+                if ($(this).val() == $("#ServiceIDIPD").val()) {
+                    alert("Service Name already exist's");
+                    $("#ServiceNameIPD").val("");
+                    $("#ServiceIDIPD").val("");
+                    return false;
+                }
+
+            })
+            if ($("#CommissionIPD").val() == "") {
+                alert("Fees cann't be empty");
+            }
+            else {
+                debugger
+                if ($("#ServiceIDIPD").val() != "") {
+                    $("#tableIPD").append('<tr><td>' + $("#ServiceGroupNameIPD").val() + '<input type="hidden" value=' + $("#ServiceGroupNameIPD").val() + ' name="ServiceGroupNameIPDdgv"><input type="hidden" value=' + $("#ServiceGroupIDIPD").val() + ' name="ServiceGroupIDIPDdgv"></td><td>' + $("#ServiceNameIPD").val() + '<input type="hidden" value=' + $("#ServiceNameIPD").val() + ' name="ServiceNameIPDdgv"><input type="hidden" value=' + $("#ServiceIDIPD").val() + ' name="ServiceIDIPDdgv"></td><td>' + $("#IEIPD").val() + '<input type="hidden" value=' + $("#IEIPD").val() + ' name="IEIPDdgv"></td><td>' + $("#CommissionIPD").val() + "" + $("#CommissionIPDType").val() + '<input type="hidden" value=' + $("#CommissionIPD").val() + ' name="CommissionIPDdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionIPDType").val() + ' name="CommissionIPDTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                    // $("input[name = 'ServiceNameIPDdgv']").val($("#ServiceNameIPD").val());
+                    $("#ServiceNameIPD").val("");
+                    $("#ServiceIDIPD").val("");
+                    $("#ServiceGroupNameIPD").val("");
+                    $("#ServiceGroupIDIPD").val("");
+                    srIPD++;
+                }
+                else {
+                    $("#tableIPD").append('<tr><td>' + $("#ServiceGroupNameIPD").val() + '<input type="hidden" value=' + $("#ServiceGroupNameIPD").val() + ' name="ServiceGroupNameIPDdgv"><input type="hidden" value=' + $("#ServiceGroupIDIPD").val() + ' name="ServiceGroupIDIPDdgv"></td><td>All<input type="hidden" value=All name="ServiceNameIPDdgv"><input type="hidden" value=0 name="ServiceIDIPDdgv"></td><td>' + $("#IEIPD").val() + '<input type="hidden" value=' + $("#IEIPD").val() + ' name="IEIPDdgv"></td><td>' + $("#CommissionIPD").val() + "" + $("#CommissionIPDType").val() + '<input type="hidden" value=' + $("#CommissionIPD").val() + ' name="CommissionIPDdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionIPDType").val() + ' name="CommissionIPDTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                    // $("input[name = 'ServiceNameIPDdgv']").val($("#ServiceNameIPD").val());
+                }
+                $("#tableIPD").on('click', '#del', function () {
+                    debugger;
+                    $(this).closest('tr').remove();
+                    var row = $("#tableIPD td").closest("tr").length;
+                })
+            }
+        })
+        $("#btnLAB").click(function () {
+            $("input[name=ServiceIDLabdgv]").each(function () {
+
+                if ($(this).val() == $("#ServiceIDLab").val()) {
+                    alert("Service Name already exist's");
+                    $("#ServiceNameLab").val("");
+                    $("#ServiceIDLab").val("");
+                    return false;
+                }
+
+            })
+            if ($("#CommissionLAB").val() == "") {
+                alert("Fees cann't be empty");
+            }
+            else
+                {
+                debugger
+                if ($("#ServiceNameLab").val() != "") {
+                    $("#tableLAB").append('<tr><td>' + $("#ServiceGroupNameLab").val() + '<input type="hidden" value=' + $("#ServiceGroupNameLab").val() + ' name="ServiceGroupNameLabdgv"><input type="hidden" value=' + $("#ServiceGroupIDLab").val() + ' name="ServiceGroupIDLabdgv"></td><td>' + $("#ServiceNameLab").val() + '<input type="hidden" value=' + $("#ServiceNameLab").val() + ' name="ServiceNameLabdgv"><input type="hidden" value=' + $("#ServiceIDLab").val() + ' name="ServiceIDLabdgv"></td><td>' + $("#IELAB").val() + '<input type="hidden" value=' + $("#IELAB").val() + ' name="IELABdgv"></td><td>' + $("#CommissionLAB").val() + "" + $("#CommissionLABType").val() + '<input type="hidden" value=' + $("#CommissionLAB").val() + ' name="CommissionLABdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionLABType").val() + ' name="CommissionLABTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                    //  $("input[name = 'ServiceNameLabdgv']").val($("#ServiceNameLab").val());
+                    $("#ServiceNameLab").val("");
+                    // $("#CommissionLAB").val("");
+                    $("#ServiceIDLAB").val("");
+                    $("#ServiceGroupNameLab").val("");
+                    // $("#CommissionLAB").val("");
+                    $("#ServiceGroupIDLAB").val("");
+                    srLAB++;
+                }
+                else {
+                    $("#tableLAB").append('<tr><td>' + $("#ServiceGroupNameLab").val() + '<input type="hidden" value=' + $("#ServiceGroupNameLab").val() + ' name="ServiceGroupNameLabdgv"><input type="hidden" value=' + $("#ServiceGroupIDLab").val() + ' name="ServiceGroupIDLabdgv"></td><td>All<input type="hidden" value=All name="ServiceNameLabdgv"><input type="hidden" value=0 name="ServiceIDLabdgv"></td><td>' + $("#IELAB").val() + '<input type="hidden" value=' + $("#IELAB").val() + ' name="IELABdgv"></td><td>' + $("#CommissionLAB").val() + "" + $("#CommissionLABType").val() + '<input type="hidden" value=' + $("#CommissionLAB").val() + ' name="CommissionLABdgv"></td><td style="display:none"><input type="hidden" value=' + $("#CommissionLABType").val() + ' name="CommissionLABTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                    //  $("input[name = 'ServiceNameLabdgv']").val($("#ServiceNameLab").val());
+                }
+                $("#tableLAB").on('click', '#del', function () {
+                    debugger;
+                    $(this).closest('tr').remove();
+                    var row = $("#tableLAB td").closest("tr").length;
+                })
+            }
+            })
+            
+    })
+
+    $(document).ready(function () {
+        $("#ServiceNameLab").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceNameLAB", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceName: request.term, ServiceGroupID: $("#ServiceGroupIDLab").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceNameLab, value: item.ServiceNameLab, ServiceIDLab: item.ServiceIDLab, ServiceGroupIDLab: item.ServiceGroupIDLab
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.ServiceIDLab;
+                $("#ServiceIDLab").val(show);
+                $("#ServiceGroupIDLab").val(i.item.ServiceGroupIDLab);
+
+                $.ajax({
+
+                    url: '@Url.Action("GetLabGroupName", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupID: $("#ServiceGroupIDLab").val()},
+                    success: function (data) {
+                        debugger
+                        for (var i = 0; i < data.length; i++) {
+                            $("#ServiceGroupNameLab").val(data[0].ServiceGroupNameLab);
+                        }
+
+                    }
+                })
+
+
+
+
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#ServiceGroupNameLab").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceGroupNameLAB", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupName: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupNameLab, value: item.ServiceGroupNameLab, ServiceGroupIDLab: item.ServiceGroupIDLab
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.ServiceGroupIDLab;
+                $("#ServiceGroupIDLab").val(show);
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#ServiceGroupName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceGroupNameOPDIPD", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupName: request.term, Type: "OPD" },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupName, value: item.ServiceGroupName, ServiceGroupID: item.ServiceGroupID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            //change: function (event, ui) {
+            //    if (!ui.item) {
+            //        this.value = '';
+            //    }
+            //},
+            select: function (event, i) {
+                var show = i.item.ServiceGroupID;
+                $("#ServiceGroupID").val(show);
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#ServiceGroupNameIPD").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceGroupNameOPDIPD", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupName: request.term, Type: "IPD" },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupNameIPD, value: item.ServiceGroupNameIPD, ServiceGroupIDIPD: item.ServiceGroupIDIPD
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.ServiceGroupIDIPD;
+                $("#ServiceGroupIDIPD").val(show);
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#ServiceNameIPD").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceNameOPDIPD", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceName: request.term, ServiceGroupID: $("#ServiceGroupIDIPD").val(), Type: "IPD" },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceNameIPD, value: item.ServiceNameIPD, ServiceIDIPD: item.ServiceIDIPD, ServiceGroupID: item.ServiceGroupID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            //change: function (event, ui) {
+            //    if (!ui.item) {
+            //        this.value = '';
+            //    }
+            //},
+            select: function (event, i) {
+                var show = i.item.ServiceIDIPD;
+                $("#ServiceIDIPD").val(show);
+                $("#ServiceGroupIDIPD").val(i.item.ServiceGroupID);
+                $.ajax({
+
+                    url: '@Url.Action("GetServiceGroup", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupID: $("#ServiceGroupIDIPD").val(), Type: "OPD" },
+                    success: function (data) {
+                        debugger
+                        for (var i = 0; i < data.length; i++) {
+                            $("#ServiceGroupNameIPD").val(data[0].ServiceGroupName);
+                        }
+
+                    }
+                })
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#ServiceName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("BindServiceNameOPDIPD", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceName: request.term,ServiceGroupID:$("#ServiceGroupID").val(), Type: "OPD" },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceName, value: item.ServiceName, ServiceID: item.ServiceID, ServiceGroupID: item.ServiceGroupID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            //change: function (event, ui) {
+            //    if (!ui.item) {
+            //        this.value = '';
+            //    }
+            //},
+            select: function (event, i) {
+                var show = i.item.ServiceID;
+                $("#ServiceID").val(show);
+                $("#ServiceGroupID").val(i.item.ServiceGroupID);
+               // alert(i.item.ServiceGroupID);
+                //$("#ServiceName").on("change", function () {
+                    debugger
+                $.ajax({
+                  
+                    url: '@Url.Action("GetServiceGroup", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { ServiceGroupID: $("#ServiceGroupID").val(), Type: "OPD" },
+                    success: function (data) {
+                        debugger
+                        for (var i = 0; i < data.length;i++)
+                        {
+                            $("#ServiceGroupName").val(data[0].ServiceGroupName);
+                        }
+                       
+                    }
+                })
+                //})
+            }
+        })
+    })
+
+    var t = "";
+    $(document).ready(function () {
+        $("#DoctorName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("GetDoctorName", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorName, value: item.DoctorName, DoctorID: item.DoctorID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            minLength: 1,
+            //change: function (event, ui) {
+            //    if (!ui.item) {
+            //        this.value = '';
+            //    }
+            //},
+            select: function (event, i) {
+                var show = i.item.DoctorID;
+
+                //var terms = split(this.value);
+                //terms.pop();
+                //terms.push(i.item.value);
+                //terms.push( "" );
+                //this.value = terms.join( "," );
+                //return false;
+                //t+= show + ",";
+               // alert(t);
+                $("#DoctorID").val(show);
+                //-----------------
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("GetDoctor", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { DoctorID: $("#DoctorID").val() },
+                    success: function (data) {
+                        $("#Department").val(data[0].Department);
+                        $("#DoctorType").val(data[0].DoctorType);
+                    }
+                })
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("EdiillData", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { DoctorID: $("#DoctorID").val() },
+                    success: function (data) {
+                        $("#Mode").val("Edit");
+                        $('#tableOPD tbody tr').remove();
+                        $('#tableIPD tbody tr').remove();
+                        $('#tableLAB tbody tr').remove();
+                        // $("#DoctorID").val(id);
+                       
+                        for (var i = 0; i < data[0].filldgv.length; i++) {
+                            $("#save").html("<i class='fa fa-save'></i>Update");
+                            $("#DoctorCommissionSettingID").val(data[0].filldgv[0].DoctorCommissionSettingIDdv);
+                            $("#DoctorName").val(data[0].filldgv[0].DoctorName);
+                            $("#DoctorID").val(data[0].filldgv[0].DoctorID);
+                            //   $("#Department").val(data[0].filldgv[0].);
+                            //$("#DoctorType").val(data[0].filldgv[1].DoctorType);
+                            //----------------OPD
+                            $("#CommissionTypeOPD").val(data[0].filldgv[0].CommissionOPDRsTypedgv);
+                            $("#FixedOPD").val(data[0].filldgv[0].FixedOPDdgv);
+                            $("#FixedOPDRsType").val(data[0].filldgv[0].FixedOPDRsType);
+                            //    $("#ServiceName").val(data[0].filldgv[0].);
+                            //     $("#ServiceID").val(data[0].filldgv[0].);
+                            //  $("#IEOPD").val(data[0].filldgv[0].);
+                            //  $("#CommissionOPD").val(data[0].filldgv[0].);
+                            // $("#CommissionOPDRsType").val(data[0].filldgv[0].CommissionOPDRsTypedgv);
+                            //---------IPD
+                            $("#CommissionTypeIPD").val(data[0].filldgv[0].CommissionIPDTypedgv);
+                            $("#FixedIPD").val(data[0].filldgv[0].FixedIPDdgv);
+                            $("#FixedIPDType").val(data[0].filldgv[0].FixedIPDType);
+                            //$("#ServiceNameIPD").val(data[0].filldgv[0].);
+                            //$("#ServiceIDIPD").val(data[0].filldgv[0].);
+                            //$("#IEIPD").val(data[0].filldgv[0].);
+                            //$("#CommissionIPD").val(data[0].filldgv[0].);
+                            //$("#CommissionIPDType").val(data[0].filldgv[0].);
+                            //------------LAB
+                            $("#CommissionTypeLab").val(data[0].filldgv[0].CommissionLABTypedgv);
+                            $("#FixedLab").val(data[0].filldgv[0].FixedLabdgv);
+                            $("#FixedLabType").val(data[0].filldgv[0].FixedLabType);
+                            //$("#ServiceNameLab").val(data[0].filldgv[0].);
+                            //$("#ServiceIDLab").val(data[0].filldgv[0].);
+                            //$("#IELAB").val(data[0].filldgv[0].);
+                            //$("#CommissionLAB").val(data[0].filldgv[0].);
+                            //$("#CommissionLABType").val(data[0].filldgv[0].);
+                        }
+                        for (var i = 0; i < data[0].OPDdgv.length; i++) {
+                            var SrNo = i + 1;
+                            if (data[0].OPDdgv[i].ServiceNamedgv != null) {
+                                //if ($("#ServiceIDdgv").val() == $("#ServiceID").val()) {
+                                //    alert("ServiceName already exist's");
+                                //}
+                                //else {
+                                $("#tableOPD").append('<tr><td>' + data[0].OPDdgv[i].ServiceGroupNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupNamedgv + '  name="ServiceGroupNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupIDdgv + ' name="ServiceGroupIDdgv"></td><td>' + data[0].OPDdgv[i].ServiceNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceNamedgv + ' id="ServiceNamedgv" name="ServiceNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceIDdgv + ' id="ServiceIDdgv" name="ServiceIDdgv"></td><td>' + data[0].OPDdgv[i].IEOPDdgv + '<input type="hidden" value=' + data[0].OPDdgv[i].IEOPDdgv + ' name="IEOPDdgv"></td><td>' + data[0].OPDdgv[i].CommissionOPDdgv + "" + data[0].OPDdgv[i].CommissionOPDRsTypedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDdgv + ' name="CommissionOPDdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDRsTypedgv + ' name="CommissionOPDRsTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a><td style="display:none"><input type="hidden" id="ModeDgvOPD" name="ModeDgvOPD" value="Edit"></td></tr>')
+
+
+                                    // $("#tableOPD").append('<tr><td>' + SrNo + '</td><td>' + data[0].OPDdgv[i].ServiceNamedgv + '</td><td>' + data[0].OPDdgv[i].IEOPDdgv + '</td>' + data[0].OPDdgv[i].CommissionOPDdgv + '</tr>');
+                                    // $("#tableOPD").append('<tr><td>' + data[0].OPDdgv[i].ServiceGroupNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupNamedgv + '  name="ServiceGroupNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupIDdgv + ' name="ServiceGroupIDdgv"></td><td>' + data[0].OPDdgv[i].ServiceNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceNamedgv + '  name="ServiceNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceIDdgv + ' name="ServiceIDdgv"></td><td>' + data[0].OPDdgv[i].IEOPDdgv + '<input type="hidden" value=' + data[0].OPDdgv[i].IEOPDdgv + ' name="IEOPDdgv"></td><td>' + data[0].OPDdgv[i].CommissionOPDdgv + "" + data[0].OPDdgv[i].CommissionOPDRsTypedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDdgv + ' name="CommissionOPDdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDRsTypedgv + ' name="CommissionOPDRsTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a><td style="display:none"><input type="hidden" id="ModeDgvOPD" value="Edit"></td></tr>')
+                                    $("#tableOPD").on('click', '#del', function () {
+                                        debugger;
+                                        $(this).closest('tr').remove();
+                                        var row = $("#tableOPD td").closest("tr").length;
+                                    })
+                                //}
+                            }
+                        }
+                        for (var i = 0; i < data[0].IPDdgv.length; i++) {
+                            var SrNo = i + 1;
+                            if (data[0].IPDdgv[i].ServiceNameIPDdgv != null) {
+                                //  $("#tableIPD").append('<tr><td>' + SrNo + '</td><td>' + data[0].IPDdgv[i].ServiceNameIPDdgv + '</td><td>' + data[0].IPDdgv[i].IEIPDdgv + '</td>' + data[0].IPDdgv[i].CommissionIPDdgv + '</tr>');
+                                $("#tableIPD").append('<tr><td>' + data[0].IPDdgv[i].ServiceGroupNameIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].ServiceGroupNameIPDdgv + '  name="ServiceGroupNameIPDdgv"><input type="hidden" value=' + data[0].IPDdgv[i].ServiceGroupIDIPDdgv + ' name="ServiceGroupIDIPDdgv"></td><td>' + data[0].IPDdgv[i].ServiceNameIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].ServiceNameIPDdgv + '  name="ServiceNameIPDdgv"><input type="hidden" value=' + data[0].IPDdgv[i].ServiceIDIPDdgv + ' name="ServiceIDIPDdgv"></td><td>' + data[0].IPDdgv[i].IEIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].IEIPDdgv + ' name="IEIPDdgv"></td><td>' + data[0].IPDdgv[i].CommissionIPDdgv + "" + data[0].IPDdgv[i].CommissionIPDTypedgv + '<input type="hidden" value=' + data[0].IPDdgv[i].CommissionIPDdgv + ' name="CommissionIPDdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].IPDdgv[i].CommissionIPDTypedgv + ' name="CommissionIPDTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                                $("#tableIPD").on('click', '#del', function () {
+                                    debugger;
+                                    $(this).closest('tr').remove();
+                                    var row = $("#tableIPD td").closest("tr").length;
+                                })
+                            }
+                        }
+                        for (var i = 0; i < data[0].LABdgv.length; i++) {
+                            var SrNo = i + 1;
+                            if (data[0].LABdgv[i].ServiceNameLABdgv != null) {
+                                // $("#tableLAB").append('<tr><td>' + SrNo + '</td><td>' + data[0].LABdgv[i].ServiceNameLABdgv + '</td><td>' + data[0].LABdgv[i].IELABdgv + '</td>' + data[0].LABdgv[i].CommissionLABdgv + '</tr>');
+                                debugger
+                                $("#tableLAB").append('<tr><td>' + data[0].LABdgv[i].ServiceGroupNameLABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].ServiceGroupNameLABdgv + '  name="ServiceGroupNameLABdgv"><input type="hidden" value=' + data[0].LABdgv[i].ServiceGroupIDLabdgv + ' name="ServiceGroupIDLabdgv"></td><td>' + data[0].LABdgv[i].ServiceNameLABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].ServiceNameLABdgv + '  name="ServiceNameLABdgv"><input type="hidden" value=' + data[0].LABdgv[i].ServiceIDLabdgv + ' name="ServiceIDLabdgv"></td><td>' + data[0].LABdgv[i].IELABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].IELABdgv + ' name="IELABdgv"></td><td>' + data[0].LABdgv[i].CommissionLABdgv + "" + data[0].LABdgv[i].CommissionLABTypedgv + '<input type="hidden" value=' + data[0].LABdgv[i].CommissionLABdgv + ' name="CommissionLABdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].LABdgv[i].CommissionLABTypedgv + ' name="CommissionLABTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                                $("#tableLAB").on('click', '#del', function () {
+                                    debugger;
+                                    $(this).closest('tr').remove();
+                                    var row = $("#tableLAB td").closest("tr").length;
+                                })
+                            }
+                        }
+                    }
+                })
+                //-------------
+            }
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#tableEdit").delegate('tr', 'click', function () {
+
+            $('#tableEdit tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tableEdit tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $("#DocType").on("change", function () {
+           // var value = $(this).val().toLowerCase();
+            $("#Search").val($(this).val());
+            var value = $(this).val().toLowerCase();
+            $("#tableEdit tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        })
+    });
+</script>
+@*<script>
+        $(document).ready(function () {
+            $("#btnEdit").click(function () {
+                $.ajax({
+                    //url: "/DoctorAppointment/GetDoctor",
+                    url: '@Url.Action("GetAllDoctorCommissionSetting", "DoctorCommissionSetting")',
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            debugger
+                            var SrNo = i + 1;
+                            //$("#tableEdit").append('<tr><td>' + SrNo + '</td><td>' + data[i].DoctorName + '</td><td>' + data[i].DoctorType + '</td><td><input type="text" id="DoctorID"  value=' + data[i].DoctorID + ' name="DoctorID"></td><td><input type="checkbox" id="tick" value="true"  name="tick" class="tick" /></td></tr>');
+                            $("#tableEdit").append('<tr><td>' + SrNo + '</td><td style="display:none"><input type= "hidden" value=' + data[i].DoctorID + '  class="DoctorID" ></td><td>' + data[i].DoctorName + '</td><td>' + data[i].DoctorType + '</td><td><input type ="checkbox"  id="tick" name="tick" value="true" class="tick"/></td></tr>');
+                        };
+                    }
+                })
+            })
+        })
+    </script>*@
+<script>
+    $(document).ready(function () {
+        $("#btnEdit").click(function () {
+            $.ajax({
+                //url: "/DoctorAppointment/GetDoctor",
+                url: '@Url.Action("GetAllDoctorCommissionSetting", "DoctorCommissionSetting")',
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#tableEdit tbody tr").remove();
+                    for (var i = 0; i < data.length; i++) {
+                        debugger
+                        var SrNo = i + 1;
+                        //$("#tableEdit").append('<tr><td>' + SrNo + '</td><td>' + data[i].DoctorName + '</td><td>' + data[i].DoctorType + '</td><td><input type="text" id="DoctorID"  value=' + data[i].DoctorID + ' name="DoctorID"></td><td><input type="checkbox" id="tick" value="true"  name="tick" class="tick" /></td></tr>');
+                        $("#tableEdit").append('<tr><td>' + SrNo + '</td><td style="display:none"><input type= "hidden" value=' + data[i].DoctorID + '  class="DocID" >' + data[i].DoctorID + '</td><td>' + data[i].DoctorName + '</td><td>' + data[i].DoctorType + '</td><td><input type ="checkbox"  id="tick" name="tick" value="true" class="tick"/></td><td><button type="button" id="edit" name="edit" value="Edit" class="btn fa fa-edit" title="Edit" style="font-size: 15px;padding-bottom: 0;"></button></td></tr>');
+                    };
+                    $('#tableEdit').DataTable({
+                        "fixedHeader": true,
+                        "paging": false,
+                        "lengthChange": false,
+                        "searching": false,
+                        "ordering": false,
+                        "info": false,
+                        "autoWidth": true,
+                        "responsive": false,
+                    });
+                }
+            })
+        })
+        $("#tableEdit").on('change', '#allcheck', function () {
+            var chk = $(this).prop('checked');
+            $(".tick").each(function () {
+                debugger
+                var DoctID = "";
+                var row_num = $(this).closest("tr");
+                if (chk == true) {
+                    $(this).prop('checked', true);
+                    var Check = $(this).prop('checked');
+                    //var Check = row_num.find(".tick:checked").val();
+                    //$(".tick").each(function(){
+                    if (Check == true) {
+                        check += Check + ",";
+                        //alert(check);
+                        DoctID = row_num.find(".DocID").val();
+                        id += DoctID + ",";
+                        $("#DoctorID").val(id)
+                    }
+                    else {
+                        $("#DoctorID").val(id)
+                        //alert($("#DoctorID").val());
+                    }
+                    //})
+                }
+                else {
+                    $(this).prop('checked', false);
+                }
+            })
+            alert($(this).val());
+        })
+        $("#tableEdit tbody tr").remove();
+        $("#tableEdit").on('click', '#tick', function () {
+            debugger
+            var row_num = $(this).closest("tr");
+            var Check = $(this).prop('checked');
+            alert(Check);
+            //var Check = row_num.find(".tick:checked").val();
+            var DoctID = "";
+            if (Check == "true") {
+                check += Check + ",";
+                DoctID = row_num.find(".DocID").val();
+                id += DoctID + ",";
+                $("#DoctorID").val(id)
+            }
+            else {
+                id = "";
+                var row = 0;
+                $(".tick").each(function () {
+                    debugger
+                    var Check = $(this).prop('checked');
+                    if (Check == true) {
+                        //Check = row_num.find(".tick:checked").val();
+                        check += Check + ",";
+                        DoctID = document.getElementById("tableEdit").tBodies[0].rows[row].cells[1].children[0].value;
+                        id += DoctID + ",";
+                        $("#DoctorID").val(id)
+                    }
+                    row++;
+                })
+                //$("#DoctorID").val(id)
+                //alert($("#DoctorID").val());
+            }
+            //alert($("#DoctorID").val());
+            //$(".tick").each(function () {
+            //    debugger
+            //    var row_num = $(this).closest("tr");
+            //    if (chk == true) {
+            //        $(this).prop('checked', true);
+            //        var Check = row_num.find(".tick:checked").val();
+            //        var DoctID = "";
+            //        if (Check == "true") {
+            //            check += Check + ",";
+            //            DoctID = row_num.find(".DocID").val();
+            //            id += DoctID + ",";
+            //            $("#DoctorID").val(id)
+            //        }
+            //        else {
+            //            $("#DoctorID").val(id)
+            //            //alert($("#DoctorID").val());
+            //        }
+            //    }
+            //    else {
+            //        $(this).prop('checked', false);
+            //    }
+            //})
+        });
+        var id = "";
+        var check = "";
+        var DoctorID = "";
+        $("#tableEdit").on('click', '#edit', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger
+            var row = parseInt($(this).closest('tr').index());
+            var status = document.getElementById("tableEdit").tBodies[0].rows[row].cells[5].children[0].value;
+            $("#Mode").val(status);
+            // alert(status);
+            //if (status == "Edit")
+            //{
+            DoctorID = document.getElementById("tableEdit").tBodies[0].rows[row].cells[1].children[0].value;
+            alert(DoctorID);
+            var DoctorType = document.getElementById("tableEdit").tBodies[0].rows[row].cells[3].innerHTML;
+            //var Check = document.getElementById("tableEdit").tBodies[0].rows[row_num].cells[4].innerHTML;
+            //  alert(DoctorType);
+            //alert($("#DoctorID").val());
+            //alert(check);
+            $.ajax({
+                //url: "/DoctorAppointment/GetDoctor",
+                url: '@Url.Action("GetDoctor", "DoctorCommissionSetting")',
+                type: "POST",
+                dataType: "json",
+                data: { DoctorID: DoctorID },
+                success: function (data) {
+                    $("#Department").val(data[0].Department);
+                    $("#DoctorType").val(data[0].DoctorType);
+                }
+            })
+            $.ajax({
+                //url: "/DoctorAppointment/GetDoctor",
+                url: '@Url.Action("EdiillData", "DoctorCommissionSetting")',
+                type: "GET",
+                dataType: "json",
+                data: { DoctorID: DoctorID },
+                success: function (data) {
+                    debugger
+                    $('#tableOPD tbody tr').remove();
+                    $('#tableIPD tbody tr').remove();
+                    $('#tableLAB tbody tr').remove();
+                    // $("#DoctorID").val(id);
+                    for (var i = 0; i < data[0].filldgv.length; i++) {
+                        $("#DoctorCommissionSettingID").val(data[0].filldgv[0].DoctorCommissionSettingIDdv);
+                        $("#DoctorName").val(data[0].filldgv[0].DoctorName);
+                        $("#DoctorID").val(data[0].filldgv[0].DoctorID);
+                        //   $("#Department").val(data[0].filldgv[0].);
+                        //$("#DoctorType").val(data[0].filldgv[1].DoctorType);
+                        //----------------OPD
+                        $("#CommissionTypeOPD").val(data[0].filldgv[0].CommissionOPDRsTypedgv);
+                        $("#FixedOPD").val(data[0].filldgv[0].FixedOPDdgv);
+                        $("#FixedOPDRsType").val(data[0].filldgv[0].FixedOPDRsType);
+                        //    $("#ServiceName").val(data[0].filldgv[0].);
+                        //     $("#ServiceID").val(data[0].filldgv[0].);
+                        //  $("#IEOPD").val(data[0].filldgv[0].);
+                        //  $("#CommissionOPD").val(data[0].filldgv[0].);
+                        // $("#CommissionOPDRsType").val(data[0].filldgv[0].CommissionOPDRsTypedgv);
+                        //---------IPD
+                        $("#CommissionTypeIPD").val(data[0].filldgv[0].CommissionIPDTypedgv);
+                        $("#FixedIPD").val(data[0].filldgv[0].FixedIPDdgv);
+                        $("#FixedIPDType").val(data[0].filldgv[0].FixedIPDType);
+                        //$("#ServiceNameIPD").val(data[0].filldgv[0].);
+                        //$("#ServiceIDIPD").val(data[0].filldgv[0].);
+                        //$("#IEIPD").val(data[0].filldgv[0].);
+                        //$("#CommissionIPD").val(data[0].filldgv[0].);
+                        //$("#CommissionIPDType").val(data[0].filldgv[0].);
+                        //------------LAB
+                        $("#CommissionTypeLab").val(data[0].filldgv[0].CommissionLABTypedgv);
+                        $("#FixedLab").val(data[0].filldgv[0].FixedLabdgv);
+                        $("#FixedLabType").val(data[0].filldgv[0].FixedLabType);
+                        //$("#ServiceNameLab").val(data[0].filldgv[0].);
+                        //$("#ServiceIDLab").val(data[0].filldgv[0].);
+                        //$("#IELAB").val(data[0].filldgv[0].);
+                        //$("#CommissionLAB").val(data[0].filldgv[0].);
+                        //$("#CommissionLABType").val(data[0].filldgv[0].);
+                    }
+                    for (var i = 0; i < data[0].OPDdgv.length; i++) {
+                        var SrNo = i + 1;
+                        if (data[0].OPDdgv[i].ServiceNamedgv != null) {
+                        //    if ($("#ServiceIDdgv").val() == $("#ServiceID").val())
+                        //    {
+                        //     alert("ServiceName already exist's");
+                        //    }
+                        //else
+                        //{
+                            // $("#tableOPD").append('<tr><td>' + SrNo + '</td><td>' + data[0].OPDdgv[i].ServiceNamedgv + '</td><td>' + data[0].OPDdgv[i].IEOPDdgv + '</td>' + data[0].OPDdgv[i].CommissionOPDdgv + '</tr>');
+                            $("#tableOPD").append('<tr><td>' + data[0].OPDdgv[i].ServiceGroupNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupNamedgv + '  name="ServiceGroupNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceGroupIDdgv + ' name="ServiceGroupIDdgv"></td><td>' + data[0].OPDdgv[i].ServiceNamedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].ServiceNamedgv + ' id="ServiceNamedgv"  name="ServiceNamedgv"><input type="hidden" value=' + data[0].OPDdgv[i].ServiceIDdgv + ' id="ServiceIDdgv" name="ServiceIDdgv"></td><td>' + data[0].OPDdgv[i].IEOPDdgv + '<input type="hidden" value=' + data[0].OPDdgv[i].IEOPDdgv + ' name="IEOPDdgv"></td><td>' + data[0].OPDdgv[i].CommissionOPDdgv + "" + data[0].OPDdgv[i].CommissionOPDRsTypedgv + '<input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDdgv + ' name="CommissionOPDdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].OPDdgv[i].CommissionOPDRsTypedgv + ' name="CommissionOPDRsTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td><td style="display:none"><input type="hidden" id="ModeDgvOPD" name="ModeDgvOPD" value="Edit"></td></tr>')
+                            $("#tableOPD").on('click', '#del', function () {
+                                debugger;
+                                $(this).closest('tr').remove();
+                                var row = $("#tableOPD td").closest("tr").length;
+                            })
+                        }
+                        //}
+                    }
+                    for (var i = 0; i < data[0].IPDdgv.length; i++) {
+                        var SrNo = i + 1;
+                        if (data[0].IPDdgv[i].ServiceNameIPDdgv != null) {
+                            //  $("#tableIPD").append('<tr><td>' + SrNo + '</td><td>' + data[0].IPDdgv[i].ServiceNameIPDdgv + '</td><td>' + data[0].IPDdgv[i].IEIPDdgv + '</td>' + data[0].IPDdgv[i].CommissionIPDdgv + '</tr>');
+                            $("#tableIPD").append('<tr><td>' + data[0].IPDdgv[i].ServiceGroupNameIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].ServiceGroupNameIPDdgv + '  name="ServiceGroupNameIPDdgv"><input type="hidden" value=' + data[0].IPDdgv[i].ServiceGroupIDIPDdgv + ' name="ServiceGroupIDIPDdgv"></td><td>' + data[0].IPDdgv[i].ServiceNameIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].ServiceNameIPDdgv + '  name="ServiceNameIPDdgv"><input type="hidden" value=' + data[0].IPDdgv[i].ServiceIDIPDdgv + ' name="ServiceIDIPDdgv"></td><td>' + data[0].IPDdgv[i].IEIPDdgv + '<input type="hidden" value=' + data[0].IPDdgv[i].IEIPDdgv + ' name="IEIPDdgv"></td><td>' + data[0].IPDdgv[i].CommissionIPDdgv + "" + data[0].IPDdgv[i].CommissionIPDTypedgv + '<input type="hidden" value=' + data[0].IPDdgv[i].CommissionIPDdgv + ' name="CommissionIPDdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].IPDdgv[i].CommissionIPDTypedgv + ' name="CommissionIPDTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                            $("#tableIPD").on('click', '#del', function () {
+                                debugger;
+                                $(this).closest('tr').remove();
+                                var row = $("#tableIPD td").closest("tr").length;
+                            })
+                        }
+                    }
+                    for (var i = 0; i < data[0].LABdgv.length; i++) {
+                        var SrNo = i + 1;
+                        if (data[0].LABdgv[i].ServiceNameLABdgv != null) {
+                            // $("#tableLAB").append('<tr><td>' + SrNo + '</td><td>' + data[0].LABdgv[i].ServiceNameLABdgv + '</td><td>' + data[0].LABdgv[i].IELABdgv + '</td>' + data[0].LABdgv[i].CommissionLABdgv + '</tr>');
+                            debugger
+                            $("#tableLAB").append('<tr><td>' + data[0].LABdgv[i].ServiceGroupNameLABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].ServiceGroupNameLABdgv + '  name="ServiceGroupNameLABdgv"><input type="hidden" value=' + data[0].LABdgv[i].ServiceGroupIDLabdgv + ' name="ServiceGroupIDLabdgv"></td><td>' + data[0].LABdgv[i].ServiceNameLABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].ServiceNameLABdgv + '  name="ServiceNameLABdgv"><input type="hidden" value=' + data[0].LABdgv[i].ServiceIDLabdgv + ' name="ServiceIDLabdgv"></td><td>' + data[0].LABdgv[i].IELABdgv + '<input type="hidden" value=' + data[0].LABdgv[i].IELABdgv + ' name="IELABdgv"></td><td>' + data[0].LABdgv[i].CommissionLABdgv + "" + data[0].LABdgv[i].CommissionLABTypedgv + '<input type="hidden" value=' + data[0].LABdgv[i].CommissionLABdgv + ' name="CommissionLABdgv"></td><td style="display:none"><input type="hidden" value=' + data[0].LABdgv[i].CommissionLABTypedgv + ' name="CommissionLABTypedgv"></td><td><a href="#" id="del" class="btn btn-danger">X</a></td></tr>')
+                            $("#tableLAB").on('click', '#del', function () {
+                                debugger;
+                                $(this).closest('tr').remove();
+                                var row = $("#tableLAB td").closest("tr").length;
+                            })
+                        }
+                    }
+                }
+            })
+            //}
+        })
+    })
+    function DeleteDoctorCommissionSetting(DoctorCommissionSettingID) {
+        var ans = confirm("Are you sure you want to delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                //url: "/Services/DeleteServices?ServiceID=" + ServiceID,
+                url: '@Url.Action("DeleteDoctorCommissionSetting", "DoctorCommissionSetting")',
+                data: { 'DoctorCommissionSettingID': DoctorCommissionSettingID },
+                dataType: "json",
+                success: function (data) {
+                    if (data == "Delete") {
+                        alert("DoctorCommissionSetting Deleted Successfully");
+                        window.location.href = '@Url.Action("DoctorCommissionSetting", "DoctorCommissionSetting")'
+                        //window.location="ShowDepartment/Department";
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <input type="hidden" name="ServiceName1" id="ServiceName1">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Doctor Fees Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Doctor Fees</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Doctor Fees Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Doctor Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Doctor Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="DoctorName" name="DoctorName" class="form-control" 
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Doctor Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" id="DoctorID" name="DoctorID" class="form-control" />
+                                                        <input type="hidden" id="DoctorCommissionSettingID" name="DoctorCommissionSettingID" class="form-control" />
+                                                        <input type="hidden" id="Mode" name="Mode" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <!--Doctor Department-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Department</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Department" name="Department" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                                <!--Doctor Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Doctor Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="DoctorType" name="DoctorType" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="DeleteDoctorCommissionSetting(document.getElementById('DoctorCommissionSettingID').value)">
+                                        <i class=" fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" data-toggle="modal" id="btnEdit" data-target="#classModal">
+                                        <i class="fa fa-hand-pointer-o"></i>Doctor
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="classModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="classInfo" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Doctor List</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="Search" name="Search" class="form-control" placeholder="Search">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                               
+                                                    <div class="col-lg-6">
+                                                        <div class="col-lg-3">
+                                                            <span>DoctorType</span>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <select id="DocType" name="DocType" class="form-control">
+                                                                <option value="Consultant">Consultant</option>
+                                                                <option value="Referred">Referred</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                
+                                            </div>
+                                            <div class="card-body pane-body table-responsive">
+                                                <table id="tableEdit" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th>SrNo.</th>
+                                                            <th style="display: none;">Doctor ID</th>
+                                                            <th>Doctor Name </th>
+                                                            <th>Doctor Type</th>
+                                                            <th>
+                                                                <input class="form-check-input" type="checkbox" id="allcheck" name="allcheck" value="CheckAll">
+                                                                <label class="form-check-label" style="float: right;">Check</label>
+                                                            </th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service For OPD</h2>
+                                    <div class="card-body pane-body" style="max-height: 300px;overflow: auto;">
+                                        <!--Fees Type-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees Type</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="CommissionTypeOPD" name="CommissionTypeOPD">
+                                                    <option value="FIXED BASE">FIXED BASE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fixed-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fixed</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 padding0">
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 fixServiceSection">
+                                                    <input type="number" id="FixedOPD" name="FixedOPD" class="form-control">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <select class="form-control" id="FixedOPDRsType" name="FixedOPDRsType">
+                                                        <option value="%">%</option>
+                                                        <option value="Rs">Rs</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--ServiceGroup Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Grp. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceGroupName" name="ServiceGroupName" class="form-control" placeholder="Service Group Name">
+                                                <input type="hidden" id="ServiceGroupID" name="ServiceGroupID" class="form-control">
+                                            </div>
+                                            @*<div class="col-lg-2">
+                                                    <button type="button" id="OPDServiceGroup" class="btndivcss" name="OPDServiceGroup" style=" border-radius: 4px 4px 4px 4px; height: 28px; background: #35a4f1; color: #ffffff; width: 55px; padding: 0px; border: 0px; margin-left: -5px; font-family: roboto;"><span>Add</span></button>
+                                                </div>*@
+                                        </div>
+                                        <!--service Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Srvc. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="Service Name">
+                                                <input type="hidden" id="ServiceID" name="ServiceID" class="form-control input-sm" />
+                                            </div>
+                                        </div>
+                                        <!--Include / Exclude-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Incl / Excl</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 ">
+                                                <select id="IEOPD" name="IEOPD" class="form-control">
+                                                    <option value="Include">Include</option>
+                                                    <option value="Exclude">Exclude</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fees (%)-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees (%)</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <input type="number" name="CommissionOPD" id="CommissionOPD" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <select id="CommissionOPDRsType" name="CommissionOPDRsType" class="form-control">
+                                                    <option value="%">%</option>
+                                                    <option value="Rs">Rs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Add Button-->
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <button id="btnOPD" type="button" class="btndivcss" style="float: right;">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-primary panel-primary">
+                                    @*<h2 class="panelheading">Service For OPD Details</h2>*@
+                                    <div class="table-responsive p-0" style="max-height: 300px;">
+                                        <table id="tableOPD" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col">Service Group Name</th>
+                                                    <th scope="col">Service Name</th>
+                                                    <th scope="col">Include/Exclude</th>
+                                                    <th scope="col">Fees</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service For IPD</h2>
+                                    <div class="card-body pane-body" style="max-height: 300px;overflow: auto;">
+                                        <!--Fees Type-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees Type</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <select class="form-control" name="CommissionTypeIPD" id="CommissionTypeIPD">
+                                                    <option value="FIXED BASE">FIXED BASE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fixed-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fixed</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <input type="number" id="FixedIPD" name="FixedIPD" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <select class="form-control" name="FixedIPDType" id="FixedIPDType">
+                                                    <option value="%">%</option>
+                                                    <option value="Rs">Rs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Service Group Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Grp. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceGroupNameIPD" name="ServiceGroupNameIPD" class="form-control" placeholder="Service Group Name">
+                                                <input type="hidden" id="ServiceGroupIDIPD" name="ServiceGroupIDIPD" class="form-control">
+                                            </div>
+                                            @*<div class="col-lg-2">
+                                                    <button type="button" id="IPDServiceGroup" class="btndivcss" name="IPDServiceGroup" style=" border-radius: 4px 4px 4px 4px; height: 28px; background: #35a4f1; color: #ffffff; width: 55px; padding: 0px; border: 0px; margin-left: -5px; font-family: roboto;"><span>Add</span></button>
+                                                </div>*@
+                                        </div>
+                                        <!--service Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Srvc. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceNameIPD" name="ServiceNameIPD" class="form-control" placeholder="Service Name">
+                                                <input type="hidden" id="ServiceIDIPD" name="ServiceIDIPD" class="form-control input-sm" />
+                                            </div>
+                                        </div>
+                                        <!--Include / Exclude-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Incl / Excl</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 ">
+                                                <select id="IEIPD" name="IEIPD" class="form-control">
+                                                    <option value="Include">Include</option>
+                                                    <option value="Exclude">Exclude</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fees (%)-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees (%)</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <input type="number" id="CommissionIPD" name="CommissionIPD" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <select class="form-control" name="CommissionIPDType" id="CommissionIPDType">
+                                                    <option value="%">%</option>
+                                                    <option value="Rs">Rs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Add Button-->
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <button id="btnIPD" type="button" class="btndivcss" style="float: right;">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-primary panel-primary">
+                                    @*<h2 class="panelheading">Service For IPD Details</h2>*@
+                                    <div class="table-responsive p-0" style="max-height: 300px;">
+                                        <!--Service For IPD Table-->
+                                        <table id="tableIPD" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col">Service Group Name</th>
+                                                    <th scope="col">Service Name</th>
+                                                    <th scope="col">Include/Exclude</th>
+                                                    <th scope="col">Fees</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service For LAB</h2>
+                                    <div class="card-body pane-body" style="max-height: 300px;overflow: auto;">
+                                        <!--Fees Type-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees Type</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="CommissionTypeLab" name="CommissionTypeLab">
+                                                    <option value="FIXED BASE">FIXED BASE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fixed-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fixed</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <input type="number" id="FixedLab" name="FixedLab" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <select class="form-control" name="FixedLabType" id="FixedLabType">
+                                                    <option value="%">%</option>
+                                                    <option value="Rs">Rs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--ServiceGroup Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Grp. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceGroupNameLab" name="ServiceGroupNameLab" class="form-control" placeholder="Service Group Name">
+                                                <input type="hidden" id="ServiceGroupIDLab" name="ServiceGroupIDLab" class="form-control">
+                                            </div>
+                                            @*<div class="col-lg-2">
+                                                    <button type="button" id="LABServiceGroup" class="btndivcss" name="LABServiceGroup" style=" border-radius: 4px 4px 4px 4px; height: 28px; background: #35a4f1; color: #ffffff; width: 55px; padding: 0px; border: 0px; margin-left: -5px; font-family: roboto;"><span>Add</span></button>
+                                                </div>*@
+                                        </div>
+                                        <!--service Name-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Srvc. Name</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ServiceNameLab" name="ServiceNameLab" class="form-control" placeholder="Service Name">
+                                                <input type="hidden" id="ServiceIDLab" name="ServiceIDLab" class="form-control input-sm" />
+                                            </div>
+                                        </div>
+                                        <!--Include / Exclude-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Incl / Excl</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 ">
+                                                <select id="IELAB" name="IELAB" class="form-control">
+                                                    <option value="Include">Include</option>
+                                                    <option value="Exclude">Exclude</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Fees (%)-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Fees (%)</label>
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <input type="number" id="CommissionLAB" name="CommissionLAB" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                                                <select class="form-control" name="CommissionLABType" id="CommissionLABType">
+                                                    <option value="%">%</option>
+                                                    <option value="Rs">Rs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Add Button-->
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <button id="btnLAB" type="button" class="btndivcss" style="float: right;">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-primary panel-primary">
+                                    @*<h2 class="panelheading">Service For Lab Details</h2>*@
+                                    <div class="table-responsive" style="max-height: 300px;">
+                                        <!--Service For Lab Table-->
+                                        <table id="tableLAB" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th scope="col">Service Group Name</th>
+                                                    <th scope="col">Service Name</th>
+                                                    <th scope="col">Include/Exclude</th>
+                                                    <th scope="col">Fees</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

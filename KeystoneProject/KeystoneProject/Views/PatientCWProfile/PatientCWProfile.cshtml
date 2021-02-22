@@ -1,0 +1,335 @@
+﻿@model KeystoneProject.Models.MasterLaboratory.PatientCWProfile
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#patientCWProfileTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#OrgName").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("BindOrganization", "PatientCWProfile")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.OrganizationName, value: item.OrganizationName, id: item.OrganizationID };
+                        }));
+                    },
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#OrgID").val(ui.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#ProfileName").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("BindProfile", "PatientCWProfile")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term, OrgID: $("#OrgID").val() },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.ProfileName, value: item.ProfileName, id: item.ProfileID, PatientCWProfileID: item.PatientCWProfileID };
+                        }));
+                    },
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#ProfileID").val(ui.item.id);
+            }
+        });
+    });
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllPatientCWProfile", "PatientCWProfile")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                //$("#tr").remove();
+                //$('#example3 tbody tr').remove();
+                $.each(result, function (i, obj) {
+                    debugger
+                    $("#patientCWProfileTableId").append('<tr><td style="width:30px">' + count + '</td><td>  ' + obj.OrganizationName + '  </td>><td>  ' + obj.ProfileName + '  </td><td>  ' + obj.GeneralCharges + '  </td><td>  ' + obj.EmergencyCharges + '  </td><td style="display:none">  ' + obj.OrganizationID + '  </td><td style="display:none"> <input type="text" name="ProfileID1"   value=' + obj.ProfileID + '> </td><td style="display:none"><input type="text" name="PatientCWProfileID1" value=' + obj.PatientCWProfileID + '> </td</tr>');
+                    count++;
+                });
+                $('#patientCWProfileTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#patientCWProfileTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#patientCWProfileExcelExport'));
+            },
+            error: function () {
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#patientCWProfileTableId").delegate('td', 'click', function () {
+            //alert("abc");
+            //var CollectionID = parseInt(document.getElementById("Collect").tBodies[0].rows[row_num].cells[7].innerHTML);
+            debugger
+            var row_num = parseInt($(this).parent().index());
+            var PatientCWProfileID = parseInt(document.getElementById("patientCWProfileTableId").tBodies[0].rows[row_num].cells[7].children[0].value);
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            //alert(PatientCWProfileID);
+            $("#PatientCWProfileID").val(PatientCWProfileID);
+            //alert($("#PatientCWProfileID").val());
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPatientCWProfileRate", "PatientCWProfile")',
+                data: { id: $("#PatientCWProfileID").val() },
+                dataType: "json",
+                success: function (data) {
+                    //alert(obd.DepartmentName);
+                    $("#OrgID").val(data[0].OrganizationID);
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("BindOrg", "PatientCWProfile")',
+                        data: { id: $("#OrgID").val() },
+                        dataType: "json",
+                        success: function (data) {
+                            $("#OrgID").val(data[0].OrganizationID);
+                            $("#OrgName").val(data[0].OrganizationName);
+                        },
+                    });
+                    debugger
+                    //var org = $("#OrgID").val();
+                    //alert(org);
+                    $("#ProfileName").val(data[0].ProfileName);
+                    $("#ProfileID").val(data[0].ProfileID);
+                    $("#GeneralChg").val(data[0].GeneralCharges);
+                    $("#EmergChg").val(data[0].EmergencyCharges);
+                    //$("#Address").val(data[0].Address);
+                    //$("#EmailID").val(data[0].Email);
+                    //$("#Admin").val(data[0].AdminInCharge);
+                },
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "PatientCWProfile")',
+                    data: { id: $("#PatientCWProfileID").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Delete Successfully");
+                            debugger
+                            location.reload();
+                        }
+                    },
+                });
+            }
+        })
+    })
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient CW Profile Rate Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Patient CW Profile Rate</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient CW Profile Rate Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Organization Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Organization Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" name="OrgID" id="OrgID" class="form-control" />
+                                                        <input type="text" name="OrgName" id="OrgName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Organization Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Profile Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Profile Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="ProfileName" id="ProfileName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Profile Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" name="ProfileID" id="ProfileID" required class="form-control">
+                                                        <input type="hidden" name="PatientCWProfileID" id="PatientCWProfileID" />
+                                                    </div>
+                                                </div>
+                                                <!--General Charges-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>General Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="GeneralChg" id="GeneralChg" value="0.00" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter General Charges')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Emergency Charges-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Emergency Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="EmergChg" id="EmergChg" value="0.00" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Emergency Charges')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="patientCWProfileExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="patientCWProfileTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Organization Name</th>
+                                            <th>Profile Name</th>
+                                            <th>General Charges</th>
+                                            <th>EmergencyCharges</th>
+                                            <th style="display: none;">OrganizationID</th>
+                                            <th style="display: none;">ProfileID1</th>
+                                            <th style="display: none;">PatientCWProfileID1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

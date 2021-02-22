@@ -1,0 +1,441 @@
+﻿@model KeystoneProject.Models.PatientReport.PatientBillNoReport
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>
+*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+@*<style>
+        input[type=file] {
+            display: block;
+            background: #ffffff;
+            padding: 0px 2px 0px 0px;
+            color: #868f95 !important;
+            font-family: roboto;
+        }
+
+        .btn-group {
+            margin-bottom: 4px;
+        }
+
+        .btn {
+            padding: 0px;
+        }
+
+        .padding0 {
+            padding: 0px;
+        }
+
+        .btndivcss:hover {
+            color: #fff;
+            background-color: #03578e;
+            border-color: #106dca;
+        }
+
+        .btndivcss {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 6px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+
+        .btndivcss1 {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 0px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+
+        .buttoniconcss {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 0px 0px 4px;
+            margin-right: 5px;
+        }
+
+        .buttoniconcss1 {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 4px 4px 4px;
+            margin-right: 0px;
+        }
+
+        #datatable-responsive_wrapper {
+            background: #ffffff;
+        }
+
+        input {
+            border: 1px solid #ccc;
+            border-radius: 1px;
+            padding: 3px;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #35a4f1;
+            border-radius: 23px;
+        }
+
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .btn-group {
+            padding-right: 4px;
+        }
+
+        .topheadline {
+            background: white;
+            padding: 3px;
+            color: #1e2123;
+            box-shadow: 1px 1px 11px 1px #cecece;
+            font-family: roboto;
+            padding-left: 12px;
+            font-size: 19px;
+            margin-top: 0px;
+        }
+
+        .panelheading {
+            background: rgb(189, 223, 247);
+            color: #22292d;
+            font-family: roboto;
+            font-size: 15px;
+            padding: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .panel-primary {
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            box-shadow: 1px 1px 11px 1px #eae4e4;
+            background: #ffffff;
+        }
+
+        .content-wrapper {
+            background: #F6F7FB !important;
+        }
+
+        span {
+            font-family: roboto;
+            font-size: 14px;
+        }
+
+        .rowmargintop {
+            margin-top: 5px;
+        }
+
+        .form-control {
+            height: 26px;
+            padding: 1px 1px 1px 6px;
+        }
+
+        .rowmarginbottom {
+            margin-bottom: 4px;
+        }
+
+        .btn-warning {
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            font-family: roboto;
+        }
+
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+    </style>*@
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindPatientName", "PatientBillNoReport")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            debugger
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNo
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#PatientRegNo").val(show);
+            },
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('#View').click(function () {
+            $.ajax({
+                url: '@Url.Action("GetReportMISPatientBillNoWiseReport", "PatientBillNoReport")',
+                type: "GET",
+                data: { PatientRegNo: $('#PatientRegNo').val(), FromBillNo: $('#FromBillNo').val(), ToBillNo: $('#ToBillNo').val() },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    $("#tbl tr").remove();
+                    //   $("#patientBillNoTableId tbody tr").remove();
+                    var table = "";
+                    var tr = "";
+                    var GrossAmt = "";
+                    var DisAmt = "";
+                    var TaxAmt = "";
+                    var BillAmt = "";
+                    for (var d = 0; d < data.length; d++) {
+                        debugger;
+                        var SrNo = d + 1;
+                        $("#tbl").append('<tr><td>' + SrNo + '</td><td>' + data[d].BillNo + '</td><td>' + data[d].PatientRegNo + '</td><td >' + data[d].OPDIPDNo + '</td><td>' + data[d].PatientName + '</td><td>' + data[d].BillType + '</td><td>' + data[d].BillDate + '</td><td>' + data[d].GrossAmount + '</td><td>' + data[d].DisAmount + '</td><td>' + data[d].TaxAmount + '</td><td>' + data[d].BillAmount + '</td><td>' + data[d].PaymentType + '</td><td>' + data[d].FinancialYear + '</td><td style="display:none">' + data[d].DoctorName + '</td></tr>');
+                        $("#grossAmount").val(data[d].GrossAmount1);
+                        $("#discountAmount").val(data[d].DisAmount1);
+                        $("#taxAmount").val(data[d].TaxAmount1);
+                        $("#billAmount").val(data[d].BillAmount1);
+                      
+                    };
+                    if (GrossAmt > 0 || DisAmt>0) {
+                        debugger
+                        GrossAmt = data[d].GrossAmount1;
+                        DisAmt = data[d].DisAmount1;
+                        TaxAmt = data[d].TaxAmount1;
+                        BillAmt = data[d].GrossAmount1;
+                        $("#tbl").append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td</td><td>' + GrossAmount + '</td><td>' + DisAmount + '</td><td>' + TaxAmount + '</td><td>' +BillAmount + '</td><td></td><td</td><td style="display:none"></td></tr>');
+                    }
+                
+
+                    //});
+                    //$("#tbl").append(tr);
+                    $('#voucherReportTableId').dataTable().fnDestroy();
+                    $('.ex-btn').css('display', 'inline-flex');
+                    $('#patientBillNoTableId').DataTable({
+                    "fixedHeader": false,
+                        "paging": true,
+                        "lengthChange": false,
+                        "searching": true,
+                        "ordering": false,
+                        "info": false,
+                        "autoWidth": false,
+                        "responsive": false,
+                        });
+                 
+                    var buttons = new $.fn.dataTable.Buttons($('#patientBillNoTableId').DataTable(), {
+                        buttons: [
+                            {
+                                extend: 'excel',
+                                text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                            }
+                        ]
+                    }).container().appendTo($('#patientBillNoExcelExport'));
+                },
+                error: function (data) {
+                },
+            });
+        })
+    });
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient Bill No Report</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientReport", "Application")">Report</a></li>
+                                    <li class="breadcrumb-item active">Patient Bill No</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Bill No</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Bill Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>From Bill No:</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="FromBillNo" name="FromBillNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Bill Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>To Bill No:</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ToBillNo" name="ToBillNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                        <input type="hidden" id="PatientRegNo" name="PatientRegNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" id="View" name="View" class="btn btn-app">
+                                        <i class="fa fa-search"></i>VIEW
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientReport", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning ex-btn" style="display: none;">
+                                    <a class="btn btn-app" id="patientBillNoExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="patientBillNoTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">SrNo.</th>
+                                            <th scope="col">BillNo</th>
+                                            <th scope="col">RegNo</th>
+                                            <th scope="col">OPDIPDNo</th>
+                                            <th scope="col">PatientName</th>
+                                            <th scope="col">BillType</th>
+                                            <th scope="col">BillDate</th>
+                                            <th scope="col">GrossAmount</th>
+                                            <th scope="col">DiscAmount</th>
+                                            <th scope="col">TaxAmount</th>
+                                            <th scope="col">BillAmount</th>
+                                            <th scope="col">PaymentType</th>
+                                            <th scope="col">FinancialYear</th>
+                                            <th style="display:none">DoctorName</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl" class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="card-body">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <!-- Gross Amount-->
+                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Gross Amtount</label>
+                                        <input type="text" name="grossAmount" id="grossAmount" class="form-control" placeholder="Gross Amount">
+                                    </div>
+                                    <!-- Discount Amount -->
+                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Discount Amount</label>
+                                        <input type="text" name="discountAmount" id="discountAmount" class="form-control" placeholder="Discount Amount">
+                                    </div>
+                                    <!-- Tax Amount -->
+                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Tax Amtount</label>
+                                        <input type="text" name="taxAmount" id="taxAmount" class="form-control" placeholder="Tax Amount">
+                                    </div>
+                                    <!-- Bill Amount -->
+                                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Bill Amtount</label>
+                                        <input type="text" name="billAmount" id="billAmount" class="form-control" placeholder="Bill Amount">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

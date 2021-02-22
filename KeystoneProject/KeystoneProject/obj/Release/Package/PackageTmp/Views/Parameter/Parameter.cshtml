@@ -1,0 +1,1138 @@
+﻿@model KeystoneProject.Models.Master.Parameter
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    .ui-menu {
+        z-index: 1050 !important;
+    }
+</style>
+
+@*<style>
+        .ui-autocomplete, .ui-menu, .ui-menu-item {
+            z-index: 1006 !important;
+        }
+        .ui-autocomplete, .ui-menu, .ui-menu-item {
+            z-index: 100000000 !important;
+        }
+        #ParameterFormulaID {
+            cursor: pointer;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+        input[type=file] {
+            display: block;
+            background: #ffffff;
+            padding: 0px 2px 0px 0px;
+            color: #868f95 !important;
+            font-family: roboto;
+        }
+        .btn-group {
+            margin-bottom: 4px;
+        }
+        .btn {
+            padding: 0px;
+        }
+        .padding0 {
+            padding: 0px;
+        }
+        .btndivcss:hover {
+            color: #fff;
+            background-color: #03578e;
+            border-color: #106dca;
+        }
+        .btndivcss {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 6px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+        .buttoniconcss {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 0px 0px 4px;
+            margin-right: 5px;
+        }
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #35a4f1;
+            border-radius: 23px;
+        }
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+        .btn-group {
+            padding-right: 4px;
+        }
+        .topheadline {
+            background: white;
+            padding: 3px;
+            color: #1e2123;
+            box-shadow: 1px 1px 11px 1px #cecece;
+            font-family: roboto;
+            padding-left: 12px;
+            font-size: 19px;
+            margin-top: 0px;
+        }
+        .panelheading {
+            background: rgb(189, 223, 247);
+            color: #22292d;
+            font-family: roboto;
+            font-size: 15px;
+            padding: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+        .panel-primary {
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            box-shadow: 1px 1px 11px 1px #eae4e4;
+            background: #ffffff;
+        }
+        .content-wrapper {
+            background: #F6F7FB !important;
+        }
+        span {
+            font-family: roboto;
+            font-size: 14px;
+        }
+        .rowmargintop {
+            margin-top: 5px;
+        }
+        .form-control {
+            height: 26px;
+            padding: 1px 1px 1px 6px;
+        }
+        .rowmarginbottom {
+            margin-bottom: 4px;
+        }
+        .btn-warning {
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            font-family: roboto;
+        }
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+    </style>*@
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#normalRangeTableId').DataTable({
+            "fixedHeader": false,
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#helpValueTableID').DataTable({
+            "fixedHeader": false,
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#precisionTableId').DataTable({
+            "fixedHeader": false,
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#formulaTableId').DataTable({
+            "fixedHeader": false,
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+            "responsive": false,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(document).keypress(
+      function (event) {
+          if (event.which == '13') {
+              event.preventDefault();
+          }
+      });
+    });
+</script>
+ 
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+          //  alert($("#idParameterName").val());
+            var conform = confirm("Are you sure you want to Delete this Record ?");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "Parameter")',
+                    type: 'POST',
+                    data: { id: $("#idParameterName").val() },
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Parameter Deleted Successfully !");
+                            location.reload();
+                        }
+                        else {
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#parameterTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script>
+    function Bind() {
+     
+    }
+
+
+    $(document).ready(function () {
+        Bind();
+
+
+        $("#formulaTableId").on('click', '#deleteformulaTableId', function () {
+
+            var conform = confirm("Do you Want To Delete");
+            if (conform)
+                $(this).closest('tr').remove();
+        })
+        $("#formulaTableId").on('click', '#txtParameterFormula', function () {
+            debugger
+            $(this).autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("ParameterFormulaID", "Parameter")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            debugger;
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.ParameterName, value: item.ParameterName, ID: item.ParameterID
+                                };
+                            }))
+                        }
+                    })
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    debugger
+                    //   $(this).val(ui.item.label);
+                    //  $("#formulaTableId tbody").append('<tr><td><input type="text" class="txtParameterFormula form-control" id="txtParameterFormula" name="txtParameterFormula" style="z-index:10000000;"><input type="hidden" value=' + ui.item.ID + ' name="ParameterFormulaID" /></td><td><input type="text" class="form-control" id="txtReferenceName" name="txtReferenceName"></td></tr>');
+                    $(this).closest('tr').find('#ParameterFormulaID').val(ui.item.ID);
+                   // $('#ParameterFormulaID').val(ui.item.ID);
+                   // Bind();
+                }
+            })
+        })
+
+
+        $("#btnformulaAdd").click(function () {
+            debugger
+            $("#formulaTableId tbody").append('<tr><td><input type="text" class="txtParameterFormula form-control" id="txtParameterFormula" name="txtParameterFormula" style="z-index:10000000;"><input type="hidden" id="ParameterFormulaID"  name="ParameterFormulaID" /></td><td><input type="text" class="form-control" id="txtReferenceName" name="txtReferenceName"></td><td> <span class="fa fa-trash buttoniconcss" id="deleteformulaTableId"></span></td></tr>');
+
+        })
+    });
+    function enterpress(e) {
+        debugger;
+        if (e.keyCode == 13) {
+            debugger;
+            
+            txthelpvlue();
+            e.preventDefault();
+            return false;
+        }
+    }
+
+   
+    function txthelpvlue() {
+
+        $("#helpValueTableID").append('<tr><td><input type="text" class="txtHelpValue form-control" id="txtHelpValue" onkeypress = "enterpress(event)" name="txtHelpValue"></td><td><button type="button" id="delrow1" class="btn btn-danger fa fa-trash"></button></td></tr>');
+    }
+    function enterpress1(e) {
+        debugger;
+        if (e.keyCode == 13) {
+            debugger;
+            
+            txtPrecisionvlue()
+            e.preventDefault();
+            return false;
+        }
+    }
+    function txtPrecisionvlue() {
+        $("#precisionTableId").append('<tr><td><input type="text" class="txtPrecisionValue form-control" onkeypress = "enterpress1(event)" id="txtPrecisionValue" name="txtPrecisionValue"></td><td><button type="button" id="delrow2" class="btn btn-danger fa fa-trash"></button></td></tr>');
+    }
+    $(document).ready(function () {
+        $("#UnitName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetUnitID", "Parameter")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item, value: item, ID: item
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                if (!ui.item) {
+                    debugger
+                    this.value = '';
+                }
+                $("#UnitName").val(ui.item);
+            }
+        });
+        $.ajax({
+            url: '@Url.Action("GetTestMasterForBindSampleType", "Parameter")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                var i = 0;
+                $(data).each(function (index) {
+                    debugger
+                    $("#SampleType").append($("<option value=" + data[i][1] + ">" + data[i][0] + "</option>"));
+                    i++;
+                });
+            },
+            error: function (data) {
+            }
+        });
+        $("#ParameterName").keyup(function () {
+            var name = $(this).val();
+            $("#PrintAs").val(name);
+        })
+        $("#txtShortName").keyup(function () {
+            debugger
+            if ($(this).val() == "") {
+                $("#txtFullName").val("");
+            }
+            var len = $("#formulaTableId tbody tr").length;
+            var para = ""
+            var sum = "";
+            var le1 = $(this).val().split("");
+            for (var p = 0; p < le1.length; p++) {
+                for (var i = 0; i < len; i++) {
+                    var RefName = document.getElementById("formulaTableId").tBodies[0].rows[i].cells[1].children[0].value;
+                    if (le1[p] == RefName) {
+                        var Paranmiter = document.getElementById("formulaTableId").tBodies[0].rows[i].cells[0].children[0].value;
+                        para += Paranmiter + "" + sum;
+                    }
+                    //$("#txtFullName").val(para);
+                }
+                if (le1[p] == "+" || le1[p] == "-" || le1[p] == "*" || le1[p] == "(" || le1[p] == ")" || le1[p] == "/" || le1[p] == "%" || le1[p] >= 0) {
+                    para += le1[p];
+                }
+            }
+            debugger
+            $("#txtFullName").val(para);
+            // para += div;
+        })
+        $("#btnParameterDetails").click(function () {
+            debugger;
+            var ParameterFormula = $("#txtParameterFormula").val();
+            var ParameterFormulaID = $("#ParameterFormulaID").val();
+            var ReferenceName = $("#txtReferenceName").val();
+        })
+        $("#btnshow").click(function () {
+            debugger;
+            var formula = $("#txtFullName").val();
+            $("#Formula").val(formula);
+        });
+        $("#row").click(function () {
+            $.ajax({
+                type: "GET",
+                //  contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetNormalRange", "Parameter")',
+                //data: "{}",
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var NormalRangeID = $("#NormalRangeID").val();
+                        // alert(NormalRangeID);
+                        $("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + data[i].DaysFrom + ' class="DaysFrom form-control"></td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + data[i].DaysTo + ' class="DaysTo form-control"></td><td><select id="Gender" name="Gender" class="Gender form-control"><option value =' + data[i].Gender + '>' + data[i].Gender + '</option><option value ="Female">Female</option><option value="Male">Male</option></select></td><td><input type="text" id="ConvLow" name="ConvLow" value=' + data[i].ConvLow + ' class="ConvLow form-control"></td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + data[i].ConvHigh + ' class="ConvHigh form-control"></td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + data[i].ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value="" class="Default form-control"> </td><td><button type="button" id="delrow" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Remove</button></td ><td style="display:none"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + NormalRangeID + '"></td></tr>');
+                    };
+                },
+                error: function (result) {
+                    alert("Error grd bind");
+                }
+            });
+        })
+
+        $.ajax({
+            type: "GET",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetNormalRange", "Parameter")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    debugger
+                    var NormalRangeID = $("#NormalRangeID").val();
+                    //$("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + data[i].DaysFrom + ' class="DaysFrom form-control"></td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + data[i].DaysTo + ' class="DaysTo form-control"> </td><td><select id="Gender" name="Gender" class="Gender form-control"><option value =' + data[i].Gender + '>' + data[i].Gender + '</option><option value="Female">Female</option><option value="Male">Male</option></select></td><td><input type="text" id="ConvLow" name="ConvLow" value=' + data[i].ConvLow + ' class="ConvLow form-control"></td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + data[i].ConvHigh + ' class="ConvHigh form-control"></td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + value.ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value="" class="Default form-control"></td><td><button type="button" id="delrow" class="btn btn-danger fa fa-trash"></button></td><td style="display: none"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + NormalRangeID + '"></td></tr>');
+                    $("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + data[i].DaysFrom + ' class="DaysFrom form-control input-sm"> </td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + data[i].DaysTo + ' class="DaysTo form-control input-sm"> </td><td> <select id="Gender" name="Gender" class="Gender form-control input-sm"><option  value ="Female">Female</option><option  value ="Male">Male</option></select> </td><td><input type="text" id="ConvLow" name="ConvLow" value=' + data[i].ConvLow + ' class="change ConvLow form-control input-sm"> </td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + data[i].ConvHigh + ' class="change ConvHigh form-control input-sm"> </td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + data[i].ConvNormal + ' </textarea></td><td><input type="text" id="Default" name="Default" value="" class="Default form-control input-sm"> </td><td><button type="button" id="delrow" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Remove</button></td><td><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + NormalRangeID + '"> </td></tr>');
+                    document.getElementById("normalRangeTableId").tBodies[0].rows[i].cells[2].children[0].value = data[i].Gender;
+
+                };
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+        $("#normalRangeTableId").on('keyup', '.change', function () {
+            debugger
+            var i =    $(this).closest('tr').index();
+            var low = document.getElementById("normalRangeTableId").tBodies[0].rows[i].cells[3].children[0].value;
+            var high = document.getElementById("normalRangeTableId").tBodies[0].rows[i].cells[4].children[0].value;
+            var refvalue = low + "-" + high;
+           // alert(refvalue);
+            document.getElementById("normalRangeTableId").tBodies[0].rows[i].cells[5].children[0].innerHTML = refvalue;
+        });
+        $("#normalRangeTableId tbody tr").remove();
+        $("#normalRangeTableId").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+        $("#helpValueTableID").on('click', '#delrow1', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+        $("#precisionTableId").on('click', '#delrow2', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        });
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllParameter", "Parameter")',
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+
+                    $("#parameterTableId").append('<tr><td style="Display:none">' + data[i].ParameterID + '</td><td>' + data[i].ParameterName + '</td><td>' + data[i].PrintAs + '</td><td>' + data[i].Alias + '</td><td>' + data[i].Method + '</td><td>' + data[i].Formula + '</td></tr>');
+                };
+                $('#parameterTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#parameterTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#parameterExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+        $("#parameterTableId").delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            //  var column = document.getElementById("normalRangeTableId").rows[rowcount].cells.length;
+            var ParameterID = parseInt(document.getElementById("parameterTableId").tBodies[0].rows[row_num].cells[0].innerHTML);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetParameter", "Parameter")',
+                data: { ParameterID: ParameterID },
+                datatype: "json",
+                success: function (data) {
+                    debugger;
+                    $("#idParameterName").val(data[0].ParameterID);
+                    $("#ParameterName").val(data[0].ParameterName);
+                    $("#PrintAs").val(data[0].PrintAs);
+                    $("#AliasName").val(data[0].Alias);
+                   // CKEDITOR.replace('footerName');
+                    debugger
+                    //$("#footerName").text("");
+                    //CKEDITOR.instances["footerName"].destroy();
+                    //CKEDITOR.replace('footerName');
+                    $("#Description").val(data[0].Footer);
+                    //alert($("#Description").val());
+                    $(".ql-editor").html(data[0].Footer);
+                    //var Footer = data[0].Footer;
+                    //CKEDITOR.instances.footerName.setData(Footer);
+
+                    //let quill = new Quill(".ql-editor", {});
+                    //quill.setContents(data[0].Footer);
+                    //CKEDITOR.instance['footerName'].updateElement(Footer);
+                 //   var list = document.getElementsByTagName("body")[1].innerHTML;
+                   // list.getElementsByTagName("LI")[0].innerHTML = "Milk";
+                 //   $(".cke_editable cke_editable_themed cke_contents_ltr cke_show_borders").append(Footer);
+                 //   alert(list)
+                    //for (var i = 0; i < elements.length; i++) {
+                    //    elements[i].insertAdjacentHTML("beforeend", Footer);
+                    //}
+                    //$(".cke_editable cke_editable_themed cke_contents_ltr cke_show_borders").text(CKEDITOR.instance["#footerName"].getData());
+                   // alert(Footer);
+                    $("#MethodName").val(data[0].Method);
+                    $("#UnitName").val(data[0].Unit);
+                    $("#SampleType").val(data[0].SampleType);
+                    $("#Formula").val(data[0].Formula);
+                    $("#txtShortName").val(data[0].FormulaWithShortName);
+                    $("#txtFullName").val(data[0].Formula);
+                    // var rowcount = 0;
+                    //var table = document.getElementById("normalRangeTableId");
+                    // var rows = table.getElementsByTagName("tr");
+                    // for (var i = 0; i < rows.length; i++) {
+                    //     if (rows[i].getElementsByTagName("td").length > 0) {
+                    //         rowcount++
+                    //     }
+                    // }
+                    debugger;
+                    $("#normalRangeTableId tbody tr").remove();
+                    //   var rowcount1 = rowcount;
+                    var a = 0;
+                    $.each(data, function (key, value) {
+                        debugger;
+                        if (value.DaysFrom != null) {
+                            var NormalRangeID = 0;
+                            //$("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + value.DaysFrom + ' class="DaysFrom form-contro"></td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + value.DaysTo + ' class="DaysTo form-control"></td><td><select id="Gender" name="Gender" class="Gender form-control"><option value=' + value.Sex + '>' + value.Sex + '</option><option value ="Female">Female</option><option value="Male">Male</option></select></td><td><input type="text" id="ConvLow" name="ConvLow" value=' + value.ConvLow + ' class="ConvLow form-control"></td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + value.ConvHigh + ' class="ConvHigh form-control"></td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + value.ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value=' + value.Default + '  class="Default form-control"> </td><td><button type="button" id="delrow" class="btn btn-danger fa fa-trash"></button></td><td style="display: none;"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + 0 + '"></td></tr>');
+                            $("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + value.DaysFrom + ' class="DaysFrom form-control input-sm"> </td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + value.DaysTo + ' class="DaysTo form-control input-sm"> </td><td> <select id="Gender" name="Gender" class="Gender form-control input-sm"> <option  value ="Female">Female</option><option  value ="Male">Male</option></select> </td><td><input type="text" id="ConvLow" name="ConvLow" value=' + value.ConvLow + ' class="ConvLow form-control input-sm"> </td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + value.ConvHigh + ' class="ConvHigh form-control input-sm"> </td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + value.ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value="' + value.Default + '" class="Default form-control input-sm"> </td><td><button type="button" id="delrow" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Remove</button></td><td style="display:none"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value=""> </td></tr>');
+                            document.getElementById("normalRangeTableId").tBodies[0].rows[a].cells[2].children[0].value = value.Sex;
+                            var b = value.Sex;
+                            a++;
+                        }
+                    });
+                    //$.each(data, function (key, value) {
+                    //    debugger;
+                    //    if (value.DaysFrom != null) {
+                    //        var NormalRangeID = 0;
+                    //       // alert(value.Default);
+                    //        //$("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + value.DaysFrom + ' class="DaysFrom form-contro"></td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + value.DaysTo + ' class="DaysTo form-control"></td><td><select id="Gender" name="Gender" class="Gender form-control"><option value=' + value.Sex + '>' + value.Sex + '</option><option value ="Female">Female</option><option value="Male">Male</option></select></td><td><input type="text" id="ConvLow" name="ConvLow" value=' + value.ConvLow + ' class="ConvLow form-control"></td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + value.ConvHigh + ' class="ConvHigh form-control"></td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + value.ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value=' + value.Default + '  class="Default form-control"> </td><td><button type="button" id="delrow" class="btn btn-danger fa fa-trash"></button></td><td style="display: none;"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + 0 + '"></td></tr>');
+                    //        $("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + value.DaysFrom + ' class="DaysFrom form-control input-sm"> </td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + value.DaysTo + ' class="DaysTo form-control input-sm"> </td><td> <select id="Gender" name="Gender" class="Gender form-control input-sm"> <option  value ="Female">Female</option><option  value ="Male">Male</option></select> </td><td><input type="text" id="ConvLow" name="ConvLow" value=' + value.ConvLow + ' class="ConvLow form-control input-sm"> </td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + value.ConvHigh + ' class="ConvHigh form-control input-sm"> </td><td><textarea id="ConvNormal" name="ConvNormal" placeholder="0" row="2" class="ConvNormal form-control">' + value.ConvNormal + '</textarea></td><td><input type="text" id="Default" name="Default" value="' + value.Default + '"  class="Default form-control input-sm"></td><td><button type="button" id="delrow" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Remove</button></td><td style="display:none"><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + NormalRangeID + '"></td></tr>');
+                    //        document.getElementById("normalRangeTableId").tBodies[0].rows[a].cells[2].children[0].value = value.Sex;
+                    //        var b = value.Sex;
+                    //        a++;
+                    //    }
+                    //});
+                    //     for (var count = 0; count < data.length; count++)
+                    //debugger
+                    //     {
+                    //         if (data[count].DaysFrom != null)
+                    //         {
+                    //             alert(data[count].DaysFrom);
+                    //             debugger
+                    //           //  alert(data[count].ConvLow);
+                    //             $("#normalRangeTableId").append('<tr><td><input type="text" id="DaysFrom" name="DaysFrom" value=' + data[count].DaysFrom + ' class="DaysFrom form-control input-sm"> </td><td><input type="text" id="DaysTo" name="DaysTo" value= ' + data[count].DaysTo + ' class="DaysTo form-control input-sm"> </td><td> <select id="Gender" name="Gender" class="Gender form-control input-sm"> <option  value =' + data[count].Sex + '>' + data[count].Sex + '</option><option  value ="Female">Female</option><option  value ="Male">Male</option></select> </td><td><input type="text" id="ConvLow" name="ConvLow" value=' + data[count].ConvLow + ' class="ConvLow form-control input-sm"> </td><td><input type="text" id="ConvHigh" name="ConvHigh" value=' + data[count].ConvHigh + ' class="ConvHigh form-control input-sm"> </td><td><input type="text" id="ConvNormal" name="ConvNormal" value=' + data[count].ConvNormal + '  class="ConvNormal form-control input-sm"> </td><td><input type="text" id="Default" name="Default" value=' + data[count].Default + '  class="Default form-control input-sm"> </td><td><button type="button" id="delrow" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Remove</button></td><td><input type="hidden" name="NormalRangeID" id="NormalRangeID" value="' + 0 + '"> </td></tr>');
+                    //         }
+                    //             //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[0].children[0].value = data[count].DaysFrom;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[1].children[0].value = data[count].DaysTo;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[2].children[0].value = data[count].Sex;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[3].children[0].value = data[count].ConvLow;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[4].children[0].value = data[count].ConvHigh;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[5].children[0].value = data[count].ConvNormal;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[6].children[0].value = data[count].Default;
+                    //         //document.getElementById("normalRangeTableId").tBodies[0].rows[count].cells[7].children[0].value = data[count].NormalRangeID;
+                    //     };
+                    $("#helpValueTableID tbody tr").remove();
+                    for (var i = 0; i < data.length; i++) {
+                        debugger;
+                        if (data[i].HelpValue != null) {
+                            $("#helpValueTableID").append('<tr><td><input type="text" class="form-control" value=' + data[i].HelpValue + ' id="txtHelpValue" name="txtHelpValue"  onkeypress = "enterpress(event)"></td><td><button type="button" id="delrow1" class="btn btn-danger fa fa-trash"></button></tr>');
+                        }
+                    }
+                    $("#precisionTableId tbody tr").remove();
+                    for (var i = 0; i < data.length; i++) {
+                        debugger;
+                        if (data[i].Precision != "" && data[i].Precision != null) {
+                            $("#precisionTableId").append('<tr><td><input type="text" class="form-control" value=' + data[i].Precision + ' onkeypress = "enterpress1(event)" id="txtPrecisionValue" name="txtPrecisionValue"></td><td><button type="button" id="delrow2" class="btn btn-danger fa fa-trash"></button></tr>');
+                        }
+                    }
+                    $("#formulaTableId tbody tr").remove();
+                    for (var i = 1; i < data.length; i++) {
+                        debugger;
+                        if (data[i].Formula != "" && data[i].Formula != null) {
+                            $("#formulaTableId").append('<tr><td><input type="text" class="txtParameterFormula form-control" id="txtParameterFormula" value=' + data[i].ParameterName + '  name="txtParameterFormula" style="z-index:10000000;"><input type="hidden" value=' + data[i].FormulaID + ' id="ParameterFormulaID"  name="ParameterFormulaID" /></td><td><input type="text" class="form-control" id="txtReferenceName" value=' + data[i].Formula + ' name="txtReferenceName"></td><td> <span class="fa fa-trash buttoniconcss" id="deleteformulaTableId"></span></td></tr>');
+                            Bind();
+                        }
+                    }
+                },
+            });
+        });
+    });
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+    //    CKEDITOR.replace('footerName');
+    //    $("#footerName").keyup(function () {
+    //debugger
+    //        if ($("#footerName").text() == "") {
+    //            CKEDITOR.instances.footerName.setData("");
+    //            $("#footerName").text("");
+    //        }
+    //        else
+    //        {
+    //            CKEDITOR.instances.footerName.setData($(this).val());
+    //            $("#footerName").text($(this).val());
+    //        }
+    //    })
+
+        //function editor() {
+        //    //i have null here
+        //    debugger
+        //    for (name in CKEDITOR.instances) {
+        //        CKEDITOR.instances[name].destroy()
+        //    }
+        //    var editor = CKEDITOR.instances.footerName;//i have null here
+        //    editor.on('key', function () {
+        //        var data = editor.getData();
+        //    });
+        //}
+
+     
+       
+            debugger
+            //var editorShort = CKEDITOR.editor.replace('footerName');
+
+           // var _ckDialog = CKEDITOR.instances.footerName.updateElement();
+           // var data = CKEDITOR.instances.footerName.getData();
+           // var p = CKEDITOR.instances['footerName'].getData();
+           // var _ckDialog1 =CKEDITOR.dialog.getCurrent();
+           // var t = $("#footerName").text();
+           // //<p>&nbsp;</p>↵↵<p>&nbsp;</p>↵"
+           // if (data == "" || data == null || data == "<p>&nbsp;</p>↵↵<p>&nbsp;</p>↵")
+           //{
+           //      //var _ckDialog = window.CKEDITOR.dialog.getCurrent();
+           //     CKEDITOR.instances.footerName.setData("");
+           //     $("#footerName").text("");
+
+           // }
+            //var quill = new Quill('#parametereditor', {
+            //    modules: {
+            //        toolbar: [
+            //            ['bold', 'italic'],
+            //            ['link', 'blockquote', 'code-block', 'image'],
+            //            [{
+            //                list: 'ordered'
+            //            }, {
+            //                list: 'bullet'
+            //            }]
+            //        ]
+            //    },
+            //    placeholder: 'Compose an epic...',
+            //    theme: 'snow'
+            //});
+           // var quill = new Quill('#parametereditor');
+
+          //  var form = document.querySelector('form1');
+            $("#form1").submit(function () {
+                debugger
+                // Populate hidden form on submit
+            
+               // var description = document.querySelector('input[name=Description]');
+                var description = $(".ql-editor").html();
+              
+                $("#Description").val(description);
+              //  alert($("#Description").val());
+               // return false;
+                //description.value = quill.getContents();
+            });
+        //})
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post" id="form1">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Parameter Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Parameter</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Parameter Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Parameter Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Param. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="idParameterName" name="idParameterName" />
+
+                                                        <input type="text" id="ParameterName" name="ParameterName" class="form-control" placeholder="Parameter Name"
+                                                                 style="border-left-color: red;border-left-width:thick;" required
+                                                               oninvalid="this.setCustomValidity('Please Enter Parameter Name')" oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!--Parameter Print Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Print As</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PrintAs" name="PrintAs" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Alias-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Alias</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="AliasName" name="AliasName" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Method-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Method</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MethodName" name="MethodName" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Unit-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Unit</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="UnitName" name="UnitName" class="form-control">
+                                                        <input type="hidden" id="UnitNameID" name="UnitNameID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Sample Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Sample Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="SampleTypeID" name="SampleTypeID">
+                                                        <select id="SampleType" name="SampleType" class="form-control">
+                                                            <option value="0">Select</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Formula-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Formula</label>
+                                                    </div>
+
+
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Formula" readonly name="Formula" class="form-control">
+                                                    </div>
+
+                                                </div>
+                                                <!--Send SMS-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>send SMS</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="checkbox">
+                                                    </div>
+                                                </div>
+                                                <!--Fomula Button-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12"></div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <button type="button" class="btndivcss" data-toggle="modal" data-target="#myModal">
+                                                            <span id="btnParameterDetails" class="fa fa-calculator"></span> Formula
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Footer-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Footer</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                                        @*<input type="text" id="footerName" name="footerName" class="form-control input-sm" />*@
+                                                        @*<textarea class="form-control" id="footerName" name="footerName"></textarea>*@
+                                                        @*<textarea id="footerName" name="footerName"></textarea>*@
+                                                        <div id="parametereditor" name="parametereditor" ></div>
+                                                        <input type="hidden" name="Description" id="Description" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary card-tabs">
+                                    <div class="card-header p-0 pt-1">
+                                        <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                                            <li class="pt-2 px-3">
+                                                <h2 class="panelheading">Parameter Details</h2>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="parameterDetails-normalRange-tab" data-toggle="pill" href="#parameterDetails-normalRange" role="tab" aria-controls="parameterDetails-normalRange" aria-selected="true">
+                                                    Normal Range
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="parameterDetails-helpValue-tab" data-toggle="pill" href="#parameterDetails-helpValue" role="tab" aria-controls="parameterDetails-helpValue" aria-selected="false">
+                                                    Help Value
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="parameterDetails-precision-tab" data-toggle="pill" href="#parameterDetails-precision" role="tab" aria-controls="parameterDetails-precision" aria-selected="false">
+                                                    Precision
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content" id="custom-tabs-two-tabContent">
+                                            <div class="tab-pane fade show active" id="parameterDetails-normalRange" role="tabpanel" aria-labelledby="parameterDetails-normalRange-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                        <table id="normalRangeTableId" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    <th>Days (>)</th>
+                                                                    <th>Days (<)</th>
+                                                                    <th>Gender</th>
+                                                                    <th>Convergence Low</th>
+                                                                    <th>Convergence High</th>
+                                                                    <th>Reference Range</th>
+                                                                    <th>Default</th>
+                                                                    <th>Action</th>
+                                                                    <th style="display: none;">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="scrollbar"></tbody>
+                                                        </table>
+                                                        <div class="box-footer">
+                                                            <button type="button" id="row" class="btndivcss"><span class="attachment"></span>AddRow</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="parameterDetails-helpValue" role="tabpanel" aria-labelledby="parameterDetails-helpValue-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                        <table id="helpValueTableID" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    <th>HelpValue</th>
+                                                                    <th>Remove</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="scrollbar">
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="hidden" id="HelpValueID" name="HelpValueID" />
+                                                                        <input type="text" id="txtHelpValue" name="txtHelpValue" class="form-control" onkeypress="enterpress(event)">
+                                                                        <input type="hidden" id="NormalRangeID" name="NormalRangeID" />
+                                                                    </td>
+                                                                    <td><button type="button" id="delrow1" class="btn btn-danger fa fa-trash"></button></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="parameterDetails-precision" role="tabpanel" aria-labelledby="parameterDetails-precision-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                        <table id="precisionTableId" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    <th>Precision</th>
+                                                                    <th>Remove</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="scrollbar">
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="hidden" id="PrecisionID" name="PrecisionID" />
+                                                                        <input type="text" id="txtPrecisionValue" name="txtPrecisionValue" class="form-control" onkeypress="enterpress1(event)">
+                                                                    </td>
+                                                                    <td><button type="button" id="delrow2" class="btn btn-danger fa fa-trash"></button></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="parameterExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="parameterTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th style="display:none">ParameterID</th>
+                                            <th>ParameterName</th>
+                                            <th>PrintAs</th>
+                                            <th>Alias</th>
+                                            <th>Method</th>
+                                            <th>Formula</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Parameter Formula Detail</h4>
+                                        <button type="button" id="btnclose" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <table id="formulaTableId" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th>Parameter Name</th>
+                                                        <th>Ref. Name</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="scrollbar">
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" class="txtParameterFormula form-control" id="txtParameterFormula" name="txtParameterFormula">
+                                                            <input type="hidden" id="ParameterFormulaID" name="ParameterFormulaID" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" id="txtReferenceName" name="txtReferenceName">
+                                                        </td>
+                                                        <td>
+                                                            <span class="fa fa-trash buttoniconcss" id="deleteformulaTableId"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Short Name</label>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="text" id="txtShortName" name="txtShortName" class="form-control" style="width:100%">
+                                                    <input type="hidden" id="ShortNameID" name="ShortNameID" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Full Name</label>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <textarea id="txtFullName" rows="4" name="txtFullName" class="form-control" style="width:100%"></textarea>
+                                                    <input type="hidden" id="FullNameID" name="FullNameID" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <button type="button" id="btnformulaAdd" class="btn btn-danger fa fa-eraser pull-right" title="Add"  >Add</button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="button" value="Ok" id="btnshow" class="btn btn-success pull-right" data-dismiss="modal" style="font-size: 15px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

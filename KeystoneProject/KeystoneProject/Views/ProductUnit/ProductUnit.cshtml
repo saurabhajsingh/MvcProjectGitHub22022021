@@ -1,0 +1,284 @@
+﻿@{
+    ViewBag.Title = "Product Unit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("showProductUnit", "ProductUnit")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                var sel;
+                var table = "";
+                var tr = "";
+                for (var i = 0; i < data.length; i++) {
+                    debugger
+                    if (data[i].sellLoose==0) {
+                        sel = "FALSE";
+                    }
+                    else
+                    {
+                        sel = "TRUE";
+                    }
+                    var SrNo = i + 1;
+                    $("#productUnitTable").append('<tr><td style="width:60px !important">' + SrNo + '</td><td>' + data[i].ProductUnitName + '</td><td>' + data[i].contains + '</td><td>' + data[i].lowerUnitName + '</td><td>' + sel + '</td><td style="display:none">' + data[i].ProductUnitID + '</td></tr>');
+                };
+                $("#productUnitTable").DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($("#productUnitTable").DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel',
+                        }
+                    ]
+                }).container().appendTo($("#productUnitTableExcelExport"));
+            }
+        });
+
+    });
+
+</script>
+<script>
+
+    $(document).ready(function () {
+        debugger
+        //$('#genericInformationTable').delegate('tr', 'click', function () {
+        //    debugger;
+        //    $('#GenericID').DataTable();
+        //    $('#GenericID tr').removeClass('highlighted');
+        //    $(this).addClass('highlighted');
+        //});
+        // var table = $('#GenericInformation').DataTable();
+        $('#productUnitTable tbody').delegate('td', 'click', function () {
+            debugger
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var con;
+            var row_num = parseInt($(this).parent().index());
+            var ProductUnitID = parseInt(document.getElementById('productUnitTable').tBodies[0].rows[row_num].cells[5].innerHTML);
+            if (ProductUnitID > 0) {
+                //$("#save").val("Update");
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("EditProductInformation", "ProductUnit")',
+                    data: { id: ProductUnitID },
+                    dataType: "json",
+                    success: function (data) {
+                        $.each(data, function (i, obd) {
+                            //alert(obd.DepartmentName);
+                            $("#ProductUnitID").val(obd.ProductUnitID);
+                            $("#ProductUnitName").val(obd.ProductUnitName);
+                            $("#lowerUnitName").val(obd.lowerUnitName);
+                            $("#contains").val(obd.contains);
+                          //  $("#sellLoose").val(obd.sellLoose);
+                            if (obd.sellLoose==1)
+                            {
+                                $("#sellLoose").prop("checked",true);
+                            }
+                        else
+                    {
+                                $("#sellLoose").prop("checked", false);
+                    }
+                            
+                        });
+                    },
+                });
+            }
+
+        });
+    });
+</script>
+<script>
+    function Delete(ProductUnitID) {
+        debugger;
+        var ans = confirm("Are you sure you want to delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                //url: "/Department/DeleteDepartment?DepartmentID=" + DepartmentID,
+                url: '@Url.Action("DeleteProductUnit", "ProductUnit")',
+                data: { id: ProductUnitID },
+                dataType: "json",
+                success: function (data) {
+                    if (data == "ProductUnit Deleted Successfully") {
+                        alert("ProductUnit Deleted Successfully");
+                        window.location.reload(true);
+                    }
+                    else {
+                        //alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+
+</script>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Product Unit Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster","Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Product Unit</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Unit</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Product Unit Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                           <label>Unit Name</label>
+                                                        
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="ProductUnitID" name="ProductUnitID" />
+                                                        <input type="text" id="ProductUnitName" name="ProductUnitName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter ProductUnitName ')"
+                                                               oninput="this.setCustomValidity('')">
+                                                       
+                                                     
+                                                 
+                                                    </div>
+                                                </div>
+                                                <!--Contains-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Cont.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="number" id="contains" name="contains" value="0.00" class="form-control" placeholder="Contains">
+                                                        
+
+                                                    </div>
+                                                </div>
+                                                <!--Lower Unit Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Lower Unit</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="lowerUnitName" name="lowerUnitName" class="form-control" placeholder="Lower Unit Name">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <!--Sell Loose-->
+                                                <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline pull-right">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="sellLoose" name="sellLoose">Sell Loose
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('ProductUnitID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="productUnitTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="card-body col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="productUnitTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Unit Name</th>
+                                            <th>Contain</th>
+                                            <th>Product Lower Unit Name</th>
+                                            <th>Sell Loose</th>
+                                            <th style="display:none">ProductUnitID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

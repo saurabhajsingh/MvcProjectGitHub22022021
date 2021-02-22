@@ -1,0 +1,484 @@
+﻿
+@model KeystoneProject.Models.Master.TemporaryDoctorMaster
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        //Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+
+        $.ajax({
+           
+            url: '@Url.Action("GetAllFinancialYear", "PatientIPDWardTransfer")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+</script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PatientRegNOprint").change(function () {
+
+            var printReg = $(this).val();
+            debugger
+            $.ajax({
+                url: '@Url.Action("GetPatientPrintNo_ToRegNo", "PatientOPD")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: $("#PatientRegNOprint").val(), PatientType: "%" },
+                success: function (data) {
+                    debugger
+                    $("input[type=text],input[type=number] ,hidden").val("");
+                    $("#PatientRegNOprint").val(printReg);
+                    $("#PatientRegNO").val(data);
+                    Bind();
+                }
+
+            })
+
+            });
+        $("#checkdoctor").click(function (){
+            debugger
+
+            var a = $("#TemporaryDoctor").val();
+            var b = "Consultant";
+            alert(b);
+
+            localStorage.setItem("TemporaryDoctorID", a)
+            localStorage.setItem("ConsultantID", b)
+
+        })
+
+        $("#checkdoctor1").click(function (){
+            debugger
+
+            var b = $("#RefferedTemporaryDoctor").val();
+            var c = "Referred";
+
+            localStorage.setItem("RefferedDoctorID", b)
+            localStorage.setItem("ReferredID", c)
+
+        })
+    });
+
+    function Bind() {
+
+
+        debugger
+
+        var id = $("#PatientRegNO").val();
+
+        debugger
+
+        $.ajax({
+
+            url: '@Url.Action("PatientRegNO_Leave", "TemporaryDoctorMaster")',
+            type: "GET",
+            data: {
+                RegNo: id
+            },
+            dataType: "json",
+            success: function (data) {
+
+                debugger;
+                $("#PatientRegNo").val(data[0].PatientRegNo);
+                $("#PatientType").text(data[0].PatientType);
+                $("#PatientType1").val(data[0].PatientType);
+                $("#TemporaryDoctor").val(data[0].TemporaryDoctor);
+                $("#patient_name").val(data[0].patientname); 
+                $("#RefferedTemporaryDoctor").val(data[0].RefferedTemporaryDoctor);
+                $("#PatientOPDIPDNO").val(data[0].PatientOPDIPDNO);
+                $("#Consultant").val(data[0].Consultant);
+                $("#Referred").val(data[0].Referred);
+
+            },
+        });
+
+
+        $("#ReferredByDoctorName").autocomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("RefferedDoctor", "PatientOPD")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID
+                            };
+
+                        }))
+
+                    }
+
+
+                })
+            },
+
+
+            minLength: 1,
+            change: function (event, ui) {
+
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+
+                var id = ui.item.id;
+                $("#ReferredByDoctorID").val(id);
+
+
+            }
+
+        })
+
+
+        $("#ConsultantDoctorName,#ConsDr1").autocomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("ConsultantDoctor", "PatientOPD")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: "%" },
+                    success: function (data) {
+
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID, DepartmentID: item.DepartmentID
+                            };
+
+                        }))
+
+                    }
+
+
+                })
+            },
+
+
+            minLength: 1,
+            change: function (event, ui) {
+
+                debugger
+
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+
+                var id = ui.item.id;
+                $("#ConsultantDoctorID").val(id);
+
+
+                debugger
+                var id = ui.item.DepartmentID;
+                $("#DepartMentID").val(id);
+
+                $.ajax({
+                    type: "POST",
+
+                    url: '@Url.Action("getFill_Department", "PatientOPD")',
+                    data: '{DepartMentID: ' + JSON.stringify(id) + '}',
+                    contentType: "application/json; charset=utf-8",
+
+                    success: function (searchList) {
+
+                        $("#DepartMentName").val(searchList[0]);
+
+                    },
+
+                });
+
+            }
+
+        })
+
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowAllTemporaryDoctorStatus", "TemporaryDoctorMaster")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#patientTemporaryTableId tbody").append('<tr><td>' + SrNo + '</td><td>' + data[i].PatientRegNo + '</td><td>' + data[i].patientname + '</td><td>' + data[i].TemporaryDoctor + '</td><td>' + data[i].RefferedTemporaryDoctor + '</td></tr>');
+                };
+
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    
+        $("#patientTemporaryTableId").delegate('td','click',function() {
+            debugger
+            var row_num = parseInt($(this).parent().index());
+
+            var PatientRegNo = document.getElementById("patientTemporaryTableId").tBodies[0].rows[row_num].cells[1].innerHTML;
+            var patientname = document.getElementById("patientTemporaryTableId").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var TemporaryDoctor = document.getElementById("patientTemporaryTableId").tBodies[0].rows[row_num].cells[3].innerHTML;
+            var RefferedTemporaryDoctor = document.getElementById("patientTemporaryTableId").tBodies[0].rows[row_num].cells[4].innerHTML;
+
+            $("#PatientRegNOprint").val(PatientRegNo);
+            $("#patient_name").val(patientname);
+            $("#TemporaryDoctor").val(TemporaryDoctor);
+            $("#RefferedTemporaryDoctor").val(RefferedTemporaryDoctor);
+        })
+    });
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <form action="" method="post">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Temporary Doctor Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient</a></li>
+                                    <li class="breadcrumb-item active">Patient IPD Ward Transfer</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--UHID Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>UHID No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="FinancialYear" name="FinancialYearID" disabled></select>
+                                                    </div>
+                                                    <div class="hide col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                                        
+                                                        <input value="" type="hidden" class="form-control" id="PatientRegNO" name="PatientRegNO">
+                                                        <input type="hidden" id="PatientOPDIPDNO" name="PatientOPDIPDNO" class="form-control" />
+                                                        <input type="hidden" id="Consultant" name="Consultant" class="form-control" />
+                                                        <input type="hidden" id="Referred" name="Referred" class="form-control" />
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientRegNOprint" name="PatientRegNOprint" class="form-control">
+
+                                                    </div>
+                                                </div>
+                                                <!--IPD Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Type</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label class="lbl" id="PatientType"></label>
+                                                        <input type="hidden" value="OPD" name="PatientType1" id="PatientType1">
+
+                                                    </div>
+
+                                                </div>
+                                                <!--IPD Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="patient_name" name="patient_name" class="form-control">
+                                                        <input value="" type="hidden" id="patientID" class="form-control" name="patientID" placeholder="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">                                                   
+                                                 <!--Doctor Name-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Temporary Consultant Doctor</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="TemporaryDoctor" name="TemporaryDoctor" class="form-control" readonly>
+                                                    </div>
+                                                    <input type="checkbox" id="checkdoctor" name="checkdoctor" onclick= "window.location.href = '@Url.Action("Doctor", "Doctor")'"/>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Temporary Reffered Doctor</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="RefferedTemporaryDoctor" name="RefferedTemporaryDoctor" class="form-control"readonly>
+                                                    </div>
+                                                    <input type="checkbox" id="checkdoctor1" name="checkdoctor1" onclick="window.location.href = '@Url.Action("Doctor", "Doctor")'" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Replace Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                          
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Doctor Name-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Consultant Dr.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="ConsultantDoctorID" name="ConsultantDoctorID" class="form-control" />
+                                                        <input type="text" id="ConsultantDoctorName" name="ConsultantDoctorName" class="form-control" placeholder="Consultant Doctor" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 padding0">
+                                                        <span>Department</span>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12" style="padding-right: 0;">
+                                                        <input type="hidden" id="DepartMentID" name="DepartMentID" class="form-control" />
+                                                        <input type="text" id="DepartMentName" name="DepartMentName" readonly class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Referred Dr.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="ReferredByDoctorID" name="ReferredByDoctorID" class="form-control" />
+                                                        <input type="text" id="ReferredByDoctorName" name="ReferredByDoctorName" class="form-control" placeholder="Referred Doctor" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app">
+                                        <i class="fa fa-save"></i>Replace
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="patientTemporaryDoctorMasterTableId"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="patientTemporaryTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr.No.</th>
+                                            <th>UHID No.</th>
+                                            <th>Patient Name</th>
+                                            <th>Temporary Consultant Doctor</th>
+                                            <th>Temporary Reffered Doctor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</body>
+
+
+
+
+
+

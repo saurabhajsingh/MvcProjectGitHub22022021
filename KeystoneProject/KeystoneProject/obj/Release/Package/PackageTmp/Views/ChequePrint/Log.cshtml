@@ -1,0 +1,78 @@
+﻿
+@{
+    
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<html>
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+
+  <script>
+     
+      $('#table2').DataTable({
+          dom: 'Bfrtip',
+          buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+          ]
+      });
+      function ClickButton()
+      {
+          var user = document.getElementById("user").value;
+          var Pass = document.getElementById("pass").value;
+
+          if (user == "vijay" && Pass == "arti")
+          {
+              alert("Log in Sussefully");
+          }
+          else
+          {
+              alert("Log in fail");
+          }
+      }
+  </script>
+</head>
+
+<body>
+    <style>
+        .viju{
+            background-color:green;
+            color:white;
+        }
+    </style>
+    <div style="margin-left:50%; margin-right:50%;"> 
+     <table>
+         <tr>
+             <td>Username</td>
+             <td><input type="text" id="user" />  </td>
+         </tr>
+         <tr>
+             <td>Password</td>
+             <td><input type="password" id="pass" />  </td>
+         </tr>
+         <tr>
+             
+             <td colspan="2"><input type="button" onclick="ClickButton()" class="viju" value="Log in" />  </td>
+         </tr>
+     </table>
+        <table class="table">
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </table>
+    </div>
+</body>
+</html> 

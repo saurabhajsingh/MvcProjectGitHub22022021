@@ -1,0 +1,469 @@
+﻿@{
+    ViewBag.Title = "Sale Purchase Modify";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#ProductName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindProductName", "SalePurchaseModify")',
+                    type: "GET",
+                    dataType: "Json",
+                    data: { Name: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ProductName, value: item.ProductName, id: item.ProductID,
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var ProductID = i.item.id;
+                $("#ProductID").val(ProductID)
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $("#ProductName").change(function () {
+            debugger
+            var prodnm = $("#ProductName").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod_batchno", "SalePurchaseModify")',
+                data: '{prodnm: ' + JSON.stringify(prodnm) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    $("#batchNumber").find("option").remove();
+                    $("#batchNumber").append('<option value="All">All</option>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        debugger
+                        var color = "background-color: " + searchList[i].ExparyDateColor + "";
+                        $("#batchNumber").append($("<option style='" + color + "' value=" + searchList[i].batchNumber + ">" + searchList[i].batchNumber + "</option>"));
+                    }
+                },
+            });
+        });
+    });
+</script>
+<script>
+    function NewTable() {
+        debugger
+        var batch = $("#batchNumber").val();
+        var prodID = $("#ProductID").val();
+        var fromdt = $("#fromdate").val();
+        var todt = $("#todate").val();
+        var type = $('input[name=billType]:checked').val();
+
+        if (type == "Sale") {
+            $("#lbl_Rate").html("Sale Rate");
+        }
+        else {
+            $("#lbl_Rate").html("Purchase Rate");
+        }
+
+        if (batch != "All") {
+            $.ajax({
+                url: '@Url.Action("FillBillDetails", "SalePurchaseModify")',
+                type: "POST",
+                dataType: "Json",
+                data: { batch: batch, prodID: prodID, type: type, fromdt: fromdt, todt: todt },
+                success: function (data) {
+                    debugger
+                    $("#BillDetailTable tbody tr").remove();
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#BillDetailTable").append('<tr><td style="display:none">' + data[i].tblProductID + '</td><td>' + data[i].tblProductName + '</td><td>'
+                            + data[i].tblbatchNumber + '</td><td>' + data[i].tblbillNo + '</td><td>' + data[i].tblbillDate + '</td><td>' +
+                            '<input type="text"  value="' + data[i].tblpurchaseRate + '" class="form-control" onchange="myCalRate(this)" name="tblpurchaseRate" id="tblpurchaseRate">'
+                            + '</td><td>' + '<input type="text"  value="' + data[i].tblquantity + '" class="form-control" onchange="myCalQTY(this)" name="tblquantity" id="tblquantity">'
+                            + '</td><td>' + '<input type="text" readonly value="' + data[i].tblamount + '" class="form-control" name="tblamount" id="tblamount">' +
+                           '</td><td><a onclick="FunctionDelete(this)" href="#" class="fa fa-trash-o" id="delrow" class="delrow"></a></td><td><a onclick="FunctionModify(this)" href="#" class="fa fa-edit" id="editrow" class="delrow"></a></td></tr>');
+                    }
+                }
+            })
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("FillBillDetails", "SalePurchaseModify")',
+                type: "POST",
+                dataType: "Json",
+                data: { batch: batch, prodID: prodID, type: type, fromdt: fromdt, todt: todt },
+                success: function (data) {
+                    debugger
+                    $("#BillDetailTable tbody tr").remove();
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#BillDetailTable").append('<tr><td style="display:none">' + data[i].tblProductID + '</td><td>' + data[i].tblProductName + '</td><td>'
+                            + data[i].tblbatchNumber + '</td><td>' + data[i].tblbillNo + '</td><td>' + data[i].tblbillDate + '</td><td>' +
+                            '<input type="text"  value="' + data[i].tblpurchaseRate + '" class="form-control" onchange="myCalRate(this)" name="tblpurchaseRate" id="tblpurchaseRate">'
+                            + '</td><td>' + '<input type="text"  value="' + data[i].tblquantity + '" class="form-control" onchange="myCalQTY(this)" name="tblquantity" id="tblquantity">'
+                            + '</td><td>' + '<input type="text" readonly value="' + data[i].tblamount + '" class="form-control" name="tblamount" id="tblamount">' +
+                           '</td><td><a onclick="FunctionDelete(this)" href="#" class="fa fa-trash-o" id="delrow" class="delrow"></a></td><td><a onclick="FunctionModify(this)" href="#" class="fa fa-edit" id="editrow" class="delrow"></a></td></tr>');
+                    }
+                }
+            })
+        }
+    }
+</script>
+<script>
+    debugger;
+    function myCalRate(row) {
+        debugger;
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        var qtyAmt = 0;
+        var rateAmt = 0;
+
+        qtyAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[6].children[0].value);
+        rateAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[5].children[0].value);
+
+        if (qtyAmt == "") {
+            qtyAmt = 0;
+        }
+
+        if (rateAmt == "") {
+            rateAmt = 0;
+        }
+
+        var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+        document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[7].children[0].value = totamount;
+    }
+</script>
+<script>
+    debugger;
+    function myCalQTY(row) {
+        debugger;
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        var qtyAmt = 0;
+        var rateAmt = 0;
+
+        qtyAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[6].children[0].value);
+        rateAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[5].children[0].value);
+
+        if (qtyAmt == "") {
+            qtyAmt = 0;
+        }
+
+        if (rateAmt == "") {
+            rateAmt = 0;
+        }
+
+        var totamount = parseInt(qtyAmt) * parseInt(rateAmt);
+        document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[7].children[0].value = totamount;
+    }
+</script>
+<script>
+    function FunctionModify(row) {
+        debugger
+        var prodID = 0;
+        var ProdNm = 0;
+        var batchno = 0;
+        var billno = 0;
+        var billDt = 0;
+        var purRate = 0;
+        var QTY = 0;
+        var totAmt = 0;
+
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        prodID = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[0].innerHTML;
+        ProdNm = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[1].innerHTML;
+        batchno = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[2].innerHTML;
+        billno = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[3].innerHTML;
+        billDt = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[4].innerHTML;
+        purRate = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[5].children[0].value);
+        QTY = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[6].children[0].value);
+        totAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[7].children[0].value);
+
+        if (purRate == "" || purRate == "NaN") {
+            alert("Kindly Enter Purchase Rate !");
+        }
+        else if (QTY == "" || QTY == "NaN") {
+            alert("Kindly Enter Quantity !");
+        }
+        else {
+            var type = $('input[name=billType]:checked').val();
+            $.ajax({
+                url: '@Url.Action("ModifyBillDetails", "SalePurchaseModify")',
+                type: "GET",
+                dataType: "Json",
+                data: { prodID: prodID, ProdNm: ProdNm, batchno: batchno, billno: billno, billDt: billDt, purRate: purRate, QTY: QTY, totAmt: totAmt, type: type },
+                success: function (data) {
+                    debugger
+                    if (data == true) {
+                        alert("Record Updated Successfully !");
+                    }
+                    else {
+                        alert("Record Not Updated !");
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+<script>
+    function FunctionDelete(row) {
+        debugger
+        var prodID = 0;
+        var ProdNm = 0;
+        var batchno = 0;
+        var billno = 0;
+        var billDt = 0;
+        var purRate = 0;
+        var QTY = 0;
+        var totAmt = 0;
+
+        var rowData = row.parentNode.parentNode;
+        var rowIndex = rowData.sectionRowIndex;
+
+        prodID = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[0].innerHTML;
+        ProdNm = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[1].innerHTML;
+        batchno = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[2].innerHTML;
+        billno = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[3].innerHTML;
+        billDt = document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[4].innerHTML;
+        purRate = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[5].children[0].value);
+        QTY = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[6].children[0].value);
+        totAmt = parseInt(document.getElementById('BillDetailTable').tBodies[0].rows[rowIndex].cells[7].children[0].value);
+
+        if (purRate == "" || purRate == "NaN") {
+            alert("Kindly Enter Purchase Rate !");
+        }
+        else if (QTY == "" || QTY == "NaN") {
+            alert("Kindly Enter Quantity !");
+        }
+        else {
+            var type = $('input[name=billType]:checked').val();
+            $.ajax({
+                url: '@Url.Action("DeleteBillDetails", "SalePurchaseModify")',
+                type: "GET",
+                dataType: "Json",
+                data: { prodID: prodID, ProdNm: ProdNm, batchno: batchno, billno: billno, billDt: billDt, purRate: purRate, QTY: QTY, totAmt: totAmt, type: type },
+                success: function (data) {
+                    debugger
+                    if (data == true) {
+                        alert("Record Deleted Successfully !");
+                    }
+                    else {
+                        alert("Record Not Deleted !");
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+<script>
+    function DeleteAll() {
+        debugger
+        var batch = $("#batchNumber").val();
+        var prodID = $("#ProductID").val();
+        var fromdt = $("#fromdate").val();
+        var todt = $("#todate").val();
+        var type = $('input[name=billType]:checked').val();
+
+        $.ajax({
+            url: '@Url.Action("DeleteAllBillDetails", "SalePurchaseModify")',
+            type: "POST",
+            dataType: "Json",
+            data: { batch: batch, prodID: prodID, type: type, fromdt: fromdt, todt: todt },
+            success: function (data) {
+                debugger
+                if (data == true) {
+                    alert("All Records Deleted Successfully !");
+                }
+                else {
+                    alert("Record Not Deleted !");
+                }
+            }
+        })
+    }
+</script>
+
+
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Sale Purchase Modify</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Pharmacy","Application")">Pharmacy</a></li>
+                                    <li class="breadcrumb-item active">Sale Purchase Modify</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="col-lg-12 col-md-10 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="background: #bddff7;">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="padding-top: 3px;">
+                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                            <div class="form-check-inline">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                            <div class="form-check-inline">
+                                            </div>
+                                            <div class="form-check-inline">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <!--Product Name-->
+                                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                <label>Product Name</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="text" id="ProductName" name="ProductName" class="form-control">
+                                                <input type="hidden" id="ProductID" name="ProductID" class="form-control">
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                <button type="button" id="addProductName" name="addProductName" onclick="window.location.href='@Url.Action("Product","Product")'" class="btndivcss pull-right" style="height: 25px;">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!--Batch Number-->
+                                        <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>Batch No.</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <select id="batchNumber" name="batchNumber" class="form-control"></select>
+                                            </div>
+                                        </div>
+                                        <!--Bill Type-->
+                                        <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 3px;">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                    <div class="form-check-inline">
+                                                        <label>Bill Type</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" checked value="Sale" id="Sale" name="billType">Sale
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" value="Purchase" id="Purchase" name="billType">Purchase
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <!--From Date-->
+                                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                <label>From Date</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <input type="date" id="fromdate" name="fromdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!--To Date-->
+                                        <div class="form-group col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <label>To Date</label>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <input type="date" id="todate" name="todate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!--Button View-->
+                                        <div class="form-group col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding-left: 60px;">
+                                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <button type="button" id="view" name="view" class="btndivcss pull-right" style="height: 25px;" onclick="NewTable()">
+                                                    View
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                            <table id="BillDetailTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th style="display:none">Product Name ID</th>
+                                                        <th style="width: 170px;">Product Name</th>
+                                                        <th style="width: 90px;">Batch No.</th>
+                                                        <th style="width: 90px;">Bill No.</th>
+                                                        <th style="width: 100px;">Bill Date</th>
+                                                        <th style="width: 110px;"><label id="lbl_Rate" name="lbl_Rate">Sale Rate</label></th>
+                                                        <th style="width: 100px;">Quantity</th>
+                                                        <th style="width: 120px;">Amount</th>
+                                                        <th style="width: 150px;">
+                                                            <button type="button" id="deleteAll" name="deleteAll" class="btndivcss" style="height: 25px;" onclick="DeleteAll()">
+                                                                Delete All Record
+                                                            </button>
+                                                        <th style="width: 100px;">Modify</th>                                                            
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

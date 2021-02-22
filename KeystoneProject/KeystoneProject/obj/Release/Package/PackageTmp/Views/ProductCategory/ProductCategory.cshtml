@@ -1,0 +1,366 @@
+﻿@{
+    ViewBag.Title = "Product Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+        $(document).ready(function () {
+            debugger;
+            $("#salesTax").autocomplete({
+                source: function (request, response) {
+                    debugger
+                    $.ajax({
+                        url: '@Url.Action("Bind_sales", "ProductCategory")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.salesTax, value: item.salesTax, id: item.saleTaxID
+                                };
+                            }))
+                        },
+                    })
+                },
+                minLength: 1,
+                change: function (event, i) {
+                    debugger
+                    if (!i.item) {
+                        this.value = '';
+                        $("#salesTax").val('');
+                    }
+                    $('#saleTaxID').val(i.item.id);
+                }
+            });
+        });
+</script>
+<script>
+        $(document).ready(function () {
+            debugger;
+            $("#purchaseTax").autocomplete({
+                source: function (request, response) {
+                    debugger
+                    $.ajax({
+                        url: '@Url.Action("Bind_Purchase", "ProductCategory")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.purchaseTax, value: item.purchaseTax, id: item.purchaseTaxID
+                                };
+                            }))
+                        },
+                    })
+                },
+                minLength: 1,
+                change: function (event, i) {
+                    debugger
+                    if (!i.item) {
+                        this.value = '';
+                        $("#purchaseTax").val('');
+                    }
+                    $('#purchaseTaxID').val(i.item.id);
+                }
+            });
+        });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Bind_Table", "ProductCategory")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#productCategoryTable").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].categoryName + '</td><td>' + data[i].colorVal + '</td><td>' + data[i].salesTax + '</td><td>' + data[i].purchaseTax + '</td><td style="display:none">' + data[i].categoryID + '</td><td style="display:none">' + data[i].saleTaxID + '</td><<td style="display:none">' + data[i].purchaseTaxID + '</td>/tr>');
+                };
+                $('.cbDBA').each(function () {
+                    debugger
+                    chk = $(this).val();
+                    if (chk == "True") {
+                        $(this).prop('checked', true);
+                    }
+                    else {
+                        $(this).prop('checked', false);
+                    }
+                });
+                $("#productCategoryTable").DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($("#productCategoryTable").DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel',
+                        }
+                    ]
+                }).container().appendTo($("#productCategoryTableExcelExport"));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#productCategoryTable').delegate('td', 'click', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger;
+            var row = $(this).parent().index();
+            var categoryID = document.getElementById("productCategoryTable").tBodies[0].rows[row].cells[5].innerHTML;
+            $("#categoryID").val(categoryID);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Rebind_Data", "ProductCategory")',
+                data: { id: categoryID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $('#categoryName').val(data[0].categoryName);
+                    $('#categoryID').val(data[0].categoryID);
+                    $('#salesTax').val(data[0].salesTax);
+                    $('#purchaseTax').val(data[0].purchaseTax);
+                    $('#saleTaxID').val(data[0].saleTaxID);
+                    $('#purchaseTaxID').val(data[0].purchaseTaxID);
+                    $('#colorVal').val(data[0].colorVal);
+                    if (data[0].colorStatus == "True") {
+                        $('#colorStatus').prop("checked", true);
+                    }
+                    else {
+                        $('#colorStatus').prop("checked", false);
+                    }
+                }
+            });
+        })
+    });
+</script>
+<script>
+    function Delete(categoryID) {
+        debugger;
+        if(categoryID != "")
+        {
+            var ans = confirm("Are you sure you want to delete this record ?");
+            if (ans)
+            {
+                $.ajax(
+                    {
+                        type :"POST",
+                        url : '@Url.Action("Delete_ProductCat", "ProductCategory")',
+                        data : {categoryID ,categoryID},
+                        datatype : "json",
+                        success : function (data)
+                        {
+                            if (data=="Done")
+                            {
+                                alert("Product Category Deleted Successfully");
+                                location.reload(true);
+                                Restore();
+                            }
+                            else
+                            {
+                                alert(data);
+                            }
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+
+            }
+        }
+    }
+  
+
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Product Category Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Product Category</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Category Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Category Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Category Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="categoryName" name="categoryName" class="form-control">
+                                                        <input type="hidden" id="categoryID" name="categoryID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Sales Tax-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Sales Tax</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="text" id="salesTax" name="salesTax" placeholder="Search Sales Tax" class="form-control">
+                                                        <input type="hidden" id="saleTaxID" name="saleTaxID" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <button type="button" id="addSalesTax" name="addSalesTax" onclick="window.location.href='@Url.Action("SalesTax", "SalesTax")'" class="btndivcss">
+                                                            <span class="fa fa-plus"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!--Purchase Tax-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Purchase Tax</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="text" id="purchaseTax" name="purchaseTax" placeholder="Search Purchase Tax" class="form-control">
+                                                        <input type="hidden" id="purchaseTaxID" name="purchaseTaxID" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <button type="button" id="addSchedule" name="addPurchaseTax" onclick="window.location.href='@Url.Action("PurchaseTax", "PurchaseTax")'" class="btndivcss">
+                                                            <span class="fa fa-plus"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Color Value-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Color Value</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <div class="input-group colorpickerProductCategory">
+                                                            <div class="input-group-prepend">
+                                                                <input type="text" id="colorVal" name="colorVal" class="form-control">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-square"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Color Status-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Color Status</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="checkbox" class="form-check-input" id="colorStatus" name="colorStatus">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('categoryID').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="productCategoryTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="productCategoryTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Product Category Name</th>
+                                            <th>Color Value</th>
+                                            <th>Sales</th>
+                                            <th>Purchase</th>
+                                            <th style="display:none">Product Category ID</th>
+                                            <th style="display:none">Sales Tax ID</th>
+                                            <th style="display:none">Purchase Tax ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

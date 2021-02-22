@@ -1,0 +1,438 @@
+﻿@model KeystoneProject.Models.Report.MISPatientWiseCollectionReport
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+@*<style>
+    
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+</style>*@
+<script>
+    $(document).ready(function () {
+        $('.ex-btn').css('display', 'inline-flex');
+        $('#patientdetails').DataTable({
+            "fixedHeader": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": false,
+        });
+        var buttons = new $.fn.dataTable.Buttons($('#patientdetails').DataTable(), {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                }
+            ]
+        }).container().appendTo($('#patientdetailsExcelExport'));
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#modalpatientdetails").modal('hide');
+        $("#patientdetails td").on('click', function () {
+            debugger
+           $("#modalpatientdetails").modal('show');
+         
+           // alert($('#PatientType').val());
+       debugger
+            //$("#patientdetails").hide();
+            var row_num = parseInt($(this).parent().index());
+            var BillType = document.getElementById('patientdetails').tBodies[0].rows[row_num].cells[3].innerHTML;
+            var PatientRegNo = document.getElementById('patientdetails').tBodies[0].rows[row_num].cells[1].innerHTML;
+            alert(BillType);
+          //  var PatientType = document.getElementById('patientdetails').tbodies[0].rows[rows_num].cells[3].innerHTML;
+          debugger
+                
+
+            $.ajax({
+                url: '@Url.Action("GetPatientWiseReportWithDetails", "MISPatientWiseCollectionReport")',
+                type: "POST",
+                dataType: "json",
+                data: { RegNo: PatientRegNo, BillType: BillType },
+                success: function (data) {
+                    debugger;
+                    $("#datatable-responsive td").remove();
+                    //$("#servicedetails").hide();
+                    var i = 1;
+                    $(data).each(function (index, d) {
+                        debugger;
+                        $("#datatable-responsive").append('<tr><td>' + i + '</td><td>' + d.PatientRegNo + '</td><td>' + d.PatientDetails + '</td><td>' + d.PatientType + '</td><td>' + d.BillType + '</td><td>' + d.BillNo + '</td><td>' + d.TotalAmount + '</td></tr>')
+                        $("#totalamount").show();
+                        $("#totalamount").text(d.TotalAmt1);
+                        $("#totalamount").hide();
+                        i++;
+                    });
+                },
+            });
+            $("#btnReport").click(function () {
+                debugger;
+                window.location.href = '@Url.Action("RptMISPatientWiseCollectionReport", "MISPatientWiseCollectionReport")';
+            })
+        });
+        $("#close").click(function () {
+            debugger;
+            $("#modalpatientdetails").modal('hide');
+            $("#totalamount").show();
+            //$("#patientdetails").show();
+            $("#totalamount1").hide();
+        })
+     
+      
+       
+    });
+</script>
+<body class="hold-transition skin-blue sid$ebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>MIS Patient Wise Collection Report</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("MISReports", "Application")">MIS Report</a></li>
+                                    <li class="breadcrumb-item active">MIS Patient Wise Collection</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">MIS Patient Wise Collection Report</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="FromDate" name="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="ToDate" name="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Patient Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="PatientType" name="PatientType">
+                                                            @{    if (Model != null)
+                                                                {
+                                                                    <option value="@Model.BillType">@Model.BillType</option>
+                                                                }
+                                                            }
+                                                            <option value="All">All</option>
+                                                            <option value="OPD">OPD</option>
+                                                            <option value="IPD">IPD</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" id="save" name="save" class="btn btn-app">
+                                        <i class="fa fa-search"></i>Search
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("MISReports", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning ex-btn" style="display: none;">
+                                    <a class="btn btn-app" id="patientdetailsExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="patientdetails" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">Sr. No.</th>
+                                            <th scope="col">Patient Reg. No.</th>
+                                            <th scope="col">Patient(Name, Birth, Address)</th>
+                                            <th scope="col">Patient Type</th>
+                                            <th scope="col">Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="presentor">
+                                        @{
+                                            if (Model != null)
+                                            {
+                                                for (int i = 0; Model.dsPatientReport.Tables[0].Rows.Count > i; i++)
+                                                {
+                                                    var SrNo = i + 1;
+                                                    var PatientRegNo = Model.dsPatientReport.Tables[0].Rows[i]["PatientRegNo"].ToString();
+                                                    var PatientDetails = Model.dsPatientReport.Tables[0].Rows[i]["P.(Name/Date of Birth,Address )"].ToString();
+                                                    var PatientType = Model.dsPatientReport.Tables[0].Rows[i]["PatientType"].ToString();
+                                                    var TotalAmount = Model.dsPatientReport.Tables[0].Rows[i]["TotalAmount"].ToString();
+                                                    <tr role="row" class="odd">
+                                                        <td tabindex="0" class="sorting_1" style="text-transform: uppercase; text-align: center;">@SrNo</td>
+                                                        <td>@PatientRegNo</td>
+                                                        <td>@PatientDetails</td>
+                                                        <td>@PatientType</td>
+                                                        <td style="width:30px">@TotalAmount</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div id="modalpatientdetails" class="modal" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Reports</h4>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <input type="button" style="font-size: 15px;" id="btnReport" value="Report" class="btn btn-success">
+                                                        <input type="button" style="font-size: 15px;" id="close" value="Close" class="btn btn-danger">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="table-responsive">
+                                                        <table id="datatable-responsive" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                            <thead style="background-color: #bddff7;">
+                                                                <tr>
+                                                                    <th>Sr. No.</th>
+                                                                    <th>Patient Reg. No</th>
+                                                                    <th>Patient(Name, Birth, Address)</th>
+                                                                    <th>Patient Type</th>
+                                                                    <th>Bill Type</th>
+                                                                    <th>Bill No</th>
+                                                                    <th>Total Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="float:right;">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: right;">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <label>Total Amount:</label>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    @{
+                                        if (Model != null)
+                                        {
+                                            <label class="lbl" id="totalamount" name="lbl_total">@Convert.ToString(Model.dsPatientReport.Tables[0].Compute("sum([TotalAmount])", string.Empty).ToString())</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="lbl" id="totalamount1" name="lbl_total1">0.00</label>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item form-group" >
+                        @*<div class="col-md-1 col-sm-1 col-xs-6">
+                                <button type="submit"  class="btn btn-primary">Year Wise</button>
+                            </div>*@
+                        
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

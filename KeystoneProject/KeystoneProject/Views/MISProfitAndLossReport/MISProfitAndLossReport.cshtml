@@ -1,0 +1,1525 @@
+﻿@model KeystoneProject.Models.FinancialAccountReport.MISProfitAndLossReport
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+
+        // EXPENSES MODAL
+
+        //Show direct Expenses Table Modal
+        $(".directExpensesData").on('click', function () {
+debugger
+            alert('Direct Expenses Data Clicked');
+            $("#directExpensesDataModal").modal('show');
+        })
+
+        //Show Purchase Accounts Data Modal
+        $("#purchaseAccountsData").on('click', function () {
+            $("#purchaseAccountsDataModal").modal('show');
+        })
+
+        //Show Purchase Accounts Modal Data Modal
+        $("#purchaseAccountsModalData").on('click', function () {
+            $("#purchaseAccountsModalDataModal").modal('show');
+        })
+
+        //Show In direct Expenses Table Modal
+        $(".inDirectExpensesData").on('click', function () {
+            $("#inDirectExpensesDataModal").modal('show');
+        })
+
+        //Show In direct Expenses Modal Table Modal
+        $("#indirectExpensesModalData").on('click', function () {
+            $("#inDirectExpensesModalDataModal").modal('show');
+        })
+
+        //Show In Direct Expenses Account In Detail Modal
+        $("#inDirectExpensesAccountInDetailData").on('click', function () {
+            $("#indirectExpensesAccountInDetailModal").modal('show');
+        })
+
+        // INCOMES MODAL
+
+        //Show direct Incomes Table Modal
+        $("#directIncomesData").on('click', function () {
+            $("#directIncomesDataModal").modal('show');
+        })
+
+        //Show Sales Accounts Data Modal
+        $("#salesAccountsData").on('click', function () {
+            $("#salesAccountsDataModal").modal('show');
+        })
+        
+        //Show Sales Accounts Modal Data Modal
+        $("#salesAccountsModalData").on('click', function () {
+            $("#salesAccountsModalDataModal").modal('show');
+        })
+
+        //Show In direct Incomes Table Modal
+        $("#inDirectIncomesData").on('click', function () {
+            $("#inDirectIncomesDataModal").modal('show');
+        })
+
+        //Show In direct Incomes Modal Table Modal
+        $("#indirectIncomesModalData").on('click', function () {
+            $("#inDirectIncomesModalDataModal").modal('show');
+        })
+
+        //Show In Direct Incomes Account In Detail Modal
+        $("#inDirectIncomesAccountInDetailData").on('click', function () {
+            $("#indirectIncomesAccountInDetailModal").modal('show');
+        })
+    })
+</script>
+<script>
+
+    $(document).ready(function () {
+
+
+        $('#directExpensesTable').delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+
+            var ScheduleName = document.getElementById("directExpensesTable").tBodies[0].rows[row_num].cells[0].innerHTML;
+            var ScheduleID = document.getElementById("directExpensesTable").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var Total = document.getElementById("directExpensesTable").tBodies[0].rows[row_num].cells[1].innerHTML;
+            if (ScheduleName == "DIRECT EXPENSES" && Total != "0") {
+                alert('Direct Expenses Data Clicked');
+                $("#directExpensesDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DirectExpensesDataModal", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleID: ScheduleID, ScheduleName: ScheduleName, Type: Type },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#directExpensesDataModal tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#directExpensesDataModal tbody").append('<tr><td>' + obd.AccountName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.AccountsID + '</td></tr>')
+
+
+
+                        });
+
+                    },
+
+
+                });
+
+
+
+            }
+            if (ScheduleName == "PURCHASE ACCOUNTS") {
+
+                alert('Purchase Accounts Data Clicked');
+                $("#purchaseAccountsDataModal").modal('show');
+
+
+                var ScheduleName = "";
+                var Type = "";
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PurchaseAccountsDataModal", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleID: ScheduleID, ScheduleName: ScheduleName, Type: Type },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#purchaseAccountsDataModal tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#purchaseAccountsDataModal tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+
+
+                        });
+
+                    },
+
+
+                });
+            }
+
+        })
+
+        $('#purchaseAccountsDataModal').delegate('td', 'click', function () {
+
+
+            debugger;
+
+            var row_num = parseInt($(this).parent().index());
+            var ScheduleID = document.getElementById("purchaseAccountsModalTable").tBodies[0].rows[row_num].cells[2].innerHTML;
+            //var ScheduleID = document.getElementById("purchaseAccountsDataModal").tBodies[0].rows[1].cells[0].innerHTML;
+
+            alert('Purchase Accounts Modal  Data Clicked');
+            $("#purchaseAccountsModalDataModal").modal('show');
+            $("#purchaseAccountsDataModal").modal('hide');
+
+
+            var ScheduleName = "";
+            var Type = "";
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("PurchaseAccountsModalDataModal", "MISProfitAndLossReport")',
+                data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleID: ScheduleID, ScheduleName: ScheduleName, Type: Type },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#purchaseAccountsModalDataModal tbody tr").remove();
+
+
+                    $.each(data, function (i, obd) {
+
+                        $("#purchaseAccountsModalDataModal tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.AccountName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.AccountsID + '</td></tr>')
+
+
+
+                    });
+
+                },
+
+
+            });
+
+        })
+
+        $('#purchaseAccountsModalDataModal').delegate('td', 'click', function () {
+
+
+            debugger;
+
+            var row_num = parseInt($(this).parent().index());
+            var AccountsID = document.getElementById("purchaseAccountsModalDataTable").tBodies[0].rows[row_num].cells[3].innerHTML;
+
+            //var ScheduleID = document.getElementById("purchaseAccountsDataModal").tBodies[0].rows[1].cells[0].innerHTML;
+
+            alert('Purchase Accounts Modal  Data Clicked');
+            $("#purchaseAccountsInDetailModal").modal('show');
+            $("#purchaseAccountsModalDataModal").modal('hide');
+
+
+
+            var ScheduleName = "";
+            var Type = "";
+            var ScheduleID = 0;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetTrialBalanceDetails", "MISProfitAndLossReport")',
+                data: { FromDate: $('#fromDate').val(), ToDate: $('#toDate').val(), AccountsID: AccountsID, Type: Type, ScheduleID: ScheduleID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#purchaseAccountsInDetailModalTable tbody tr").remove();
+
+
+                    $.each(data, function (i, obd) {
+
+                        $("#purchaseAccountsInDetailModalTable tbody").append('<tr><td>' + obd.AccountName + '</td><td>' + obd.DrAmount + '</td><td>' + obd.CrAmount + '</td><td>' + obd.Particular + '</td><td>' + obd.Narration + '</td><td>' + obd.TransactionType + '</td></tr>')
+
+                    });
+
+                },
+
+
+            });
+
+        })
+
+        $('#indirectExpensesTable').delegate('td', 'click', function () {
+            debugger;
+            alert('Indirect Expenses Table Modal  Data Clicked');
+            $("#inDirectExpensesDataModal").modal('show');
+
+            var row_num = parseInt($(this).parent().index());
+
+            var ScheduleID = document.getElementById("indirectExpensesTable").tBodies[0].rows[row_num].cells[2].innerHTML;
+
+            var ScheduleName = "";
+            var Type = "";
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IndirectExpencesClick", "MISProfitAndLossReport")',
+                data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+
+                    $("#indirectExpensesModalTable tbody tr").remove();
+
+
+                    $.each(data, function (i, obd) {
+
+                        $("#indirectExpensesModalTable tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+
+                    });
+
+                },
+
+
+            });
+        })
+
+
+        $('#indirectExpensesModalTable').delegate('td', 'click', function () {
+            debugger;
+
+
+           var row_num = parseInt($(this).parent().index());
+
+            var ScheduleID = document.getElementById("indirectExpensesModalTable").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var ScheduleName = document.getElementById("indirectExpensesModalTable").tBodies[0].rows[row_num].cells[0].innerHTML;
+
+            if (ScheduleName == "CONSUMABLE PRODUCTS") {
+                alert('Consumable Product Table Modal  Data Clicked');
+                $("#inDirectExpensesDataModal").modal('hide');
+                $("#inDirectExpensesModalDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ConsumableClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#inDirectExpensesModalDataTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#inDirectExpensesModalDataTable tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.AccountName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.AccountsID + '</td></tr>')
+
+                        });
+
+                    },
+
+
+                });
+            }
+            if (ScheduleName == "DAILY  EXPENSES") {
+                alert('Daily Expences Table Modal  Data Clicked');
+                $("#inDirectExpensesDataModal").modal('hide');
+                $("#inDirectDailyExpensesModalDataModal").modal('show');
+                var ScheduleName = "";
+                var Type = "";
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DailyExpencesClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#inDirectDailyExpensesModalDataTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#inDirectDailyExpensesModalDataTable tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+
+                        });
+
+                    },
+
+
+                });
+            }
+            if (ScheduleName == "SALARY") {
+                alert('Salary Expences Table Modal  Data Clicked');
+                $("#inDirectExpensesDataModal").modal('hide');
+                $("#inDirectSalaryExpensesModalDataModal").modal('show');
+                var ScheduleName = "";
+                var Type = "";
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SalaryExpencesClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#inDirectSalaryExpensesModalDataTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#inDirectSalaryExpensesModalDataTable tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.AccountName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.AccountsID + '</td></tr>')
+
+                        });
+
+                    },
+
+
+                });
+            }
+
+
+
+        })
+
+     
+        $('#view').click(function () {
+            debugger
+            var ScheduleID=0;
+            var ScheduleName="";
+            var Type ="";
+            $.ajax({
+                url: '@Url.Action("GetExpensesDetails", "MISProfitAndLossReport")',
+                type: "GET",
+                data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleID: ScheduleID, ScheduleName: ScheduleName, Type: Type },
+                dataType: "json",
+                success: function (data) {
+                    $("#indirectExpensesTable tbody tr").remove();
+                    $("#directIncomesTable tbody tr").remove();
+                    $("#directExpensesTable tbody tr").remove();
+                    $("#indirectIncomesTable tbody tr").remove();
+                    var directIncomesTotalTally = 0;
+                    var directExpensesTotal = 0;
+                    var indirectExpensesTotal = 0;
+                    var indirectIncomesTotal = 0;
+                    var directExpensesGrossProfit = 0;
+                    var indirectIncomesGrossProfit = 0;
+                    var indirectExpensesTotalTally = 0;
+                    var indirectExpensesGrossProfit = 0;
+                    $.each(data, function (i, obd) {
+                        debugger;
+                        if (obd.Type == "EXPENSES") {
+                            $("#directExpensesTable").append('<tr class="directExpensesData"><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+                            directExpensesTotal += parseFloat(obd.Total);
+                        }
+                        if (obd.Type == "INDIRECT EXPENSES") {
+                            $("#indirectExpensesTable").append('<tr class="inDirectExpensesData"><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+                            indirectExpensesTotal += parseFloat(obd.Total);
+                        }
+                        if (obd.Type == "INCOME") {
+                            debugger;
+                            $("#directIncomesTable").append('<tr><td>' + obd.ScheduleName + '</td><td>' +parseFloat( obd.Total) + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+                        }
+                        if (obd.Type == "HOSPITAL SALES TOTAL") {
+                            $("#directIncomesTable").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+                            directIncomesTotalTally += parseFloat(obd.Total);
+                        }
+                        if (obd.Type == "INDIRECT INCOME") {
+                            $("#indirectIncomesTable").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+                            indirectIncomesTotal += parseFloat(obd.Total);
+                        }
+                    });
+                    $("#directIncomesTotalTally").val(directIncomesTotalTally);
+                    $("#directExpensesTotalTally").val(directIncomesTotalTally);
+                    $("#directExpensesTotal").val(directExpensesTotal);
+                    $("#directExpensesGrossProfit").val(directExpensesGrossProfit);
+                    $("#directExpensesGrossProfit").val(directIncomesTotalTally - directExpensesTotal);
+                    $("#indirectExpensesTotal").val(indirectExpensesTotal);
+                    $("#indirectIncomesTotal").val(indirectIncomesTotal);
+                    $("#indirectIncomesTotalTally").val(directIncomesTotalTally - directExpensesTotal + indirectIncomesTotal);
+                    $("#indirectIncomesGrossProfit").val(directIncomesTotalTally - directExpensesTotal);
+                    $("#indirectExpensesTotalTally").val(directIncomesTotalTally - directExpensesTotal + indirectIncomesTotal);
+
+                   $("#indirectExpensesGrossProfit").val(directIncomesTotalTally - directExpensesTotal + indirectIncomesTotal - indirectExpensesTotal);
+
+
+                     },
+                error: function (data) {
+                },
+
+            });
+
+        })
+        
+        $("#directIncomesTable").delegate('td', 'click', function () {
+            debugger;
+
+            var row_num = parseInt($(this).parent().index());
+
+             var ScheduleName = document.getElementById("directIncomesTable").tBodies[0].rows[row_num].cells[0].innerHTML;
+
+
+            if (ScheduleName == "SALES ACCOUNTS") {
+                alert('Sales Accounts Table Modal  Data Clicked');
+                
+                $("#salesAccountsDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SalesAccountClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#salesAccountsModalTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#salesAccountsModalTable tbody").append('<tr><td>' + obd.AccountName + '</td><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td>' + obd.DiscountAmount + '</td></tr>')
+
+                        });
+
+                    },
+
+
+                });
+            }
+            if (ScheduleName == "DIRECT INCOMES") {
+                alert('Direct Income Table Modal  Data Clicked');
+
+                $("#directIncomesDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DirectIncomeClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#directIncomesModalTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            $("#directIncomesModalTable tbody").append('<tr><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style="display:none">' + obd.ScheduleID + '</td></tr>')
+
+                        });
+
+                    },
+
+
+                });
+            }
+
+
+        });
+
+        $("#salesAccountsModalTable").delegate('td', 'click', function () {
+            debugger;
+
+            var row_num = parseInt($(this).parent().index());
+
+            var ScheduleName = document.getElementById("salesAccountsModalTable").tBodies[0].rows[row_num].cells[0].innerHTML;
+
+            if (ScheduleName == "IPD") {
+                
+                alert('IPD Table Modal  Data Clicked');
+
+                $("#salesAccountsModalDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("IPDClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#salesAccountsModalDataTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+                            debugger;
+                            if (obd.Type = "IPD") {
+
+                                $("#salesAccountsModalDataTable tbody").append('<tr><td>' + obd.ServiceGroupName + '</td><td>' + obd.TotalAmount + '</td></tr>')
+
+                            }
+                           
+                        });
+
+                    },
+
+
+                });
+            }
+
+            if (ScheduleName == "LAB") {
+
+                alert('LAB Table Modal  Data Clicked');
+
+                $("#labModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("IPDClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#labTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            debugger;
+                            if (obd.Type == "LAB") {
+
+                                $("#labTable tbody").append('<tr><td>' + obd.ServiceGroupName + '</td><td>' + obd.TotalAmount + '</td></tr>')
+
+                            }
+                           
+                        });
+
+                    },
+
+
+                });
+            }
+            if (ScheduleName == "OPD") {
+
+                alert('OPD Table Modal  Data Clicked');
+                $("#labModal").modal('hide');
+                $("#opdModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("IPDClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#opdTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+
+                            debugger;
+                            if (obd.Type == "OPD") {
+
+                                $("#opdTable tbody").append('<tr><td>' + obd.ServiceGroupName + '</td><td>' + obd.TotalAmount + '</td></tr>')
+
+                            }
+
+                        });
+
+                    },
+
+
+                });
+            }
+        });
+        $("#indirectIncomesTable").delegate('td', 'click', function () {
+            debugger;
+
+            var row_num = parseInt($(this).parent().index());
+
+            var ScheduleName = document.getElementById("indirectIncomesTable").tBodies[0].rows[row_num].cells[0].innerHTML;
+            var Total = document.getElementById("indirectIncomesTable").tBodies[0].rows[row_num].cells[1].innerHTML;
+
+            //alert('Indirect Income Table Modal  Data Clicked');
+            if (Total == "0") {
+
+               
+                $("#inDirectIncomesModalDataModal").modal('show');
+
+                var ScheduleName = "";
+                var Type = "";
+                var ScheduleID = 0;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("IndirectIncomeClick", "MISProfitAndLossReport")',
+                    data: { DateFrom: $('#fromDate').val(), DateTo: $('#toDate').val(), ScheduleName: ScheduleName, Type: Type, ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+
+                        $("#inDirectIncomesModalDataTable tbody tr").remove();
+
+
+                        $.each(data, function (i, obd) {
+                            debugger;
+                            if (obd.Type = "IPD") {
+
+                                $("#inDirectIncomesModalDataTable tbody").append('<tr><td>' + obd.AccountName + '</td><td>' + obd.ScheduleName + '</td><td>' + obd.Total + '</td><td style=display:none>' + obd.AccountsID + '</td></tr>')
+
+                            }
+
+                        });
+
+                    },
+
+
+                });
+            }
+            alert("Indirect Income Table No Record Found....");
+        });
+
+        $("#printButton").click(function () {
+          
+            debugger;
+            window.location.href = '@Url.Action("RptProfitAndLossReport", "MISProfitAndLossReport")';
+        });
+       
+    });
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>MIS Profit And Loss Report</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientReport", "Application")">Patient Report</a></li>
+                                    <li class="breadcrumb-item active">Profit And Loss Report</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Profit And Loss Search</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Date-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="fromDate" name="fromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Date-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="toDate" name="toDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" id="view" name="view" class="btn btn-app">
+                                        <i class="fa fa-search"></i>Search
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientReport", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="printButton">
+                                        <i class="fa fa-print"></i>Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Expense</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Direct Epenses-->
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                <table id="directExpensesTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th>Schedule Name</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+
+                                                <!-- Direct Expenses Data Modal -->
+                                                <div class="modal" id="directExpensesDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Direct Expenses Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="directExpensesModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th>Account Id's</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                       
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Purchase Accounts Data Modal -->
+                                                <div class="modal" id="purchaseAccountsDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Purchase Accounts Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="purchaseAccountsModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="purchaseAccountsModalData">
+                                                                           
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Purchase Accounts Modal Data Modal -->
+                                                <div class="modal" id="purchaseAccountsModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Purchase Accounts Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="purchaseAccountsModalDataTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th style="display:none">Account Id's</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Purchase Accounts In Detail Modal -->
+                                                <div class="modal" id="purchaseAccountsInDetailModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Purchase Accounts In Detail</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="purchaseAccountsInDetailModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Account Name</th>
+                                                                            <th>Debit Amount</th>
+                                                                            <th>Credit Amount</th>
+                                                                            <th>Particular</th>
+                                                                            <th>Narration</th>
+                                                                            <th>Transection Type</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--Direct Epenses Total-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total</label>
+                                                    <input type="number" id="directExpensesTotal" name="directExpensesTotal" class="form-control" readonly>
+                                                </div>
+                                                <!--Direct Epenses Gross Profit C/o.-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Gross Pr. C/o.</label>
+                                                    <input type="number" id="directExpensesGrossProfit" name="directExpensesGrossProfit" class="form-control" readonly>
+                                                </div>
+                                                <!--Direct Epenses Total Tally-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total Tally</label>
+                                                    <input type="number" id="directExpensesTotalTally" name="directExpensesTotalTally" class="form-control" readonly>
+                                                </div>
+                                            </div>
+
+                                            <!--InDirect Epenses-->
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <table id="indirectExpensesTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th>Schedule Name</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="inDirectExpensesData">
+                                                            
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- In Direct Expenses Data Modal -->
+                                                <div class="modal" id="inDirectExpensesDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Expenses Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="indirectExpensesModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="indirectExpensesModalData">
+                                                                            
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- In Direct Expenses Modal Data Modal -->
+                                                <div class="modal" id="inDirectExpensesModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Expenses Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="inDirectExpensesModalDataTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th style="display:none">Account Id's</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="inDirectExpensesAccountInDetailData">
+                                                                            
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                             <!-- In Daily Expenses Modal Data Modal -->
+                                                  <div class="modal" id="inDirectDailyExpensesModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Daily Expenses Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="inDirectDailyExpensesModalDataTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Total</th>
+                                                                           
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="inDirectExpensesAccountInDetailData">
+                                                                            
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                             <!-- In Salary Expenses Modal Data Modal -->
+                                                   <div class="modal" id="inDirectSalaryExpensesModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Salary Expenses Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="inDirectSalaryExpensesModalDataTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                             <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th style="display:none">Account Id's</th>
+                                                                           
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="inDirectSalaryAccountInDetailData">
+                                                                            
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- In Direct Expenses Account In Detail Modal -->
+                                                <div class="modal" id="indirectExpensesAccountInDetailModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Expenses Account Detail</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="indirectExpensesAccountInDetailTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Account Name</th>
+                                                                            <th>Debit Amount</th>
+                                                                            <th>Credit Amount</th>
+                                                                            <th>Particular</th>
+                                                                            <th>Narration</th>
+                                                                            <th>transection Type</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--InDirect Epenses Total-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total</label>
+                                                    <input type="number" id="indirectExpensesTotal" name="indirectExpensesTotal" class="form-control" readonly>
+                                                </div>
+                                                <!--InDirect Epenses Gross Profit C/o.-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Net Profit.</label>
+                                                    <input type="number" id="indirectExpensesGrossProfit" name="indirectExpensesGrossProfit" class="form-control" readonly>
+                                                </div>
+                                                <!--InDirect Epenses Total Tally-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total Tally</label>
+                                                    <input type="number" id="indirectExpensesTotalTally" name="indirectExpensesTotalTally" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Income</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <!--Direct Income-->
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <table id ="directIncomesTable"  class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th>Schedule Name</th>
+                                                            <th>Total</th>
+                                                            <th style="display:none">ScheduleID</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- Direct Incomes Data Modal -->
+                                                <div class="modal" id="directIncomesDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Direct Incomes Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="directIncomesModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th>Account Id's</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                       
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Sales Accounts Data Modal -->
+                                                <div class="modal" id="salesAccountsDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Sales Accounts Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="salesAccountsModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th>DiscountAmt.</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="salesAccountsModalData">
+                                                                           
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Sales Accounts Modal Data Modal -->
+                                                <div class="modal" id="salesAccountsModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Sales Accounts Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body" style="max-height: 400px; overflow-y: scroll;">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                                    <table id="salesAccountsModalDataTable" class="table table-bordered hover display table-hover table-head-fixed" role="grid" style="width: 100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="background-color: #bddff7;">Service Group Name</th>
+                                                                                <th style="background-color: #bddff7;">Total Amount</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr></tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Lab Modal -->
+                                                <div class="modal" id="labModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Lab Detail</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive" style="max-height: 400px; overflow-y: scroll;">
+                                                                <table id="labTable" class="table table-bordered hover display table-hover table-head-fixed" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th style="background-color: #bddff7;">Service Group Name</th>
+                                                                            <th style="background-color: #bddff7;">Total Amount</th>
+                                                                        </tr>
+                                                                    </thead>    
+                                                                    <tbody>
+                                                                        <tr></tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <!-- OPD Modal -->
+                                                    <div class="modal" id="opdModal" role="dialog">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">OPD Detail</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body table-responsive" style="max-height: 400px; overflow-y: scroll;">
+                                                                    <table id="opdTable" class="table table-bordered hover display table-hover table-head-fixed" role="grid" style="width: 100%">
+                                                                        <thead style="background-color: #bddff7;">
+                                                                            <tr>
+                                                                                <th style="background-color: #bddff7;">Service Group Name</th>
+                                                                                <th style="background-color: #bddff7;">Total Amount</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr></tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                        Close
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                <!--Direct Income Total Tally-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 pull-right">
+                                                    <label>Total Tally</label>
+                                                    <input type="number" id="directIncomesTotalTally" name="directIncomesTotalTally" class="form-control" readonly>
+                                                </div>
+                                            </div>
+
+                                            <!--InDirect Incomes-->
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <table id="indirectIncomesTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th>Schedule Name</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="inDirectIncomesData">
+                                                           
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- In Direct Incomes Data Modal -->
+                                                <div class="modal" id="inDirectIncomesDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Incomes Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="indirectIncomesModalTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="indirectIncomesModalData">
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- In Direct Incomes Modal Data Modal -->
+                                                <div class="modal" id="inDirectIncomesModalDataModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Incomes Data</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="inDirectIncomesModalDataTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Schedule Name</th>
+                                                                            <th>Account Name</th>
+                                                                            <th>Total</th>
+                                                                            <th>Account Id's</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                       
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- In Direct Incomes Account In Detail Modal -->
+                                                <div class="modal" id="indirectIncomesAccountInDetailModal" role="dialog">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">In Direct Incomes Account Detail</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body table-responsive">
+                                                                <table id="indirectIncomesAccountInDetailTable" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                                    <thead style="background-color: #bddff7;">
+                                                                        <tr>
+                                                                            <th>Account Name</th>
+                                                                            <th>Debit Amount</th>
+                                                                            <th>Credit Amount</th>
+                                                                            <th>Particular</th>
+                                                                            <th>Narration</th>
+                                                                            <th>transection Type</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                            <td>Testing</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 15px;">
+                                                                    Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--InDirect Incomes Total-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total</label>
+                                                    <input type="number" id="indirectIncomesTotal" name="indirectIncomesTotal" class="form-control" readonly>
+                                                </div>
+                                                <!--InDirect Incomes Gross Profit C/o.-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Gross Profit. B/F.</label>
+                                                    <input type="number" id="indirectIncomesGrossProfit" name="indirectIncomesGrossProfit" class="form-control" readonly>
+                                                </div>
+                                                <!--InDirect Incomes Total Tally-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Total Tally</label>
+                                                    <input type="number" id="indirectIncomesTotalTally" name="indirectIncomesTotalTally" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

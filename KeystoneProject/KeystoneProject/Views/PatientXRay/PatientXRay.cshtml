@@ -1,0 +1,414 @@
+﻿@{
+    ViewBag.Title = "Patient X-Ray";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+        $('#datatable-responsive3').DataTable({
+            "fixedHeader": true,
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": false,
+        });
+    });
+</script>
+<script>
+ $(document).ready(function () {
+     var PatientRegNO;
+     var LabNo;
+     var testID;
+       // alert($("#PatientRegNo").val());
+        debugger;
+        $("#regNo").change(function () {
+            $.ajax({
+
+                type: "POST",
+                url: '@Url.Action("FillPatient", "PatientXRay")',
+                datatype: "json",
+                data: { PatientRegNO: $("#regNo").val() },
+                success: function (data) {
+                    debugger
+
+                $(data).each(function (index, d) {
+                debugger
+                $("#patientName").val(data[0].PatientName);
+                $("#consultantDoctor").val(data[0].DoctorName)
+
+                })
+                }
+
+                });
+
+        });
+     $("#patientName").autocomplete({
+
+         source: function (request, response) {
+
+             $.ajax({
+                 url: '@Url.Action("GetPatientName", "PatientXRay")',
+                 type: "POST",
+                 datatype: "Json",
+                 data: { prefix: request.term },
+                 success: function (data) {
+                     debugger;
+                     response($.map(data, function (item) {
+                         return {
+                             label: item.PatientName, value: item.PatientName, PatientRegNo: item.PatientRegNo,
+                         };
+                     }))
+
+                 },
+
+             });
+         },
+
+         minLength: 1,
+         select: function (event, ui) {
+             debugger
+             PatientRegNO = ui.item.PatientRegNo;
+             $("#regNo").val(ui.item.PatientRegNo)
+            
+             alert(PatientRegNO);
+
+             $.ajax({
+                 type: "POST",
+                 url: '@Url.Action("FillPatient", "PatientXRay")',
+                 datatype: "json",
+                 data: { PatientRegNO: $("#regNo").val() },
+                 success: function (data) {
+                     debugger
+
+                     $(data).each(function (index, d) {
+                         debugger
+                         $("#consultantDoctor").val(data[0].DoctorName)
+                     })
+                 }
+
+             });
+         }
+     })
+
+     $("#datatable-responsive").delegate('td', 'click', function () {
+         debugger
+         var row = $(this).parent().index();
+         LabNo = document.getElementById("datatable-responsive").tBodies[0].rows[row].cells[0].innerHTML;
+         $("#labno").val(LabNo);
+         $.ajax({
+             type: "POST",
+             url: '@Url.Action("GetAllClickData", "PatientXRay")',
+             data: { LabNo: LabNo },
+             success: function (data) {
+                 debugger
+                 $("#myModal1").hide(300);
+                 $("#test").val("");
+                 $("#test").text("");
+                 $("#test").append('<option value="">Select</Option>');
+                 for (var row = 0; row < data.length; row++) {
+
+                     $("#regNo").val(data[0].PatientRegNo);
+                   
+                     $("#patientName").val(data[0].PatientName);
+                     $("#consultantDoctor").val(data[0].DoctorName);
+
+                     $("#test").append('<option value=' + data[row].TestID + '>' + data[row].Testname + '</Option>');
+                     testID = data[row].TestID;
+                    
+                 }
+             }
+         }) 
+     });
+     function FillDate() {
+         debugger
+         var now = new Date();
+
+         var day = ("0" + now.getDate()).slice(-2);
+         var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+         var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+         $('#fromDate1').val(today);
+         $('#toDate2').val(today);
+     }
+     FillDate();
+     $("#fromDate").on('keyup', function () {
+         alert($("#fromDate1").val());
+     })
+     $("#btnshow").on('click',function () {
+         debugger
+         var a = $("#fromDate1").val();
+         //
+        
+         $("#showPatientModal").show();
+         $.ajax({
+             type: "POST",
+             url: '@Url.Action("PatientBind", "PatientXRay")',
+             data: { FromDate: $("#fromDate1").val(), Todate: $("#toDate2").val() },
+             success: function (data) {
+                 debugger
+                 $("#datatable-responsive tbody tr").remove();
+                 for (var row = 0; row < data.length; row++)
+                 {
+                  $("#datatable-responsive").append('<tr  style="overflow: scroll"><td style=display:none>' + data[row].LabNo + '</td><td>' + data[row].PatientName + '</td><td>' + data[row].PatientType + '</td><td>' + data[row].LabDate + '</td></tr>')
+                 }
+             }
+         })
+     });
+     $("#test").change(function () {
+         debugger
+       //  alert("abc");
+         SelectFillDataAll();
+     })
+     function SelectFillDataAll() {
+         debugger       
+         if ($("#test").val() > 0) {
+             debugger
+             $.ajax({
+                 type: "GET",
+                 url: '@Url.Action("GetPatientWiseValue", "PatientXRay")',
+                 data: { LabNo: LabNo, TestID: testID },
+                 success: function (searclist) {
+                      debugger
+                      $("#Description").val(searclist[0].Footer);
+                      $(".ql-editor").html(searclist[0].Footer);
+                     
+                      $("#LabNo").val(searclist[0].LabNo);
+                    // alert(data[0].LabNo);
+                     $("#TestID").val(searclist[0].TestID);
+                   //  alert(data[0].TestID);
+
+                 }
+             })
+         }
+
+     }
+
+ });
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" id="form1" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient X-Ray</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Laboratory", "Application")">Laboratory</a></li>
+                                    <li class="breadcrumb-item active">Patient X-Ray</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Search</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!-- From Date -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                       
+                                                        <input type="date" id="fromDate1" name="fromDate" value="" class="form-control input-sm" style="width:150px" />
+
+                                                        
+                                                    </div>
+                                                </div>
+                                                <!-- To Date -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+
+                                                        <input type="date" id="toDate2" name="toDate" value="" class="form-control input-sm" style="width:150px" />
+
+                                                       
+                                                    </div>
+                                                </div>
+                                                <!-- Patient UHID and Lab Number -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>UHID No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="regNo" name="regNo" placeholder="">
+                                                        <input type="hidden" id="LabNo" name="LabNo">
+                                                        <input type="hidden" id="TestID" name="TestID">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!-- Patient Name -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="patientName" name="patientName" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <!-- Consultant Doctor -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Consultant Dr.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="consultantDoctor" name="consultantDoctor" readonly>
+                                                    </div>
+                                                </div>
+                                                <!-- Select Test -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Select Test</label>
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="test" name="tests">
+                                                            <option value="">Select</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <div class="btn-group dropdown-split-warning">
+                                                            <button type="button" class="btndivcss" id="btnshow" data-toggle="modal" data-target="#showPatientModal">
+                                                                Show
+                                                            </button>
+
+                                                            <!-- Show Patient Modal -->
+                                                            <div class="modal fade" id="showPatientModal">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalLabel">Patient Details</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="table-responsive">
+                                                                                <table id="datatable-responsive" class="table table-bordered hover display table-hover" style="width:100%">
+                                                                                   <thead>
+                                                                                     <tr role="row">                                                                                      
+
+                                                                                        <th class="sorting" aria-controls="datatable-responsive"
+                                                                                            rowspan="1" colspan="1">
+                                                                                            Patient Name
+                                                                                        </th>
+                                                                                        <th class="sorting" aria-controls="datatable-responsive"
+                                                                                            rowspan="1" colspan="1">
+                                                                                            Patient Type
+                                                                                        </th>
+                                                                                        <th class="sorting" aria-controls="datatable-responsive"
+                                                                                            rowspan="1" colspan="1">
+                                                                                            X-Ray Date
+                                                                                        </th>
+
+
+                                                                                        </tr>
+                                                                                       
+                                                                                    </thead>
+                                                                                 
+                                                                                    <tbody></tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">X-RAY REPORTING</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="table-responsive">
+                                            <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                               
+                                                <div id="parametereditor2" name="parametereditor2">
+
+                                                </div>
+                                                <input type="hidden" name="Description" id="Description" class="form-control" />
+                                            </div>
+                                            <table id="datatable-responsive3" class="table table-bordered hover display dataTable table-hover" style="width:100%">
+                                                @*<thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Value</th>
+                                                        <th>N/L/H</th>
+                                                        <th>Low</th>
+                                                        <th>High</th>
+                                                    </tr>
+                                                </thead>*@
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Laboratory", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+
+

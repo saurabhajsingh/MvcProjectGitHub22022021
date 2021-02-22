@@ -1,0 +1,453 @@
+﻿@model KeystoneProject.Models.Keystone.HospitalCreation
+
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+=
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+    </script>
+}
+
+<script>
+
+    function Delete(PatientDeathCertificateID) {
+        debugger
+        if (PatientDeathCertificateID != "" && $("#PatientName").val() != "") {
+
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeletePatientDeathCertificate", "DeathCertificate")',
+                    data: { PatientDeathCertificateID: PatientDeathCertificateID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Death Certificate Deleted Successfully") {
+                            alert("Death Certificate Successfully");
+                            location.reload(true);
+                            Restore();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+
+    $(document).ready(function (){
+        $("#PatientRegNOprint").change(function () {
+            var printReg = $(this).val();
+            // fin_year_id = $("#fin_year_id").val();
+            $.ajax({
+                url: '@Url.Action("GetPatientPrintNo_ToRegNo", "PatientOPD")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: $("#PatientRegNOprint").val(), PatientType: "%" },
+
+                success: function (data) {
+                    debugger
+                    $("input[type=text],input[type=number] ,hidden").val("");
+                    $('#PatientRegNOprint').val(printReg);
+                    // $('#fin_year_id').val(fin_year_id);
+                    if (data == "") {
+                        alert("Patient RegNo Does Not Exists");
+                        return false;
+                    }
+                    $("#PatientRegNO").val(data)
+                   
+               
+            debugger
+            var PregNo = { PatientRegNo: $("#PatientRegNO").val() }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetPatientRegNo", "DeathCertificate")',
+                data: JSON.stringify(PregNo),
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger;
+                    $("#PatientName").val(searchList[0]);
+                    $("#Address").val(searchList[1]);
+                    $("#GuardianName").val(searchList[2]);
+                    $("#PatientRegNO").val(searchList[3]);
+                },
+            });
+                }
+            })
+        });
+
+        $.ajax
+        ({
+            type: "POST",
+            url: '@Url.Action("DatatableBind", "DeathCertificate")',
+            dataType: "json",
+            success: function (result) {
+              debugger
+                $.each(result, function (i, obj) {
+                    $("#GetAllDeathTbl").append('<tr><td style="display:none">' + PatientDeathCertificateID + '</td><td>' + obj.PatientRegNo + '</td><td style="display:none">' + obj.ReferenceCode + '</td><td>' + obj.PatientName + '</td><td style="display:none">' + obj.GuardianName + '</td><td style="display:none">' + obj.DateOfDeath + '</td><td style="display:none">' + TimeOfDeath + '</td><td style="display:none">' + DeathType + '</td><td style="display:none">' + ReasonOfDeath + '</td><td style="display:none">' + Discription + '</td><td style="display:none">' + Address + '</td></tr>')
+
+                });
+                $('#cityTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#cityTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#cityExcelExport'));
+            },
+            error: function () {
+            }
+        });
+       
+    });
+        $(document).ready(function () {
+            $("#GetAllDeathTbl").delegate('td', 'click', function () {
+                debugger;
+
+                $("#save").text("Update");
+                $("save").addClass("btndivcss");
+                var row_num = parseInt($(this).parent().index());
+                var PatientDeathCertificateID = parseInt(document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[0].innerHTML);
+                var PatientRegNo = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[1].innerHTML;
+                var ReferenceCode = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[2].innerHTML;
+                var PatientName = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[3].innerHTML;
+                var GuardianName = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[4].innerHTML;
+                var DateOfDeath = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[5].innerHTML;
+                var TimeOfDeath = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[6].innerHTML;
+                var DeathType = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[7].innerHTML;
+                var ReasonOfDeath = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[8].innerHTML;
+                var Discription = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[9].innerHTML;
+                var Address = document.getElementById("GetAllDeathTbl").tBodies[0].rows[row_num].cells[10].innerHTML;
+
+                $("#PatientRegNo").val(PatientRegNo);
+                $("#PatientRegNO").val(PatientRegNo);
+
+                $.ajax
+                    ({
+                        type: "GET",
+                        url: '@Url.Action("Fill", "DeathCertificate")',
+                        data: { PatientRegNo: PatientRegNo },
+
+                        success: function (result) {
+
+                            $.each(result, function (i, obj) {
+                                $("#PatientDeathCertificateID").val(obj.PatientDeathCertificateID);
+                                $("#PatientRegNO").val(obj.PatientRegNo);
+                                $("#PatientName").val(obj.PatientName);
+                                $("#GuardianName").val(obj.GuardianName);
+                                $("#ReferenceCode").val(obj.ReferenceCode);
+                                $('#DateOfDeath').val(obj.DateOfDeath);
+                                $('#TimeOfDeath').val(obj.TimeOfDeath);
+                                $("#DeathType").val(obj.DeathType);
+                                $("#ReasonOfDeath").val(obj.ReasonOfDeath);
+                                $("#Discription").val(obj.Discription);
+                                $("#Address").val(obj.Address);
+                            });
+                        }
+                    })
+            });
+        
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientName", "DeathCertificate")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNo, Address: item.Address, GuardianName: item.GuardianName
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                var d = ui.item.id;
+
+                if (d > 0) {
+                    $("#PatientRegNO").val(d);
+                    $("#GuardianName").val(ui.item.GuardianName);
+                    $("#Address").val(ui.item.Address);
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            //url: "/OPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "DeathCertificate")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Patient Death Certificate</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient Module</a></li>
+                                    <li class="breadcrumb-item active">Patient Death Certificate</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Information</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Patient Registration Number-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Patient Reg. No.</label>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <select class="form-control">
+                                                        <option value="">2017-2018</option>
+                                                        <option value="">2018-2019</option>
+                                                        <option value="">2019-2020</option>
+                                                        <option value="">2020-2021</option>
+                                                        <option value="">2021-2022</option>
+                                                    </select>
+                                                </div>
+                                                <div class="hidden col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="PatientRegNO" name="PatientRegNo">
+                                                    <input type="hidden" class="form-control" id="PatientDeathCertificateID" name="PatientDeathCertificateID">
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="PatientRegNOprint" name="PatientRegNOprint">
+                                                    
+                                                </div>
+                                            </div>
+                                            <!--Gurdian Name-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Gurdian Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="GuardianName" name="GuardianName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Patient Name-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Patient Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="PatientName" name="PatientName">
+                                                </div>
+                                            </div>
+                                            <!--Address-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Address</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <textarea id="Address" name="Address" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Death Information</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Date of Death-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Date of Death</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="date" id="DateOfDeath" name="DateOfDeath" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                </div>
+                                            </div>
+                                            <!--Time of Death-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Time of Death</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="TimeOfDeath" name="TimeOfDeath" value="@DateTime.Now.ToString("hh:mm:ss tt")" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Death Type-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Death Type</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="DeathType" name="DeathType">
+                                                </div>
+                                            </div>
+                                            <!--Reason of Death-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <label>Reason of Death</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="text" class="form-control" id="ReasonOfDeath" name="ReasonOfDeath">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <!--Discription-->
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                    <label>Discription</label>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                    <textarea class="form-control" id="Discription" name="Discription"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="Delete(document.getElementById('PatientDeathCertificateID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="datatable-responsiveExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <table id="datatable-responsive" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th style="display:none">Patient Name</th>
+                                            <th>Patient Reg No.</th>
+                                            <th>Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                            <th style="display:none">Patient Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablebind" class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+
+

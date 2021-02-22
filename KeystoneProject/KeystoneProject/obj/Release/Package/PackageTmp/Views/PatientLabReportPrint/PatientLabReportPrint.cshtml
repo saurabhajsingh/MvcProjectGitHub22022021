@@ -1,0 +1,801 @@
+﻿@model KeystoneProject.Models.Laboratory.PatientLabReportPrint
+@{
+    ViewBag.Title = "Laboratory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#dialogform").hide();
+        $("#PopupEmail").hide();
+        $("#Showghfgh").click(function () {
+            $("#dialogform").show();
+        });
+        $("#close").click(function () {
+            $("#dialogform").hide();
+        });
+
+        $("#btnEmail").click(function () {
+            debugger
+            $("#PopupEmail").show();
+        });
+
+    });
+    var SerGroupID = 0;
+    $(document).ready(function () {
+        $("#Category").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetCategoryBind", "PatientLabReportPrint")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+
+                                label: item.CategoryName, value: item.CategoryName, id: item.CategoryID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+
+            select: function (event, ui) {
+                debugger
+                var show = ui.item.id;
+                $("#CategoryID").val(show);
+                SerGroupID = show;
+                alert(SerGroupID);
+            }
+
+        });
+
+    });
+
+    var SerID = 0;
+    $(document).ready(function () {
+        $("#TestName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetTestNameBind", "PatientLabReportPrint")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+
+                                label: item.TestName, value: item.TestName, id: item.TestID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+
+            select: function (event, ui) {
+                debugger
+                var show = ui.item.id;
+                $("#TestID").val(show);
+                SerID = show;
+                alert(SerID);
+            }
+
+        });
+
+    });
+
+    var dept = 0;
+    $(document).ready(function () {
+        $("#DepartmentName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetDepartmentBind", "PatientLabReportPrint")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+
+                                label: item.DepartmentName, value: item.DepartmentName, id: item.DepartmentID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+
+            select: function (event, ui) {
+                debugger
+                var show = ui.item.id;
+                $("#DepartmentID").val(show);
+                dept = show;
+                alert(dept);
+            }
+
+        });
+
+    });
+
+    var Doc = 0;
+    $(document).ready(function () {
+        $("#DoctorName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetDoctorBind", "PatientLabReportPrint")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+
+                                label: item.DoctorName, value: item.DoctorName, id: item.DoctorID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+
+            select: function (event, ui) {
+                debugger
+                var show = ui.item.id;
+                $("#DoctorID").val(show);
+                Doc = show;
+                alert(Doc);
+            }
+
+        });
+
+    });
+
+    var patient = 0;
+    $(document).ready(function () {
+        $("#PatientType").change(function () {
+            var PatType = $("#PatientType option:selected").text();
+            debugger
+            if (PatType == "Patient Name") {
+                $("#LabNo").hide();
+                $("#PatientName").show();
+                $("#PatientName").autocomplete({
+
+                    source: function (request, response) {
+                        debugger
+                        var PatType = $("#PatientType option:selected").text();
+                        if (PatType == "Patient Name") {
+                            $("#LabNo").hide();
+                            $("#PatientName").show();
+                            $.ajax({
+
+                                //url: "/PatientOPDBill/GetServiceGrp",
+                                url: '@Url.Action("GetPatientBind", "PatientLabReportPrint")',
+                                type: "POST",
+                                dataType: "json",
+                                data: { prefix: request.term },
+                                success: function (data) {
+                                    debugger
+                                    response($.map(data, function (item) {
+                                        return {
+
+                                            label: item.PatientName, value: item.PatientName, id: item.PatientRegNo
+                                        };
+                                    }))
+                                }
+                            })
+                            PatType = "";
+                        }
+                        else if (PatType == "Lab No") {
+                            $("#LabNo").show();
+                            $("#PatientName").hide();
+
+                            PatType = "";
+                        }
+                        else {
+                            $("#LabNo").hide();
+                            $("#PatientName").show();
+                            PatType = "";
+                        }
+
+                    },
+
+                    minLength: 1,
+
+                    select: function (event, ui) {
+                        debugger
+                        var show = ui.item.id;
+                        $("#PatientRegNo").val(show);
+                        patient = show;
+                        alert(patient);
+                    }
+                });
+            }
+
+            else if (PatType == "Lab No") {
+                $("#LabNo").show();
+                $("#PatientName").hide();
+                PatType = "";
+            }
+            else {
+                $("#LabNo").hide();
+                $("#PatientName").show();
+                $("#PatientName").val("");
+                $("#PatientRegNo").val("");
+                
+                PatType = "";
+            }
+
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#Show").click(function () {
+
+            $.ajax({
+                type: "POST",
+                //  contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetAllShowPatientLabReports", "PatientLabReportPrint")',
+                data: {
+                    FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val(), PatientRegNo: $("#PatientRegNo").val(), LabNo: $("#LabNo").val(), DoctorID: $("#DoctorID").val()
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#TblLabReportDetails td").remove();
+                    for (var i = 0; i < data.length; i++) {
+
+                        var SrNo = i + 1;
+
+                        $("#TblLabReportDetails").append('<tr><td>' + SrNo + '</td><td>' + data[i].LabNo + '</td><td>' + data[i].LabDate + '</td><td>' + data[i].PatientName + '</td><td>' + data[i].LabType + '</td><td>' + data[i].DoctorName + '</td></tr>');
+                    };
+                },
+                error: function (result) {
+                    alert("Error grd bind");
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#TblLabReportDetails').delegate('td', 'click', function () {
+
+            $('#TblLabReportTestDetails tbody tr').remove();
+
+            var row_num = parseInt($(this).parent().index());
+            var LabNo = parseInt(document.getElementById("TblLabReportDetails").tBodies[0].rows[row_num].cells[1].innerHTML);
+            debugger
+            $("#LabNoHidden").val(LabNo);
+            $.ajax({
+
+                type: "GET",
+                url: '@Url.Action("GetPatientLabBillDetails", "PatientLabReportPrint")',
+                data: { LabNo: LabNo },
+                dataType: "json",
+                success: function (data) {
+                    $("#dialogform").show();
+                    for (var i = 0; i < data.length; i++) {
+
+                        if (data[i].TestStatus == "COMPLETED") {
+                            $("#TblLabReportTestDetails").append('<tr><td> ' + ' <i class="fa fa-check"></i> ' + ' </td><td>' + data[i].LabNo + '</td><td>' + data[i].TestName + '</td><td style="display:none">' + data[i].TestID + '</td><td>' + data[i].TestType + '</td><td>' + data[i].TestStatus + '</td><td><input type="checkbox" name="chbchk" class="chbchk"/></td><td><input type="checkbox" name="chbchkGrp" class="chbchkGrp"/></td><td><input type="checkbox" name="chbchkFooter" class="chbchkFooter"/></td></tr>');
+
+                        }
+                        else if (data[i].TestStatus == "BILLING" || data[i].TestStatus == "SAMPLECOLLECTION")
+                        {
+                            $("#TblLabReportTestDetails").append('<tr><td> ' + ' <i class="fa fa-close"></i> ' + ' </td><td>' + data[i].LabNo + '</td><td>' + data[i].TestName + '</td><td style="display:none">' + data[i].TestID + '</td><td>' + data[i].TestType + '</td><td>' + data[i].TestStatus + '</td><td><input type="checkbox" name="chbchk"  class="chbchk"/></td><td><input type="checkbox" name="chbchkGrp" class="chbchkGrp"/></td><td><input type="checkbox" name="chbchkFooter" class="chbchkFooter"/></td></tr>');
+
+                        }
+                        else 
+                        {
+                            $("#TblLabReportTestDetails").append('<tr style="background:#35a4f1"><td> ' + ' <i class="fas fa-empty-set"></i> ' + ' </td><td>' + data[i].LabNo + '</td><td> ' + ' <i class="fas fa-empty-set"></i> ' + '</td><td> ' + ' <i class="fas fa-empty-set"></i> ' + '</td><td> ' + ' <i class="fas fa-empty-set"></i> ' + '</td></tr>');
+
+                        }
+
+                    }
+
+
+                },
+
+
+            });
+
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#btnPrintReport").click(function () {
+
+            var len = $("#TblLabReportTestDetails td").closest("tr").length;
+            var i = len;
+            var Lab = "";
+            var LabFormultiple = "";
+            var TestName = "";
+            var TestStatusNo = "";
+            var TestIDNo = [];
+            var TestType = "";
+            var TestTypeformultiple = "";
+            var chkgrp = "";
+            var chknotgrp = "";
+            var count = 1;
+
+         
+            debugger;
+            var testid = "";
+            var testidformultiple = "";
+            var i = 0;
+
+            for (var i = 0; i < len; i++) {
+
+                var teststatus = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[i].cells[5].innerHTML;
+            }
+
+                if (teststatus == "SAMPLECOLLECTION") {
+                    //alert("This Report is not Completed.");
+
+                    var clicked = false;
+
+                    $(".chbchk").prop("checked", false);
+                }
+            
+
+            else
+
+            {
+                              
+            for (var a = 0; a < len; a++) 
+            {
+
+
+                var checkedBoxes = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchk]:checked').val();
+                var grpchkboxes = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchkGrp]:checked').val();
+                //var checkFooter = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchk]:checked').val();
+
+                if (grpchkboxes == "on" && checkedBoxes == "on") {
+                    //   var sumval = a + 1;
+                    var LabNo = parseInt(document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[1].innerHTML);
+
+                    //  var teststatus = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].children[0].value;
+                    testidformultiple = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].innerHTML;
+                    var testtype = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[4].innerHTML;
+
+                    debugger;
+
+                    LabFormultiple = LabNo;
+                    TestTypeformultiple = testtype;
+
+
+
+                    debugger;
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("TestForMultiple", "PatientLabReportPrint")',
+                       
+                        dataType: "json",
+                        data: { LabFormultiple: LabFormultiple, testidformultiple: testidformultiple, TestTypeformultiple: TestTypeformultiple },
+                        success: function (response) {
+                            debugger
+                            if (response == "") {
+                                //    alert("This Report is Not Completed");
+                                debugger
+                                i++;
+                            }
+                            else {
+                                //    window.open('@Url.Action("RptPatientLabReports", "PatientReport")');
+                                ///alert("Printed Successfully");
+                                debugger;
+                            }
+                        },
+                    });
+
+                  
+                    chkgrp = true;
+                }
+                
+            }
+          }
+
+            for (var a = 0; a < len; a++) {
+                var checkedBoxes = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchk]:checked').val();
+                var grpchkboxes = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchkGrp]:checked').val();
+
+                if (checkedBoxes == "on" && grpchkboxes != "on") {
+
+                    count += count;
+                    //  var sumval = a + 1;
+                    var LabNo = parseInt(document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[1].innerHTML);
+
+                    //  var teststatus = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].children[0].value;
+                    testid += document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].innerHTML + ",";
+                    var testtype = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[4].innerHTML;
+
+                    debugger;
+
+                    Lab = LabNo;
+                    TestType = testtype;
+                    chknotgrp = true;
+
+                }
+
+               
+            }
+           
+                    debugger;
+                    $.ajax({
+                        url: '@Url.Action("Test", "PatientLabReportPrint")',
+                        
+                        type: "GET",
+                        dataType: "json",
+                        data: { LabNo: Lab, TestIDNo: testid, TestType: TestType, chkgrp: chkgrp, chknotgrp: chknotgrp },
+                        success: function (response) {
+                            debugger
+                            if (response == "Blank") {
+                                alert("This Report is Not Completed");
+                            }
+                            else {
+                                window.open('@Url.Action("RptPatientLabReports", "PatientLabReportPrint")');
+                                ///alert("Printed Successfully");
+                                debugger;
+                            }
+                        },
+                    });
+
+                
+             
+           
+          
+        });
+    });
+</script>
+
+@*<script>
+   
+            var isChecked = false;
+            function checkAll() {
+
+                var checkboxes = document.getElementsByTagName('input');
+                if (isChecked) {
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        if (checkboxes[i].type == 'checkbox') {
+                            checkboxes[i].checked = true;
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        console.log(i)
+                        if (checkboxes[i].type == 'checkbox') {
+                            checkboxes[i].checked = false;
+                        }
+                    }
+                }
+                isChecked = !isChecked;
+            }
+
+        
+
+    
+</script>*@
+
+<script>
+
+    var SendMail = function () {
+        var Lab = "";
+        var LabFormultiple = "";
+        var TestName = "";
+        var TestStatusNo = "";
+        var TestIDNo = [];
+        var TestType = "";
+        var TestTypeformultiple = "";
+        var testid = "";
+        var testidformultiple = "";
+        var chkgrp = "";
+        var chknotgrp = "";
+        var count = 1;
+        var checkedBoxes;
+        var grpchkboxes;
+        var len = $("#TblLabReportTestDetails td").closest("tr").length;
+        var i = len;
+        for (var a = 0; a < len; a++) {
+            debugger;
+            //checkedBoxes += document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[6].children[0].value + ",";
+             grpchkboxes = $('#TblLabReportTestDetails > tbody > tr:nth-child(' + parseInt(a + 1) + ')').children().find('input[name=chbchkGrp]:checked').val();
+
+            if (document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[6].children[0].value == "on" && grpchkboxes != "on") {
+
+                count += count;
+                //  var sumval = a + 1;
+                var LabNo = parseInt(document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[1].innerHTML);
+
+                //  var teststatus = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].children[0].value;
+                testid += document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[3].innerHTML + ",";
+                var testtype = document.getElementById("TblLabReportTestDetails").tBodies[0].rows[a].cells[4].innerHTML;
+
+                debugger;
+
+                Lab+= LabNo;
+                TestType = testtype;
+                chknotgrp = true;
+
+            }
+          
+
+         
+        }
+         
+
+        var tosend = $("#txtEmailID").val();
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("SendMail", "PatientLabReportPrint")',
+            data: { Lab: 60, tosend: tosend, testid: 82},
+            success: function (data) {
+                alert("Success");
+            }
+        })
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#btnSelectAll").click(function () {
+            debugger
+
+            var clicked = false;
+           
+            $(".chbchk").prop("checked", true);
+               
+           
+        })
+    })
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient Lab Advance Search</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item active">Department</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Lab Advance Search</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--From Date-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>From Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="date" id="FromDate" name="FromDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--To Date-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>To Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="date" id="ToDate" name="ToDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Type-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <label>Pt. Type</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <select id="PatientType" name="PatientType" class="form-control">
+                                                            <option>Select</option>
+                                                            <option>Patient Reg No</option>
+                                                            <option>Patient Name</option>
+                                                            <option>Lab No</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                        <input type="hidden" name="PatientRegNo" id="PatientRegNo" class="form-control">
+                                                        <input style="display:none" type="text" id="LabNo" name="LabNo" class="form-control">
+                                                        <input type="hidden" id="LabNoHidden" name="LabNoHidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Doctor Name-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Dr. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="DoctorName" name="DoctorName" class="form-control">
+                                                        <input type="hidden" name="DoctorID" id="DoctorID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Department-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Dept.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="DepartmentName" name="DepartmentName" class="form-control">
+                                                        <input type="hidden" name="DepartmentID" id="DepartmentID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Category-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Category</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Category" name="Category" class="form-control">
+                                                        <input type="hidden" name="CategoryID" id="CategoryID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Test Name-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Test Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="TestName" name="TestName" class="form-control">
+                                                        <input type="hidden" name="TestID" id="TestID" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="button" class="btn btn-app" id="Show">
+                                        <i class="fa fa-eye"></i>Show
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Dashboard", "Home")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="TblLabReportDetailsExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="TblLabReportDetails" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th scope="col">Sr. No.</th>
+                                            <th scope="col">Lab No.</th>
+                                            <th scope="col">Lab Date</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Lab Type</th>
+                                            <th scope="col">Doctor Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+
+                                <!-- Lab Report Modal -->
+                                <div class="modal" id="dialogform" role="dialog">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Lab Report</h5>
+                                                <button type="button" id="close" class="close" value="Close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                    <table id="TblLabReportTestDetails" class="table table-bordered hover display table-hover" style="width: 100%">
+                                                        <thead style="background-color: #bddff7;">
+                                                            <tr>
+                                                                <th scope="col">Img</th>
+                                                                <th scope="col">Lab No.</th>
+                                                                <th scope="col">Test Name</th>
+                                                                <th scope="col">S</th>
+                                                                <th scope="col">G</th>
+                                                                <th scope="col">Test Type</th>
+                                                                <th scope="col">F</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="scrollbar"></tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <button type="button" id="btnSelectAll" class="btndivcss checkall">
+                                                            Select All
+                                                        </button>
+                                                        @*<li><button type="button" class="checkall" onclick="checkAll()">select/deselect</button></li>*@
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <button type="button" id="btnPrintReport" class="btndivcss">
+                                                            <span class="fa fa-print"></span> Print Report
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" id="ChkPatientFinalBillPrefix" name="ChkPatientFinalBillPrefix"> With Header
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <button type="button" id="btnEmail" class="btndivcss">
+                                                            <span class="fa fa-envelope"></span> Email
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 card-body" id="PopupEmail" style="text-align: center;">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Email ID</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="txtEmailID" name="txtEmailID" class="form-control">
+                                                        <input type="hidden" name="txtEmailID" id="txtEmailID" class="form-control">
+                                                    </div>
+                                                    <button type="button" onclick="SendMail()" id="btnadd" class="btndivcss">
+                                                        <span class="fa fa-send-o"></span> Send
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+

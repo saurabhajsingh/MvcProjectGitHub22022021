@@ -1,0 +1,700 @@
+﻿@model KeystoneProject.Models.MasterLaboratory.OutSourceLab
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file isedited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#data-responsive tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+@*@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}*@
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            alert($("#OutSourceLabID").val());
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "OutSourceLab")',
+                    type: 'POST',
+                    data: { OutSourceLabID: $("#OutSourceLabID").val() },
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("OutSourceLab Deleted Successfully");
+                            location.reload();
+                        }
+                        else {
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $.ajax({
+            //url: "/OPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetTestMasterForBindCategory", "OutSourceLab")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                $("#TestGroup").append('<option value=0>--Select--</option>');
+                $(data).each(function (index, d) {
+                    $("#TestGroup").append('<option value=' + d.TestGroupID + '>' + d.TestGroupName + '</option>');
+                    $("#TestGroupID").val(d.TestGroupID);
+                    // alert($("#TestGroupID").val());
+                });
+            },
+            error: function (data) {
+            }
+        });
+        $("#TestGroup").change(function () {
+            $("#TestGroupID").val($("#TestGroup :selected").val());
+            //alert($("#TestGroupID").val());
+            //alert($("#TestGroup :selected").val());
+            //$("#tes").val($("#TestGroupID :selected").text());
+        })
+        //$("#TestGroup").selected(function () {
+        //    alert($("#TestGroupID").val);
+        //})
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#City").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetCity", "OutSourceLab")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.City, value: item.City, id: item.CityID, state: item.State, country: item.Country, stateID: item.StateID, countryID: item.CountryID };
+                        }));
+                    },
+                    //error: function (xhr, status, error) {
+                    //    alert("Error: " + error);
+                    //}
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#CityID").val(ui.item.id);
+                $("#State").val(ui.item.state);
+                $("#Country").val(ui.item.country);
+                $("#StateID").val(ui.item.stateID);
+                $("#CountryID").val(ui.item.countryID);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetTestMasterForBindTestNameGrid", "OutSourceLab")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                //var row="";
+                //$(data).each(function (index,d) {
+                //    debugger
+                //    row+= '<tr><td style="display:none"><input type="hidden" id="Test" name="Test"  value="' + d.TestID + '"/></td><td style="display:none"><input type="hidden" id="GroupID" name="GroupID"  class="GroupID" value="' + d.TestGroupID + '"/></td><td><input type="text" id="TestGroupName" name="TestGroupName" readonly value="' + d.TestGroupName + '"/></td><td><input type="" id="TestName" name="TestName" readonly value="' + d.TestName + '"/></td><td><input type="text" id="Rate1" name="Rate1" value="' + d.Rate + '"/></td><td><input type="text" id="Percent" name="Percent" value="' + d.Percentage + '"/></td></tr>';
+                //})
+                //alert("fghfg" + data);
+                //$("#OutSourceTestGrpDetails").append(row);
+                for (var i = 0; i < data.length; i++) {
+                    //var SrNo = i + 1;
+                    debugger
+                    $("#OutSourceTestGrpDetails").append('<tr><td style="display:none"><input type="hidden" id="Test" name="Test" value="' + data[i].TestID + '"/></td><td style="display:none"><input type="hidden" id="GroupID" name="GroupID" class="GroupID" value="' + data[i].TestGroupID + '"/></td><td>' + data[i].TestGroupName + '</td><td>' + data[i].TestName + '</td><td><input type="text" id="Rate1" name="Rate1" value="' + data[i].Rate + '"/></td><td><input type="text" id="Percent" name="Percent" value="' + data[i].Percentage + '"/></td></tr>');
+                };
+                $('#OutSourceTestGrpDetails').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#OutSourceTestGrpDetails').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#OutSourceTestGrpDetailsExcelExport'));
+            },
+        });
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllOutSourceLab", "OutSourceLab")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                //   alert("jhvj");
+                debugger;
+                for (var i = 0; i < data.length; i++) {
+                    //var SrNo = i + 1;
+                    debugger
+                    $("#OutSourceLabDetails").append('<tr><td>' + data[i].OutSourceLabID + '</td><td>' + data[i].LabName + '</td><td>' + data[i].Address + '</td></tr>');
+                };
+            },
+            error: function (result) {
+                //alert("Error in bindgrid");
+            }
+        });
+        $("#OutSourceLabDetails").delegate("td", "click", function () {
+            var row_num = parseInt($(this).parent().index());
+            var OutSourceLabID = document.getElementById("OutSourceLabDetails").tBodies[0].rows[row_num].cells[0].innerHTML;
+            $("#OutSourceLabID").val(OutSourceLabID);
+            alert($("#OutSourceLabID").val());
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTestMasterForBindTestNameGrid1", "OutSourceLab")',
+                data: { OutSourceLabID: $("#OutSourceLabID").val() },
+                dataType: "json",
+                success: function (data) {
+                    //   alert("jhvj");
+                    debugger;
+                    $("#OutSourceTestGrpDetails tr").remove();
+                    $("#OutSourceTestGrpDetails").append('<tr><th>TestGroupName</th><th>TestName</th><th>Rate</th><th>Percentage</th><th>LabName</th></tr>');
+                    for (var i = 0; i < data.length; i++) {
+                        //var SrNo = i + 1;
+                        debugger
+                        $("#OutSourceTestGrpDetails").append('<tr><td style="display:none"><input type="hidden" id="LabtestdetailsID" name="LabtestdetailsID"  value="' + data[i].OutSourceLabtestdetailsID + '"/><td style="display:none"><input type="hidden" id="Test" name="Test"  value="' + data[i].TestID + '"/></td><td style="display:none"><input type="hidden" id="GroupID" name="GroupID"  value="' + data[i].TestGroupID + '"/></td><td>' + data[i].TestGroupName + '</td><td>' + data[i].TestName + '</td><td><input type="text" id="Rate1" name="Rate1" value="' + data[i].Rate + '"/></td><td><input type="text" id="Percent" name="Percent" value="' + data[i].Percentage + '"/></td><td><input type="text" id="Lab" name="Lab" readonly value="' + data[i].LabName + '"/></td></tr>');
+                    };
+                },
+                error: function (result) {
+                    //alert("Error in bindgrid");
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Edit", "OutSourceLab")',
+                data: { OutSourceLabID: $("#OutSourceLabID").val() },
+                dataType: "json",
+                success: function (data) {
+                    //   alert("jhvj");
+                    alert(data[0].CityID);
+                    debugger;
+                    $("#OutSourceLabID").val(data[0].OutSourceLabID);
+                    $("#LabName").val(data[0].LabName);
+                    $("#ManagingBody").val(data[0].ManagingBody);
+                    $("#Adminstrative").val(data[0].Adminstrator);
+                    $("#ContactPerson").val(data[0].ContactPerson);
+                    $("#Address").val(data[0].Address);
+                    $("#CityID").val(data[0].CityID);
+                    $("#PinCode").val(data[0].PinCode);
+                    $("#StateID").val(data[0].StateID);
+                    $("#CountryID").val(data[0].CountryID);
+                    $("#PhoneNo").val(data[0].PhoneNo);
+                    $("#FaxNo").val(data[0].FaxNo);
+                    $("#MobileNo").val(data[0].MobileNo);
+                    $("#EmailID").val(data[0].EmailID);
+                    $("#URL").val(data[0].URL);
+                },
+                error: function (result) {
+                    //alert("Error in bindgrid");
+                }
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        var Per = "";
+        $("#AddPercent").click(function () {
+            $("#Percent1").val();
+            Per = $("#Percent1").val();
+            var table = document.getElementById("OutSourceTestGrpDetails");
+            var row = table.tBodies[0].rows.length;
+            var testgroup = 0;
+            alert(row);
+            var i = 0;
+            $(".GroupID").each(function () {
+                if ($(this).val() == $("#TestGroupID").val()) {
+                    //alert()
+                    document.getElementById("OutSourceTestGrpDetails").tBodies[0].rows[i].cells[5].children[0].value = Per;
+                }
+                i++;
+                //if ($(this).val() == $("#TestGroupID").val())
+                //{
+                //    $("#Percent").val(Per);
+                //}
+            })
+            debugger
+            //for(var i=0;i<row;i++)
+            //{
+            //    var
+            //    if(testgroup== $("#TestGroupID").val())
+            //    {
+            //        document.getElementById("OutSourceTestGrpDetails").tBodies[0].rows[i].cells[5].children[0].value=Per;
+            //    }
+            //}
+            //alert(Per);
+            //alert(TestG);
+        })
+        //$("#TestGroupID").selected
+    })
+</script>
+
+<script>
+$(document).ready(function(){
+
+    $("#PhoneNo").on("blur", function () {
+        debugger
+        var mobNum = $(this).val();
+        var filter = /^\d*(?:\.\d{1,2})?$/;
+
+          if (filter.test(mobNum)) {
+            if(mobNum.length==10){
+                  //alert("valid");
+              $("#mobile-valid").removeClass("hidden");
+              $("#folio-invalid").addClass("hidden");
+             } else {
+                alert('kindly enter 10 digit mobile number');
+               $("#folio-invalid").removeClass("hidden");
+               $("#mobile-valid").addClass("hidden");
+                return false;
+              }
+            }
+            else {
+              alert('Not a valid number');
+              $("#folio-invalid").removeClass("hidden");
+              $("#mobile-valid").addClass("hidden");
+              return false;
+           }
+
+    });
+
+    $("#MobileNo").on("blur", function () {
+        debugger
+        var mobNum = $(this).val();
+        var filter = /^\d*(?:\.\d{1,2})?$/;
+
+        if (filter.test(mobNum)) {
+            if (mobNum.length == 10) {
+                //alert("valid");
+                $("#mobile-valid").removeClass("hidden");
+                $("#folio-invalid").addClass("hidden");
+            } else {
+                alert('kindly enter 10 digit mobile number');
+                $("#folio-invalid").removeClass("hidden");
+                $("#mobile-valid").addClass("hidden");
+                return false;
+            }
+        }
+        else {
+            alert('Not a valid number');
+            $("#folio-invalid").removeClass("hidden");
+            $("#mobile-valid").addClass("hidden");
+            return false;
+        }
+
+    });
+
+    $("#PanNo").on("blur", function () {
+        debugger
+        var mobNum = $(this).val();
+
+
+        if ((mobNum)) {
+            if (mobNum.length == 10) {
+
+                $("#mobile-valid").removeClass("hidden");
+                $("#folio-invalid").addClass("hidden");
+            } else {
+                alert('kindly enter 10 digit Pan number');
+                $("#folio-invalid").removeClass("hidden");
+                $("#mobile-valid").addClass("hidden");
+                return false;
+            }
+        }
+        else {
+            alert('Not a valid number');
+            $("#folio-invalid").removeClass("hidden");
+            $("#mobile-valid").addClass("hidden");
+            return false;
+        }
+
+    });
+
+    $("#PinCode").on("blur", function () {
+        debugger
+        var mobNum = $(this).val();
+        var filter = /^\d*(?:\.\d{1,2})?$/;
+
+        if (filter.test(mobNum)) {
+            if (mobNum.length == 6) {
+                //alert("valid");
+                $("#mobile-valid").removeClass("hidden");
+                $("#folio-invalid").addClass("hidden");
+            } else {
+                alert('kindly enter 6 digit Pin Code');
+                $("#folio-invalid").removeClass("hidden");
+                $("#mobile-valid").addClass("hidden");
+                return false;
+            }
+        }
+        else {
+            alert('Not a valid number');
+            $("#folio-invalid").removeClass("hidden");
+            $("#mobile-valid").addClass("hidden");
+            return false;
+        }
+
+    });
+
+});
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Out Source Labs Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">OutSource Labs</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Out Source Labs</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--Lab Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Lab Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="OutSourceLabID" name="OutSourceLabID">
+                                                        <input type="text" id="LabName" name="LabName" class="form-control" placeholder="Lab Name" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Lab Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" name="LabID" id="LabID" class="form-control">
+                                                        <input type="hidden" name="tes" id="tes">
+                                                    </div>
+                                                </div>
+                                                <!--Managing Body-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Mng. Body</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ManagingBody" name="ManagingBody" class="form-control" placeholder="Managing Body">
+                                                    </div>
+                                                </div>
+                                                <!--Adminstrator-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Admin</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Adminstrative" name="Adminstrative" class="form-control" placeholder="Administrator">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--Test Group Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Test Grp Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select id="TestGroup" name="TestGroup" class="form-control"></select>
+                                                        <input type="hidden" id="TestGroupID" name="TestGroupID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Percent-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Percent</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <input type="text" id="Percent1" name="Percent1" class="form-control">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-percent"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="col-lg-1">
+                                                            <input type="text" id="sign" name="sign" value="%" class="label"><span>%</span>
+                                                        </div>*@
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <button type="button" id="AddPercent" name="AddPercent" class="btndivcss pull-right" style="height:25px;">
+                                                            <span>Add</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!--Contact Person-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Contact Pers.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ContactPerson" name="ContactPerson" class="form-control" placeholder="Contact Person">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Addres Detail</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--Address-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Address</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="Address" name="Address" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Phone Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Phone No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="PhoneNo" name="PhoneNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--City-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>City</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="City" name="City" class="form-control">
+                                                        <input type="hidden" id="CityID" name="CityID">
+                                                    </div>
+                                                </div>
+                                                <!--Mobile Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Mobile No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="MobileNo" name="MobileNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--State-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>State</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="State" name="State" class="form-control" readonly>
+                                                        <input type="hidden" id="StateID" name="StateID">
+                                                    </div>
+                                                </div>
+                                                <!--Fax Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Fax No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="FaxNo" name="FaxNo" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--Country-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Country</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Country" name="Country" class="form-control" readonly>
+                                                        <input type="hidden" id="CountryID" name="CountryID">
+                                                    </div>
+                                                </div>
+                                                <!--Email I'd-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Email I'd</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="email" id="EmailID" name="EmailID" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <!--Pin Code-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Pin Code</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PinCode" name="PinCode" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--URl-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Url</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="URL" name="URL" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="OutSourceTestGrpDetailsExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @*<div class="col-lg-3">
+                                    <div class="tableheading">
+                                        <span class="fa fa-file-text" style=" color: #2b538c; font-size: 16px; padding-right: 10px;"></span>OutSource Test Grp Details
+                                    </div>
+                                </div>*@
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Out SourceLab Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                <table id="OutSourceLabDetails" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            @*<th>Sno.</th>*@
+                                                            <th>OutSourceLabID</th>
+                                                            <th>LabName</th>
+                                                            <th>Address</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="OutSourceTestGrpDetails" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th style="display: none;">Test Id</th>
+                                            <th style="display: none;">Group Id</th>
+                                            <th>Test Group Name</th>
+                                            <th>Test Name</th>
+                                            <th>Rate</th>
+                                            <th>Percentage</th>
+                                            @*<th>OutSourceLabTestDetailsID</th>*@
+                                            @*<th>LabName</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

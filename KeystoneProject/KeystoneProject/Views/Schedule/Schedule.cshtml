@@ -1,0 +1,380 @@
+﻿@model KeystoneProject.Models.MasterFinacialAccounts.Schedule
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowAllSchedule", "Schedule")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#scheduleTableId").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].ScheduleName + '</td><td>' + data[i].Nature + '</td><td>' + data[i].BPT.trim() + '</td><td>' + data[i].MasterScheduleName + '</td><td> <input type="checkbox" class="cbDBA" name="cbDBA" value="' + data[i].GeneralLedgerPosting + '"></td><td> <input type="checkbox" class="cbDBA" name="cbDBA" value="' + data[i].ShowDetailsInReports + '"></td><td style="display:none">' + data[i].ScheduleID + '</td><td style="display:none">' + data[i].MasterScheduleID + '</td><td style="display:none">' + data[i].ScheduleType + '</td></tr>');
+                };
+                $('.cbDBA').each(function () {
+                    debugger
+                    chk = $(this).val();
+                    if (chk == "True") {
+                        $(this).prop('checked', true);
+                    }
+                    else {
+                        $(this).prop('checked', false);
+                    }
+                });
+                //   }
+                $('#scheduleTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#scheduleTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#scheduleExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#MasterScheduleName").autocomplete({
+            source: function (request, responce) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("BindScheduleName", "Schedule")',
+                    data: { prefix: request.term },
+                    type: "Post",
+                    dataType: "json",
+                    success: function (data) {
+                        responce($.map(data, function (item) {
+                            return { label: item.ScheduleName, value: item.ScheduleName, id: item.ScheduleID }
+                        }));
+                    }
+                })
+            },
+            select: function (event, ui) {
+                debugger
+                var Id = ui.item.id;
+                $("#MasterScheduleID").val(Id);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#scheduleTableId').delegate('td', 'click', function () {
+            debugger;
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row = $(this).parent().index();
+            var ScheduleName = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[1].innerHTML;
+            var Nature = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[2].innerHTML;
+            var BPT = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[3].innerHTML.replace("&amp;", "And").replace("P And L", "PAndL");
+            var MasterScheduleName = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[4].innerHTML;
+            var GeneralLedgerPosting = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[5].children[0].value;
+            var ShowDetailsInReports = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[6].children[0].value;
+            var ScheduleID = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[7].innerHTML;
+            var MasterScheduleID = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[8].innerHTML;
+            var ScheduleType = document.getElementById("scheduleTableId").tBodies[0].rows[row].cells[9].innerHTML;
+            $('#ScheduleName').val(ScheduleName);
+            $('#Nature').val(Nature.trim());
+            $("input[name=BPT]").each(function () {
+                debugger
+                if ($(this).val() == BPT.trim()) {
+                    $(this).prop("checked", "checked")
+                }
+            })
+            if (GeneralLedgerPosting == "True") {
+                $('#GeneralLedgerPosting').prop("checked", GeneralLedgerPosting);
+            }
+            else {
+                $('#GeneralLedgerPosting').prop("checked", false);
+            }
+            if (ShowDetailsInReports == "True") {
+                $('#ShowDetailsInReports').prop("checked", ShowDetailsInReports);
+            }
+            else {
+                $('#ShowDetailsInReports').prop("checked", false);
+            }
+            $('#MasterScheduleName').val(MasterScheduleName);
+            $('#ScheduleType').val(ScheduleType.trim());
+            $('#ScheduleID').val(ScheduleID);
+            $('#MasterScheduleID').val(MasterScheduleID);
+        });
+    })
+</script>
+<script>
+    function Delete(ScheduleID) {
+        debugger
+        if (ScheduleID != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteSchedule", "Schedule")',
+                    data: { ScheduleID: ScheduleID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "Schedule Deleted Successfully") {
+                            alert("Schedule Deleted Successfully");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    //error: function (errormessage) {
+                    //    alert(errormessage.responseText);
+                    // }
+                });
+            }
+        }
+    }
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", "input[type='radio']", function (e) {
+            debugger
+            var checked = $(this).attr("checked");
+            if (!checked) {
+                $(this).attr("checked", true);
+            } else {
+                $(this).removeAttr("checked");
+                $(this).prop("checked", false);
+            }
+        });
+    });
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Schedule Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Schedule</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Schedule Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Schedule Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Sch. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ScheduleName" name="ScheduleName" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;" placeholder="Schedule Name"
+                                                               oninvalid="this.setCustomValidity('Please Enter Schedule Name')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" name="ScheduleID" id="ScheduleID" />
+                                                    </div>
+                                                </div>
+                                                <!--Master Schedule-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Sch. Master</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MasterScheduleName" name="MasterScheduleName" class="form-control" placeholder="Schedule Master">
+                                                        <input type="hidden" name="MasterScheduleID" id="MasterScheduleID" />
+                                                    </div>
+                                                </div>
+                                                <!--Schedule Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Sch. Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="ScheduleType" name="ScheduleType">
+                                                            <option value="Parent">Parent</option>
+                                                            <option value="Child">Child</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Nature-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Nature</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="Nature" name="Nature">
+                                                            <option value="INCOME">INCOME</option>
+                                                            <option value="INDIRECT INCOME">INDIRECT INCOME</option>
+                                                            <option value="FIXED LIABILITIES">FIXED LIABILITIES</option>
+                                                            <option value="FIXED ASSETS">FIXED ASSETS</option>
+                                                            <option value="CURRENT LIABILITIES">CURRENT LIABILITIES</option>
+                                                            <option value="CURRENT ASSETS">CURRENT ASSETS</option>
+                                                            <option value="EXPENSES">EXPENSES</option>
+                                                            <option value="INDIRECT EXPENSES">INDIRECT EXPENSES</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--General Ledger Posting-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label class="form-check-label">G/L Posting</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="checkbox" id="GeneralLedgerPosting" name="GeneralLedgerPosting" value="true" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                                <!--Show Details In Reports-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label class="form-check-label">Rpt Detail</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="checkbox" id="ShowDetailsInReports" name="ShowDetailsInReports" value="true" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Balance Sheet-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>B/S</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="radio" id="BalanceSheet" name="BPT" value="Balance Sheet" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                                <!--Profit & Loss-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>P & L</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="radio" id="PL" name="BPT" value="PAndL" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                                <!--Trading-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Trading</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="radio" id="Trading" name="BPT" value="Trading" class="form-check-input">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center; display: block;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Delete(document.getElementById('ScheduleID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="scheduleExcelExport"></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" style=" padding-bottom: 10px;overflow:auto">
+                                    <table id="scheduleTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="schedule_info"
+                                           style="width: 100%">
+                                        <thead style="background-color: #bddff7;">
+                                            <tr>
+                                                <th scope="col">Srno.</th>
+                                               
+                                                <th scope="col">ScheduleName</th>
+                                                <th scope="col">Nature</th>
+                                                <th scope="col">BPT</th>
+                                                <th scope="col">MasterScheduleName</th>
+                                                <th scope="col">GeneralLedgerPosting</th>
+                                                <th scope="col">ShowDetailsInReports</th>
+                                                <th style="display:none">ScheduleID</th>
+                                                <th style="display:none">MasterScheduleID</th>
+                                                <th style="display:none">ScheduleType</th>
+                                                @*<th style="display:none">PrintName</th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody class="scrollbar"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

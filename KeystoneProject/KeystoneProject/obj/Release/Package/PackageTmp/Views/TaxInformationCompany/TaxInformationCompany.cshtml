@@ -1,0 +1,790 @@
+﻿@{
+    ViewBag.Title = "Tax Information Company";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is Created by Mohammed-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#taxInforamtionTypeTaxRate").change(function () {
+            $("#taxInformationDetailTaxRate").val($("#taxInforamtionTypeTaxRate").val());
+        });
+
+        $("#taxInforamtionTypeTaxRate").change(function () {
+            if (document.getElementById("interState").checked == false)
+                $("#description").val($("#taxType").val() + " " + $("#taxInforamtionTypeTaxRate").val());
+        });
+
+        $("#taxType").change(function () {
+            if (document.getElementById("interState").checked == false) {
+                $("#description").val($("#taxType").val() + " " + $("#taxInforamtionTypeTaxRate").val());
+            }
+        });
+
+        $("#interState").change(function () {
+            if (document.getElementById("interState").checked == true) {
+                document.getElementById("formType").disabled = false;
+                $("#description").val("CST C FORM");
+            }
+            else
+            {
+                document.getElementById("formType").disabled = true;
+                document.getElementById("interStateTaxRate").disabled = true;
+            }
+        });
+
+        $("#formType").change(function () {
+            if ($("#formType").val() == "C Form") {
+                document.getElementById("interStateTaxRate").disabled = false;
+            }
+            else
+            {
+                document.getElementById("interStateTaxRate").disabled = true;
+            }
+        });
+
+        $("#interStateTaxRate").change(function () {
+            $("#taxInformationDetailTaxRate").val($("#interStateTaxRate").val());
+        });
+
+        $("#interStateTaxRate").change(function () {
+            $("#taxInformationDetailTaxRate").val($("#interStateTaxRate").val());
+        });
+
+        $("#taxInformationDetailTaxRate").change(function () {
+            document.getElementById("surcharge").disabled = false;
+            document.getElementById("taxInformationDetailTaxAccount").disabled = false;
+        });
+
+        $("#surcharge").change(function () {
+            document.getElementById("surchargeAccount").disabled = false;
+        });
+
+        $("#rateInclusiveInTax").change(function () {
+            if (document.getElementById("rateInclusiveInTax").checked == true) {
+                document.getElementById("taxInclusiveInRates").disabled = true;
+                document.getElementById("taxInclusiveInRatesForLTE").disabled = true;
+                document.getElementById("abatementRate").disabled = true;
+            }
+            else {
+                document.getElementById("taxInclusiveInRates").disabled = false;
+                document.getElementById("taxInclusiveInRatesForLTE").disabled = false;
+                document.getElementById("abatementRate").disabled = false;
+            }
+        });
+
+        $("#addCharge").click(function () {
+           
+            $("#before").removeAttr('disabled');
+            $("#after").removeAttr('disabled');
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#taxInformationCompanyTable').delegate('td', 'click', function () {
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            debugger;
+            var row = $(this).parent().index();
+            var taxInformationTypeID = document.getElementById("taxInformationCompanyTable").tBodies[0].rows[row].cells[6].innerHTML;
+            $("#taxInformationTypeID").val(taxInformationTypeID);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Rebind_Data", "TaxInformationCompany")',
+                data: { taxInformationTypeID : taxInformationTypeID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $('#taxInformationTypeID').val(data[0].taxInformationTypeID);
+                    $('#code').val(data[0].code);
+                    $('#taxType').val(data[0].taxType);
+                    $('#formType').val(data[0].formType);
+                    $('#description').val(data[0].description);
+                    $('#postingAccountID').val(data[0].postingAccountID);
+                    $('#postingAccount').val(data[0].postingAccount);
+                    $('#taxInformationDetailTaxRate').val(data[0].taxInformationDetailTaxRate);
+                    $('#surcharge').val(data[0].surcharge);
+                    $('#taxInclusiveInRates').val(data[0].taxInclusiveInRates);
+                    $('#taxInformationDetailTaxAccountID').val(data[0].taxInformationDetailTaxAccountID);
+                    $('#taxInformationDetailTaxAccount').val(data[0].taxInformationDetailTaxAccount);
+                    $('#surchargeAccountID').val(data[0].surchargeAccountID);
+                    $('#surchargeAccount').val(data[0].surchargeAccount);
+                    $('#addCharge').val(data[0].addCharge);
+                    $('#abatementRate').val(data[0].abatementRate);
+                    $('#chargePromotionalRate').val(data[0].chargePromotionalRate);
+                   
+                    if (data[0].taxInformationType == "Sales") {
+                        $('#sales').prop("checked", true);
+                    }
+                    else if (data[0].taxInformationType == "Purchase") {
+                        $('#purchase').prop("checked", true);
+                    }
+                    else {
+                        $('#sales').prop("checked", false);
+                        $('#purchase').prop("checked", false);
+                    }
+
+                    if (data[0].discount == "Before") {
+                        $('#before').prop("checked", true);
+                        $("#before").removeAttr('disabled');
+                        $("#after").removeAttr('disabled');
+                    }
+                    else if (data[0].discount == "After") {
+                        $('#after').prop("checked", true);
+                        $("#before").removeAttr('disabled');
+                        $("#after").removeAttr('disabled');
+                    }
+                    else {
+                        $('#before').prop("checked", false);
+                        $('#after').prop("checked", false);
+                    }
+
+                    if (data[0].interState == "True") {
+                        $('#interState').prop("checked", true);
+                    }
+                    else {
+                        $('#interState').prop("checked", false);
+                    }
+
+                    if (data[0].rateInclusiveInTax == "True") {
+                        $('#rateInclusiveInTax').prop("checked", true);
+                    }
+                    else {
+                        $('#rateInclusiveInTax').prop("checked", false);
+                    }
+
+                    if (data[0].taxInclusiveInRatesForLTE == "True") {
+                        $('#taxInclusiveInRatesForLTE').prop("checked", true);
+                    }
+                    else {
+                        $('#taxInclusiveInRatesForLTE').prop("checked", false);
+                    }
+
+                    if (data[0].addICOnFreeGoods == "True") {
+                        $('#addICOnFreeGoods').prop("checked", true);
+                    }
+                    else {
+                        $('#addICOnFreeGoods').prop("checked", false);
+                    }
+
+                    if (data[0].calculateTaxBeforeDiscount == "True") {
+                        $('#calculateTaxBeforeDiscount').prop("checked", true);
+                    }
+                    else {
+                        $('#calculateTaxBeforeDiscount').prop("checked", false);
+                    }
+
+                    if (data[0].chargeTaxOnFreeGoods == "True") {
+                        $('#chargeTaxOnFreeGoods').prop("checked", true);
+                    }
+                    else {
+                        $('#chargeTaxOnFreeGoods').prop("checked", false);
+                    }
+
+                    if (data[0].taxOfFreeGoodsOnGrossValue == "True") {
+                        $('#taxOfFreeGoodsOnGrossValue').prop("checked", true);
+                    }
+                    else {
+                        $('#taxOfFreeGoodsOnGrossValue').prop("checked", false);
+                    }
+
+                    if (data[0].taxCalculateBasedOnMRP == "True") {
+                        $('#taxCalculateBasedOnMRP').prop("checked", true);
+                    }
+                    else {
+                        $('#taxCalculateBasedOnMRP').prop("checked", false);
+                    }
+
+                    if (data[0].abatementRebateForLTE == "True") {
+                        $('#abatementRebateForLTE').prop("checked", true);
+                    }
+                    else {
+                        $('#abatementRebateForLTE').prop("checked", false);
+                    }
+
+                    $('#taxInforamtionTypeTaxRate').val(data[0].taxInforamtionTypeTaxRate);
+                    $('#interStateTaxRate').val(data[0].interStateTaxRate);
+
+                }
+            });
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#postingAccount").autocomplete({
+            source : function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Bind_Posting_acc", "TaxInformationCompany")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.postingAccount, value: item.postingAccount, id: item.postingAccountID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#postingAccount").val('');
+                }
+                $('#postingAccountID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#taxInformationDetailTaxAccount").autocomplete({
+            source : function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Bind_Tax_acc", "TaxInformationCompany")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.taxInformationDetailTaxAccount, value: item.taxInformationDetailTaxAccount, id: item.taxInformationDetailTaxAccountID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#taxInformationDetailTaxAccount").val('');
+                }
+                $('#taxInformationDetailTaxAccountID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#surchargeAccount").autocomplete({
+            source : function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Bind_Surcharge_acc", "TaxInformationCompany")',
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.surchargeAccount, value: item.surchargeAccount, id: item.surchargeAccountID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+                if (!i.item) {
+                    this.value = '';
+                    $("#surchargeAccount").val('');
+                }
+                $('#surchargeAccountID').val(i.item.id);
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Bind_Table", "TaxInformationCompany")',
+            datatype: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#taxInformationCompanyTable").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].code + '</td><td>' + data[i].taxInformationType + '</td><td>' + data[i].taxType + '</td><td>' + data[i].postingAccount + '</td><td>' + data[i].taxInformationDetailTaxRate + '</td><td style="display:none">' + data[i].taxInformationTypeID + '</td></tr>');
+                };
+                $("#taxInformationCompanyTable").DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($("#taxInformationCompanyTable").DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel',
+                        }
+                    ]
+                }).container().appendTo($("#taxInformationCompanyTableExcelExport"));
+            },
+        })
+    })
+</script>
+<script>
+    function Delete(taxInformationTypeID) {
+        if (taxInformationTypeID != "")
+        {
+            var ans = confirm("Are you sure you want to delete this record ?");
+            if (ans)
+            {
+                debugger;
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: '@Url.Action("Delete_Tax", "TaxInformationCompany")',
+                        data: { taxInformationTypeID, taxInformationTypeID },
+                        datatype: "json",
+                        success: function (data) {
+                            if (data == "Done") {
+                                alert("Tax Information Company Deleted Successfully");
+                                location.reload(true);
+                                Restore();
+                            }
+                            else {
+                                alert(data);
+                            }
+                        },
+                        error: function (errormessage) {
+                            alert(errormessage.responseText);
+                        }
+
+                    });
+            }
+        }
+    };
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Tax Information Company Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster","Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Tax Information Company</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Tax Information Company Detail</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Tax Information Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax Info. Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="radio" class="form-check-input" id="sales" name="taxInformationType" value="Sales">Sales
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="radio" class="form-check-input" id="purchase" name="taxInformationType" value="Purchase">Purchase
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Tax Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="taxType" name="taxType" class="form-control">
+                                                            <option value="VAT">VAT</option>
+                                                            <option value="MRP">MRP</option>
+                                                            <option value="Remb On MRP">Remb On MRP</option>
+                                                            <option value="Sales">Sales</option>
+                                                            <option value="Transfer">Transfer</option>
+                                                            <option value="Composition">Composition</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Tax Rate-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax Rate</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="taxInforamtionTypeTaxRate" name="taxInforamtionTypeTaxRate" class="form-control">
+                                                            <option value="1.00">1.00</option>
+                                                            <option value="4.00">4.00</option>
+                                                            <option value="0">0</option>
+                                                            <option value="12.50">12.50</option>
+                                                            <option value="Other">Other</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Inter State-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="interState" name="interState">Inter State
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Form Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Form Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="formType" name="formType" class="form-control" disabled>
+                                                            <option value="A:3(a) CTS Act">A:3(a) CTS Act</option>
+                                                            <option value="B:3(b) CTS Act">B:3(b) CTS Act</option>
+                                                            <option value="C Form">C Form</option>
+                                                            <option value="Export Sales(5)">Export Sales(5)</option>
+                                                            <option value="F Form(No Use)">F Form(No Use)</option>
+                                                            <option value="Stock Transfer">Stock Transfer</option>
+                                                            <option value="Without C Form">Without C Form</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!--Tax Rate-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax Rate</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <select id="interStateTaxRate" name="interStateTaxRate" class="form-control" disabled>
+                                                            <option value="0.0">0.0</option>
+                                                            <option value="0.5">0.5</option>
+                                                            <option value="1.0">1.0</option>
+                                                            <option value="1.5">1.5</option>
+                                                            <option value="2.0">2.0</option>
+                                                            <option value="2.5">2.5</option>
+                                                            <option value="3.0">3.0</option>
+                                                            <option value="3.5">3.5</option>
+                                                            <option value="4.0">4.0</option>
+                                                            <option value="4.5">4.5</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Code-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Code</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="code" name="code" class="form-control" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Code')"
+                                                               oninput="this.setCustomValidity('')">
+                                                        <input type="hidden" id="taxInformationTypeID" name="taxInformationTypeID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Description-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Description</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="description" name="description" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Posting Account-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Posting A/c.</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="postingAccount" name="postingAccount" placeholder="Search Posting A/c." class="form-control">
+                                                        <input type="hidden" id="postingAccountID" name="postingAccountID" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <button type="button" id="addPostingAccount" name="addPostingAccount" onclick="window.location.href='@Url.Action("Accounts", "Accounts")'" class="btndivcss pull-right" style="height: 25px;">
+                                                            <span class="fa fa-plus"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Tax Rate-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax Rate</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="number" id="taxInformationDetailTaxRate" name="taxInformationDetailTaxRate" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Tax Account-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Tax A/c.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="taxInformationDetailTaxAccount" name="taxInformationDetailTaxAccount" placeholder="Search Tax A/c." class="form-control" disabled>
+                                                        <input type="hidden" id="taxInformationDetailTaxAccountID" name="taxInformationDetailTaxAccountID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Surcharge-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>S/C.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="number" id="surcharge" name="surcharge" value="0.00" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                                <!--Surcharge Account-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>S/C. A/c.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="surchargeAccount" name="surchargeAccount" placeholder="S/C. A/c." class="form-control" disabled>
+                                                        <input type="hidden" id="surchargeAccountID" name="surchargeAccountID" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Rate Inclusive In Tax-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="rateInclusiveInTax" name="rateInclusiveInTax">Rate Inclusive In Tax
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Tax Inclusive In Rates-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Tax Incl. In Rates</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="taxInclusiveInRates" name="taxInclusiveInRates" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Tax Inclusive In Rates For LTE-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="taxInclusiveInRatesForLTE" name="taxInclusiveInRatesForLTE">Tax Inclusive In Rates For LTE
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Add I Charge-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Add I Charge &#64;</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="addCharge" name="addCharge" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Discount-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Discount</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="radio" class="form-check-input" id="before" name="discount" value="Before" disabled="disabled">Before
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="radio" class="form-check-input" id="after" name="discount" value="After" disabled="disabled">After
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Abatement Rate-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Abatement Rate</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="abatementRate" name="abatementRate" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Charge Promotional Rate-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                                                        <label>Chrg. Promo. Rt.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="number" id="chargePromotionalRate" name="chargePromotionalRate" value="0.00" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>% of MRP</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Add I. C. On Free Goods-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="addICOnFreeGoods" name="addICOnFreeGoods">Add I. C. On Free Goods
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Calculate Tax Before Discount-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="calculateTaxBeforeDiscount" name="calculateTaxBeforeDiscount">Calculate Tax Before Discount
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Charge Tax On Free Goods-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="chargeTaxOnFreeGoods" name="chargeTaxOnFreeGoods">Charge Tax On Free Goods
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Tax Of Free Goods On Gross Value-->
+                                                <!--Charge Tax On Free Goods-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="taxOfFreeGoodsOnGrossValue" name="taxOfFreeGoodsOnGrossValue">Tax Of Free Goods On Gross Value
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Tax Calculate Based On MRP-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="taxCalculateBasedOnMRP" name="taxCalculateBasedOnMRP">Tax Calculate Based On MRP
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Abatement Rebate For LTE-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" class="form-check-input" id="abatementRebateForLTE" name="abatementRebateForLTE">Abatement Rebate For LTE
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="delete" onclick="Delete(document.getElementById('taxInformationTypeID').value); location.reload();">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="taxInformationCompanyTableExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="card-body col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="taxInformationCompanyTable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Code</th>
+                                            <th>Tax Type Information</th>
+                                            <th>Tax Type</th>
+                                            <th>Account Name</th>
+                                            <th>Tax Rate</th>
+                                            <th style="display:none">Tax Type Information</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

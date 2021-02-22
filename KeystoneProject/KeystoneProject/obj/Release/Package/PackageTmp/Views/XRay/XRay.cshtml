@@ -1,0 +1,435 @@
+﻿@{
+    ViewBag.Title = "X-Ray";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is created by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#xRayTableId').DataTable({
+            "fixedHeader": true,
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": false,
+        });
+        var buttons = new $.fn.dataTable.Buttons($('#xRayTableId').DataTable(), {
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                }
+            ]
+        }).container().appendTo($('#xRayExcelExport'));
+    });
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#Reportname").keyup(function () {
+
+            var Reportname = $(this).val();
+            $("#printAs").val(Reportname);
+        })
+        $("#example").on('click', "#Updategeneral", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#example td").closest("tr").length;
+            var general = document.getElementById("example").tBodies[0].rows[0].cells[3].children[0].value;
+            for (var j = 1; j < child; j++) {
+
+                emer = document.getElementById("example").tBodies[0].rows[j].cells[3].children[0].value = general;
+            }
+        })
+        $("#example").on('click', "#UpdateEmergency", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#example td").closest("tr").length;
+            var general = document.getElementById("example").tBodies[0].rows[0].cells[4].children[0].value;
+            for (var j = 1; j < child; j++) {
+
+                emer = document.getElementById("example").tBodies[0].rows[j].cells[4].children[0].value = general;
+            }
+
+        })
+    })
+
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetTestMasterForBindCategory", "XRay")',
+            type: "POST",
+            dataType: "json",
+            data: { prefix: "%" },
+            success: function (data) {
+                debugger
+                $('#CategoryName').append('<option value="0">Select</option>');
+               
+                for (var i = 0; i < data.length; i++) {
+                    debugger
+                    $("#CategoryName").append($("<option value=" + data[i].CategoryName + ">" + data[i].CategoryName + "</option>"));
+                    $("#CategoryID").val(data[i].CategoryID);
+                }
+            }
+        })
+        $("#unit").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetUnitID", "XRay")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item, value: item, ID: item
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                if (!ui.item) {
+                    debugger
+                    this.value = '';
+                }
+                $("#unit").val(ui.item);
+            }
+        });
+        $.ajax({
+            type: "GET",
+            //url: "/Add_Patient_Registration/FillRevisit",
+            url: '@Url.Action("GetAllWard", "TestMaster")',
+            data: { prefix: "" },
+            success: function (data) {
+
+                debugger
+                $("#example tbody tr").remove();
+                //
+                $(data).each(function (index, d) {
+                    $("#example").append('<tr><td hidden><input type="text" id="TestMasterDetailIPDChargeID" name="TestMasterDetailIPDChargeID"  class="form-control" value =0></td><td hidden><input type="text" style="display:hidden" id="WardID" name="WardID"  class="form-control" value =' + d.WardID + '></td><td><input type="text" readonly id="WardName"  name="WardName" class="form-control" value =' + d.WardName + '></td><td><input type="text" id="GeneralCharges" name="GeneralCharges" class="form-control" value =' + d.GeneralCharges + '></td><td><input type="text" id="EmergencyCharges" name="EmergencyCharges" class="form-control" value =' + d.EmergencyCharges + '></td></tr>');
+                })
+                $("#example").append('<tr><td colspan="1"></td><td><input type="button" value="Update To All General" id="Updategeneral"></td><td><input type="button" value="Update To All Emergency" id="UpdateEmergency"></td></tr>');
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+            $("#form1").submit(function () {
+                debugger
+                var description = $(".ql-editor").html();
+                $("#Description").val(description);
+             
+            });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllXray", "XRay")',
+            data: { prefix: "" },
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#xRayTableId tbody tr").remove();
+                for (var i = 0; i < data.length; i++) {
+                   
+                    $("#xRayTableId").append('<tr><td>' + data[i].ReportName + '</td><td>' + data[i].PrintAs + '</td><td style="display:none">' + data[i].TestID + '</td></tr>');
+                };
+            },
+            error: function (result) {
+                alert("Error in bindgrid");
+            }
+        });
+        $("#xRayTableId").delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var TestID = parseInt(document.getElementById("xRayTableId").tBodies[0].rows[row_num].cells[2].innerHTML);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Edit", "XRay")',
+                data: { TestID: TestID },
+                datatype: "json",
+                success: function (data) {
+                    debugger;
+                    $("#TestID").val(data[0].TestID);
+                    $("#Reportname").val(data[0].ReportName);
+                    $("#printAs").val(data[0].PrintAs);
+                    $("#OPDGeneralCharges").val(data[0].GeneralCharges);
+                    $("#OPDEmergencyCharges").val(data[0].EmergencyCharges);
+                    $("#CategoryID").val(data[0].CategoryID);
+                    $("#CategoryName").val(data[0].CategoryName);
+                    $("#unit").val(data[0].unit);
+                    $("#Description").val(data[0].Footer);
+                    $(".ql-editor").html(data[0].Footer);
+
+                },
+            });
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetMasterDetails", "XRay")',
+                data: { TestID: TestID },
+                success: function (data) {
+                    debugger
+                   
+                    $(data).each(function (index, d) {                 
+                        $("#example tbody tr").remove();
+                        for (var b = 0; b < d.GetWard.length; b++) {
+
+                            debugger;
+                            if (d.GetWard[b].WardID > 0) {
+
+                                $("#example").append('<tr><td style="display:none"><input type="text" id="TestMasterDetailIPDChargeID" name="TestMasterDetailIPDChargeID"  class="form-control" value =' + d.GetWard[b].TestMasterDetailIPDChargeID + '></td><td hidden><input type="text" id="WardID" name="WardID"  style="display:none"  class="form-control" value =' + d.GetWard[b].WardID + '></td><td><input type="text" readonly id="WardName"  name="WardName" class="form-control" value =' + d.GetWard[b].WardName + '></td><td><input type="text" id="GeneralCharges" name="GeneralCharges" class="form-control" value =' + d.GetWard[b].GeneralCharges + '></td><td><input type="text" id="EmergencyCharges" name="EmergencyCharges" class="form-control" value =' + d.GetWard[b].EmergencyCharges + '></td></tr>');
+                            }
+                          
+                        }
+                        $("#example").append('<tr><td colspan="1"></td><td><input type="button" value="Update To All General" id="Updategeneral"></td><td><input type="button" value="Update To All Emergency" id="UpdateEmergency"></td></tr>');
+
+                    })
+                   
+
+                }
+
+            });
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "XRay")',
+                    type: 'POST',
+                    data: { TestID: $("#TestID").val() },
+
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Delete Successfully");
+                            location.reload();
+                        }
+                        else {
+                        }
+                    }
+
+                })
+
+            }
+        });
+    });
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post" id="form1">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Radiology Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">X-Ray</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">X-Ray Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!-- Name -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Report Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="TestID" name="TestID">
+                                                        @*<input type="hidden" id="TestMasterDetailIPDChargeID" name="TestMasterDetailIPDChargeID">*@
+                                                        <input type="text" id="Reportname" name="Reportname" class="form-control" placeholder="Report Name"
+                                                               style="border-left-color: red;border-left-width:thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Name')" oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                                <!-- Print Name -->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Print As</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="printAs" name="printAs" class="form-control">
+                                                    </div>
+                                                </div>
+                                            
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                               
+                                                <!--Unit-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Unit</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="unit" name="unit" class="form-control" placeholder="Search Unit">
+                                                        <input type="hidden" id="unitID" name="unitID" required class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Sample Type-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Report Type</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="CategoryID" name="CategoryID" required class="form-control">
+                                                        <select id="CategoryName" name="CategoryName" required class="form-control"></select>
+                                                        @*<select id="sampleType" name="sampleType" class="form-control">
+                                                            <option value="0">Select</option>
+                                                            <option value="XRAY">XRAY</option>
+                                                            <option value="HISTOPATHOLOGY">HISTOPATHOLOGY</option>
+                                                            <option value="SONOGRAPHY">SONOGRAPHY</option>
+                                                        </select>*@
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>OPD General Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="OPDGeneralCharges" name="OPDGeneralCharges" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>OPD Emergency Charges</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="number" id="OPDEmergencyCharges" name="OPDEmergencyCharges" value="0.00" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Footer-->
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Reporting</label>
+                                                    </div>
+                                                    <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+                                                          
+                                                            <div id="parametereditor1" name="parametereditor1">
+
+                                                            </div>
+                                                            <input type="hidden" name="Description" id="Description" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btndivcss pull-right" data-toggle="modal" data-target="#ipdChargesModal">
+                                                        IPD Charges
+                                                    </button>
+                                                    <div class="modal fade" id="ipdChargesModal" tabindex="-1" role="dialog" aria-labelledby="ipdChargesModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="ipdChargesModalLabel">IPD Charges</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <table id="example" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                                        <thead style="background-color: #bddff7;">
+                                                                            <tr>
+                                                                                <th id="WardName" name="WardName">Ward Name</th>
+                                                                                <th id="GeneralCharges" name="GeneralCharges">General Charges</th>
+                                                                                <th id="EmergencyCharges" name="EmergencyCharges">Emergency Charges</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody class="scrollbar"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="xRayExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="xRayTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th style="display:none">TestID</th>
+                                            <th>Reporting Name</th>
+                                            <th>Print As</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>

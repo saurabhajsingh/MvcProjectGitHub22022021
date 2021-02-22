@@ -1,0 +1,825 @@
+﻿@model KeystoneProject.Models.MasterFinacialAccounts.ChequeBook
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 2px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    th {
+        width: 33.33%;
+    }
+
+    thead {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+    }
+
+    tfoot {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+        padding: 3px;
+        border: 1px solid white !important;
+    }
+
+        tfoot td {
+            border: 1px solid white !important;
+            padding: 1px !important;
+        }
+
+    tbody {
+        height: 180px;
+        overflow: auto;
+        overflow-x: hidden;
+        display: block;
+        width: 100%;
+    }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+
+            type: "GET",
+            url: '@Url.Action("ShowAllChequeBook", "ChequeBook")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+
+                    var SrNo = i + 1;
+                    $("#datatable-responsive").append(
+
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].ChequeBookName + '</td><td style="display:none">' + data[i].ChequeBookID + '</td><td style="display:none">' + data[i].Print1 + '</td></tr>');
+
+                };
+
+                $('#datatable-responsive').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [{
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'exportExcel',
+                        filename: 'Test_Excel',
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'CSV',
+                        className: 'exportExcel',
+                        filename: 'Test_Csv',
+                        exportOptions: { modifier: { page: 'all' } }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'PDF',
+                        className: 'exportExcel',
+                        filename: 'Test_Pdf',
+                        exportOptions: { modifier: { page: 'all' } }
+                    }]
+                });
+
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+
+    });
+
+
+</script>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        var ChequeLayoutID;
+
+        $("#BankName").autocomplete
+
+       
+              ({
+                  source: function (request, response) {
+                      $.ajax
+                          ({
+                              url: '@Url.Action("GetAllBank", "ChequeBook")',
+                              type: "POST",
+                              dataType: "json",
+                              data: { prefix: request.term },
+                              success: function (data) {
+                                  debugger
+                                  response($.map(data, function (item) {
+                                      return {
+                                          label: item.BankName, value: item.BankName, id: item.BankID
+                                      };
+                                  }))
+                              }
+                          })
+                  },
+                  minLength: 1,
+                  select: function (event, i) {
+                      if (!i.item) {
+                          this.value = "";
+                      }
+                      $("#BankID").val(i.item.id);
+                      alert($("#BankID").val());
+
+                      $.ajax({
+                          
+                          url: '@Url.Action("GetAccountNameByBankID", "ChequeBook")',
+                          dataType: "json",
+                          data: { BankID: $('#BankID').val() },
+                          success: function (data) {
+                              
+                              $("#AccountName").text("");
+                              $("#AccountName").val("");
+                              $("#Layout").text("");
+                              $("#Layout").val("");
+                              $("#BankAccountID").val();
+                              $("#ChequeLayoutID").val();
+                              for (var a = 0; a < data.length; a++) {
+
+                                  $("#BankAccountID").val(data[a].BankAccountID);
+                                  $("#ChequeLayoutID").val(data[a].ChequeLayoutID);
+
+                                  alert($("#BankAccountID").val());
+                                  alert($("#ChequeLayoutID").val());
+
+                                  $("#AccountName").append('<option value=' + data[a].ChequeLayoutID + '>' + data[a].AccountName + '</option>')
+                              }
+                              debugger
+                              ChequeLayoutID = data[0].ChequeLayoutID;
+                              //alert($("#BankAccountID").val());
+                              //alert($("#ChequeLayoutID").val());
+                              $.ajax({
+                                  url: '@Url.Action("Layout", "ChequeBook")',
+                                  dataType: "json",
+                                  data: { ChequeLayoutID: ChequeLayoutID },
+                                  success: function (data) {
+                                      debugger
+                                      var lent = data.length;
+                                      $("#Layout").append('<option value=' + data[0].LayoutName + '>' + data[0].LayoutName + '</option>')
+                                      for (var b = 0; b < data.length; b++) {
+                                          $("#Layout").append('<option value=' + data[b].LayoutName + '>' + data[b].LayoutName + '</option>')
+
+                                      }
+
+                                      $(document).ready(function () {
+                                          $("#AccountName").change(function () {
+                                              debugger
+                                              var ChequeLayoutID = $("#AccountName").val();
+                                              $.ajax({
+                                                  url: '@Url.Action("Layout", "ChequeBook")',
+                                                  dataType: "json",
+                                                  data: { ChequeLayoutID: ChequeLayoutID },
+                                                  success: function (data) {
+                                                      debugger
+                                                      $("#Layout").val("");
+                                                      $("#Layout").text("");
+                                                      $("#Layout").append('<option value=' + data[0].LayoutName + '>' + data[0].LayoutName + '</option>')
+                                                      for (var b = 0; b < data.length; b++) {
+                                                          $("#Layout").append('<option value=' + data[b].LayoutName + '>' + data[b].LayoutName + '</option>')
+                                                      }
+                                                      $(document).ready(function () {
+                                                          $("#BankName").change(function () {
+                                                              debugger
+                                                             
+                                                              var BankID = $("#BankID").val();
+                                                              alert($("#BankID").val());
+                                                          });
+                                                      });
+                                                  }
+                                              });
+                                          });
+                                          
+                                      });
+                                  }
+                              });
+                              
+                          }
+
+                         
+                      });
+                     
+                  },
+              });
+    });
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#AccountName").autocomplete
+              ({
+                  source: function (request, response) {
+                      debugger
+                      $.ajax
+                          ({
+                              url: '@Url.Action("GetAccountNameByBankID", "ChequeBook")',
+                              type: "POST",
+                              dataType: "json",
+                              data: { prefix: request.term },
+                              success: function (data) {
+                                  debugger
+                                  response($.map(data, function (item) {
+                                      return {
+                                          label: item.AccountName, value: item.AccountName, id: item.BankAccountID
+                                      };
+                                  }))
+                              }
+                          })
+                  },
+                  minLength: 1,
+                  change: function (event, i) {
+                      if (!i.item) {
+                          this.value = "";
+                      }
+                  },
+                  select: function (event, i) {
+                      debugger
+                      $('#BankAccountID').val(i.item.id);
+                      //$("#AccountName").val(i.item.AccountName);
+                  },
+              });
+
+        $(document).ready(function () {
+            $("#BankName").change(function () {
+                debugger
+                //alert("7");
+                var BankId = $("#BankID").val();
+                alert($("#BankID").val());
+            });
+        });
+
+        $(document).ready(function () {
+            $("#Layout").change(function () {
+                debugger
+                var ChequeLayoutID = $("#Layout").val();
+                $.ajax({
+                    url: '@Url.Action("Layout", "ChequeBook")',
+                    dataType: "json",
+                    data: { ChequeLayoutID: ChequeLayoutID },
+                    success: function (data) {
+                        debugger
+                        $("#Layout").val("");
+                        $("#Layout").text("");
+                        $("#Layout").append('<option value=' + data[0].LayoutName + '>' + data[0].LayoutName + '</option>')
+                        for (var b = 0; b < data.length; b++) {
+                            $("#Layout").append('<option value=' + data[b].LayoutName + '>' + data[b].LayoutName + '</option>')
+                        }
+                    }
+                });
+            });
+            $("#btnok").click(function () {
+                $("#divChequeNo").hide(300);
+            });
+        });
+    });
+   
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        var count = 1;
+        $("#datatable-responsive").delegate('td', 'click', function () {
+            debugger
+
+            var row_num = parseInt($(this).parent().index());
+            var ChequeBookID = parseInt(document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[2].innerHTML);
+
+            $.ajax({
+
+                type: "GET",
+                url: '@Url.Action("EditChequeBook", "ChequeBook")',
+                dataType: "json",
+                data: { ChequeBookID: ChequeBookID },
+
+                contentType: 'application/json',
+                success: function (result) {
+                    debugger;
+
+                    $("#BankID").val(result[0].BankID);
+                    $("#BankName").val(result[0].BankName);
+                    $("#BankAccountID").val(result[0].BankAccountID);
+                    $("#AccountName").val(result[0].AccountName);                  
+                    $("#ChequeBookID").val(result[0].ChequeBookID);
+                    alert ($("#ChequeBookID").val());
+
+                    $("#ChequeLayoutID").val(result[0].ChequeLayoutID);
+                    //$("#Layout").val(result[0].LayoutName);
+                    $("#ChequeBookName").val(result[0].ChequeBookName);
+                    $("#ChequeNoFrom").val(result[0].ChequeNoFrom);
+                    $("#ChequeNoTo").val(result[0].ChequeNoTo);
+
+
+                    for (var b = 0; b < result.length; b++) {
+                        $("#Layout").append('<option value=' + result[b].LayoutName + '>' + result[b].LayoutName + '</option>')
+                    }
+
+                    for (var b = 0; b < result.length; b++) {
+                        $("#AccountName").append('<option value=' + result[b].AccountName + '>' + result[b].AccountName + '</option>')
+                    }
+
+
+ 
+                },
+                
+            });
+        });
+
+    });
+</script>
+
+<script>
+    function Delete(ChequeBookID) {
+        debugger
+        if (ChequeBookID != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+
+                    url: '@Url.Action("DeleteCheckBook", "ChequeBook")',
+                    data: { ChequeBookID: ChequeBookID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger
+                        if (data == "ChequeBook Deleted Successfully") {
+                            alert("ChequeBook Deleted Successfully");
+
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+
+                });
+            }
+        }
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <form action="" method="post">
+            <div class="content-wrapper">
+
+                <h5 class="topheadline">ChequeBook Details</h5>
+
+
+                <section class="content-header">
+                    <div class="container-fluid">
+
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel-primary">
+
+
+                                    <h2 class="panelheading">ChequeBook Details</h2>
+
+
+
+
+
+                                    <div class="pane-body">
+
+                                        <div class="row">
+                                            <div class="col-lg-12 rowmargintop padding0">
+
+
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-4">
+                                                        <span>Bank Name</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" name="BankName" id="BankName">
+                                                        <input type="hidden" name="BankID" id="BankID">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-4">
+                                                        <span>Account Name</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <select id="AccountName" name="AccountName" class="form-control input-sm"/>
+                                                        <input type="hidden" name="BankAccountID" id="BankAccountID" />
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12  rowmargintop padding0">
+
+
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-4">
+                                                        <span>Layout</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <select id="Layout" name="Layout" class="form-control input-sm"/>
+                                                        <input type="hidden" name="ChequeLayoutID" id="ChequeLayoutID" />
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-4">
+                                                        <span>Book Name</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="ChequeBookName" name="ChequeBookName" class="form-control input-sm"></input>
+                                                        <input type="hidden" name="ChequeBookID" id="ChequeBookID">
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+
+                                        </div>
+
+
+
+                                        <div class="row">
+                                            <div class="col-lg-12  rowmargintop padding0 rowmarginbottom">
+
+
+                                                <div class="col-lg-6">
+                                                    <div class="col-lg-4">
+                                                        <span>Cheque No.</span>
+
+
+                                                    </div>
+                                                    <div class="col-lg-8" style="display: flex;">
+
+
+                                                        <input type="text" id="ChequeNoFrom" name="ChequeNoFrom" class="form-control input-sm" />
+
+
+                                                        <span style="padding: 4px;">-</span>
+
+
+                                                        <input type="text" id="ChequeNoTo" name="ChequeNoTo" class="form-control input-sm" style="padding-left:5px" />
+
+
+
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="">
+                            <div class="col-lg-12">
+                                <div class="row rowmargintop" style="border: 1px solid #e9ecef; background: #ffffff; padding-top: 5px;">
+
+                                    <div class="col-lg-3">
+                                        <div class="tableheading">
+
+
+                                            <span class="fa fa-file-text" style=" color: #2b538c; font-size: 16px;
+  padding-right: 10px;"></span>Details
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-lg-6" style="text-align: center; display: block;">
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            @*<button type="button" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>*@
+                                            <button type="submit" id="save" onsubmit="return submit1()" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" onclick="Delete(document.getElementById('ChequeBookID').value)" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+                                            <button type="reset" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+                                        </div>
+                                        <div class="btn-group dropdown-split-warning">
+
+                                            <button type="button" onclick="window.location.href='@Url.Action("Dashboard","Home")'" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-3 pull-right" style="text-align:right;margin-bottom:4px;display:block;padding-top:0px">
+                                        <div style="display: flex;">
+
+                                            <input placeholder="Search" type="text"  style=" border: 1px solid #dce0f2;
+                                                                               border-radius:4px 0px 0px 4px;
+                                                                               height :31px;
+                                                                               font-family :roboto;
+                                                                               width :100%;
+                                                                               border-right:0px solid red;
+                                                                               text-align :left;
+                                                                               padding-left :4px;
+                                                                               font-size :13px;">
+                                            <button class="btn btn-gradient aos-init aos-animate" data-aos="zoom-in-up" data-aos-duration="800" style=" border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 46px; padding: 0px; border: 0px; margin-left: -5px; ">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" style=" padding-bottom: 10px;overflow:auto">
+                                        <table id="datatable-responsive" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Sno.</th>
+                                                    <th scope="col">BookName</th>
+                                                    <th style="display:none">ChequeBookID</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                            <tfoot>
+                                                <tr>
+
+                                                    <td>
+                                                        <div class="pagination pull-right">
+                                                            <a href="#">&laquo;</a>
+                                                            <a href="#">1</a>
+                                                            <a href="#" class="active">2</a>
+                                                            <a href="#">3</a>
+                                                            <a href="#">4</a>
+
+
+                                                            <a href="#">&raquo;</a>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                </section>
+
+            </div>
+        </form>
+
+    </div>
+
+</body>

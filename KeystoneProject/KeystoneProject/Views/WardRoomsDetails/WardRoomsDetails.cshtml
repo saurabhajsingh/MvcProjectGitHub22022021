@@ -1,0 +1,389 @@
+﻿@model KeystoneProject.Models.Master.WardRoomsDetails
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This file is edited by Mohammed -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+@if (TempData["msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#wardRoomTableId").delegate('tr', 'click', function () {
+            $('#wardRoomTableId tr').removeClass('highlighted');
+            $(this).addClass('highlighted');
+        });
+        $("#serachtable").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#wardRoomTableId tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetAllWard", "WardRoomsDetails")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                var tr = "";
+                var SrNo = 1;
+                $.each(data, function (i, obj) {
+                    tr += '<tr><td>' + SrNo + '</td><td>' + obj.WardName + '</td><td>' + obj.RoomName + '</td><td>' + obj.TotalBed + '</td><td style="display:none">' + obj.WardID + '</td><td style="display:none">' + obj.RoomID + '</td><td style="display:none">' + obj.colorname + '</td></tr>';
+                    SrNo++;
+                });
+                $("#wardRoomTableId").append(tr)
+                $('#wardRoomTableId').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#wardRoomTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#wardRoomExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+    $(document).ready(function () {
+        var SrNo = 1;
+        $("#Add").click(function () {
+            debugger;
+            $("#bedTableId").append('<tr><td style="border-right:1px solid #bddff7"><input type="text" name="BedNo" class="form-control input-sm" required style="border-left-color: red;border-left-width: thick;"  oninvalid="this.setCustomValidity(`Please Enter Bad Number`)" oninput="this.setCustomValidity(``)"> </td><td style="display:none">' + 0 + '</td><td style="border-right:1px solid #bddff7"> <input type="checkbox" class="largerCheckbox" id="BedStatus" name="BedStatus" value="false"/></td><td><button type="button" id="delrow" onclick="delete1(0)" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+            var count = "";
+            $("#bedTableId").parent().find('input[name=BedStatus]').each(function () {
+                debugger
+                var abc = $(this).parent().find('input[name=BedStatus]').attr("checked");
+               
+                if (abc != 'checked')
+                {
+                    debugger
+                    count += false + ',';
+                    //$(this).parent().find('input[name=Bedcount]').attr("checked", false)
+
+                   // =;
+                }
+                else
+                {
+                    count+= true+',';
+                   // $("#Bedcount").val(count);
+                 //   $(this).parent().find('input[name=Bedcount]').attr("checked", true)
+                }
+                
+                $("#Bedcount").val(count);
+                //alert($("#Bedcount").val());
+            })
+
+          
+            SrNo++;
+        })
+        var row = 0;
+        $("#Delele").click(function () {
+            var pro = confirm("Do you Want To Delete")
+            if (pro) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteWardRoomsDetails", "WardRoomsDetails")',
+                    data: { 'RoomID': $("#RoomID").val(), WardID: $("#WardID").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Record Delete successfully") {
+                            alert(data);
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                        }
+                    }
+                })
+            }
+        })
+        $("#bedTableId").on('click', '#delrow', function () {
+            debugger;
+            row = $(this).closest('tr').index();
+            var BedID = document.getElementById("bedTableId").tBodies[0].rows[row].cells[1].innerHTML;
+            //if (BedID == 0) {
+                $(this).closest('tr').remove();
+                return false;
+            //}
+            var pro = confirm("Do you Want To Delete")
+            if (pro) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("DeleteBedID", "WardRoomsDetails")',
+                    data: { 'BedID': BedID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        if (data == "Delete") {
+                            alert("Bed Deleted Successfully");
+                           // window.location.reload(true);
+                          
+                        }
+                        else {
+                            alert("Bed Are Alloted To The Patient, Bed Cannot Be Deleted.");
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                })
+            }
+            //$(this).closest('tr').remove();
+            //$(this).closest('tr').text();
+        });
+    });
+    //function delete1(BedID) {
+    //    debugger;
+    //    if (BedID==0)
+    //    {
+    //        document.getElementById("ResponsiveWardIDbody1").deleteRow(row);
+    //        alert("Dfs")
+    //    }
+    //    //var row_num = $("#ResponsiveWardID1 tr").index(this);
+    //    //var BedID = document.getElementById("ResponsiveWardID1").tBodies[0].rows[0].cells[1].innerHTML;
+    //    //alert(BedID);
+    //}
+    $(document).ready(function () {
+        $("#wardRoomTableId").on('click', 'td', function () {
+            debugger;
+            $("#ResponsiveWardIDbody1 tr").remove();
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            var row_num = parseInt($(this).parent().index());
+            var WardID = parseInt(document.getElementById("wardRoomTableId").tBodies[0].rows[row_num].cells[4].innerHTML);
+            var RoomName = document.getElementById("wardRoomTableId").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var RoomID = document.getElementById("wardRoomTableId").tBodies[0].rows[row_num].cells[5].innerHTML;
+            var colorname = document.getElementById("wardRoomTableId").tBodies[0].rows[row_num].cells[6].innerHTML;
+            $("#RoomName").val(RoomName);
+            $("#RoomID").val(RoomID);
+            var WardName = document.getElementById("wardRoomTableId").tBodies[0].rows[row_num].cells[1].innerHTML;
+            $("#WardID").val(WardID);
+            $("#WardName").val(WardName);
+            $("#colorID").val(colorname);
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetWardRoomDetails", "WardRoomsDetails")',
+                data: { RoomID: RoomID },
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, obd) {
+                        debugger
+                        var BedNo = obd.BedNo;
+                        var status = data[i].BedStatus;
+                        if (status==false)
+                        {
+                            data[i].BedStatus = "";
+                        }
+                        $("#bedTableId").append('<tr><td style="border-right:1px solid #bddff7"><input type="text" name="BedNo" class="form-control input-sm" value=' + BedNo + '> </td><td style="display:none">' + data[i].BedID + '</td><td style="border-right:1px solid #bddff7"><input type="checkbox" class="largerCheckbox" id="BedStatus"  name="BedStatus" value=' + data[i].BedStatus + ' checked=' + data[i].BedStatus + '/></td><td><button type="button" id="delrow" onclick="delete1(' + data[i].BedID + ')" class="btn btn-danger"><span class="fa fa-trash"></span></button></td><td style="display:none">' + obd.WardID + '</td><td style="display:none">' + data[i].RoomID + '</td></tr>');
+                        var count = "";
+                        debugger
+                        $("#bedTableId").parent().find('input[name=BedStatus]').each(function () {
+                            debugger
+                            var abc = $(this).parent().find('input[name=BedStatus]').attr("checked");
+
+                            if (abc != 'checked') {
+                                debugger
+                                count += false + ',';
+                               
+                            }
+                            else {
+                                count += true + ',';
+                               
+                            }
+
+                            $("#Bedcount").val(count);
+                           
+                        })
+                    });
+
+                },
+            });
+            //------------------
+        });
+        $("#bedTableId").on('click', 'td', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+        })
+
+        $("#WardName").keyup(function () {
+            debugger;
+            if ($("#WardName").val() == "")
+            {
+                $('#WardID').val(0);
+            }
+        })
+
+        $("#WardName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Doctor/GetDepartmentRecord",
+                    url: '@Url.Action("GetAllWardRoomDetail", "WardRoomsDetails")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.WardName, value: item.WardName, id: item.WardID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                if (!ui.item) {
+                    this.value = "";
+                }
+            },
+            select: function (event, i) {
+                $('#WardID').val(i.item.id);
+            },
+        });
+    });
+</script>
+
+
+<div class="wrapper">
+    <form action="" method="post">
+        <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Ward Rooms</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                <li class="breadcrumb-item active">Ward Rooms</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="card card-primary panel-primary">
+                                <h2 class="panelheading">Ward Rooms</h2>
+                                <div class="card-body pane-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Ward Name</label>
+                                                <input type="text" id="WardName" name="WardName" class="form-control"
+                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Ward Name')"
+                                                       oninput="this.setCustomValidity('')">
+                                                <input type="hidden" id="WardID" name="WardID" class="form-control input-sm" />
+                                                <input type="hidden" id="Bedcount" name="Bedcount" class="form-control input-sm" />
+                                            </div>
+                                            <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                <label>Room No.</label>
+                                                <input type="text" id="RoomName" name="RoomName" class="form-control"
+                                                       required style="border-left-color: red;border-left-width: thick;"
+                                                       oninvalid="this.setCustomValidity('Please Enter Room Number')"
+                                                       oninput="this.setCustomValidity('')">
+                                                <input type="hidden" id="RoomID" name="RoomID" class="form-control input-sm" />
+                                               
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                                                <input type="color" id="colorID" name="colorname" class="form-control input-sm" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <table id="bedTableId" class="table table-bordered table-striped" style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">BedNo</th>
+                                        <th scope="col">BedStatus</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ResponsiveWardIDbody1"></tbody>
+                            </table>
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="button" id="Add" class="btndivcss"><span class="fa fa-plus buttoniconcss"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                            <div class="btn-group dropdown-split-warning">
+                                <button type="submit" class="btn btn-app" id="save">
+                                    <i class="fa fa-save"></i>Save
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="Delele">
+                                    <i class="fa fa-trash"></i>Delete
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="location.reload();">
+                                    <i class="fa fa-refresh"></i>Clear
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                    <i class="fa fa-sign-out"></i>Exit
+                                </a>
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+                                <a class="btn btn-app" id="wardRoomExcelExport"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                            <table id="wardRoomTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="wradRoom_info"
+                                   style="width: 100%">
+                                <thead style="background-color: #bddff7;">
+                                    <tr>
+                                        <th scope="col">Sr. no.</th>
+                                        <th scope="col">Ward Name</th>
+                                        <th scope="col">Room Name</th>
+                                        <th scope="col">Total Bed</th>
+                                        <th style="display:none">Ward ID</th>
+                                        <th style="display:none">Room ID</th>
+                                        <th style="display:none">Color Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </form>
+</div>

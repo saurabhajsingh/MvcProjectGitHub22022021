@@ -1,0 +1,1782 @@
+﻿@model KeystoneProject.Models.Master.ServicesPackage
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    #servicePackageDetailTableId_filter {
+        float: right;
+    }
+
+    #servicetable_filter {
+        float: right;
+    }
+</style>
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        TempData["Msg"] = null;
+        window.onload(true);
+
+        Restore();
+    </script>
+}
+
+<script>
+  
+    $(document).ready(function () {
+        var servicetype;
+        $("#ServiceType").change(function () {
+            servicetype = $('option:selected', this).text();
+   
+            if(servicetype == "OPD Package")
+            {
+                $("#tableTo").hide();
+                $("#tabletoOPD").show();
+                $('#tblWordCharges input[type="text"]').prop("disabled", true);
+
+            }
+
+            else
+            {
+             
+                $("#tabletoOPD").hide();
+                $("#tableTo").show();
+                $('#tblWordCharges input[type="text"]').prop("disabled", false);
+            }
+        });
+    });
+</script>
+
+<script>
+  
+    $(document).ready(function () {
+        var nam = "";
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ShowAllServiceDetailsPackage", "ServicesPackage")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                var count = 1;
+                debugger
+                $.each(result, function (i, obj) {
+                    debugger;
+                    $("#tableBindPackages").append('<tr><td>' + count + '</td> <td> ' + obj.ServiceName + ' </td>  <td> ' + obj.GeneralCharges + ' </td> <td> ' + obj.EmergencyCharges + ' </td><td> ' + obj.ServiceType + ' </td><td> ' + obj.ServiceGroupName + '</td><td> ' + obj.UnitName + ' </td><td style="display:none"> ' + obj.ServiceID + ' </td> <td style="display:none"><input type="hidden" id="ServiceGroupID1" name="ServiceGroupID1" value=' + obj.ServiceGroupID + '> </td><td style="display:none"><input type="hidden" id="Rechange" name="Rechange" value=' + obj.chkrechange + '> </td> </tr>');
+                    count++;
+                });
+            },
+            error: function () {
+
+            }
+        });
+
+        $("#tableBindPackages").delegate('td', 'click', function () {
+
+            $("#tblWordCharges").show();
+            debugger
+            //Restor();
+            $('#tblWordCharges tbody tr').remove();
+            $('#tblWordCharges tfoot').remove();
+            $('#tableTo tbody tr').remove();
+          //  $('#tableTo tbody').remove();
+         //   $('#tblWordCharges tr').append('<tr><td>WardName</td> <td >GeneralCharges</td> <td> EmergencyCharges> </td></tr>');
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            $("save").addClass("btndivcss");
+            var row_num = parseInt($(this).parent().index());
+            var ServiceID = parseInt(document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[7].innerHTML);
+            var ServiceName = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[1].innerHTML.trim();
+            var unit = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[6].innerHTML.trim();
+            var GenCharges = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[2].innerHTML.trim();
+            var EmgCharges = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[3].innerHTML.trim();
+            var ServiceType = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[4].innerHTML;
+            var ServiceGrpName = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[5].innerHTML.trim();
+            var ServiceGroupID = parseInt(document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[8].children[0].value);
+            var Rechange = document.getElementById("tableBindPackages").tBodies[0].rows[row_num].cells[9].children[0].value;
+
+            $("#ServiceGroupName").val(ServiceGrpName);
+            $("#ServiceGroupID").val(ServiceGroupID);
+            $("#ServiceName").val(ServiceName);
+            $("#ServiceID1").val(ServiceID);
+            $("#UnitName").val(unit);
+            $("#GeneralCharges").val(GenCharges);
+            $("#EmergencyCharges").val(EmgCharges);
+
+            if (Rechange == "true") {
+                $("#chkrechange").prop("checked", true);
+            }
+            else {
+                $("#chkrechange").prop("checked", false);
+            }
+            
+            if (ServiceType == " IPD Package " || ServiceType == " Both Package ")
+            {
+                $("#tableTo").show();
+                $("#tabletoOPD").hide(); 
+              //  $('#rows').remove();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetServiceCharges", "ServicesPackage")',
+                    dataType: "json",
+
+                    data: { ServiceID: ServiceID },
+
+                    contentType: 'application/json',
+                    success: function (result) {
+                        var count1 = 1;
+                        $.each(result, function (i, obj) {
+
+                            $("#tblWordCharges").append('<tr><td>  ' + obj.WordName + '  </td> <td id="GeneralCharges1"><input type="number" name="GeneralCharges1" id="" class="form-control input-sm" value=' + obj.GeneralCharges + ' /> </td> <td style=""> <input type="number" name="EmergencyCharges1" id="EmergencyCharges1" class="form-control input-sm" value=' + obj.EmergencyCharges + ' /> </td> <td><input type="hidden" name="EmergencyCharges2"   class="form-control input-sm" value=' + obj.GeneralCharges + ' /> </td>  <td style="display:none"><input type="hidden" name="WardID" class="WardIDFrom"  value=' + obj.WardID + '> </td></tr>');
+                            count1++;
+                        });
+
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("ServicePkgesDetailsCharges", "ServicesPackage")',
+                            dataType: "json",
+                            data: { ServiceID: ServiceID, ServiceType: "Service" },
+                            contentType: 'application/json',
+                            success: function (data) {
+                                var count = 1;
+                                debugger
+                                for (var i = 2; i < data.modeladd[0].length; i++) {
+                                    if (nam == "") {
+
+                                        $("#columnheader").append('<th>' + data.modeladd[0][i].Key + '</th>');
+
+                                    }
+                                }
+
+                                debugger
+                                var rows = "";
+                                var rows2 = "";
+                                $("#rows td").remove();
+                                pkgrow = data.modeladd.length;
+                                for (var j = 0; j < pkgrow; j++) {
+                                    for (var i = 2; i < data.modeladd[j].length; i++) {
+                                        debugger;
+                                        nam = "1";
+                                        {
+                                            rows += '<td><input type="number" style="form-control" id="GenralCharges" name="GenralCharges" class="qtyclass"  value=' + data.modeladd[j][i].Value + '><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data.modeladd[j][i].Key + '"><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data.modeladd[j][i].Key + '"></td>';
+                                        }
+                                        debugger
+                                        // ServiceNTestName = ServiceNTestName;
+                                    }
+                                    $("#rows").append('<tr><td>' + count + '</td><td>' + data.objmodel[j].ServiceOrTestName + '<input type="hidden" name="ServiceNTestName" value="'+data.objmodel[j].ServiceOrTestName+'" class="servicename" ><input type="hidden" class="ServiceOrTestID" name="ServiceOrTestID" value=' + data.objmodel[j].ServiceOrTestID + '></td> <td><input type="Text" style="width: -webkit-fill-available;" id="" name="Quantity" class="qtyclass" value=' + data.objmodel[j].Quantity + ' ></td><td>' + data.objmodel[j].ServiceType + '</td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td>' + rows + '</tr>');
+                                    count++;
+                                    rows = "";
+
+                                }
+
+
+                            }
+                        });
+                    }
+                });
+
+
+            }
+
+            else
+                if (ServiceType = " OPD Package ")
+                {
+
+                    $("#tableTo").hide();
+                    $("#tabletoOPD").show();
+                 
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetServicesChargesOPD", "ServicesPackage")',
+                        dataType: "json",
+
+                        data: { ServiceID: ServiceID },
+
+                        contentType: 'application/json',
+                        success: function (data) {
+                            $("#rowsOPD td").remove();
+                            var count1 = 1; 
+                             
+                            debugger
+                        
+                                for (var i = 0; i < data.length; i++)
+                                {
+                                    debugger
+                                    $("#rowsOPD").append('<tr><td>' + count1 + '</td><td>' + data[i].ServiceNTestName + '<input type="hidden" name="ServiceNTestNameOPD" class="servicename" value="' + data[i].ServiceNTestName + '"><input type="hidden" class="ServiceOrTestIDOPD" name="ServiceOrTestIDOPD" value=' + data[i].ServiceOrTestID + '></td><td><input type="number" style="width: -webkit-fill-available;" id="" name="QuantityOPD" class="qtyclass" value=' + data[i].Quantity + ' ></td><td>Service</td> <td>  <input type="number" style="form-control" id="OPDGenralCharges" name="OPDGenralCharges" class="qtyclass"  value=' + data[i].GeneralCharges + '> </td><td>  <input type="number" style="form-control" id="OPDEmergencyCharges" name="OPDEmergencyCharges" class="qtyclass" value=' + data[i].EmergencyCharges + ' > </td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td></tr>');
+                                  
+                                    count1++;
+                                }
+                             debugger
+                                var servicetype = data[0].ServiceType;
+                                if(servicetype="OPD Package")
+                                {
+                                    $("#ServiceType").val(servicetype);
+                                }
+                                var serviceid= data[0].ServiceID;
+                                $("#ServiceID1").val(serviceid);
+                        }
+                    });
+                }
+           
+
+        });
+ 
+
+        var valueGen = 0;
+        var valueEmr = 0;
+
+    $("#tabletoOPD").delegate('td', 'keyup', function () {
+        debugger
+        var row_num = parseInt($(this).parent().index());
+
+
+        var serviceID = $("#ServiceID1").val();
+
+
+        var ColCount = document.getElementById('tabletoOPD').rows[row_num].cells.length;
+        var totalRowCount = 0;
+        var rowCount = 0;
+        var table = document.getElementById("tabletoOPD");
+        var rows = table.getElementsByTagName("tr")
+        for (var i = 0; i < rows.length; i++) {
+            totalRowCount++;
+            if (rows[i].getElementsByTagName("td").length > 0) {
+                rowCount++;
+            }
+        }
+
+
+        debugger
+
+         
+
+        var Col_num = $(this).closest("td").index();
+
+
+
+        var ServiceOrTestID = ""; //parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+        var Qty = "";// parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+        var ServiceNTestName = "";
+        var TableColumnsWordIDName = "";
+
+
+        ServiceOrTestID = "";
+        $(".ServiceOrTestID").each(function () {
+            ServiceOrTestID += $(this).val() + ",";
+        })
+
+
+
+         
+
+        debugger
+        var chkqty = document.getElementById("tabletoOPD").tBodies[0].rows[row_num].cells[2].children[0].value;
+
+        if (chkqty == "") {
+            document.getElementById("tabletoOPD").tBodies[0].rows[row_num].cells[2].children[0].value = "1";
+        }
+        $(".qtyclass").each(function () {
+            Qty += $(this).val() + ",";
+
+        });
+
+
+
+        var total = 0;
+        //   var WardName = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[Col_num].children[1].value;
+        //     var WardNameOld = document.getElementById("tblWordCharges").tBodies[0].rows[Row_Num].cells[0].children[1].value;
+        var a = 1;
+        var value = 0;
+        var tblGenCharge = 0;
+
+        rows = $("#tabletoOPD tbody tr").length;
+        debugger
+           
+
+
+        for (var k = 0; k < rows; k++) {
+
+
+            qtyGen = parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[2].children[0].value);
+            qtyEmr = parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[2].children[0].value);
+            valueGen += parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[4].children[0].value) * parseInt(qtyGen);
+            valueEmr += parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[5].children[0].value) * parseInt(qtyEmr);
+
+                if (!isNaN(value)) {
+                    totalGen = valueGen;
+                    totalEmr = valueEmr;
+                }
+                //if (serviceID == "") {
+                //    document.getElementById("tblWordCharges").tBodies[0].rows[i - 4].cells[1].children[0].value = parseFloat(total);
+                //    document.getElementById("tblWordCharges").tBodies[0].rows[i - 4].cells[2].children[0].value = parseFloat(total) ;
+                //}
+                //else {
+                //    document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[1].children[0].value = parseFloat(total);
+                //    document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[2].children[0].value = parseFloat(total);
+                //}
+                $("#GeneralCharges").val(parseFloat(totalGen));
+                $("#EmergencyCharges").val(parseFloat(totalEmr));
+
+
+            }
+        valueGen = 0;
+        valueEmr = 0;
+       
+              
+
+    });
+
+      
+    });
+
+</script>
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllWard", "Services")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                debugger;               
+
+                $.each(result, function (i, obj) {
+                    $("#tblWordCharges").append('<tr><td> ' + obj.WordName + '</td> <td id="GeneralCharges1"><input type="number" name="GeneralCharges1" id="" class="form-control input-sm" value=' + obj.GeneralCharges + ' /> </td> <td style=""> <input type="number" name="EmergencyCharges1" id="EmergencyCharges1" class="form-control input-sm" value=' + obj.EmergencyCharges + ' /> </td> <td><input type="hidden" name="EmergencyCharges2"   class="form-control input-sm" value=' + obj.GeneralCharges + ' /> </td>  <td style="display:none"><input type="hidden" name="WardID" class="WardIDFrom"  value=' + obj.WardID + '> </td></tr>');
+                   
+                });
+            },
+            error: function () {
+
+            }
+        });
+
+    })
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#UnitName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Services/GetUnitID",
+                    url: '@Url.Action("GetUnitID", "Services")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.UnitName, value: item.UnitName, id: item.UnitID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                if (!i.item) {
+                    this.value = '';
+                    $("#UnitName").val('');
+                }
+                $('#UnitID').val(i.item.id);
+
+                if (!i.item) {
+                    this.value = '';
+                    $("#UnitName").val('');
+                }
+            }
+        });
+        $("#ServiceGroupName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/Services/GetServiceGrpRecord",
+                    url: '@Url.Action("GetServiceGrpRecord", "Services")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceGroupName, value: item.ServiceGroupName, id: item.ServiceGroupID
+                            };
+                        }))
+                    },
+                })
+            },
+            minLength: 1,
+            change: function (event, i) {
+                debugger
+
+
+                if (!i.item) {
+                    this.value = '';
+                    $("#ServiceGroupName").val('');
+                }
+                $('#ServiceGroupID').val(i.item.id);
+               // alert($('#ServiceGroupID').val());
+            }
+        });
+    });
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetServicesPackageforServiceNTest", "ServicesPackage")',
+            dataType: "json",
+            type: 'POST',
+            data: JSON.stringify(""),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (result) {
+                debugger
+                var SrNo = 1;
+                $("#servicetable td").remove();
+                $.each(result, function (i, obj) {
+                    $("#servicetable").append('<tr> <td>' + obj.ServiceName + '  </td><td><button type="button" style="background: #35a4f1;border: 0px;border-radius: 4px;"><i class="fa fa-angle-double-right"style="border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 35px; padding: 5px; border: 0px; font-size: 20px; "></i></button></td> <td style="display:none"><input type="hidden" name="ServiceID"   value=' + obj.ServiceID + '> </td></tr>');
+                    SrNo++;
+
+                });
+            },
+            error: function () {
+
+            }
+        });
+
+    })
+
+</script>
+
+ 
+<script>
+
+    $(document).ready(function () {
+        var count = 1;
+        var nam = "";
+        var Gen;
+        var Eme;
+        var GenCharge = 0, EmgCharge = 0;
+        var arrOld = new Array;
+        var arrOldEm = new Array;
+        var grandtotal = 0;
+    
+
+
+        $("#servicetable").delegate('td', 'click', function () {
+
+            var ServiceType = $("#ServiceType").val();
+            debugger
+            if (ServiceType == "IPD Package" || ServiceType == "Both Package") {
+
+
+                debugger
+
+                var serviceID = $("#ServiceID1").val();
+                var table = document.getElementById("tableTo");
+                var totalRowCount = table.rows.length; // 5
+                var tbodyRowCount = table.tBodies[0].rows.length; // 3
+
+                if (serviceID == "") {
+                    debugger
+                    var row_num = parseInt($(this).parent().index());
+                    var ServiceOrTestID = parseInt(document.getElementById("servicetable").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var ServiceNTestName = document.getElementById("servicetable").tBodies[0].rows[row_num].cells[0].innerHTML.trim();
+                    var TableColumnsWordIDName = "";
+                    var Qty = "";
+                    $(".colname").each(function () {
+                        TableColumnsWordIDName += $(this).val() + ",";
+                    })
+
+                    count++;
+                    //ServiceOrTestID = "";
+                    //$(".ServiceOrTestID").each(function () {
+                    //    ServiceOrTestID += $(this).val() + ",";
+                    //})
+                    $(".qtyclass").each(function () {
+                        Qty += $(this).val() + ",";
+
+                    });
+
+
+                    var totalRowCount = 0;
+                    var rowCount = 0;
+                    var table = document.getElementById("tblWordCharges");
+                    var rows = table.getElementsByTagName("tr")
+                    for (var i = 0; i < rows.length; i++) {
+                        totalRowCount++;
+                        if (rows[i].getElementsByTagName("td").length > 0) {
+                            rowCount++;
+                        }
+                    }
+
+                   // alert(rowCount);
+
+
+                    var arr = new Array(rowCount - 1);
+                    var arrEme = new Array(rowCount - 1);
+
+              
+
+                   
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("TableFromCharges", "ServicesPackage")',
+                        dataType: "json",
+                        data: { ServiceOrTestID: ServiceOrTestID, ServiceType: "Service" },
+
+                        contentType: 'application/json',
+                        success: function (data) {
+                            
+
+                            for (var i = 0; i < data[0].length; i++) {
+                                
+                                if (nam == "") {
+                                    $("#columnheader").append('<th>' + data[0][i].Key + '</th>');
+
+                                }
+                            }
+
+                            var rows = "";
+
+                            for (var i = 0; i < data[0].length; i++) {
+                                
+                                nam = "1";
+                                {
+                                    rows += '<td><input type="number" style="form-control" id="GenralCharges" name="GenralCharges" class="qtyclass"  value=' + data[0][i].Value + '><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data[0][i].Key + '"><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data[0][i].Key + '"></td>';
+
+                                }
+                            }
+
+                         
+
+                            Gen = 0;
+                            Eme = 0;
+
+                            for (var i = 0; i < rowCount - 1; i++) {
+                                arr[i] = [];
+                                arrEme[i] = [];
+
+
+                                Gen = parseFloat(data[0][i].Value);
+                                Eme = parseFloat(data[0][i].Value);
+                                //  Eme = parseFloat(data[0][j].Value);
+                                arr[i] = Gen;
+                                arrEme[i] = Eme;
+
+                            }
+
+
+                            var total = 0;
+                            for (var j = 0; j < arr.length; j++) {
+
+                                if (arrOld.length == 0) {
+
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j ].cells[1].children[0].value = arr[j];
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[2].children[0].value = arrEme[j];
+
+
+                                }
+                                else {
+
+
+
+                                    total = arrOld[j] + parseFloat(document.getElementById("tblWordCharges").tBodies[0].rows[j ].cells[1].children[0].value)
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j ].cells[1].children[0].value = total;
+
+
+                                    total = arrOldEm[j] + parseFloat(document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[2].children[0].value)
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j ].cells[2].children[0].value = total;
+
+
+
+                                }
+
+                            }
+
+                            arrOld[rowCount - 1] = (rowCount - 1);
+                            arrOld = arr.slice();
+                            arrOldEm[rowCount - 1] = (rowCount - 1);
+                            arrOldEm = arr.slice();
+
+
+
+                            
+                            var chk = true;
+                            ServiceNTestName = ServiceNTestName.trim();
+                            $("input[name=ServiceNTestName]").each(function () {
+                                
+                                var a = $(this).val();
+                                if ($(this).val() == ServiceNTestName) {
+
+                                    alert("ServiceName Already Added");
+                                    chk = false;
+                                    return false;
+                                }
+
+                                //  $("#addTestTableId").append('<tr><td style="display:none"><input type="hidden" value=' + TestID + ' name="tabletestid"></td><td><input type="hidden" value="' + TestName + '" name="TestName" />' + TestName + '</td><td><button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+
+
+
+
+                            });
+                            if(chk)
+                            {
+                                
+                              debugger
+                                $("#rows").append('<tr><td>' + count + '</td><td><input type="hidden" name="ServiceNTestName" value="'+ServiceNTestName+'" class="servicename" >' + ServiceNTestName + '<input type="hidden" class="ServiceOrTestID" name="ServiceOrTestID" value=' + ServiceOrTestID + '></td><td><input type="number" style="width: -webkit-fill-available;" id="" name="Quantity" class="qtyclass" value="1" ></td><td>Service</td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td>' + rows + '</tr>');
+
+                            }
+                           
+                        }
+
+
+                    });
+                }
+
+                else {
+
+                    var row_num = parseInt($(this).parent().index());
+                    var ServiceOrTestID = parseInt(document.getElementById("servicetable").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var ServiceNTestName = document.getElementById("servicetable").tBodies[0].rows[row_num].cells[0].innerHTML.trim();
+                    var TableColumnsWordIDName = "";
+                    var Qty = "";
+                    $(".colname").each(function () {
+                        TableColumnsWordIDName += $(this).val() + ",";
+                    })
+
+                    count++;
+                    //ServiceOrTestID = "";
+                    //$(".ServiceOrTestID").each(function () {
+                    //    ServiceOrTestID += $(this).val() + ",";
+                    //})
+                    $(".qtyclass").each(function () {
+                        Qty += $(this).val() + ",";
+
+                    });
+
+
+                    var totalRowCount = 0;
+                    var rowCount = 0;
+                    var table = document.getElementById("tblWordCharges");
+                    var rows = table.getElementsByTagName("tr")
+                    for (var i = 0; i < rows.length; i++) {
+                        totalRowCount++;
+                        if (rows[i].getElementsByTagName("td").length > 0) {
+                            rowCount++;
+                        }
+                    }
+
+                   // alert(rowCount);
+
+                    debugger
+                    for (var i = 0; i < rowCount; i++) {
+                        arrOld[i] = parseInt(document.getElementById("tblWordCharges").tBodies[0].rows[i].cells[1].children[0].value);
+                        arrOldEm[i] = parseInt(document.getElementById("tblWordCharges").tBodies[0].rows[i].cells[2].children[0].value);
+                    }
+
+                    var arr = new Array(rowCount - 1);
+                    var arrEme = new Array(rowCount - 1);
+
+
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("TableFromCharges", "ServicesPackage")',
+                        dataType: "json",
+                        data: { ServiceOrTestID: ServiceOrTestID, ServiceType: "Service" },
+
+                        contentType: 'application/json',
+                        success: function (data) {
+
+
+                            for (var i = 0; i < data[0].length; i++) {
+                                if (nam == "") {
+                                    $("#columnheader").append('<th>' + data[0][i].Key + '</th>');
+
+                                }
+                            }
+
+                            var rows = "";
+
+                            for (var i = 0; i < data[0].length; i++) {
+                                nam = "1";
+                                {
+                                    rows += '<td><input type="number" style="form-control" id="GenralCharges" name="GenralCharges" class="qtyclass"  value=' + data[0][i].Value + '><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data[0][i].Key + '"><input type="hidden" style="form-control" id="HiddenGenCharges" name="HiddenGenCharges" class="qtyclass"  value="' + data[0][i].Key + '"></td>';
+
+                                }
+                            }
+
+
+
+                            Gen = 0;
+                            Eme = 0;
+
+                            for (var i = 0; i < rowCount - 1; i++) {
+                                arr[i] = [];
+                                arrEme[i] = [];
+
+
+                                Gen = parseFloat(data[0][i].Value);
+                                Eme = parseFloat(data[0][i].Value);
+                                //  Eme = parseFloat(data[0][j].Value);
+                                arr[i] = Gen;
+                                arrEme[i] = Eme;
+
+                            }
+
+                            
+                            var total = 0;
+                            for (var j = 1; j < arr.length; j++) {
+
+                                if (arrOld.length == 0) {
+
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j + 1].cells[1].children[0].value = arr[j];
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j + 1].cells[2].children[0].value = arrEme[j];
+
+
+                                }
+                                else {
+
+
+                                    
+                                    total = arrOld[j] + arr[j]
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[1].children[0].value = total;
+
+
+                                    total = arrOldEm[j] + arr[j]
+
+                                    document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[2].children[0].value = total;
+
+
+
+                                }
+
+                            }
+
+                            arrOld[rowCount - 1] = (rowCount - 1);
+                            arrOld = arr.slice();
+                            arrOldEm[rowCount - 1] = (rowCount - 1);
+                            arrOldEm = arr.slice();
+
+                            var chk=true;
+                            ServiceNTestName = ServiceNTestName;
+                            $("input[name=ServiceNTestName]").each(function () {
+                                
+                                var a = $(this).val();
+                                if ($(this).val() == ServiceNTestName) {
+
+                                    alert("ServiceName Already Added");
+                                    chk = false;
+                                    return false;
+                                }
+
+                                //  $("#addTestTableId").append('<tr><td style="display:none"><input type="hidden" value=' + TestID + ' name="tabletestid"></td><td><input type="hidden" value="' + TestName + '" name="TestName" />' + TestName + '</td><td><button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+
+
+
+                            });
+                            debugger
+                            if(chk)
+                            {
+                            debugger
+                            $("#rows").append('<tr><td>' + count + '</td><td>' + ServiceNTestName + '<input type="hidden" name="ServiceNTestName" value="' + ServiceNTestName + '" class="servicename" ><input type="hidden" class="ServiceOrTestID" name="ServiceOrTestID" value=' + ServiceOrTestID + '></td><td><input type="number" style="width: -webkit-fill-available;" id="" name="Quantity" class="qtyclass" value="1" ></td><td>Service</td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td>' + rows + '</tr>');
+
+                            }
+                           
+                        }
+                    });
+                }
+
+            }
+
+            else if(ServiceType=="OPD Package")
+            {
+
+                var serviceID = $("#ServiceID1").val();
+
+                var row_num = parseInt($(this).parent().index());
+                if (serviceID == "")
+                {
+                   
+                    var ServiceOrTestID = parseInt(document.getElementById("servicetable").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var ServiceNTestName = document.getElementById("servicetable").tBodies[0].rows[row_num].cells[0].innerHTML;
+                    var TableColumnsWordIDName = "";
+                    var Qty = "";
+                    $(".colname").each(function () {
+                        TableColumnsWordIDName += $(this).val() + ",";
+                    })
+
+                    count++;
+                    //ServiceOrTestID = "";
+                    //$(".ServiceOrTestID").each(function () {
+                    //    ServiceOrTestID += $(this).val() + ",";
+                    //})
+                    $(".qtyclass").each(function () {
+                        Qty += $(this).val() + ",";
+
+                    });
+                    var chk = true;
+                    $("input[name=ServiceNTestNameOPD]").each(function () {
+                        debugger
+                        var a = $(this).val();
+                        if ($(this).val() == ServiceNTestName) {
+
+                            alert("ServiceName Already Added");
+                            chk = false;
+                            return false;
+                        }
+
+                        //  $("#addTestTableId").append('<tr><td style="display:none"><input type="hidden" value=' + TestID + ' name="tabletestid"></td><td><input type="hidden" value="' + TestName + '" name="TestName" />' + TestName + '</td><td><button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+
+
+
+                    });
+                    if(chk)
+                    {
+                        
+                         $("#rowsOPD").append('<tr><td>' + count + '</td><td>' + ServiceNTestName + '<input type="hidden" name="ServiceNTestNameOPD" class="servicename" value=' + ServiceNTestName + '><input type="hidden" class="ServiceOrTestIDOPD" name="ServiceOrTestIDOPD" value=' + ServiceOrTestID + '></td><td><input type="number" style="width: -webkit-fill-available;" id="" name="QuantityOPD" class="qtyclass" value="1" ></td><td>Service</td> <td>  <input type="number" style="form-control" id="OPDGenralCharges" style="width: -webkit-fill-available;" name="OPDGenralCharges" class="qtyclass" value="0.00"  > </td><td>  <input type="number" style="form-control" id="OPDEmergencyCharges" style="width: -webkit-fill-available;" name="OPDEmergencyCharges" class="qtyclass" value="0.00"  > </td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td></tr>');
+                 
+                    }
+                   
+                }
+                else
+                {
+                    var ServiceOrTestID = parseInt(document.getElementById("servicetable").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var ServiceNTestName = document.getElementById("servicetable").tBodies[0].rows[row_num].cells[0].innerHTML;
+                    var TableColumnsWordIDName = "";
+                    var Qty = "";
+                    $(".colname").each(function () {
+                        TableColumnsWordIDName += $(this).val() + ",";
+                    })
+
+                    count++;
+                    //ServiceOrTestID = "";
+                    //$(".ServiceOrTestID").each(function () {
+                    //    ServiceOrTestID += $(this).val() + ",";
+                    //})
+                    $(".qtyclass").each(function () {
+                        Qty += $(this).val() + ",";
+
+                    });
+                    var chk = true;
+                    $("input[name=ServiceNTestNameOPD]").each(function () {
+                        debugger
+                        var a = $(this).val();
+                        if ($(this).val() == ServiceNTestName) {
+
+                            alert("ServiceName Already Added");
+                            chk = false;
+                            return false;
+                        }
+
+                        //  $("#addTestTableId").append('<tr><td style="display:none"><input type="hidden" value=' + TestID + ' name="tabletestid"></td><td><input type="hidden" value="' + TestName + '" name="TestName" />' + TestName + '</td><td><button type="button" id="delrow" class="btn btn-danger"><span class="fa fa-trash"></span></button></td></tr>');
+
+
+
+                    });
+                    if(chk)
+                    {
+                     $("#rowsOPD").append('<tr><td>' + count + '</td><td>' + ServiceNTestName + '<input type="hidden" name="ServiceNTestNameOPD" class="servicename" value=' + ServiceNTestName + '><input type="hidden" class="ServiceOrTestIDOPD" name="ServiceOrTestIDOPD" value=' + ServiceOrTestID + '></td><td><input type="number" style="width: -webkit-fill-available;" id="" name="QuantityOPD" class="qtyclass" value="1" ></td><td>Service</td> <td>  <input type="number" style="form-control" id="OPDGenralCharges" name="OPDGenralCharges" class="qtyclass" > </td><td>  <input type="number" style="form-control" id="OPDEmergencyCharges" name="OPDEmergencyCharges" class="qtyclass" > </td> <td><span id="delete" class="glyphicon glyphicon-trash"></span></td></tr>');
+
+                    }
+                   
+                }
+
+
+            
+            }
+
+        });
+
+        var oldtotal = 0;
+        $("#tableTo").delegate('td', 'keyup', function () {
+
+            debugger
+            var row_num = parseInt($(this).parent().index());
+
+
+            var serviceID = $("#ServiceID1").val();
+
+
+
+            var totalRowCount = 0;
+            var rowCount = 1;
+            var table = document.getElementById("tblWordCharges");
+            var rows = table.getElementsByTagName("tr")
+            for (var i = 0; i < rows.length; i++) {
+                totalRowCount++;
+                if (rows[i].getElementsByTagName("td").length > 0) {
+                    rowCount++;
+                }
+            }
+
+
+            debugger
+
+            if (serviceID == "") {
+                rowCount = rowCount;
+            }
+            else {
+                rowCount = rowCount + 1;
+            }
+
+            var Col_num = $(this).closest("td").index();
+
+
+
+            var ServiceOrTestID = ""; //parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+            var Qty = "";// parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+            var ServiceNTestName = "";
+            var TableColumnsWordIDName = "";
+
+
+            ServiceOrTestID = "";
+            $(".ServiceOrTestID").each(function () {
+                ServiceOrTestID += $(this).val() + ",";
+            })
+
+
+
+            var Row_Num = parseInt(Col_num - 4);
+
+            debugger
+            var chkqty = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value;
+
+            if (chkqty == "") {
+                document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value = "1";
+            }
+            $(".qtyclass").each(function () {
+                Qty += $(this).val() + ",";
+
+            });
+
+            var total = 0;
+            //   var WardName = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[Col_num].children[1].value;
+            //     var WardNameOld = document.getElementById("tblWordCharges").tBodies[0].rows[Row_Num].cells[0].children[1].value;
+            var a = 1;
+            var value = 0;
+            var tblGenCharge = 0;
+
+            rows = $("#tableTo tbody td").closest("tr").length;
+            debugger
+           
+                rowCount = rowCount + 4;
+
+                for (var i = 5; i < rowCount; i++) {
+
+
+                    for (var k = 0; k < rows; k++) {
+
+
+                        qty = parseFloat(document.getElementById("tableTo").tBodies[0].rows[k].cells[2].children[0].value);
+                        value += parseFloat(document.getElementById("tableTo").tBodies[0].rows[k].cells[i].children[0].value) * parseInt(qty);
+
+                        if (!isNaN(value)) {
+                            total = value;
+                        }
+                        if (serviceID == "") {
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[1].children[0].value = parseFloat(total);
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[2].children[0].value = parseFloat(total) ;
+                        }
+                        else {
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[1].children[0].value = parseFloat(total);
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[2].children[0].value = parseFloat(total);
+                        }
+
+
+                    }
+                    value = 0;
+                     
+                }
+              
+
+        });
+
+      
+
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#tableTo").on('click', '#delete', function () {
+            debugger;
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                $(this).closest('tr').remove();
+
+                var servicetype = $("#ServiceType").val();
+
+                debugger
+                var table = document.getElementById("tableTo");
+                var row_num = table.getElementsByTagName("tbody").length
+
+                var serviceID = $("#ServiceID1").val();
+
+
+
+                var totalRowCount = 0;
+                var rowCount = 0;
+                var table = document.getElementById("tblWordCharges");
+                var rows = table.getElementsByTagName("tr")
+                for (var i = 0; i < rows.length; i++) {
+                    totalRowCount++;
+                    if (rows[i].getElementsByTagName("td").length > 0) {
+                        rowCount++;
+                    }
+                }
+
+
+                debugger
+
+                if (serviceID == "") {
+                    rowCount = rowCount;
+                }
+                else {
+                    rowCount = rowCount + 1;
+                }
+
+                //      var Col_num = $(this).closest("td").index();
+
+
+
+                var ServiceOrTestID = ""; //parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+                var Qty = "";// parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+                var ServiceNTestName = "";
+                var TableColumnsWordIDName = "";
+
+
+                ServiceOrTestID = "";
+                $(".ServiceOrTestID").each(function () {
+                    ServiceOrTestID += $(this).val() + ",";
+                })
+
+
+
+                var Row_Num = parseInt(5 - 4);
+
+                debugger
+                //    var chkqty = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value;
+
+                //   if (chkqty == "") {
+                //        document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value = "1";
+                //   }
+                $(".qtyclass").each(function () {
+                    Qty += $(this).val() + ",";
+
+                });
+
+
+
+                var total = 0;
+                //   var WardName = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[Col_num].children[1].value;
+                //     var WardNameOld = document.getElementById("tblWordCharges").tBodies[0].rows[Row_Num].cells[0].children[1].value;
+                var a = 1;
+                var value = 0;
+                var tblGenCharge = 0;
+                rows = $("#tableTo td").closest("tr").length;
+
+                rowCount = rowCount + 4;
+
+                for (var i = 5; i < rowCount; i++) {
+
+
+                    for (var k = 0; k < rows; k++) {
+
+
+                        qty = parseFloat(document.getElementById("tableTo").tBodies[0].rows[k].cells[2].children[0].value);
+                        value += parseFloat(document.getElementById("tableTo").tBodies[0].rows[k].cells[i].children[0].value) * parseInt(qty);
+
+                        if (!isNaN(value)) {
+                            total = value;
+                        }
+                        if (serviceID == "") {
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 4].cells[1].children[0].value = parseFloat(total);
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 4].cells[2].children[0].value = parseFloat(total);
+                        }
+                        else {
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[1].children[0].value = parseFloat(total);
+                            document.getElementById("tblWordCharges").tBodies[0].rows[i - 5].cells[2].children[0].value = parseFloat(total);
+                        }
+
+
+                    }
+                    value = 0;
+
+                }
+
+
+
+            }
+               
+       
+        else {
+                return false;
+    }
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        var valueGen = 0;
+        var valueEmr = 0;
+        $("#tabletoOPD").on('click', '#delete', function () {
+            debugger;
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                $(this).closest('tr').remove();
+
+                var servicetype = $("#ServiceType").val();
+
+                if (servicetype == "OPD Package")
+                {
+                    var table = document.getElementById("tableTo");
+                    var row_num = table.getElementsByTagName("tbody").length
+
+                    var serviceID = $("#ServiceID1").val();
+
+
+
+                    var ColCount = document.getElementById('tabletoOPD').rows[row_num].cells.length;
+                    var totalRowCount = 0;
+                    var rowCount = 0;
+                    var table = document.getElementById("tabletoOPD");
+                    var rows = table.getElementsByTagName("tr")
+                    for (var i = 0; i < rows.length; i++) {
+                        totalRowCount++;
+                        if (rows[i].getElementsByTagName("td").length > 0) {
+                            rowCount++;
+                        }
+                    }
+
+
+                    debugger
+
+         
+
+                    var Col_num = $(this).closest("td").index();
+
+
+
+                    var ServiceOrTestID = ""; //parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var Qty = "";// parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+                    var ServiceNTestName = "";
+                    var TableColumnsWordIDName = "";
+
+
+                    ServiceOrTestID = "";
+                    $(".ServiceOrTestID").each(function () {
+                        ServiceOrTestID += $(this).val() + ",";
+                    }) 
+
+                    debugger
+                 //   var chkqty = document.getElementById("tabletoOPD").tBodies[0].rows[row_num].cells[2].children[0].value;
+
+                  //  if (chkqty == "") {
+                //        document.getElementById("tabletoOPD").tBodies[0].rows[row_num].cells[2].children[0].value = "1";
+                 //   }
+                    $(".qtyclass").each(function () {
+                        Qty += $(this).val() + ",";
+
+                    }); 
+
+                    var a = 1;
+                    var value = 0;
+                    var tblGenCharge = 0;
+
+                    rows = $("#tabletoOPD td").closest("tr").length;
+                    debugger 
+                    for (var k = 0; k < rows-1; k++) {
+
+
+                        qtyGen = parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[2].children[0].value);
+                        qtyEmr = parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[2].children[0].value);
+                        valueGen += parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[4].children[0].value) * parseInt(qtyGen);
+                        valueEmr += parseFloat(document.getElementById("tabletoOPD").tBodies[0].rows[k].cells[5].children[0].value) * parseInt(qtyEmr);
+
+                        if (!isNaN(value)) {
+                            totalGen = valueGen;
+                            totalEmr = valueEmr;
+                        }
+                    }
+                    $("#GeneralCharges").val(parseFloat(totalGen));
+                    $("#EmergencyCharges").val(parseFloat(totalEmr));
+
+
+                }
+                valueGen = 0;
+                valueEmr = 0; 
+            
+            }
+            
+  
+    })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        var ServiceOrTestID = "";
+        var Qty = "";
+        @*$("#tableTo").delegate('td', 'click', function () {
+            debugger
+            var row_num = parseInt($(this).parent().index());
+            Qty = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value;
+             ServiceOrTestID = document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value;
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("TableFromCharges", "ServicesPackage")',
+                dataType: "json",
+
+                //data: { ServiceOrTestID: ServiceOrTestID, ServiceNTestName: ServiceNTestName, ServiceType: "Service", TableColumnsWordIDName: TableColumnsWordIDName },
+                data: { ServiceOrTestID: ServiceOrTestID,  ServiceType: "Service"},
+
+                contentType: 'application/json',
+                success: function (result) {
+                    $("#tblWordCharsgechangeAmount td").remove();
+                    $("#chargeshowhide").show();
+                    $.each(result, function (i, obj) {
+
+                        $("#tblWordCharsgechangeAmount").append('<tr><td>  ' + obj.WordName + '  </td><td><input type="text" name="GeneralCharges1"  class="GeneralChargeschangeAmountclass" value=' + obj.GeneralCharges + ' /> </td>  </td><td style="display:none"><input type="hidden" name="WardID" class="WardIDcharges"  value=' + obj.WardID + '> </td></tr>');
+
+                    })
+                }
+        })
+        })*@
+
+        $("#tblWordCharsgechangeAmount").delegate('td', 'keyup', function () {
+            debugger
+            //  var ServiceOrTestID =parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+            // parseInt(document.getElementById("tableTo").tBodies[0].rows[row_num].cells[2].children[0].value);
+            var row_num = parseInt($(this).parent().index());
+
+            var WardIDcharges = parseInt(document.getElementById("tblWordCharsgechangeAmount").tBodies[0].rows[row_num].cells[1].children[0].value);
+
+
+            var ServiceNTestName = "";
+            var TableColumnsWordIDName = "";
+            var Charges = "";
+            var wordID = parseInt(document.getElementById("tblWordCharsgechangeAmount").tBodies[0].rows[row_num].cells[2].children[0].value);
+            //   alert(wordID);
+            //var s1 = $("#tblWordCharges").find('tbody').find('tr:eq(0)').find('td:eq(0)').text();
+            var s = 0;
+
+            $(".WardIDFrom").each(function () {
+                //  alert($(this).val());
+
+                if ($(this).val() == wordID) {
+
+                    //  document.getElementById("tblWordCharges").tBodies[0].rows[s].cells[1].children[0].value=WardIDcharges;
+
+                }
+                s++;
+            });
+            Charges = WardIDcharges
+            //$(".GeneralChargeschangeAmountclass").each(function () {
+            //    Charges += $(this).val() + ",";
+
+            //});
+
+
+
+            //$(".qtyclass").each(function () {
+            //    Qty += $(this).val() + ",";
+
+            //});
+
+            // ServiceOrTestID = "";
+            //$(".ServiceOrTestID").each(function () {
+            //    ServiceOrTestID += $(this).val() + ",";
+            //})
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("TableFromBlock", "SwervicesPackage")',
+                dataType: "json",
+
+                data: { ServiceOrTestID: ServiceOrTestID, ServiceNTestName: ServiceNTestName, ServiceType: "Service", Qty: Qty, Charges: Charges, wordID: wordID },
+
+                contentType: 'application/json',
+                success: function (result) {
+                    $("#tblWordCharges td").remove();
+                    $.each(result, function (i, obj) {
+
+                        $("#tblWordCharges").append('<tr><td>  ' + obj.WordName + '  </td><td><input type="number" name="GeneralCharges1"  class="GeneralChargesclass" value=' + obj.GeneralCharges + ' /> </td> <td> <input type="number" name="EmergencyCharges1" id="" class="EmergencyCharges1" value=' + obj.EmergencyCharges + ' /> </td><td style="display:none"><input type="hidden" name="WardID"   value=' + obj.WardID + '> </td></tr>');
+
+
+
+                    })
+                }
+
+            })
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#Search").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#tableBindPackages tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#Search1").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#tableTo tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        })
+
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#Search2").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#servicetable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        })
+    });
+</script>
+@*<script>
+    $(document).ready(function () {
+
+        $("#tblWordCharges").on('click', "#Updategeneral", function () {
+            debugger;
+            var emer = 0;
+            var child = $("#tblWordCharges td").closest("tr").length;
+            var general = document.getElementById("tblWordCharges").tBodies[0].rows[0].cells[1].children[0].value;
+            for (var j = 1; j < child; j++) {
+
+                emer = document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[1].children[0].value = general;
+
+
+            }
+            debugger
+
+        })
+        $("#tblWordCharges").on('click', "#UpdateEmergency", function ()
+        {
+            debugger;
+            var emer = 0;
+            var child = $("#tblWordCharges td").closest("tr").length;
+            var general = document.getElementById("tblWordCharges").tBodies[0].rows[0].cells[2].children[0].value;
+            for (var j = 1; j < child; j++)
+            {
+
+                emer = document.getElementById("tblWordCharges").tBodies[0].rows[j].cells[2].children[0].value = general;
+
+            }
+            debugger
+
+        })
+
+    })
+
+</script>*@
+<script>
+    function Services(ServiceID1) {
+        debugger
+        var ans = confirm("Are you sure you want to Delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                
+                url: '@Url.Action("DeleteServices", "ServicesPackage")',
+                data: { 'ServiceID': ServiceID1, ServiceType: $("#ServiceType").val() },
+                dataType: "json",
+                success: function (data) {
+                    if (data == "Service Deleted Successfully") {
+                        alert("Service Deleted Successfully");
+                        window.location.href = '@Url.Action("ShowAllServices", "ServicesPackage")'
+                       
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Services Package Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Services Package</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service Package Details</h2>
+                                    <div class="card-body pane-body" style="height: 350px;overflow-y: scroll;">
+                                        <!--Service Group Name-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Group Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ServiceGroupName" name="ServiceGroupName" class="form-control" placeholder="Service Group Name">
+                                                    <input type="hidden" id="ServiceGroupID" name="ServiceGroupID" class="form-control">
+                                                    <input type="hidden" id="ServiceGroupID1" name="ServiceGroupID1" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Service Package Name-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Pkg. Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="Service pkg. Name">
+                                                    <input type="hidden" id="ServiceID" name="ServiceID">
+                                                    <input type="hidden" id="ServiceID1" name="ServiceID1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Unit-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Unit</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="text" id="UnitName" name="UnitName" class="form-control" placeholder="Unit" required>
+                                                    <input type="hidden" name="UnitID" id="UnitID" class="form-control input-sm" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--General Charges-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Gnrl. Charges</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="number" id="GeneralCharges" name="GeneralCharges" class="form-control" placeholder="General Charges">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Emergency Charges-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Emg. Charges</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 ">
+                                                    <input type="number" name="EmergencyCharges" id="EmergencyCharges" class="form-control" placeholder="Emergency Charges">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Service Type-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Service Type</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <select id="ServiceType" name="ServiceType" class="form-control">
+                                                        <option value="Both Package">Both Package</option>
+                                                        <option value="IPD Package">IPD Package</option>
+                                                        <option value="OPD Package">OPD Package</option>
+                                                    </select>
+                                                    <input type="hidden" id="ServiceTypeHidden" name="ServiceTypeHidden">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Rechange-->
+                                        <div class="row">
+                                            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                    <label>Rechange</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" id="chkrechange" name="chkrechange">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Ward Charges</h2>
+                                    <div class="card-body pane-body" style="height: 350px;overflow: scroll;">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <table id="tblWordCharges" class="table text-nowrap table-bordered hover display table-hover">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th scope="col">Ward Name</th>
+                                                            <th scope="col">Gnrl. Charges</th>
+                                                            <th scope="col">Emg. Charges</th>
+                                                            
+                                                        </tr>
+                                                    </thead>
+                                                    @*<tfoot>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>
+                                                                <div class="pagination pull-right">
+                                                                    <input type="button" value="Update To All Genral" id="Updategeneral" size="10px" class="fa fa-refresh buttoniconcss" style="color: #ffffff; border: 1px solid #106dca; border-radius: 4px; font-family: roboto;" />
+                                                                </div>
+
+                                                            </td>
+                                                            <td>
+                                                                <div class="pagination pull-right">
+                                                                    <input type="button" value="Update To All Emg" id="UpdateEmergency" class="fa fa-refresh buttoniconcss" style="color: #ffffff; border: 1px solid #106dca; border-radius: 4px; font-family: roboto;" />
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    </tfoot>*@
+                                                    <tbody class="scrollbar"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="background: #bddff7;">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <h2 class="panelheading">Package Details</h2>
+                                        </div>
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12" style="margin-bottom: 5px;padding-top: 2px;">
+                                            <input id="Search" name="Search" class="form-control" placeholder="Search">
+                                        </div>
+                                    </div>
+                                    <div class="card-body pane-body" style="height: 350px;overflow: scroll;">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <table id="tableBindPackages" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                                       style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th scope="col">Sr.No.</th>
+                                                            <th scope="col">Service Name</th>
+                                                            <th scope="col">General Charge</th>
+                                                            <th scope="col">Emergency Charge</th>
+                                                            <th scope="col">ServiceType</th>
+                                                            <th scope="col">ServiceGroupName</th>
+                                                            <th scope="col">Unit Name</th>
+                                                            <th scope="col" style="display: none;">Service Id</th>
+                                                            <th scope="col" style="display: none;">Group Id</th>
+                                                            <th scope="col" style="display: none;">Rechange</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center; display: block;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="Services(document.getElementById('ServiceID1').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="servicePackageDetailExcelExport"></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs12">
+                                            @*<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="radio" name="gender" value="male">Service Name
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="radio" name="gender" value="female">Test Name
+                                                    </div>
+                                                </div>*@
+                                            <div class="card-body col-lg-6 col-md-6 col-sm-12 col-xs-12 pull-right">
+                                                <input id="Search2" name="Search2" class="form-control" placeholder="Search">
+                                            </div>
+                                            <div class="card-body table-responsive" style="overflow-y: scroll;height: 350px;">
+                                                <table id="servicetable" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                                    <thead style="background-color: #bddff7;">
+                                                        <tr>
+                                                            <th scope="col">Service Name</th>
+                                                            <th scope="col">Action</th>
+                                                            <th style="display: none;">Service Id</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        @*<div class="col-lg-1 margin-r-5">
+                                                <button type="button" style="background: #35a4f1;border: 0px;border-radius: 4px;margin-top:70px"><i class="fa fa-angle-double-right" style="border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 35px; padding: 5px; border: 0px; font-size: 20px; "></i></button>
+                                                <button type="button" style="background: #35a4f1;border: 0px;border-radius: 4px;margin-top:10px">
+                                                    <i class="fa fa-angle-double-left" style="border-radius: 0px 4px 4px 0px; height: 31px; background: #35a4f1; color: #ffffff; width: 35px; padding: 5px; border: 0px; font-size: 20px; "></i>
+                                                </button>
+                                            </div>*@
+
+                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs12" style="overflow-x: scroll;">
+                                            <div class="card-body col-lg-6 col-md-6 col-sm-12 col-xs-12 pull-right">
+                                                <input id="Search1" name="Search1" class="form-control" placeholder="Search">
+                                            </div>
+                                            <div class="card-body">
+                                                <table id="tableTo" class="table table-bordered table-striped" style="width: 100%;">
+                                                    <thead id="column" style="background-color: #bddff7;">
+                                                        @*<tr>
+                                                                @{
+                                                                    for (int a = 0; a < Model.dsServicesCharges.Tables[0].Rows.Count; a++)
+                                                                    {
+                                                                        string NameRowColumn = Model.dsServicesCharges.Tables[0].Rows[a]["WardName"].ToString();
+                                                                        string WardID = Model.dsServicesCharges.Tables[0].Rows[a]["WardID"].ToString();
+                                                                        <th>@NameRowColumn</th>
+                                                                    }
+                                                                }
+                                                            </tr>*@
+                                                        <tr id="columnheader">
+                                                            <th>Sr No.</th>
+                                                            <th>ServiceOrTestName</th>
+                                                            <th>Qty</th>
+                                                            <th>ServiceType</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar" id="rows"></tbody>
+                                                </table>
+
+                                                <table id="tabletoOPD" class="table table-bordered table-striped" style="display:none">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>ServiceOrTestName</th>
+                                                            <th>Qty</th>
+                                                            <th>ServiceType</th>
+                                                            <th>Gnrl. Charges</th>
+                                                            <th>Emg. Charges</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="scrollbar" id="rowsOPD"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div id="chargeshowhide" class="row" style="border: 1px solid #e9ecef; background: #ffffff;display:none">
+                                                <div class="col-lg-12">
+                                                    <div class="tableheading">
+                                                        <span class="fa fa-inr" style=" color: #2b538c; font-size: 16px;padding-right: 10px;margin-bottom:5px"></span>Ward Charges
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 margin-r-5">
+                                                    <table id="tblWordCharsgechangeAmount" class="table table-bordered table-striped ">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Ward Name</th>
+                                                                <th scope="col">General Charges</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="scrollbar">
+                                                            <tr></tr>
+                                                        </tbody>
+                                                       
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+
+

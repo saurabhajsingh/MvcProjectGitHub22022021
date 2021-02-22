@@ -1,0 +1,1326 @@
+﻿@model KeystoneProject.Models.Financial.ChequePrint
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+<style>
+    div.dt-buttons {
+        position: relative;
+        float: left;
+        display: none;
+    }
+
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+        display: none;
+    }
+
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ccc8c8 !important;
+        background: #bddff7;
+        font-weight: 500 !important;
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #ebe7e7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: #333;
+        background: #d0e6f6;
+        font-family: roboto;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: inherit !important;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #41b0ff !important;
+            padding: 0px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 2px 8px 0px 8px !important;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #333 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em;
+        padding-bottom: 3px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        padding: 3px;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            border: 1px solid #a6abaf;
+            border-radius: 2px;
+        }
+
+
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        background: white;
+    }
+
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+
+
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    .tab .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tab .nav-tabs > li > a {
+            border: none;
+            padding: 6px 10px;
+            color: #fff;
+            background: #4e6270;
+            border-radius: 0;
+            font-family: roboto;
+            font-size: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+            .tab .nav-tabs > li > a > i {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+        .tab .nav-tabs > li.active > a,
+        .tab .nav-tabs > li.active > a:focus,
+        .tab .nav-tabs > li.active > a:hover {
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            transition: background 0.20s linear;
+        }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -25px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #e74c3c;
+        z-index: 999;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+        border: 2px solid #bddff7;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+</style>
+<style>
+    .the-legend {
+        border-style: none;
+        border-width: 0;
+        font-size: 14px;
+        line-height: 20px;
+        margin-bottom: 0;
+        width: auto;
+        padding: 0 10px;
+        border: 1px solid #e0e0e0;
+        font-family: roboto;
+        background: #bddff7;
+    }
+
+    .the-fieldset {
+        border: 1px solid #e0e0e0;
+        padding: 4px;
+        background: #ffffff;
+        font-family: roboto;
+    }
+
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 4px 10px !important;
+    }
+</style>
+
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#example3').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+     
+        $.ajax({
+            url: '@Url.Action("GetAllBankName", "ChequePrint")',
+            dataType: "json",
+            type: 'POST',
+            //data: JSON.stringify(UserData),
+            traditional: true,
+            contentType: 'application/json',
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                         $("#Bankname").append('<option value=' + data[i].BankID + '>' + data[i].BankName + '</option>')
+                    
+                }
+            }
+        });
+
+        $("#PayeeName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetAllPayeeName", "ChequePrint")',
+                    type: "POST",
+                    dataType: "json",
+                   // data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PayeeName, value: item.PayeeName, id: item.PayeeNameID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            select: function (event, i) {
+                var show = i.item.id;
+                SerGroupID = show;
+                $("#PayeeNameID").val(show);
+                
+            },
+
+
+        });
+        $("#Bankname").change(function () {
+            debugger
+            $('#example1').DataTable({
+                dom: 'Bfrtip',
+                buttons: [{
+                    extend: 'excel',
+                    text: 'Excel',
+                    className: 'exportExcel',
+                    filename: 'Test_Excel',
+                    exportOptions: { modifier: { page: 'all' } }
+                },
+                {
+                    extend: 'csv',
+                    text: 'CSV',
+                    className: 'exportExcel',
+                    filename: 'Test_Csv',
+                    exportOptions: { modifier: { page: 'all' } }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    className: 'exportExcel',
+                    filename: 'Test_Pdf',
+                    exportOptions: { modifier: { page: 'all' } }
+                }]
+            });
+        $.ajax({
+            url: '@Url.Action("GetChequeBookByBankID", "ChequePrint")',
+            dataType: "json",
+            type: 'POST',
+            data: { BankID: $("#Bankname").val() },
+
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#BookName").append('<option value=' + data[i].ChequeBookID + '>' + data[i].BookName + '</option>')
+
+                }
+            }
+        });
+        })
+
+        $("#BookName").change(function () {
+            debugger
+            $.ajax({
+                url: '@Url.Action("GetChequeLayoutForCheckPrint", "ChequePrint")',
+                dataType: "json",
+                type: 'POST',
+                data: { ChequeBookID: $("#BookName").val() },
+
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#Cheque").append('<option value=' + data[i].ID + '>' + data[i].ChequeNo + '</option>')
+
+                    }
+                }
+            });
+        })
+
+        $.ajax({
+            url: '@Url.Action("GetAllChequePrint", "ChequePrint")',
+            dataType: "json",
+            type: 'POST',
+            success: function (data) {
+                $("#example1 tbody tr").remove();
+                for (var i = 0; i < data.length; i++) {
+                    $("#example1").append('<tr><td style="display:none">' + data[i].BankID + '</td><td>' + data[i].BankName + '</td><td>' + data[i].PayeeName + '</td><td>' + data[i].ChequeAmount + '</td><td>' + data[i].ChequeNo + '</td><td style="display:none">' + data[i].ChequeBookID + '</td><td style="display:none">' + data[i].ChequeDate + '</td><td style="display:none">' + data[i].TDS + '</td><td style="display:none">' + data[i].TDSAmt + '</td><td style="display:none">' + data[i].Narretion + '</td><td style="display:none">' + data[i].VoucherEntryID + '</td><td style="display:none">' + data[i].ChequePrintID + '</td></tr>');
+                }
+           
+            }
+        });
+
+        $(function () {
+            var d = new Date(),
+                h = d.getHours(),
+                m = d.getMinutes();
+            if (h < 10) h = '0' + h;
+            if (m < 10) m = '0' + m;
+            $('input[type="time"]').each(function () {
+                $(this).attr({ 'value': h + ':' + m });
+
+            });
+        });
+        $("#TDS").keyup(function () {
+
+            var Tds = parseFloat($("#TDS").val());
+            if (parseFloat(Tds) <= 100) {
+                var Amount = parseFloat($("#TDSAmt").val());
+                var TdsAmount = ((Amount) * (Tds)) / 100;
+                var ChequeAmount = Amount - TdsAmount;
+                // ucChequePrint1.txtChequeAmount.Text = Convert.ToString(ChequeAmount);
+                $("#ChequeAmt").val(ChequeAmount);
+            }
+        })
+        $("#example1").delegate('td', 'click', function () {
+            debugger
+           
+            var row_num = parseInt($(this).parent().index());
+            var BankID = document.getElementById('example1').tBodies[0].rows[row_num].cells[0].innerHTML;
+            var BankName = document.getElementById('example1').tBodies[0].rows[row_num].cells[1].innerHTML;
+            var PayeeName = document.getElementById('example1').tBodies[0].rows[row_num].cells[2].innerHTML;
+            var ChequAmt = document.getElementById('example1').tBodies[0].rows[row_num].cells[3].innerHTML;
+            var ChQNo = document.getElementById('example1').tBodies[0].rows[row_num].cells[4].innerHTML;
+            var ChQBookID = document.getElementById('example1').tBodies[0].rows[row_num].cells[5].innerHTML;
+            var ChQDate = document.getElementById('example1').tBodies[0].rows[row_num].cells[6].innerHTML;
+            var TDS = document.getElementById('example1').tBodies[0].rows[row_num].cells[7].innerHTML;
+            var TDSAmt = document.getElementById('example1').tBodies[0].rows[row_num].cells[8].innerHTML;
+            var Narration = document.getElementById('example1').tBodies[0].rows[row_num].cells[9].innerHTML;
+            var VoucherEntryID = document.getElementById('example1').tBodies[0].rows[row_num].cells[10].innerHTML;
+            var ChequePrintID = document.getElementById('example1').tBodies[0].rows[row_num].cells[11].innerHTML;
+            $("#ChequePrintID").val(ChequePrintID)
+            $("#VoucherEntryID").val(VoucherEntryID)
+            $("#TDS").val(TDS);
+            $("#TDSAmt").val(TDSAmt);
+            $("#Narration").val(Narration);
+            $("#Bankname").val(BankID);
+            $("#Bank").val(BankName);
+            $.ajax({
+                url: '@Url.Action("GetChequeBookByBankID", "ChequePrint")',
+                dataType: "json",
+                type: 'POST',
+                data: { BankID: $("#Bankname").val(), BookName: ChQBookID },
+
+                success: function (data) {
+                debugger
+                    for (var i = 0; i < data.length; i++) {
+                        $("#BookName").append('<option value=' + data[i].ChequeBookID + '>' + data[i].BookName + '</option>')
+                        
+                    }
+                    $("#BookName").val(ChQBookID);
+                }
+            });
+            document.getElementById("ifrmchkprint").src = '/Report/ChequePrintView.aspx';
+
+            $("#ChequeAmt").val(ChequAmt);
+            $("#PayeeName").val(PayeeName);
+            $("#Cheque").val(ChQNo);
+            $("#ChequeDate").val(ChQDate);
+            $.ajax({
+                url: '@Url.Action("GetChequeLayoutForCheckPrint", "ChequePrint")',
+                dataType: "json",
+                type: 'POST',
+                data: { ChequeBookID: $("#BookName").val() },
+            
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#Cheque").append('<option value=' + data[i].ID + '>' + data[i].ChequeNo + '</option>')
+
+                    }
+                    $("#Cheque").val(ChQNo);
+                }
+            });
+        })
+    })
+</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+
+
+    <form action="" method="post">
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cash Receipt</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-lg-12 padding0">
+                            <div class="col-lg-12 row rowmarginbottom padding0">
+
+                                <div class="col-lg-8">
+                                    <div class="col-lg-12 padding0">
+                                        <span>Price Name</span>
+                                        <input type="hidden" id="VoucherEntryID" name="VoucherEntryID">
+                                        <input type="hidden" id="ChequePrintID" name="ChequePrintID">
+                                        <input type="hidden" id="Bank" name="Bank">
+                                    </div>
+                                    <div class="col-lg-12 padding0">
+
+                                        <input type="text" id="doc_first_name" class="form-control input-sm">
+
+
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 ">
+                                    <div class="col-lg-12 padding0">
+                                        <span>Price</span>
+
+
+                                    </div>
+                                    <div class="col-lg-12 padding0">
+                                        <table style="width:100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:50%">
+
+                                                        <input type="text" id="doc_first_name" class="form-control input-sm" style="width:100%">
+
+                                                    </td>
+                                                    <td style="padding-left: 2px;">
+                                                        <button type="button" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+
+                                                    </td>
+                                                </tr>
+
+
+                                            </tbody>
+                                        </table>
+
+
+
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12 padding0 rowmargintop">
+                            <div class="panel-primary" style="box-shadow:none">
+                                <div class="box-header">
+
+                                </div>
+                                <!-- /.box-header -->
+                                <table id="example5" class="display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Price Name</th>
+                                            <th>Price</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Edinburgh</td>
+
+                                        </tr>
+
+
+                                    </tbody>
+
+                                </table>
+
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="wrapper">
+
+
+            <div class="content-wrapper">
+                <h5 class="topheadline">
+                    Cheque Print
+
+
+                </h5>
+
+                <div>
+
+
+                </div>
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 rowmargintop">
+
+
+
+
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <div class="panel-primary">
+
+                                            <div class="row">
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-12" style="background: #bddff7;padding:2px">
+                                                        <div class="col-lg-9">
+                                                            <span>Cheque Print</span>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="pane-body">
+
+                                                <div class="row">
+                                                    <div class="col-lg-12  rowmargintop">
+
+
+
+                                                        <div class="col-lg-6 padding0">
+                                                            <div class="col-lg-4">
+                                                                <span>Bank Name</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+                                                                <table style="width:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:90%">
+                                                                                <select id="Bankname" class="form-control" name="Bankname">
+                                                                                    <option>--Select---</option>
+                                                                                </select>
+
+                                                                            </td>
+                                                                            <td style="padding-left: 2px;">
+                                                                                <button type="button" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-lg-6 padding0">
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>Book Name</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+                                                                <table style="width:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:90%">
+
+                                                                                <select id="BookName" class="form-control" name="BookName">
+                                                                                    <option>--Select---</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td style="padding-left: 2px;">
+                                                                                <button type="button" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12  rowmargintop">
+
+                                                        <div class="col-lg-6 padding0">
+
+
+                                                            <div class="col-lg-4" style="padding-right:0px">
+                                                                <span>Cheque No.</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <select id="Cheque" class="form-control" name="Cheque">
+                                                                    <option>--Select--</option>
+
+                                                                </select>
+                                                            </div>
+
+
+                                                        </div>
+
+
+
+
+
+
+
+                                                        <div class=" col-lg-6 padding0">
+
+
+                                                            <div class="col-lg-4">
+                                                                <span>Payee Name</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <table style="width:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:90%">
+
+                                                                                <input type="text" id="PayeeName" name="PayeeName" class="form-control input-sm" style="width:95%">
+                                                                                <input type="hidden" id="PayeeNameID" name="PayeeNameID" class="form-control input-sm" style="width:95%">
+
+                                                                            </td>
+                                                                            <td style="padding-left: 2px;">
+                                                                                <button type="button" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12  rowmargintop">
+                                                        <div class="col-lg-6 padding0">
+
+                                                            <div class="col-lg-4">
+                                                                <span>TDS Amount</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <table style="width:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:50%">
+
+                                                                                <input type="text" id="TDS" name="TDS" class="form-control input-sm">
+
+                                                                            </td>
+
+                                                                            <td style="padding-left: 2px;">
+                                                                                %
+                                                                                <input type="text" id="TDSAmt" name="TDSAmt" class="form-control input-sm">
+
+                                                                            </td>
+                                                                        </tr>
+
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-lg-6 padding0">
+
+                                                            <div class="col-lg-4">
+                                                                <span>Cheque Date</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+
+                                                                <input type="date" id="ChequeDate" name="Cheque Date" class="form-control input-sm">
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row rowmargintop rowmarginbottom">
+                                                    <div class="col-lg-12">
+                                                        <div class=" col-lg-6 padding0">
+
+
+                                                            <div class="col-lg-4">
+                                                                <span>Cheque Status</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+
+                                                                <select class="form-control input-sm">
+                                                                    <option value="Active">Active</option>
+                                                                    <option value="No">No</option>
+                                                                </select>
+                                                            </div>
+
+
+
+                                                        </div>
+
+
+                                                        <div class="col-lg-6 padding0">
+
+                                                            <div class="col-lg-4">
+                                                                <span>Cheque Amount</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-4">
+
+
+                                                                <input type="text" id="ChequeAmt" name="ChequeAmt" class="form-control input-sm">
+
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <input type="checkbox" />A/C Payee
+
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row rowmargintop rowmarginbottom">
+                                                    <div class="col-lg-12">
+                                                        <div class=" col-lg-12 padding0">
+
+
+                                                            <div class="col-lg-2">
+                                                                <span>Narration</span>
+
+
+                                                            </div>
+                                                            <div class="col-lg-10">
+                                                                <textarea id="Narration" name="Narration" class="form-control input-sm"></textarea>
+
+                                                            </div>
+
+
+
+                                                        </div>
+
+
+
+
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 rowmargintop padding0">
+
+                                            <!-- Tab panes -->
+
+
+                                            <div class="form-group" style="margin-bottom: 10px;">
+                                                <fieldset class="the-fieldset">
+                                                    <legend class="the-legend"> Layout Details</legend>
+                                                    <div class="col-md-12 padding0 rowmargintop">
+                                                        <div class="panel-primary" style="box-shadow:none">
+                                                            <div class="box-header">
+                                                                <div class="x_content">
+                                                                    <iframe height="800" id="ifrmchkprint" frameborder="0"  style="width:100%"></iframe>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.box-header -->
+                                                            <!-- /.box-body -->
+                                                        </div>
+                                                        <!-- /.box -->
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 rowmargintop">
+
+                                        <!-- Tab panes -->
+
+
+                                        <div class="form-group" style="    margin-bottom: 10px;">
+                                            <fieldset class="the-fieldset">
+                                                <legend class="the-legend"> Cheque Details</legend>
+
+
+                                                <div class="col-md-12 padding0 rowmargintop">
+                                                    <div class="panel-primary" style="box-shadow:none">
+                                                        <div class="box-header">
+
+                                                        </div>
+                                                        <!-- /.box-header -->
+
+                                                        <div class="col-lg-12 padding0" align="center">
+                                                            <div class="col-lg-12 rowmarginbottom rowmargintop" align="center">
+
+                                                                <button type="button" class="btndivcss" style="margin-right:15px">MIS Report Cheque Printing</button>
+
+                                                            </div>
+                                                        </div>
+                                                        <table id="example1" class="display" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Bank Name</th>
+                                                                    <th>Payee Name</th>
+                                                                    <th>Cheque Amount</th>
+                                                                    <th>Cheque No.</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="scrollbar"></tbody>
+
+                                                        </table>
+
+                                                        <!-- /.box-body -->
+                                                    </div>
+                                                    <!-- /.box -->
+                                                </div>
+                                            </fieldset>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="col-lg-12" style="text-align: center; display: block;margin-top:10px">
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="submit" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+
+
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                            </div>
+                            <div class="btn-group dropdown-split-warning">
+
+                                <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+                </section>
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </form>
+</body>
+
+
+
+

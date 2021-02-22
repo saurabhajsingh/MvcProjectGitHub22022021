@@ -1,0 +1,3221 @@
+﻿@model KeystoneProject.Models.Patient.PatientAppointmentSchedule
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            //buttons: [
+            //    'copyHtml5',
+            //    'excelHtml5',
+            //    'csvHtml5',
+            //    'pdfHtml5'
+            //]
+        });
+    });
+</script>
+<style>
+    .tooltip1 {
+        position: relative;
+        display: inline-block;
+        /*border-bottom: 1px dotted black;*/
+    }
+        .tooltip1 .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            right: 170px;
+            top: 120%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+            .tooltip1 .tooltiptext::after {
+                content: "";
+                position: absolute;
+                bottom: 120px;
+                left: 250px;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #555 transparent transparent transparent;
+            }
+        .tooltip1:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+</style>
+<style>
+    .content-header {
+        padding: 0px .5rem;
+    }
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+    .fc-day-number {
+        font-size: 16px;
+        font-weight: 300;
+        padding-right: 10px;
+    }
+    .fc-toolbar.fc-header-toolbar {
+        margin-top: 0em;
+        margin-bottom: 0em !important;
+        padding-top: 1.4em;
+    }
+    .fc-view-container {
+        background: white;
+    }
+        .fc-view-container *, .fc-view-container :after, .fc-view-container :before {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            /* background: red !important; */
+            font-family: roboto;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    .fc-widget-header {
+        background: #f8f8f8;
+        padding: 1px !important;
+    }
+    .card {
+        box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+        margin-bottom: 1rem;
+        border-bottom: 4px solid #0398ff;
+        border-radius: 3px;
+    }
+</style>
+
+<style>
+    input[type=checkbox], input[type=radio] {
+        margin: 3px 4px 0 !important;
+    }
+    #ui-id-2 li {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        height: 200px;
+        overflow: auto;
+        width: 250px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+    }
+    #ui-id-2 li {
+        cursor: pointer;
+        list-style-type: none;
+        border-bottom: 1px solid #d3d0d0;
+        text-align: left;
+        padding: 5px;
+        padding-left: 10px;
+    }
+        #ui-id-2 li:hover {
+            cursor: pointer;
+            background: #d1e4fa;
+        }
+    #ui-id-1 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        height: 200px;
+        overflow: auto;
+        width: 250px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+    }
+        #ui-id-1 li {
+            cursor: pointer;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+            #ui-id-1 li:hover {
+                cursor: pointer;
+                background: #d1e4fa;
+            }
+    div.dt-buttons {
+        display: none;
+    }
+    @@media screen and (max-width: 867px) {
+        .paddingleft {
+            padding-left: 15px !important;
+        }
+    }
+    label {
+        display: block;
+        margin-bottom: .5rem;
+    }
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+    .radio .cr {
+        border-radius: 50%;
+    }
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+    .colname {
+    }
+</style>
+<style>
+    #multiselect, #multiselectMonth {
+        background: white !important;
+        height: 150px !important;
+        overflow: scroll !important;
+        z-index: 100000 !important;
+        position: absolute;
+    }
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+        display: block;
+    }
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+    element.style {
+        width: 383px;
+    }
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 15px;
+        font-weight: 500 !important;
+    }
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+    .btn-group {
+        margin-bottom: 4px;
+    }
+    .padding0 {
+        padding: 0px;
+    }
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+    .btndivcss1 {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 0px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+    .cl {
+        display: none;
+    }
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+    .buttoniconcss1 {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 4px 4px 4px;
+        margin-right: 0px;
+    }
+    #datatable-responsive_wrapper {
+        background: #ffffff;
+    }
+    input {
+        border: 1px solid #ccc;
+        border-radius: 1px;
+        padding: 3px;
+    }
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    .pagination {
+        margin: 0px 0;
+    }
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+    .btn-group {
+        padding-right: 4px;
+    }
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+    .rowmargintop {
+        margin-top: 5px;
+    }
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+    .content-header {
+        padding: 0px .5rem;
+    }
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+</style>
+<style>
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+        text-align: left;
+    }
+    @@media screen and (max-width: 767px) {
+        .dataTables_wrapper {
+            width: max-content;
+        }
+    }
+    @@media screen and (max-width: 767px) {
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left !important;
+        }
+    }
+    @@media screen and (max-width: 767px) {
+        .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+            text-align: left !important;
+        }
+    }
+    @@media screen and (max-width: 767px) {
+        div.dt-buttons {
+            text-align: left !important;
+        }
+    }
+    table.dataTable tbody tr:hover {
+        background-color: #ebf1f6;
+        cursor: pointer !important;
+    }
+    th:nth-child(1) {
+        width: 45px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+    #deptID_wrapper {
+        overflow: auto;
+        width: 100%;
+    }
+    .exportExcel {
+        padding: 4px !important;
+        font-family: roboto !important;
+    }
+    select {
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+        padding: 2px;
+    }
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0.5em;
+        border: 1px solid #d9d8d8 !important;
+        border-radius: 3px !important;
+    }
+    label:not(.form-check-label):not(.custom-file-label) {
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+    .dataTables_info {
+        padding: 4.5px !important;
+        border: 2px solid white !important;
+        font-family: roboto;
+        border-right: 0px solid red !important;
+    }
+    .dataTables_wrapper .dataTables_paginate {
+        display: table;
+        font-family: roboto;
+        border-left: 0px solid red !important;
+        border: 1px solid rgba(0,0,0,.125) !important;
+        border-radius: .25rem;
+        padding-top: 0em !important;
+        margin-top: 5px;
+    }
+    element.style {
+        width: 383px;
+    }
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        border-top: 0;
+    }
+    table.dataTable thead .sorting_asc {
+        background-image: url(../images/sort_asc.png);
+    }
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #111;
+    }
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+    .table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+        background: #bddff7;
+        font-size: 15px;
+        font-weight: 500 !important;
+    }
+    .dataTables_wrapper {
+        border: 1px solid #d0e6f6;
+        padding: 5px;
+    }
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7 !important;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff !important;
+    }
+    table .dataTable.no-footer {
+        border-bottom: 1px solid #111;
+        border: 1px solid #bddff7;
+    }
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 10px;
+        border-right: 1px solid #bddff7 !important;
+        border-top: 1px solid #bddff7 !important;
+        padding-left: 20px !important;
+    }
+    .table-bordered > tbody > tr > td {
+        border: 0px solid #e1eff9 !important;
+        border-right: 1px solid #bddff7 !important;
+        border-top: 1px solid #bddff7 !important;
+        padding-left: 20px !important;
+    }
+    .table > tbody + tbody {
+        border-top: 2px solid #ddd;
+        display: none;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 8px 8px 8px 8px !important;
+        margin-left: 0px !important;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #333 !important;
+        border: 1px solid transparent;
+        border-radius: 0px !important;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s !important;
+        font-size: 14px !important;
+        border-radius: 4px !important;
+        line-height: 21px !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-radius: 0px !important;
+    }
+    .paginate_button current {
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #35a4f1 !important;
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        color: #ffffff !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.3em .9em !important;
+    }
+    .paginate_button last {
+        border-right: 0px solid red !important;
+    }
+</style>
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+    .btn-group {
+        margin-bottom: 4px;
+    }
+    .padding0 {
+        padding: 0px;
+    }
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    .pagination {
+        margin: 0px 0;
+    }
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+    .btn-group {
+        padding-right: 4px;
+    }
+    /*.tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }*/
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+    .rowmargintop {
+        margin-top: 5px;
+    }
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+    .content-header {
+        padding: 0px .5rem;
+    }
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 4px !important;
+        text-align: center;
+        background-image: linear-gradient(#bcdcf3, #ffffff, #c6e1f4);
+    }
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 4px !important;
+    }
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+    #ui-id-5 {
+        cursor: pointer;
+        list-style-type: none;
+        border-bottom: 1px solid #d3d0d0;
+        text-align: left;
+        padding: 5px;
+        padding-left: 10px;
+    }
+    #ui-id-5 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        max-width: 200px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+        cursor: pointer !important;
+    }
+        #ui-id-5 li {
+            cursor: pointer !important;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+        #ui-id-5 lihover {
+            cursor: pointer !important;
+            background: #eae4e4;
+        }
+</style>
+<style>
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: #f9f9f9 !important;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,.05);
+    }
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+    tr.highlighted td {
+        background: #35a4f1;
+        color: white;
+    }
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+    .fc-button-group{
+        display: none;
+    }
+    .fc-state-disabled {
+        display: none;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" />
+
+<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/fullcalendar/dist/fullcalendar.min.css">
+<link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
+
+@*<script>
+        $(document).ready(function () {
+            $('.tooltiptbl').DataTable({
+                "paging": false,
+                "ordering": false,
+                "info": false
+            })
+            $('.dataTables_filter').keyup(function () {
+                table.search($(this).val()).draw();
+            })
+        });
+    </script>*@
+@*<script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                type: 'post',
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ]
+            });
+        });
+    </script>*@
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        debugger;
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        //   Restor();
+    </script>
+}
+<script>
+    function Date1() {
+        var dtToday = new Date();
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        $('#AppointDateID').attr('min', maxDate);
+    }
+
+    function CalGetDaysAge() {
+
+        $.ajax({
+            url: '@Url.Action("CalGetDaysAge", "PatientAppointmentSchedule")',
+            type: "GET",
+            data: { datebirth: $("#DateOfBirth").val() },
+            dataType: "json",
+            success: function (data)
+            {
+                // $("#DateOfBirth").val(data);
+                $("#Day").val(data[0].day);
+
+                $("#Month").val(data[0].Month);
+
+                $("#Year").val(data[0].year);
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        Date1();
+        //var id = ui.item.DoctorID;
+        //var Date = ui.item.id;
+        //$("#DoctorID").val(id);
+        //$("#Date").val(Date);
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllPatientAppointmentDetail", "PatientAppointmentSchedule")',
+            //  data: "{DoctorID:id ,Date:Date}",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#example1").append('<tr><td>' + SrNo + '</td><td>' + data[i].PFirstName + '</td><td>' + data[i].DoctorID + '</td><td>' + data[i].DoctorPrintName + '</td><td>' + data[i].AppointmentDate + '</td><td>' + data[i].FromTime + '</td><td>' + data[i].ToTime + '</td><td style="display:none">' + data[i].PatientAppointmentScheduleID + '</td><td style="display:none">' + data[i].DoctorAppoinmentScheduleID + '</td><td style="display:none">' + data[i].PatientID + '</td></tr>');
+                };
+                debugger
+                EventFind();
+            },
+            error: function (result) {
+                //alert("Error in bindgrid");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetNextOutsidePatientID", "PatientAppointmentSchedule")',
+            //  data: {PatientID:""},
+            dataType: "json",
+            success: function (data) {
+                debugger
+                //   alert(data[0]);
+                $("#AppointmentNo").val(data[0]);
+            },
+            error: function (result) {
+                // alert("Error in bindgrid");
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            url: '@Url.Action("BindPatientPrefix", "PatientAppointmentSchedule")',
+            type: "GET",
+            dataType: "json",
+            data: { prefix: "" },
+            success: function (data) {
+                $("#PFPatientName").val("");
+                $("#PFPatientName").text("");
+                debugger
+                for (var i = 0 ; i < data.length; i++) {
+                    debugger
+                    $("#PFPatientName").append('<option value=' + data[i].PrefixName + '> ' + data[i].PrefixName + '</option>')
+                }
+            }
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            //url: "/PatientOPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "PatientAppointmentSchedule")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+        debugger
+        $("#ConsultantDoctorName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindDoctorAppointmenttype", "PatientAppointmentSchedule")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger;
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID
+                                //, DoctorAppoinmentScheduleID: item.DoctorAppointmentScheduleID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                debugger
+                var id = ui.item.DoctorID;
+                var DoctorID = ui.item.id;
+                $("#DoctorID").val(DoctorID);
+                //$("#DoctorAppoinmentScheduleID").val(id);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentSchedule")',
+                    data: { DoctorAppoinmentScheduleID: id, DoctorID: DoctorID },
+                    success: function (searchList) {
+                        debugger
+                        $('#dgvDoctorSchedule td').remove();
+                        for (var i = 0 ; i < searchList.length; i++) {
+                            if (searchList[i].Table1 == "Table1") {
+                                $("#dgvDoctorSchedule").append('<tr><td>' + searchList[i].DoctorAppointmentScheduleID + '</td> <td>' + searchList[i].AppointmentType + '</td><td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td></tr>')
+                            }
+                        }
+                        //$("#AppointmentTypeID").val(searchList[0]);
+                    },
+                });
+                var AppointmentType = "";
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentSchedule")',
+                    data: { DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+                    success: function (searchList) {
+                        debugger
+                        //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                        //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                        $('#AppointmentTypeID').append('<option value="select">Select</option>');
+                        $('#AppointmentTypeID option:not(:first)').remove();
+                        $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+                        var dropItems = $(".abc");
+                        var str = "";
+                        // Remove 'active' tag for all list items
+                        // based on iteration
+                        for (let i = 0; i < dropItems.length; i++) {
+                            dropItems[i].remove();
+                        }
+                        $("#DivAppointmentType").show();
+                        var btnhide = "0";
+                        debugger
+                        for (var i = 0 ; i < searchList.length; i++) {
+                            debugger
+                            var button = "button";
+                            //$("#AppointmentTypeID").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+                            if (searchList[i].AppointmentType == "Daily") {
+                                if (btnhide > 0) {
+                                    button = "hidden";
+                                }
+                                btnhide++;
+                            }
+                            if (button != "hidden") {
+                                $("#DivAppointmentType").append('<button  type="button" value=' + searchList[i].AppointmentType + ' onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" class="abc">' + searchList[i].AppointmentType + '</button>');
+                                // <button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                //var myobj = document.getElementById("DivAppointmentType");
+                            }
+                        }
+                        // myobj.remove();
+                        $('#AppointmentTime').val('');
+                        AppointmentType = searchList[0].AppointmentType;
+                       Type = searchList[0].DoctorAppoinmentID;
+                   //   alert(Type);
+                       var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                       var t = Type;
+                       //$("#TypeID").val(t);
+                        // Appoint= Appointment.val("#AppointType")
+                       // TypeID  // alert(Appointment);
+                        $(document).ready(function () {
+                            $(".abc").click(function () {
+                                //alert($(this).val());
+                                debugger
+                                $("#AppointType").val($(this).val());
+                                //alert($("#AppointDateID").val());
+                                //alert($(this).val());
+                                //var AppointmentType = searchList[1].AppointmentType;
+                                //if (AppointmentType!= "Daily") {
+                                //    $("#DivAppointmentType").append(searchList[1].DayDate)
+                                //}
+                                debugger;
+                                $.ajax({
+                                    url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                    type: "GET",
+                                    data: { AppointmentType: $(this).val(), DoctorID: DoctorID, AppointmentDate: $("#AppointDateID").val() },
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        debugger;
+                                        $('#AppointmentTime').append('<option value="Select">Select</option>');
+                                        $('#AppointmentTime option:not(:first)').remove();
+                                      //  $('#AppointmentTime').text("");
+                                        for (var i = 0; i < data.length; i++) {
+                                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                        }
+                                        //$("#DivAppointment").change(function () {
+                                        //    $("#Daily").val("Daily");
+                                        if (data == "Doctor Not Comming") {
+                                            alert($("#ConsultantDoctorName").val() + " " + data);
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                        }
+                                        //})
+                                    },
+                                    error: function (data) {
+                                        debugger;
+                                        // alert('dewdeguywfueureyt');
+                                    }
+                                })
+                            })
+                            AppointmentType = searchList[0].AppointmentType;
+                            var Appointment = AppointmentType;
+                            $("#dgvDoctorScheduleDetail").delegate('td', 'click', function () {
+                                debugger;
+                                //("#dgvDoctorScheduleDetail td").remove();
+                                var row_num = parseInt($(this).parent().index());
+                                Appointment = document.getElementById("dgvDoctorScheduleDetail").tBodies[0].rows[row_num].cells[1].innerHTML;
+                                debugger
+                                $.ajax({
+                                    url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                    type: "GET",
+                                    data: { AppointmentType: Appointment, DoctorID: DoctorID, AppointmentDate: $("#AppointDateID").val() },
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        debugger;
+                                        $('#AppointmentTime option:not(:first)').remove();
+                                       
+                                     
+                                        for (var i = 0; i < data.length; i++) {
+                                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                        }
+                                        if (data == "Doctor Not Comming") {
+                                            alert($("#ConsultantDoctorName").val() + " " + data);
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                        }
+                                    },
+                                })
+                            })
+                        });
+                    },
+                });
+            }
+        })
+        // as= $("#DoctorAppoinmentScheduleID").val();
+        $(document).ready(function () {
+            $("#dgvDoctorSchedule").delegate('td', 'click', function () {
+                debugger;
+                $("#dgvDoctorScheduleDetail td").remove();
+                var row_num = parseInt($(this).parent().index());
+                var id = document.getElementById("dgvDoctorSchedule").tBodies[0].rows[row_num].cells[0].innerHTML;
+                //   alert(id);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentSchedule")',
+                    data: { DoctorAppoinmentScheduleID: id, DoctorID: $("#DoctorID").val() },
+                    success: function (searchList) {
+                        debugger
+                        //   alert("hello");
+                        for (var i = 0 ; i < searchList.length; i++) {
+                            if (searchList[i].Table2 == "Table2") {
+                                $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].AppointmentType + '</td> <td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].DayDate + '</td></tr>')
+                            }
+                        }
+                        //$("#AppointmentTypeID").val(searchList[0]);
+                    },
+                });
+                //if (searchList[i].Table2 == "Table2") {
+                //    $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].AppointmentType + '</td> <td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].DayDate + '</td></tr>')
+                //}
+                // $("#PFPatientNameID").append('<option value=' + data[i].Gender + '> ' + data[i].PrefixName + '</option>')
+            })
+        })
+        $("#AppointmentTime").change(function () {
+            debugger;
+            var a = $("#DoctorID").val();
+            var Appointment = $("#AppointmentTime").val();
+            var AppointmentTime = Appointment;
+            $('#AppointmentNoID').val(Appointment);
+            $('#FromTime').val($("#AppointmentTime option:selected").text());
+        });
+        $("#FirstName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindPatientName", "PatientAppointmentSchedule")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PFirstName, value: item.PFirstName, PatientRegNo: item.PatientRegNo, PMiddleName: item.PMiddleName, PLastName: item.PLastName, DateOFBirth: item.DateOFBirth, MobileNo: item.MobileNo
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                debugger
+                //   $("#PFirstName").val(ui.item.PatientName);
+                //  $("#PFirstName").val(ui.item.PFirstName);
+                $("#PMiddleName").val(ui.item.PMiddleName);
+                $("#PLastName").val(ui.item.PLastName)
+                $("#DateOfBirth").val(ui.item.DateOFBirth)
+                $("#MobileNo").val(ui.item.MobileNo)
+                //  DateOFBirth
+            }
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+
+        var id = "";
+        //$("#DoctorNameID").val('');
+        $('#DoctorName').change(function () {
+            debugger
+            id = $(this).val();
+            //$('#AppointmentType option:val()').remove();
+            //BindDoctorAppointment();
+            //$("#DoctorNameID").val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentSchedule")',
+                data: { DoctorID: $(this).val() },
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                   // $('#AppointmentType').remove();
+                 //  $('#AppointmentType option:').remove();
+                    $('#AppointmentType').append('<option value="Select">Select</option>');
+                    $('#AppointmentType option:not(:first)').remove();
+
+                    for (var i = 0 ; i < searchList.length; i++) {
+
+                        //$('#AppointmentType option:not(:first)').remove();
+                        $("#AppointmentType").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+
+                        // $("#DoctorAppoinmentID").val(searchList[0].DoctorAppoinmentID)
+                        //alert($("#DoctorAppoinmentID").val());
+
+                    }
+                    //$('#AppointmentType').val('');
+                },
+            });
+
+
+        });
+        $("#AppointmentType").change(function () {
+            debugger;
+            $.ajax({
+                url: '@Url.Action("BindFromToTime1", "PatientAppointmentSchedule")',
+                type: "GET",
+                data: { AppointmentType: $(this).val(), DoctorID: id, AppointmentDate: $("#AppointmentDate").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    // $("#FromTime1").attr({ 'value': data[0][0] });
+                    //var fromdate = data[0][0].split(" ");
+                    //var Todate = data[0][1].split(" ");
+                    //// $("#FromTime1").val(fromdate[0] + " " + fromdate[1]);
+                    //$("#ToTime").attr('type', 'text');
+                    //$("#FromTime1").attr('type', 'text');
+                    $("#ToTime").val(data[0][1]);
+                    $("#FromTime1").val(data[0][0]);
+                },
+                error: function (data) {
+                    debugger;
+
+                }
+            })
+        })
+        @*$("#DoctorName1").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindDoctorAppointment", "PatientAppointmentSchedule")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID, DoctorAppoinmentScheduleID: item.DoctorAppointmentScheduleID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                    $("#DoctorNameID").val('');
+                }
+                $("#DoctorNameID").val(ui.item.id);
+                var AppointmentType = "";
+                var DoctorID = ui.item.id;
+            }
+        });*@
+
+        function BindDoctorAppointment() {
+
+            $.ajax({
+                url: '@Url.Action("BindDoctorAppointment", "PatientAppointmentSchedule")',
+                type: "POST",
+                dataType: "json",
+                data: { prefix: "%" },
+                success: function (data) {
+                    debugger
+                    $('#DoctorName').append('<option value="0">Select</option>');
+                    // $('#DoctorName option:not(:first)').remove();
+                    for (var i = 0; i < data.length; i++) {
+                        debugger
+                        $("#DoctorName").append($("<option value=" + data[i].DoctorID + ">" + data[i].DoctorPrintName + "</option>"));
+                        // id = data[i].DoctorID;
+                    }
+                }
+            })
+        }
+        BindDoctorAppointment();
+
+
+
+        //alert(id);
+
+
+
+        //$('#DoctorName').change(function (){
+        //    BindDoctorAppointment();
+           // $("#DoctorNameID").val();
+       debugger
+            //var DoctorID = ui.item.id;
+            //var DoctorAppoinmentScheduleID = ui.item.DoctorAppoinmentScheduleID;
+            //   alert(DoctorAppoinmentScheduleID);
+        @*$("#AppointmentType").change(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDoctorAppointmentSchedule1", "PatientAppointmentSchedule")',
+                data: { DoctorAppoinmentScheduleID: $(this).val(), DoctorID: $(this).val() },
+                success: function (searchList) {
+                    debugger;
+                    //$("#FromTime1").val(searchList[0][0]);
+                    //$("#ToTime").val(searchList[0][1]);
+                    //$('#AppointmentType').append('<option value="select">Select</option>');
+                    //$('#AppointmentType option:not(:first)').remove();
+                    // $("#dgvDoctorSchedule").append('<tr><td>' + searchList[i].DoctorAppointmentScheduleID + '</td> <td>' + searchList[i].AppointmentType + '</td><td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td></tr>')
+                    for (var i = 0; i < searchList.length; i++) {
+                        FromTime = dr["FromTime"].ToString(),
+
+                        $('#AppointmentType').append('<option value="' + searchList[i].AppointmentType + '">' + searchList[i].AppointmentType + '</option>');
+                        $("#DoctorAppoinmentID").val(searchList[i].DoctorAppoinmentID)
+
+                    }
+                },
+            });
+        });*@
+
+
+        $("#Add").click(function () {
+            debugger
+            var DoctorName = "";
+            var Reason = $("#Reason").val();
+            var FromTime1 = $("#FromTime1").val();
+            var ToTime = $("#ToTime").val();
+            var AppointmentDate = $("#AppointmentDate").val();
+            var AppointmentType = $("#AppointmentType").val();
+            var CancelAppointment = document.getElementById("CancelAppointment").checked;
+          //  alert(CancelAppointment);
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Save", "PatientAppointmentSchedule")',
+                data: { DoctorName: DoctorName, DoctorID: id, Reason: Reason, FromTime1: FromTime1, ToTime: ToTime, AppointmentDate: AppointmentDate, AppointmentType: AppointmentType, CancelAppointment: CancelAppointment },
+                success: function (data) {
+                    if (data == "Appointment Added Successfully")
+                    {
+                        alert("Doctor Reschedule Added Successfully");
+                        window.location.reload(true);
+                    }
+                    debugger;
+                    // alert(searchList);
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetDoctorRescheduleAppointment", "PatientAppointmentSchedule")',
+                        data: { DoctorID: DoctorID, AppointmentDate: AppointmentDate, AppointmentType: AppointmentType },
+                        success: function (searchList) {
+                            debugger;
+                        },
+                    });
+                    window.location.reload(true);
+                },
+            });
+            debugger;
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+       
+    })
+</script>
+<script>
+    function FillData() {
+        PatientID = $("#AppointmentNo").val();
+        $.ajax({
+            url: '@Url.Action("BindPatientAppointmentID", "PatientAppointmentSchedule")',
+            type: "GET",
+            data: { PatientID: PatientID },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#PatientID").val(data[0].PatientID);
+                $("#PFPatientName").val(data[0].PFPatientName);
+                $("#FirstName").val(data[0].PFirstName);
+                $("#PMiddleName").val(data[0].PMiddleName);
+                $("#PLastName").val(data[0].PLastName);
+                $("#MobileNo").val(data[0].MobileNo);
+                $("#Year").val(data[0].Age);
+                $("#DateOFBirth").val(data[0].DateOfBirth);
+                $("#PatientAppointmentScheduleID").val(data[0].PatientAppointmentScheduleID);
+                $("#DoctorAppoinmentScheduleID").val(data[0].DoctorAppoinmentScheduleID);
+                $("#DoctorID").val(data[0].DoctorID);
+                $("#AppointDateID").val(data[0].AppointmentDate);
+                $("#ConsultantDoctorName").val(data[0].DoctorPrintName);
+                $("#AppointmentTypeID").val(data[0].AppointmentType);
+                $("#AppointmentNoID").val(data[0].NoOfAppointment)
+                $('#AppointmentTime').text("");
+                $('#AppointmentTime').val("");
+                var AppointmentTime = data[0].AppointmentTime;
+                //   $('#AppointmentTime').append('<option value="' + data[0].AppointmentTime + '">' + data[0].AppointmentTime + '</option>');
+                $('#FromTime').val(data[0].AppointmentTime);
+                $('#DivAppointmentType').append('<option value="' + data[0].AppointmentType + '">' + data[0].AppointmentType + '</option>');
+                var Appointment = $('#AppointmentTypeID').val();
+                varDoctorID = $("#DoctorID").val();
+                // $("#AppointmentTime").val(obd.ToTime);
+                // $("#AppointmentTime").val(obd.ToTime);
+                debugger;
+                $.ajax({
+                    url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                    type: "GET",
+                    data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#AppointmentTime').append('<button type="button" click="myFunction(' + searchList[i].DoctorAppoinmentID + ' )">' + AppointmentTime + '</option>');
+                        //   $('#AppointmentTime option:not(:first)').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                        // alert('dewdeguywfueureyt');
+                    }
+                })
+            },
+        });
+    }
+    // });
+</script>
+
+         
+<script>
+    $(document).ready(function () {
+        $("#SaveAppointment").click(function () {
+        })
+    })
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        var PatientID;
+        //  var table = $('#deptID').DataTable();
+        $('#example1').delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var SrNo = document.getElementById("example1").tBodies[0].rows[row_num].cells[0].innerHTML;
+            var PatientAppointmentScheduleID = document.getElementById("example1").tBodies[0].rows[row_num].cells[7].innerHTML;
+            // var PrivilegePriceDetailID = document.getElementById("example1").tBodies[0].rows[row_num].cells[10].innerHTML;
+            // $("#PatientAppointmentScheduleID").val(data[0].PatientAppointmentScheduleID);
+            $("#PatientAppointmentScheduleID").val(PatientAppointmentScheduleID)
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditGetPatientAppointmentDetails", "PatientAppointmentSchedule")',
+                data: { PatientAppointmentScheduleID: PatientAppointmentScheduleID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    //alert(obd.DepartmentName);
+                    debugger
+                    $("#PFPatientName").val(data[1].PFPatientName);
+                    $("#PatientID").val(data[1].PatientID);
+                  //  PatientID = data[1].PatientID;
+                //   alert($("#PatientID").val());
+                    $("#FirstName").val(data[1].PFirstName);
+                    $("#PMiddleName").val(data[1].PMiddleName);
+                    $("#PLastName").val(data[1].PLastName)
+                    $("#Year").val(data[1].Age);
+                    $("#DateOFBirth").val(data[1].DateOFBirth);
+                    $("#MobileNo").val(data[1].MobileNo);
+                    $("#DoctorID").val(data[0].DoctorID);
+                    $("#ConsultantDoctorName").val(data[0].DoctorPrintName);
+                    //////////////////////////
+                    // $("#AppointmentTypeID").val(id);
+                    $("#AppointmentTypeID").val(data[0].AppointmentType);
+                    $("#AppointmentDate").val(data[0].AppointmentDate);
+                    $("#AppointmentNoID").val(data[0].NoOfAppointment);
+                    $('#AppointmentTime').text("");
+                    $('#AppointmentTime').val("");
+                    var AppointmentTime = data[0].AppointmentTime;
+                    $('#AppointmentTime').append('<option value="' + data[0].AppointmentTime + '">' + data[0].AppointmentTime + '</option>');
+                    $('#FromTime').val(data[0].AppointmentTime);
+                    //      $('#DivAppointmentType').append('<option value="' + data[0].AppointmentType + '">' + data[0].AppointmentType + '</option>');
+                    //                        $("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" value=' + searchList[i].AppointmentType + '   class="abc">' + searchList[i].AppointmentType + '</button>');
+                    // $('#DivAppointmentType').append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )"value=' + searchList[i].AppointmentType + ' class="abc">' + data[0].AppointmentType + '</button>');
+                    var Appointment = $('#AppointmentTypeID').val();
+                    var DoctorID = $("#DoctorID").val();
+                    debugger;
+                    var AppointmentType = "";
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentSchedule")',
+                        data: { DoctorID: DoctorID },
+                        contentType: "application/json; charset=utf-8",
+                        success: function (searchList) {
+                            debugger
+                            //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                            //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                            $('#AppointmentTypeID').append('<option value="select">Select</option>');
+                            $('#AppointmentTypeID option:not(:first)').remove();
+                            $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+                            var dropItems = $(".abc");
+                            var str = "";
+                            // Remove 'active' tag for all list items
+                            // based on iteration
+                            for (let i = 0; i < dropItems.length; i++) {
+                                dropItems[i].remove();
+                            }
+                            var btnhide = "0";
+                            var button = "button";
+                            for (var i = 0 ; i < searchList.length; i++) {
+                                debugger
+                                //$("#AppointmentTypeID").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+                                if (searchList[i].AppointmentType == "Daily")
+                                {
+                                    btnhide++;
+                                    if(btnhide>0)
+                                    {
+                                        button = "hidden";
+                                    }
+                                }
+                                $("#DivAppointmentType").append('<button  type="'+button+'" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" class="abc">' + searchList[i].AppointmentType + '</button>');
+                                // <button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                //var myobj = document.getElementById("DivAppointmentType");
+                            }
+                            // myobj.remove();
+                            AppointmentType = searchList[0].AppointmentType;
+                            //alert(AppointmentType);
+                            var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                            // Appoint= Appointment.val("#AppointType")
+                            //  // alert(Appointment);
+                            $(document).ready(function () {
+                                $(".abc").click(function () {
+                                    $("#AppointType").val($(this).val());
+                                    // alert($(this).val());
+                                    debugger;
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                        type: "GET",
+                                        data: { AppointmentType: $(this).val(), DoctorID: DoctorID, AppointmentDate: $("#AppointDateID").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            //$("#DivAppointment").change(function () {
+                                            //    $("#Daily").val("Daily");
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                            //})
+                                        },
+                                        error: function (data) {
+                                            debugger;
+                                            // alert('dewdeguywfueureyt');
+                                        }
+                                    })
+                                })
+                                AppointmentType = searchList[0].AppointmentType;
+                                var Appointment = AppointmentType;
+                                $("#dgvDoctorScheduleDetail").delegate('td', 'click', function () {
+                                    debugger;
+                                    //("#dgvDoctorScheduleDetail td").remove();
+                                    var row_num = parseInt($(this).parent().index());
+                                    Appointment = document.getElementById("dgvDoctorScheduleDetail").tBodies[0].rows[row_num].cells[1].innerHTML;
+                                    debugger
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                        type: "GET",
+                                        data: { AppointmentType: Appointment, DoctorID: DoctorID, AppointmentDate: $("#AppointDateID").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                        },
+                                    })
+                                })
+                            });
+                        },
+                    });
+                },
+            });
+        });
+   
+       
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#AppointDateID").change(function () {
+            debugger;
+            // var AppointDate =  getDate();
+            // alert("AppointDate");
+            // if ($("#AppointDateID").val >= DateTime.Now.toString("yyyy-MM-dd")) {
+            //alert($(DateTime.Now.toString("yyyy-MM-dd")));
+            var DateTime = "";
+            $("#AppointDate").val = DateTime.Now("yyyy-MM-dd");
+            // alert(DateTime.Now("yyyy-MM-dd"));
+            var Appointment = $('#AppointmentTypeID').val();
+            var DoctorID = $("#DoctorID").val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentSchedule")',
+                data: { DoctorID: DoctorID },
+                contentType: "application/json; charset=utf-8",
+                success: function (searchList) {
+                    debugger
+                    //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                    //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                    $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+                    $("#AppointmentTypeID").append('<option value=' + searchList[0].AppointmentType + '>' + searchList[0].AppointmentType + '</option>')
+                    AppointmentType = searchList[0].AppointmentType;
+                    var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                    // alert(Appointment);
+                    $.ajax({
+                        url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                        type: "GET",
+                        data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            debugger;
+                            $('#AppointmentTime option:not(:first)').remove();
+                            for (var i = 0; i < data.length; i++) {
+                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                            }
+                        },
+                        error: function (data) {
+                            debugger;
+                            // alert('dewdeguywfueureyt');
+                        }
+                    })
+                },
+            });
+            @*$.ajax({
+                    url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                    type: "GET",
+                    data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#AppointmentTime').append('<option value="' + AppointmentTime + '">' + AppointmentTime + '</option>');
+                        //   $('#AppointmentTime option:not(:first)').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                        // alert('dewdeguywfueureyt');
+                    }
+                })*@
+        })
+        // chkdiv
+        $("#close").click(function () {
+            $("#chkdiv").hide();
+        });
+        $("#DoctorSchedule").click(function () {
+            debugger
+            var a = document.getElementById("DoctorSchedule").checked;
+            if (a == true) {
+                $("#chkdiv").show();
+            }
+            else {
+                $("#chkdiv").hide();
+            }
+        })
+    });
+</script>
+<script>
+    $(".abc").mouseover(function () {
+      //  alert("sdfgd")
+    })
+    function myFunction(DoctorAppoinmentScheduleID) {
+        $("#dgvDoctorScheduleDetail td").remove();
+        //  $("#AppointType").val($(this).val());
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentSchedule")',
+            data: { DoctorAppoinmentScheduleID: DoctorAppoinmentScheduleID, DoctorID: $("#DoctorID").val() },
+            success: function (searchList) {
+                for (var i = 0 ; i < searchList.length; i++) {
+                    //if (searchList[i].Table2 == "Table2") {
+                    //    $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].DayDate + '</td><td >' + searchList[i].AppointmentType + '</td></tr>')
+                    //    $("#AppointType").val(searchList[i].AppointmentType);
+                    //}
+                }
+            },
+        });
+        //$("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ')" value=' + searchList[i].AppointmentType + '   class="abc">' + searchList[i].AppointmentType + '</button>');
+        //var Appointment = $('#DivAppointmentType').val(".abc");
+        //var DoctorID = $("#DoctorID").val();
+        // $("#AppointmentTime").val(obd.ToTime);
+        // $("#AppointmentTime").val(obd.ToTime);
+        @*$.ajax({
+         url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+         type: "GET",
+         data: { AppointmentType: Appointment, DoctorID: $("#DoctorID").val() },
+         contentType: "application/json; charset=utf-8",
+         dataType: "json",
+         success: function (data) {
+             debugger;
+             $('#AppointmentTime').append('<option value="' + AppointmentTime + '">' + AppointmentTime + '</option>');
+             //   $('#AppointmentTime option:not(:first)').remove();
+             for (var i = 0; i < data.length; i++) {
+                 $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+             }
+         },
+     })*@
+        //  })
+    }
+</script>
+<script type="text/javascript">
+    function CalGetDaysAge() {
+        debugger
+        $.ajax({
+            url: '@Url.Action("CalGetDaysAge", "PatientAppointmentSchedule")',
+            type: "GET",
+            data: { datebirth: $("#DateOFBirth").val() },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                // $("#DateOfBirth").val(data);
+                $("#Day").val(data[0].day);
+
+                $("#Month").val(data[0].Month);
+
+                $("#Year").val(data[0].year);
+            }
+        })
+    }
+    $(document).ready(function () {
+       
+        $("#DateOFBirth").change(function () {
+            debugger
+            CalGetDaysAge();
+
+        })
+
+        var date = new Date();
+        $("#Day").keyup(function () {
+            debugger
+            var fromDate = new Date();
+            // var date = new Date(fromDate).toDateString('yyyy-MM-dd');
+            //// $("#DateOfBirth").val(date.);
+            // document.getElementById("DateOfBirth").value = fromDate.toString("yyyy-MM-dd");
+            var date = new Date();
+            debugger;
+            var days = parseInt($("#Day").val(), 10);
+            var month = parseInt($("#Month").val(), 10);
+            var year = parseInt($("#Year").val(), 10);
+            var date = new Date();
+            if (days == "NaN") {
+                days = 0;
+            }
+            if (days > 0) {
+                var dat = date.setDate(date.getDate() - parseInt(days));
+            }
+            if (year > 0) {
+                var b = date.setFullYear(date.getFullYear() - year);
+            }
+            if (month > 0) {
+                var m = date.setMonth(date.getMonth() - month);
+            }
+            d = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            $.ajax({
+                url: '@Url.Action("BindCaculteAge", "PatientAppointmentSchedule")',
+                type: "GET",
+                data: { date: d },
+                dataType: "json",
+                success: function (data) {
+                    $("#DateOFBirth").val(data);
+                }
+            })
+            //  $("#DateOfBirth").val(date.toLocaleDateString("indian"));
+            debugger
+            year = "";
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#Day").val() == "") {
+                $("#DateOFBirth").val(date.toString("yyyy-MM-dd"));
+            }
+        })
+        $("#Month").keyup(function () {
+            debugger;
+            // $.get("/Add_Patient_Registration/Day", { name: month, Birth: "Month" }, function (data) {
+            date = new Date();
+            debugger;
+            var days = parseInt($("#Day").val(), 10);
+            var month = parseInt($("#Month").val(), 10);
+            var year = parseInt($("#Year").val(), 10);
+            if (month > 0) {
+                date.setMonth(date.getMonth() - month);
+            }
+            if (year > 0) {
+                var b = date.setFullYear(date.getFullYear() - year);
+            }
+            if (days > 0) {
+                date.setDate(date.getDate() - days);
+            }
+            d = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            $.ajax({
+                url: '@Url.Action("BindCaculteAge", "PatientAppointmentSchedule")',
+                type: "GET",
+                data: { date: d },
+                dataType: "json",
+                success: function (data) {
+                    $("#DateOFBirth").val(data);
+                }
+            })
+            year = "";
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#Day").val() == "") {
+                $("#DateOFBirth").val(date.toString('dd M yy'));
+            }
+        })
+        $("#Year").keyup(function () {
+            debugger;
+            date = new Date();
+            var days = parseInt($("#Day").val(), 10);
+            var month = parseInt($("#Month").val(), 10);
+            var year = parseInt($("#Year").val(), 10);
+            if (year > 0) {
+                var b = date.setFullYear(date.getFullYear() - year);
+            }
+            if (month > 0) {
+                date.setMonth(date.getMonth() - month);
+            }
+            if (days > 0) {
+                date.setDate(date.getDate() - days);
+            }
+            d = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            $.ajax({
+                url: '@Url.Action("BindCaculteAge", "PatientAppointmentSchedule")',
+                type: "GET",
+                data: { date: d },
+                dataType: "json",
+                success: function (data) {
+                    $("#DateOFBirth").val(data);
+                }
+            })
+            year = "";
+            if ($("#Year").val() == "" && $("#Month").val() == "" && $("#Day").val() == "") {
+                $("#DateOFBirth").val(date.toString('dd M yy'));
+            }
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("TotalAppointment", "PatientAppointmentSchedule")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#NoOfAppointment").append('<tr><td <h4 style="font-family: roboto; margin-bottom: 10px; font-size: 28px !important; color: #3ba4f1; ">' + data[i].TotalAppointment + '</h4></td></tr>');
+                };
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+        $.ajax({
+            type: "Post",
+            url: '@Url.Action("RegCount", "PatientAppointmentSchedule")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#RegCount").append('<tr><td <h4 style="font-family: roboto; margin-bottom: 10px; font-size: 28px !important; color: #3ba4f1; ">' + data[i].TotalReg + '</h4></td></tr>');
+                };
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+
+    });
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div id="myModal1" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Patient Details</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body" style="height: 400px; overflow: auto;">
+                            <table id="dgvPatientRecord" class="display" style="width: 100%; border: 1px solid #bddff7; ">
+                                <thead>
+                                    <tr>
+                                        <th>Sr_No</th>
+                                        <th>Appoint ID.</th>
+                                        <th>PatientName</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="scrollbar"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="dgvappoiment" style="display:none">
+                <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Patient Appointment Schedule</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0" style="display:flex;font-family:roboto">
+                                <span style="padding:2px">
+                                    <input type="checkbox" style="color:#ffffff" />Send SMS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="checkbox" style="color:#ffffff" data-toggle="modal" data-target="#myModal" id="DoctorSchedule" name="DoctorSchedule" />Doctor Schedule
+                                    <button type="button" id="Patientshow" name="Patientshow" class="btndivcss" data-toggle="modal" data-target="#myModal1" style="height:26px;"><span class="fa fa-user buttoniconcss" style="padding:5px"></span>Patient Show</button>
+                                </span>
+                            </div>
+                            @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 padding0">
+                                <div class="row">
+                                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 rowmargintop rowmarginbottom">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding0 rowmargintop">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="font-family:roboto">
+                                                        <span>Patient Type</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display:flex">
+                                                        <span style="font-family: roboto;
+                                                             background-color: #eee;
+                                                             padding: 3px;
+                                                             box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                                                             border: 1px solid #ccc;
+                                                             border-radius: 4px;
+                                                             width: 100%;
+                                                             margin-right: 5px;
+                                                             font-size: 13px;">New Appointment</span>
+                                                        <input type="hidden" id="FinancialYearID" name="FinancialYearID">
+                                                        <select class="form-control input-sm" id="FinancialYear" name="FinancialYear" disabled></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    @*<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span>Appoint ID.</span>
+                                                    </div>*@
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="hidden" readonly="readonly" value ="0" id="AppointmentNo" name="AppointmentNo" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding0 rowmargintop">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span>Patient Name</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display:flex">
+                                                        <select class="form-control input-sm" id="PFPatientName" name="PFPatientName">
+                                                            <option id="Select" value="Select">Select</option>
+                                                        </select>
+                                                        <input type="text" id="FirstName" name="FirstName" required="" class="form-control input-sm" placeholder="First Name" style="margin-left:5px" />
+                                                        <input type="hidden" id="PatientAppointmentText" name="PatientAppointmentText" class="form-control input-sm" placeholder="First Name" style="margin-left:5px" />
+                                                        <input type="text" id="PMiddleName" name="PMiddleName" class="form-control input-sm" placeholder="Middle Name" style="margin-left:5px" />
+                                                        <input type="hidden" id="PatientAppointmentScheduleID" name="PatientAppointmentScheduleID">
+                                                        <input type="text" id="PLastName" name="PLastName" class="form-control input-sm" placeholder="Last Name" style="margin-left:5px" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span>Mobile No.</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MobileNo" name="MobileNo" maxlength="10" class="form-control input-sm" style="padding:1px 1px 1px 1px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  rowmargintop padding0">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <span>Gender / Age</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style=" display: flex;">
+                                                        <select name="Gender" required id="Gender" class="form-control input-sm">
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                        <input type="text" id="Day" name="Day" class="form-control input-sm" placeholder="Day" />
+                                                        <input type="text" id="Month" name="Month" class="form-control input-sm" placeholder="Month" style="margin-left:5px" />
+                                                        <input type="text" id="Year" name="Year" class="form-control input-sm" placeholder="Year" style="margin-left:5px" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <span>DOB.</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="date" id="DateOFBirth" name="DateOFBirth"  value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control input-sm" style="padding:1px 1px 1px 1px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0 rowmargintop">
+                                                <!--Hospital Address Start-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <span>Doctor Name</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display:flex">
+                                                        <input type="hidden" id="DoctorID" name="DoctorID" class="form-control">
+                                                        <input type="text" id="ConsultantDoctorName" style="text-transform:uppercase" name="ConsultantDoctorName" required="" class="form-control input-sm" />
+                                                        <input type="hidden" id="DoctorAppoinmentScheduleID" name="DoctorAppoinmentScheduleID">
+                                                        <button type="button" onclick="window.location.href='@Url.Action("DoctorAppointmentSchedule", "DoctorAppointmentSchedule")'" class="btndivcss" style="width: 30px; margin-left: 5px; height: 26px; border: 2px solid #106dca; background: white; color: #106dca; font-size: 20px; border-radius: 3px; padding: 110px; line-height: 0px; text-align: end;" title="Add Doctor">+</button>
+                                                        <input type="hidden" name="FromTime" id="FromTime">
+                                                    </div>
+                                                </div>
+                                                <!--Hospital Address End-->
+                                                <!--Hospital City Start-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span>  Appointment Date</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="date" id="AppointDateID" name="AppointDateID" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0 rowmargintop rowmarginbottom">
+                                                <!--Hospital City End-->
+                                                <!--Hospital Pin code Start-->
+                                                <!--Hospital Pin code End-->
+                                                <!--Hospital State Start-->
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span> Appointment Type</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <select hidden class="form-control" id="AppointmentTypeID" name="AppointmentTypeID"></select>
+                                                        <div id="DivAppointmentType" class="btn-group dropdown-split-warning form-control input-sm" style="display:none;display:flex">
+                                                            @*<button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                                                <button type="button" id="Weekly" onclick="" class="btndivcss">Weekly</button>
+                                                                <button type="button" id="Monthy" onclick="" class="btndivcss">Monthly</button>
+                                                                <button type="button" id="OnCall" onclick="" class="btndivcss">Oncall</button>*@
+                                                        </div>
+                                                    </div>
+                                                    <table id="dgvDoctorScheduleDetail" class="table table-bordered table-striped" style="width:100%;display:none">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>AppointmentType</th>
+                                                                @*<th>DoctorName</th>*@
+                                                                <th>DayDate</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="scrollbar"></tbody>
+                                                    </table>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                        <span>Appointment No.</span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input type="text" id="AppointmentNoID" name="AppointmentNoID" class="form-control">
+                                                        <input hidden type="text" id="AppointType" name="AppointType">
+                                                        <input hidden type="text" id="TypeID" name="TypeID">
+                                                        @*<button type="button" id="SaveAppointment" name="SaveAppointment" class="btndivcss" style="width: 50px; margin-left: 5px; height: 26px; border: 2px solid #106dca; background: white; color: #106dca; font-size: 20px; border-radius: 3px; padding: 110px; line-height: 0px; text-align: end;" title="Save Appointment">Save</button>*@
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center; display: block;margin-top:10px">
+                                                            <div class="btn-group dropdown-split-warning">
+                                                                <button type="submit" id="Save" onclick="" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+                                                            </div>
+                                                            <div class="btn-group dropdown-split-warning">
+                                                                <button type="button" id="btndelete" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+                                                                <!-- id="btndelete" onclick="Delete(document.getElementById('PatientPrivilegeCardID').value)"-->
+                                                            </div>
+                                                            <div class="btn-group dropdown-split-warning">
+                                                                <button type="reset" onclick="window.location.reload(true)" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+                                                            </div>
+                                                            <div class="btn-group dropdown-split-warning">
+                                                                <button type="button" onclick="window.location.href='@Url.Action("PatientAppointmentSchedule", "PatientAppointmentSchedule")'" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <span>Time </span>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <select class="form-control" required name="AppointmentTime" id="AppointmentTime">
+                                                            <option id="Select" value="Select">Select</option>
+                                                            @*<option id="Weekly" value="Weekly"></option>
+                                                                <option id="Monthly" value="Monthly"></option>*@
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-wrapper">
+                <div class="col-lg-12 topheadline">
+                    <div class="col-lg-6" style="padding-top:3px">
+                        <h5 style="font-size: 16px; margin-top: 0px;  margin-bottom: 0px;">Patient Appointment Schedule</h5>
+                    </div>
+                    <div class="col-lg-6 pull-right" style="font-size:14px;text-align:right;padding-top:3px">
+                        <a href="#"><i class="fa fa-dashboard" style="font-size:13px;"></i> Home</a>
+                        <a href="#"><i class="fa fa-angle-double-right"></i> Calendar</a>
+                    </div>
+                </div>
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Content Header (Page header) -->
+                            <!-- Main content -->
+                            <section class="content" style="margin-top: 20px; margin-bottom: 20px;">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-12" style=" box-shadow: 0 1px 20px 0 rgba(69,90,100,.08); background: #ffffff; border-radius: 5px; padding: 0px; padding-bottom:20px">
+                                        <div class="col-md-3" style="padding-top:15px">
+                                            <div style="text-align: center;">
+                                                <button type="button" id="takeNewRequest" data-toggle="modal" data-target="#myModal" class="btn btn-primary" style="width: 100%; background: #249cf0; border: 1px solid #249cf0;font-family:roboto ">Book Appointment</button>
+                                            </div>
+                                            <!-- /. box -->
+                                            <div class="box box-solid">
+                                                <div class="col-md-12 col-xl-12" style="padding:0px">
+                                                    <div class="col-md-12 col-xl-12" style="margin-top:20px">
+                                                        <div class="col-md-12 col-xl-12" style="text-align: center; padding: 0px">
+                                                            <div class="card widget-card-1" style="padding:7px">
+                                                                <div class="card-block-small">
+                                                                    <div class="col-md-6 col-xl-6" id="NoOfAppointment">
+                                                                        @*<h4 style="font-family: roboto; margin-bottom: 10px; font-size: 28px !important; color: #3ba4f1; ">6630</h4>*@
+                                                                        <p style="font-family: roboto; color: #78909c !important; font-size:16px"><span class="text-c-blue f-w-600" style="color: #30383d;">No. Of Appointment</span></p>
+                                                                    </div>
+                                                                    <div class="col-md-6 col-xl-6">
+                                                                        <i class="bg-c-blue card1-icon fa fa-check-square-o " style="color: #6a6a6a; font-size: 35px; padding-bottom: 10px; padding-top: 10px; "></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-xl-12" style="margin-top:20px">
+                                                        <div class="col-md-12 col-xl-12" style="text-align: center; padding: 0px">
+                                                            <div class="card widget-card-1" style="padding:7px">
+                                                                <div class="card-block-small">
+                                                                    <div class="col-md-7 col-xl-7" id="RegCount" >
+                                                                        @*<h4 style="font-family: roboto; margin-bottom: 10px; font-size: 28px !important; color: #3ba4f1; ">330</h4>*@
+                                                                        <p style="font-family: roboto; color: #78909c !important; font-size:16px"><span class="text-c-blue f-w-600" style="color: #30383d;">No. Of Registration Done</span></p>
+                                                                    </div>
+                                                                    <div class="col-md-5 col-xl-5">
+                                                                        <i class="bg-c-blue card1-icon fa fa-calendar " style=" color: #6a6a6a; font-size: 35px; padding-bottom: 10px; padding-top: 10px;"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-xl-12" style="margin-top:20px">
+                                                        <div class="col-md-12 col-xl-12" style="text-align: center; padding: 0px">
+                                                            <div class="card widget-card-1" style="padding:7px">
+                                                                <div class="card-block-small">
+                                                                    <div class="col-md-6 col-xl-6">
+                                                                        <h4 style="font-family: roboto; margin-bottom: 10px; font-size: 28px !important; color: #3ba4f1; ">930</h4>
+                                                                        <p style="font-family: roboto; color: #78909c !important; font-size:16px"><span class="text-c-blue f-w-600" style="color: #30383d;">No. Of Billing Done</span></p>
+                                                                    </div>
+                                                                    <div class="col-md-6 col-xl-6">
+                                                                        <i class="bg-c-blue card1-icon fa fa-file-text-o " style="color: #6a6a6a; font-size: 35px; padding-bottom: 10px; padding-top: 10px; "></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+                                        <div class="col-md-9" style="padding-top: 15px;">
+                                            <div class="box box-primary" style="    border: 1px solid #dddddd;
+    border-radius: 5px;">
+                                                <div class="box-body no-padding">
+                                                    <!-- THE CALENDAR -->
+                                                    <div id="calendar"></div>
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                            <!-- /. box -->
+                                        </div>
+                                        <!-- /.col -->
+                                    </div>
+                                </div>
+                                <!-- /.row -->
+                            </section>
+                            <!-- /.content -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+    <script>
+        $(function () {
+            /* initialize the external events
+             -----------------------------------------------------------------*/
+            function init_events(ele) {
+                debugger
+                ele.each(function () {
+                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                    // it doesn't need to have a start or end
+                    var eventObject = {
+                        title: $.trim($(this).text()) // use the element's text as the event title
+                    }
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject)
+                    // make the event draggable using jQuery UI
+                    $(this).draggable({
+                        zIndex: 1070,
+                        revert: true, // will cause the event to go back to its
+                        revertDuration: 0  //  original position after the drag
+                    })
+                })
+            }
+            init_events($('#external-events div.external-event'))
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
+            //Date for the calendar events (dummy data)
+            var date = new Date()
+            var d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear()
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                buttonText: {
+                    today: 'today',
+                    month: 'month',
+                    week: 'week',
+                    day: 'day'
+                },
+                //Random default events
+                events: [
+                  {
+                      //title: 'All Day Event',
+                      //start: new Date(y, m, 1),
+                      //backgroundColor: '#f56954', //red
+                      //borderColor: '#f56954' //red
+                  },
+                  {
+                      //title: 'Long Event',
+                      //start: new Date(y, m, d - 5),
+                      //end: new Date(y, m, d - 2),
+                      //backgroundColor: '#f39c12', //yellow
+                      //borderColor: '#f39c12' //yellow
+                  },
+                  {
+                      //title: 'Meeting',
+                      //start: new Date(y, m, d, 10, 30),
+                      //allDay: false,
+                      //backgroundColor: '#0073b7', //Blue
+                      //borderColor: '#0073b7' //Blue
+                  },
+                  {
+                      //title: 'Lunch',
+                      //start: new Date(y, m, d, 12, 0),
+                      //end: new Date(y, m, d, 14, 0),
+                      //allDay: false,
+                      //backgroundColor: '#00c0ef', //Info (aqua)
+                      //borderColor: '#00c0ef' //Info (aqua)
+                  },
+                  {
+                      //title: 'Birthday Party',
+                      //start: new Date(y, m, d + 1, 19, 0),
+                      //end: new Date(y, m, d + 1, 22, 30),
+                      //allDay: false,
+                      //backgroundColor: '#00a65a', //Success (green)
+                      //borderColor: '#00a65a' //Success (green)
+                  },
+                  {
+                      //title: 'Click for Google',
+                      //start: new Date(y, m, 28),
+                      //end: new Date(y, m, 29),
+                      //url: 'http://google.com/',
+                      //backgroundColor: '#3c8dbc', //Primary (light-blue)
+                      //borderColor: '#3c8dbc' //Primary (light-blue)
+                  }
+                ],
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar !!!
+                drop: function (date, allDay) { // this function is called when something is dropped
+                    // retrieve the dropped element's stored Event Object
+                    var originalEventObject = $(this).data('eventObject')
+                    // we need to copy it, so that multiple events don't have a reference to the same object
+                    var copiedEventObject = $.extend({}, originalEventObject)
+                    // assign it the date that was reported
+                    copiedEventObject.start = date
+                    copiedEventObject.allDay = allDay
+                    copiedEventObject.backgroundColor = $(this).css('background-color')
+                    copiedEventObject.borderColor = $(this).css('border-color')
+                    // render the event on the calendar
+                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                    $('#calendar').fullCalendar('renderEvent', copiedEventObject, true)
+                    // is the "remove after drop" checkbox checked?
+                    if ($('#drop-remove').is(':checked')) {
+                        // if so, remove the element from the "Draggable Events" list
+                        $(this).remove()
+                    }
+                },
+            })
+            EventFind();
+            /* ADDING EVENTS */
+            var currColor = '#3c8dbc' //Red by default
+            //Color chooser button
+            var colorChooser = $('#color-chooser-btn')
+            $('#color-chooser > li > a').click(function (e) {
+                e.preventDefault()
+                //Save color
+                currColor = $(this).css('color')
+                //Add color effect to button
+                $('#add-new-event').css({ 'background-color': currColor, 'border-color': currColor })
+            })
+            $('#add-new-event').click(function (e) {
+                e.preventDefault()
+                //Get value and make sure it is not null
+                var val = $('#new-event').val()
+                if (val.length == 0) {
+                    return
+                }
+                //Create events
+                var event = $('<div />')
+                event.css({
+                    'background-color': currColor,
+                    'border-color': currColor,
+                    'color': '#fff'
+                }).addClass('external-event')
+                event.html(val)
+                $('#external-events').prepend(event)
+                //Add draggable funtionality
+                init_events(event)
+                //Remove event from text input
+                $('#new-event').val('')
+            })
+        })
+        $(function () {
+            //    $('#calendiar').fullCalendar({
+            //        selectable: true,
+            //        defaultView: 'timelineWeek',
+            //        header: {
+            //            left: 'prev,next today',
+            //            center: 'title',
+            //            right: 'timelineWeek,agendaDay'
+            //        },
+            //        dayClick: function (date, jsEvent, view, resource) {
+            //            alert('clicked ' + date.format() + ' on resource ' + resource.id);
+            //        },
+            //        select: function (startDate, endDate, jsEvent, view, resource) {
+            //            alert('selected ' + startDate.format() + ' to ' + endDate.format() + ' on resource ' + resource.id);
+            //        }
+            //    });
+            $(".fc-month-button,.fc-agendaDay-button,.fc-next-button,.fc-prev-button").click(function () {
+                debugger
+            })
+            var cells = document.getElementsByTagName("tr");
+            cells.onclick = function () {
+                cells.style.backgroundColor = "white";
+            }
+            $(".fc-day,.fc-agendaWeek-button,.fc-agendaDay-button,.fc-next-button,.fc-prev-button").click(function () {
+                debugger
+                var anchors = document.getElementsByTagName("tr");
+                var anchors1 = document.getElementsByTagName("td");
+                //  document.getElementsByTagName("th")[0].setAttribute("class", "democlass");
+                document.getElementsByTagName("tbody")[0].setAttribute("class", "democlass");
+                debugger
+                var j = 0;
+                $(".fc-day-header").each(function () {
+                    debugger
+                    for (var i = j; i < anchors.length; i++) {
+                        var Date = showDetails(this);
+                        //anchors[i].setAttribute("class", "democlass");
+                        // anchors[i].setAttribute('class', 'myCssClass');
+                        anchors[i].onclick = function () {
+                            debugger
+                              //  EventFind();
+                            var val = anchors[i].setAttribute('value', Date);
+                            if (Date != null) {
+                                //alert(Date);
+                            }
+                        }
+                    }
+                    j++;
+                })
+                //anchors[i].onclick = function () {
+                //    if (Date != null) {
+                //      //  $("#dgvappoiment").show();
+                //       // $("#AppointDateID").val(Date);
+                //        alert(Date);
+                //    }
+                //    return false;
+            })
+            $('.myCssClass').on('click', function () {
+                debugger
+               // alert("sjjs");
+            })
+        });
+        var chk = true;
+        function TableToolTip(AddDate) {
+            debugger
+            AddDate = AddDate.id;
+           
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAllPatientAppointmentData", "PatientAppointmentSchedule")',
+                data: { Date: AddDate },
+                success: function (searchList) {
+                    $(".tooltiptbl td").remove();
+                    debugger
+                    for (var i = 0 ; i < searchList.length; i++) {
+                        debugger
+                        //$("#example3").append
+                        var SrNo = i + 1;
+                        $(".tooltiptbl").append('<tr><td>' + SrNo + '</td><td>' + searchList[i].PatientName + '</td><td>' + searchList[i].DoctorName + '</td><td>' + searchList[i].AppointmentDate + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td><td style="display:none">' + searchList[i].PatientID + '</td></tr>');
+                    }
+                    if (chk) {
+                        $('.tooltiptbl').DataTable({
+                            type: 'post',
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'copyHtml5',
+                                'excelHtml5',
+                                'csvHtml5',
+                                'pdfHtml5'
+                            ]
+                        });
+                        chk = false;
+                    }
+                    },
+                    
+            });
+            //$('.tooltiptbl').DataTable();
+        }
+        //})
+        function showDetails(animal) {
+            var animalType = animal.getAttribute("data-date");
+            return animalType;
+        }
+        function EventFind() {
+          
+            document.querySelectorAll('tbody').forEach(function (el, i) {
+                el.css = "Display:none";
+            });
+            var lentbl = $("#example1 tbody tr").length;
+            // var anchors = document.getElementsByTagName("tbody");
+            var l = 0;
+            var id = 1;
+            $(".fc-day-top").each(function () {
+              
+              //  $(this).append('<p id='+id+' style=" Color:red"> </p>');
+                var lam = showDetails(this);
+                var date = '@DateTime.Now.ToString("yyyy-MM-dd")';
+                var same = "";
+                var i = 0;
+                for (var m = 0; m < lentbl; m++) {
+                    var qq = document.getElementById("example1").tBodies[0].rows[m].cells[4].innerHTML;
+                    
+                    // alert(lam);
+                    if (document.getElementById("example1").tBodies[0].rows[m].cells[4].innerHTML == lam) {
+
+                        debugger
+                       
+                       // $("#"+id).text("Details" + i);
+                      //  $(this).append('<p style=" Color:red">' + document.getElementById("example1").tBodies[0].rows[m].cells[1].innerHTML + ' </p>')
+                        if (same == "") {
+                            i++;
+                            $(this).append(' <div onmouseover="return TableToolTip(this)" id=' + lam + '  class="tooltip1"><span id='+lam+i+'> Today No. Appt. </span><div class="tooltiptext" > <table style="width:400px" id="example3"  class="table table-striped tooltiptbl"><thead><tr><th>Sr.No</th><th>Patient Name</th><th>Doctor Name</th><th>Appointment Date</th><th>From Time</th><th>To Time</th></tr></thead></table></div></div>');
+                            same = "data";
+                            //alert(i)
+                            var rows = 0;
+                            $.ajax({
+                                type: "GET",
+                                url: '@Url.Action("GetAllPatientAppointmentData", "PatientAppointmentSchedule")',
+                                data: { Date: lam },
+                                success: function (data) {
+                                    debugger
+                                    rows = data.length;
+                                    $("#" + lam + i).text(" Today No. Appt. " + data.length)
+                                    $("#"+lam+i).css("color","red");
+                                }
+                            })
+
+                           
+                        }
+                        $("#example1").hide();
+                    }
+                    // i = 0;
+                }
+                if (lam < date) {
+                    $(this).addClass("disabledbutton")
+                }
+            })
+            
+            var anchors = document.getElementsByTagName("td");
+            debugger
+            for (var i = 0; i < anchors.length; i++) {
+                anchors[i].onclick = function () {
+                  
+                    var Date = showDetails(this);
+                   if (Date >= '@DateTime.Now.ToString("yyyy-MM-dd")')
+                  {
+                        $("#dgvappoiment").show();
+                        $("#AppointDateID").val(Date);
+                   }
+                    return false;
+                }
+            }
+        }
+        function show(obj) {
+            debugger
+            var obj1 = document.getElementsByClassName("fc-day")[0].getAttribute("data-date");
+            // var obj1=document.getElementsByTagName("td")[0].getAttribute("data-date");
+            // var obj1 = document.getElementById("calendar").getAttribute("data-date");
+            //  document.ge
+            return obj1;
+        }
+        var Date;
+        function EventFindWeek() {
+            debugger
+            document.querySelectorAll('tbody').forEach(function (el, i) {
+                el.id = i;
+                el.css = "Display:none";
+            });
+            debugger
+            var lentbl = $("#example1 tbody tr").length;
+            var date = '@DateTime.Now.ToString("yyyy-MM-dd")';
+            var same = "";
+            $(".fc-day").each(function () {
+                debugger
+                var am = show(this);
+                //  var am='2020-02-25';
+                // alert(am)
+                for (var n = 0; n < lentbl; n++) {
+                    var qq = document.getElementById("example1").tBodies[0].rows[n].cells[4].innerHTML;
+                    //alert(qq);
+                    debugger
+                    if (document.getElementById("example1").tBodies[0].rows[n].cells[4].innerHTML == am) {
+                        //$(this).append('<p style="Color:red">' + document.getElementById("example1").tBodies[0].rows[n].cells[1].innerHTML + ' </p>')
+                        debugger
+                        if (same == "") {
+                            $(this).append('<p style=" Color:red">' + document.getElementById("example1").tBodies[0].rows[n].cells[1].innerHTML + ' </p>')
+                            $(this).append('<div onmouseover="return TableToolTip(this)" id=' + am + ' class="tooltip1">Details <div class="tooltiptext" > <table style="width:400px" id="example3"  class="table table-striped tooltiptbl"><thead><tr><th>Sr.No</th><th>Patient Name</th><th>Doctor Name</th><th>Appointment Date</th><th>From Time</th><th>To Time</th></tr></thead></table></div></div>');
+                            same = "data";
+                            // TableToolTip(lam);
+                        }
+                        $("#example1").hide();
+                    }
+                    //if (am < date) {
+                    //    $(this).addClass("disabledbutton")
+                    //}
+                }
+            });
+            debugger
+            var anchors = document.getElementsByTagName("td");
+            for (var i = 0; i < anchors.length; i++) {
+                anchors[i].onclick = function () {
+                    debugger
+                     Date = show(this);
+                    if (Date != null) {
+                       // $("#dgvappoiment").show();
+                        $("#AppointDateID").val(Date);
+                    }
+                }
+            }
+        }
+    
+    $(document).ready(function () {
+        debugger;
+        $("#Patientshow").click(function () {
+            $.ajax({
+                type: "POST",
+                //  contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetAllPatient", "PatientAppointmentSchedule")',
+                data: { AppointDateID: $("#AppointDateID").val() },
+                dataType: "json",
+                success: function (data) {
+                    $("#dgvPatientRecord tbody tr").remove();
+                  //  $("#example tbody tr").remove();
+                    var SrNo = 1;
+                    for (var i = 0; i < data.length; i++) {
+                        $("#dgvPatientRecord").append('<tr><td>' + SrNo + '</td><td>' + data[i].PatientID + '</td><td>' + data[i].PatientName + '</td><td style = "display:none">' + data[i].PatientAppointmentScheduleID + '</td></tr>');
+                        SrNo++;
+                    };
+                },
+                error: function (result) {
+                    alert("Error grd bind");
+                }
+            });
+        })
+       
+        var PatientID;
+        $("#dgvPatientRecord").delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            PatientID = parseInt(document.getElementById("dgvPatientRecord").tBodies[0].rows[row_num].cells[1].innerHTML);
+            var PatientName = document.getElementById("dgvPatientRecord").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var PatientAppointmentScheduleID = document.getElementById("dgvPatientRecord").tBodies[0].rows[row_num].cells[3].innerHTML;
+            $('#AppointmentNo').val(PatientID);
+            $('#PatientAppointmentScheduleID').val(PatientAppointmentScheduleID);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EditGetPatientAppointmentDetails", "PatientAppointmentSchedule")',
+                data: {PatientAppointmentScheduleID:PatientAppointmentScheduleID},
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $("#PFPatientName").val(data[1].PFPatientName);
+                    $("#Gender").val(data[1].Gender);
+                   // $('#AppointmentNo').val(PatientID);
+                    $("#FirstName").val(data[1].PFirstName);
+                    $("#PMiddleName").val(data[1].PMiddleName);
+                    $("#PLastName").val(data[1].PLastName)
+                    $("#Year").val(data[1].Age);
+                    $("#DateOFBirth").val(data[1].DateOFBirth);
+                    $("#MobileNo").val(data[1].MobileNo);
+                    $("#DoctorID").val(data[0].DoctorID);
+
+                    $("#ConsultantDoctorName").val(data[0].DoctorPrintName);
+                  //  alert(data[0].DoctorPrintName);
+                    $("#DoctorAppoinmentScheduleID").val(data[0].DoctorAppoinmentScheduleID)
+                   // alert($("#DoctorAppoinmentScheduleID").val());
+                    $("#AppointDateID").val(data[0].AppointmentDate);
+                    $("#AppointType").val(data[0].AppointmentType);
+                    $("#AppointmentNoID").val(data[0].NoOfAppointment);
+                    //$('#AppointmentTime').text("");
+                    //$('#AppointmentTime').val("");
+                    var AppointmentTime = data[0].AppointmentTime;
+                    $('#AppointmentTime').append('<option value="' + data[0].NoOfAppointment + '">' + data[0].AppointmentTime + '</option>');
+                    $('#AppointmentTime').val(data[0].NoOfAppointment);
+                    $('#FromTime').val(data[0].AppointmentTime);
+                    //      $('#DivAppointmentType').append('<option value="' + data[0].AppointmentType + '">' + data[0].AppointmentType + '</option>');
+                    //                        $("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" value=' + searchList[i].AppointmentType + '   class="abc">' + searchList[i].AppointmentType + '</button>');
+                    // $('#DivAppointmentType').append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )"value=' + searchList[i].AppointmentType + ' class="abc">' + data[0].AppointmentType + '</button>');
+                    var Appointment = $('#AppointmentTypeID').val();
+                    debugger;
+                    var DoctorID = $("#DoctorID").val();
+                    debugger;
+                    var AppointmentType = "";
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentSchedule")',
+                        data: { DoctorID: DoctorID },
+                        dataType: "json",
+                        success: function (searchList) {
+                            debugger
+                            //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                            //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                            $('#AppointmentTypeID').append('<option value="select">Select</option>');
+                            $('#AppointmentTypeID option:not(:first)').remove();
+                            $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+                            var dropItems = $(".abc");
+                            var str = "";
+                            // Remove 'active' tag for all list items
+                            // based on iteration
+                            for (let i = 0; i < dropItems.length; i++) {
+                                dropItems[i].remove();
+                            }
+                            var btnhide = "0";
+                            var button = "button";
+                            for (var i = 0 ; i < searchList.length; i++) {
+                                debugger
+                                //$("#AppointmentTypeID").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+                                if (searchList[i].AppointmentType == "Daily") {
+                                    if (btnhide > 0) {
+                                        button = "hidden";
+                                    }
+                                    btnhide++;
+                                }
+                                if (button != "hidden") {
+                                    $("#DivAppointmentType").append('<button  type="button" value=' + searchList[i].AppointmentType + ' onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" class="abc">' + searchList[i].AppointmentType + '</button>');
+                                    // <button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                    //var myobj = document.getElementById("DivAppointmentType");
+                                }
+                            }
+                            //$('#AppointmentTime').val('');
+                            AppointmentType = searchList[0].AppointmentType;
+                            Type = searchList[0].DoctorAppoinmentID;
+                        //    alert(Type);
+                            var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                            var t = Type;
+                            //$("#TypeID").val(t);
+                            // Appoint= Appointment.val("#AppointType")
+                            // TypeID  // alert(Appointment);
+                            $(document).ready(function () {
+                                $(".abc").click(function () {
+                                    //alert($(this).val());
+                                    debugger
+                                    $("#AppointType").val($(this).val());
+                                    //alert($("#AppointDateID").val());
+                                   // alert($(this).val());
+                                    //var AppointmentType = searchList[1].AppointmentType;
+                                    //if (AppointmentType != "Daily") {
+                                    //    $("#DivAppointmentType").append(searchList[1].DayDate)
+                                    //}
+                                    
+                                    debugger;
+                                    var AppointmentDate =   data[0].AppointmentDate;
+                                    debugger;
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                        type: "GET",
+                                        data: { AppointmentType: $(this).val(), DoctorID: $("#DoctorID").val(), AppointmentDate: $("#AppointDateID").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+                                          //  $('#AppointmentTime option:not(:first)').remove();
+                                            //$('#AppointmentTime').text("");
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            //$("#DivAppointment").change(function () {
+                                            //    $("#Daily").val("Daily");
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                            //})
+                                        },
+                                        error: function (data) {
+                                            debugger;
+                                            // alert('dewdeguywfueureyt');
+                                        }
+                                    })
+                                })
+                                AppointmentType = searchList[0].AppointmentType;
+                                var Appointment = AppointmentType;
+                                $("#dgvDoctorScheduleDetail").delegate('td', 'click', function () {
+                                    debugger;
+                                    //("#dgvDoctorScheduleDetail td").remove();
+                                    var row_num = parseInt($(this).parent().index());
+                                    Appointment = document.getElementById("dgvDoctorScheduleDetail").tBodies[0].rows[row_num].cells[1].innerHTML;
+                                    debugger
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                                        type: "POST",
+                                        data: { AppointmentType: Appointment, DoctorID: DoctorID, AppointmentDate: $("#AppointDateID").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+                                           // $('#AppointmentTime option:not(:first)').remove();
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                        },
+                                    })
+                                })
+                            });
+                        },
+                    });
+                    //EventFind();
+                    },
+            });
+        })
+        $("#btndelete").click(function () {
+            //alert($("#PatientAppointmentScheduleID").val());
+            var conform = confirm("Do you Want To Delete");
+           // alert(PatientID);
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "PatientAppointmentSchedule")',
+                    type: 'POST',
+                    data: { PatientID: PatientID },
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("PatientAppointment Deleted Successfully");
+                            location.reload();
+                            //  alert($("#PatientAppointmentScheduleID").val());
+                        }
+                        else {
+                        }
+                    }
+                })
+            }
+        });
+    });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#takeNewRequest").click(function () {
+               // $("#dgvappoiment").show();
+            })
+        })
+        $(function () {
+
+            var d = new Date(),
+                h = d.getHours(),
+                m = d.getMinutes();
+            if (h < 10) h = '0' + h;
+            if (m < 10) m = '0' + m;
+            $('input[type="time"][value="now"]').each(function () {
+                $(this).attr({ 'value': h + ':' + m });
+
+            });
+        });
+    </script>
+    <section class="content-header">
+        <!-- Modal content-->
+        <div id="chkdiv" style="display: none; position: absolute; margin: 0 auto; top: 10%; left: 0; right: 0; width: 600px; border: 1px solid #dadada; border-radius: 4px; box-shadow: 1px 1px 11px 1px #eae4e4; background: #ffffff; z-index: 100000;">
+            <div class="modal-header">
+                <h4 class="modal-title">Doctor Appointment Reschedule</h4>
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row rowmarginbottom padding0">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>Doctor Name</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <select class="form-control" id="DoctorName" name="DoctorName">
+
+
+                                </select>
+                                @*<input type="text" id="DoctorName" name="DoctorName" class="form-control input-sm">*@
+                                <input type="hidden" id="DoctorNameID" name="DoctorNameID">
+                                <input type="hidden" id="DoctorAppoinmentID" name="DoctorAppoinmentID">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>FromTime</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                @*<input type="time" value="@DateTime.Now.ToString("hh:mm:ss")" id="FromTime1" name="FromTime1" class="form-control input-sm" style="width:100%">*@
+                                <input type="time" value="now" id="FromTime1" name="FromTime1">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>ToTime</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                @*<input type="time" value="@DateTime.Now.ToString("hh:mm:ss")" id="ToTime" name="ToTime" class="form-control input-sm" style="width:100%">*@
+                                <input type="time" value="now" id="ToTime" name="ToTime">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row rowmarginbottom padding0">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>AppointmentDate</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <input type="date" id="AppointmentDate" name="AppointmentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control input-sm">
+                            </div>
+                        </div>
+                        <div class="col-lg-3  col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>AppointmentType</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <select class="form-control" id="AppointmentType" name="AppointmentType"></select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="padding-top:20px">
+                                <input type="checkbox" id="CancelAppointment" name="CancelAppointment"><span>Cancel Apt.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                        <span>Reason</span>
+                    </div>
+                    <input type="text" id="Reason" name="Reason" class="form-control input-sm" style="width:100%;height:50px">
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="text-align:center;padding-top:15px;padding-bottom:20px">
+                    <div class="btn-group dropdown-split-warning">
+                        <button type="button" id="Add" name="Add" class="btndivcss"><span class="fa fa-plus buttoniconcss"></span>Add</button>
+                    </div>
+                    <div class="btn-group dropdown-split-warning">
+                        <button id="close" name="close" class="btndivcss"><span class="fa fa-close buttoniconcss"></span>Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="overflow:auto;">
+                <div class=" panel-primary" style="box-shadow:none">
+                    <table id="example1" data-toggle="popover" title="Appointment Details" class="table table-bordered table-striped data-toggle ">
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Patient Name</th>
+                                <th>DoctorID</th>
+                                <th>Doctor Name</th>
+                                <th>Appointment Date</th>
+                                <th>From Time</th>
+                                <th>To Time</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollbar"></tbody>
+                    </table>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <div hidden class="col-lg-6 col-md-12 col-sm-12 col-xs-12 margin-r-5">
+                <div class="panel-primary" style="box-shadow:none">
+                    <table id="dgvDoctorSchedule" class="table table-bordered table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>DoctorAppoinmentScheduleID</th>
+                                <th>AppointmentType</th>
+                                <th>Doctor Name</th>
+                                <th>FromTime</th>
+                                <th>ToTime</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollbar"></tbody>
+                    </table>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+</body>

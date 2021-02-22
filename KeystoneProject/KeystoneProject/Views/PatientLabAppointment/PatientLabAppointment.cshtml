@@ -1,0 +1,1138 @@
+﻿@model KeystoneProject.Models.Laboratory.PatientLabAppointment
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input[type="radio"]').click(function () {
+            var inputValue = $(this).attr("value");
+            var targetBox = $("." + inputValue);
+            $(".box").not(targetBox).hide();
+            $(targetBox).show();
+        });
+    });
+</script>
+
+<style>
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+
+    .input-group-addon {
+        padding: 0px 5px;
+    }
+</style>
+<style type="text/css">
+    .red {
+        display: none;
+    }
+
+    .green {
+        display: block;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function(){
+
+
+    $.ajax({
+        url: '@Url.Action("GetNextAppointentID", "PatientLabAppointment")',
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        datatype: "Json",
+
+        success: function (searchList) {
+            debugger;
+
+            $("#AppointmentID").val(searchList);
+
+
+
+        },
+    })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#ConDR").autocomplete({
+
+
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetConsDoctor", "PatientLabAppointment")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.ConsultantDr, value: item.ConsultantDr, id: item.ConsultantDrID };
+                        }));
+                    },
+                    //error: function (xhr, status, error) {
+                    //    alert("Error: " + error);
+                    //}
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+                $("#ConDRID").val(ui.item.id);
+
+            }
+        });
+
+        $("#ReffDR").autocomplete({
+
+
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetRefferedDoctor", "PatientLabAppointment")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.RefferedDr, value: item.RefferedDr, id: item.RefferedDrID };
+                        }));
+                    },
+                    //error: function (xhr, status, error) {
+                    //    alert("Error: " + error);
+                    //}
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+                $("#ReffDRID").val(ui.item.id);
+
+            }
+        });
+
+        $("#SampleCollectBy").autocomplete({
+
+
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("GetUser", "PatientLabAppointment")',
+                    type: "POST",
+                    dataType: "Json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger
+                        response($.map(data, function (item) {
+                            return { label: item.FullName, value: item.FullName, id: item.UserID };
+                        }));
+                    },
+                    //error: function (xhr, status, error) {
+                    //    alert("Error: " + error);
+                    //}
+                });
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+                $("#SampleCollectByID").val(ui.item.id);
+
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        Bind();
+        $('input[name=Charge]').click(function () {
+
+            Bind();
+        })
+    })
+
+            function Bind ()
+            {
+                 debugger
+                var select = $('input[name=Charge]:checked').val();
+               //alert(select);
+                if (select == "Test") {
+
+                    $("#TestName").autocomplete({
+
+                    source: function (request, response) {
+
+                        $.ajax({
+                            url: '@Url.Action("TestName", "PatientLabAppointment")',
+                            type: "POST",
+                            dataType: "Json",
+                            data: { prefix: request.term },
+                            success: function (data) {
+                                response($.map(data, function (item) {
+                                    return { label: item.TestName, value: item.TestName, id: item.TestID, EmergencyCharges: item.EmergencyCharges, GeneralCharges: item.GeneralCharges };
+                                }));
+                            },
+                            
+                        });
+                    },
+                    minLength: 1,
+                    change: function (event, ui) {
+                        if (!ui.item) {
+                            this.value = '';
+
+                        }
+                        $("#TestNameID").val(ui.item.id);
+                        tpa = $("#CompanyID").val();
+                        if (tpa > 0) {
+                            debugger
+
+                            $.ajax({
+                                url: '@Url.Action("BindCharges1", "PatientLabAppointment")',
+                                type: "POST",
+                                dataType: "Json",
+                                data: { tpaID: tpa, testID: $('#TestNameID').val(), select: chck, DrID: $("#ConDRID").val() },
+                                success: function (data) {
+                                    debugger
+                                    for (var i = 0; i < data.searchlist.length; i++) {
+                                        debugger
+                                        rate2 = data.searchlist[i].GeneralCharges;
+                                        // alert(rate2);
+                                        $("#Rate").val(rate2);
+                                        //if (test > 0) {
+
+                                        //    $("#example1").append('<tr><td><input type="hidden" name="mode" value="Add"><input type="hidden" name="PatientLabAppointmentDetailID" value=""><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + test + ' name="TesttableID"><input type="hidden"  value=' + testname + ' name="TestNamerow">' + testname + '</td><td><input type="text"  name="rate1" value=' + rate2 + ' ></td><td><input type="text" value="1"  id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + TotalAmt + ' name="TotalAmt" > </td><td ><input type="text"  name="ServiceType" value="Package"></td><td><a href="#" style="color:red"  aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                                        //}
+                                    }
+
+                                },
+
+                            });
+
+                        }
+                        else {
+                            $("#TestNameID").val(ui.item.id);
+
+                            $("#Rate").val(ui.item.GeneralCharges);
+                        }
+                        
+                      
+                       
+                    }
+                });
+
+            }
+        else {
+                   
+                    $("#TestName").autocomplete({
+
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("Package", "PatientLabAppointment")',
+                        type: "POST",
+                        dataType: "Json",
+                        data: { prefix: request.term},
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.ProfileName, value: item.ProfileName, id: item.ProfileID, rate: item.Rate };
+                            }));
+                        },
+                       
+                    });
+                },
+                minLength: 1,
+                change: function (event, ui) {
+                    if (!ui.item) {
+                        this.value = '';
+
+                    }
+                    debugger
+
+                    $("#TestNameID").val(ui.item.id);
+                    tpa = $("#CompanyID").val();
+                    if (tpa > 0) {
+                        debugger
+
+                        $.ajax({
+                            url: '@Url.Action("BindCharges1", "PatientLabAppointment")',
+                            type: "POST",
+                            dataType: "Json",
+                            data: { tpaID: tpa, testID: $('#TestNameID').val(), select: chck, DrID: $("#ConDRID").val() },
+                            success: function (data) {
+                                debugger
+                                for (var i = 0; i < data.searchlist.length; i++) {
+                                    debugger
+                                    rate2 = data.searchlist[i].GeneralCharges;
+                                   // alert(rate2);
+                                    $("#Rate").val(rate2);
+                                    //if (test > 0) {
+
+                                    //    $("#example1").append('<tr><td><input type="hidden" name="mode" value="Add"><input type="hidden" name="PatientLabAppointmentDetailID" value=""><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + test + ' name="TesttableID"><input type="hidden"  value=' + testname + ' name="TestNamerow">' + testname + '</td><td><input type="text"  name="rate1" value=' + rate2 + ' ></td><td><input type="text" value="1"  id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + TotalAmt + ' name="TotalAmt" > </td><td ><input type="text"  name="ServiceType" value="Package"></td><td><a href="#" style="color:red"  aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                                    //}
+                                }
+
+                            },
+
+                        });
+
+                    }
+                    else
+                    {
+                        $("#TestNameID").val(ui.item.id);
+
+                        $("#Rate").val(ui.item.rate);
+                    }
+                }
+            });
+
+
+
+        }
+
+
+    }
+
+   
+</script>
+<script>
+
+    var chck = $('input[name=Charge]:checked').val();
+    $(document).ready(function () {
+        $("#example tbody tr").remove();
+        chck = $('input[name=Charge]:checked').val();
+
+        $('input[name=Charge]').click(function () {
+            debugger
+            chck = $(this).val();
+        })
+        $("#Add").click(function () {
+
+            if ($('#TestName').val() == "") {
+                alert('Please Choose Test');
+
+            }
+            else {
+               
+
+                debugger
+
+             
+                    test = $("#TestNameID").val();
+                    testname = $('#TestName').val();
+
+                    rate = $("#Rate").val();
+                    Qty = 1;
+                    var TotalAmt = parseFloat(rate) * Qty;
+                   // $("#TotalAmt").val(TotalAmt);
+                    $(".1testidhidden").each(function () {
+                        var testid1 = $(this).parent().find("#testidhidden").val();
+                        if (testid1 == test) {
+
+                            alert("Already Exists");
+                            test = 0;
+                            return false;
+                        }
+
+                    })
+                debugger
+                if (chck == "Package") {
+                    @*tpa = $("#CompanyID").val();
+                    if (tpa > 0) {
+                        debugger
+
+                        $.ajax({
+                            url: '@Url.Action("BindCharges1", "PatientLabAppointment")',
+                            type: "POST",
+                            dataType: "Json",
+                            data: { tpaID: tpa, testID: $('#TestNameID').val(), select: chck, DrID: $("#ConDRID").val() },
+                            success: function (data) {
+                                debugger
+                                for (var i = 0; i < data.searchlist.length; i++) {
+                                    debugger
+                                    rate2 = data.searchlist[i].GeneralCharges;
+                                    // alert(rate2);
+                                    $("#Rate").val(rate2);
+                                    if (test > 0) {
+
+                                        $("#example1").append('<tr><td><input type="hidden" name="mode" value="Add"><input type="hidden" name="PatientLabAppointmentDetailID" value=""><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + test + ' name="TesttableID"><input type="hidden"  value=' + testname + ' name="TestNamerow">' + testname + '</td><td><input type="text"  name="rate1" value=' + rate2 + ' ></td><td><input type="text" value="1"  id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + TotalAmt + ' name="TotalAmt" > </td><td ><input type="text"  name="ServiceType" value="Package"></td><td><a href="#" style="color:red"  aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                                    }
+                                }
+
+                            },
+
+                        });
+                        
+
+                    }
+                    else {*@
+
+
+
+                        if (test > 0) {
+
+                            $("#example1").append('<tr><td><input type="hidden" name="mode" value="Add"><input type="hidden" name="PatientLabAppointmentDetailID" value=""><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + test + ' name="TesttableID"><input type="hidden"  value=' + testname + ' name="TestNamerow">' + testname + '</td><td><input type="text"  name="rate1" value=' + rate + ' ></td><td><input type="text" value="1"  id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + TotalAmt + ' name="TotalAmt" > </td><td ><input type="text"  name="ServiceType" value="Package"></td><td><a href="#" style="color:red"  aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                        }
+                    //}
+                    }
+                    else {
+                        if (test > 0) {
+                            $("#example1").append('<tr><td><input type="hidden" name="mode" value="Add"><input type="hidden" name="PatientLabAppointmentDetailID" value=""><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + test + ' name="TesttableID"><input type="hidden"  value=' + testname + ' name="TestNamerow">' + testname + '</td><td><input type="text" name="rate1" value=' + rate + ' ></td><td><input type="text" value="1" id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + TotalAmt + ' name="TotalAmt" > </td><td  ><input type="text"  name="ServiceType" value="Test"></td><td><a href="#" style="color:red"   aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                        }
+                    }
+                       
+               
+               
+
+            }
+
+            var TestName = $("#TestName").val('');
+            var Rate = $("#Rate").val('');
+            var Qty = 1;
+
+            var rowCount = $('#example1 tr:last').index();
+            var GrossAmt = 0;
+            var TotalAmt1 = 0;
+           
+            var row = $('#example1 tbody tr').length;
+            for (var a = 0; a < row; a++) {
+
+                GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[a].cells[4].children[0].value);
+                $("#GrossTotal").val(GrossAmt);
+                
+            }
+           
+
+
+
+
+            $("#example1").on('click', '#delrow', function () {
+                debugger;
+                $(this).closest('tr').remove();
+                GrossAmt = 0;
+                var row = $("#example1 td").closest("tr").length;
+                for (var a = 0; a < row; a++) {
+                   
+                    var newrow = a + 1;
+                    GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[newrow].cells[4].children[0].value);
+
+                }
+                $("#GrossTotal").val(GrossAmt);
+                //Calculate();
+            })
+
+        })
+
+      
+
+       
+        $("#example1").delegate('td', 'keyup', function () {
+            debugger
+            var row = $(this).parent().index();
+            var rowCount = $('#example1 tr:last').index();
+
+            var qt = document.getElementById('example1').tBodies[0].rows[row].cells[3].children[0].value;
+            var rate1 = document.getElementById('example1').tBodies[0].rows[row].cells[2].children[0].value;
+         
+            var Total = parseFloat(qt) * parseFloat(rate1).toFixed([2]);
+            document.getElementById('example1').tBodies[0].rows[row].cells[4].children[0].value = Total;
+            //var aaa = document.getElementById('example1').tBodies[0].rows[row].cells[4].innerHTML;
+            //$("#TotalAmt").val(aaa);
+            var GrossAmt = 0;
+           
+            var row = $("#example1 td").closest("tr").length;
+
+            for (var a = 0; a < row; a++) {
+              
+                GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[a].cells[4].children[0].value);
+                $("#GrossTotal").val(GrossAmt);
+              
+            }
+           // Calculate();
+
+
+           
+        });
+
+        $("#example1").delegate('td', 'change', function () {
+            debugger
+            var row = $(this).parent().index();
+            var rowCount = $('#example1 tr:last').index();
+
+            var qt = document.getElementById('example1').tBodies[0].rows[row].cells[3].children[0].value;
+            var rate1 = document.getElementById('example1').tBodies[0].rows[row].cells[2].children[0].value;
+          
+            var Total = parseFloat(qt) * parseFloat(rate1).toFixed([2]);
+            document.getElementById('example1').tBodies[0].rows[row].cells[4].children[0].value = Total;
+           
+            //var aaa = document.getElementById('example1').tBodies[0].rows[row].cells[4].innerHTML;
+            //$("#TotalAmt").val(aaa);
+            var GrossAmt = 0;
+        
+            var row = $("#example1 td").closest("tr").length;
+
+            for (var a = 0; a < row; a++) {
+              
+                GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[a].cells[4].children[0].value);
+                $("#GrossTotal").val(GrossAmt);
+              
+            }
+          //  Calculate();
+
+        });
+
+   
+     
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger;
+
+        $.ajax({
+
+                   type: "POST",
+
+                   //  contentType: "application/json; charset=utf-8",
+                   url: '@Url.Action("GetAllPatientLabAppointment", "PatientLabAppointment")',
+
+                   //data: "{}",
+                   dataType: "json",
+
+                   success: function (data) {
+                       for (var i = 0; i < data.length; i++) {
+
+                          // var SrNo = i + 1;
+
+
+                           $("#example").append('<tr><td>' + data[i].PatientLabAppointmentID + '</td><td>' + data[i].PatientName + '</td><td>' + data[i].Address + '</td><td>' + data[i].MobileNo + '</td><td>' + data[i].AppointmentDate + '</td></tr>');
+                       };
+                   },
+
+                   error: function (result) {
+                       alert("Error grd bind");
+                   }
+               });
+           });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            url: '@Url.Action("BindPatientPrefix", "PatientLabAppointment")',
+            type: "GET",
+            dataType: "json",
+            data: { prefix: "" },
+            success: function (data) {
+                $("#PFPatientName").val("");
+                $("#PFPatientName").text("");
+                debugger
+                for (var i = 0 ; i < data.length; i++) {
+                    debugger
+                    $("#PFPatientName").append('<option value=' + data[i].PrefixName + '> ' + data[i].PrefixName + '</option>')
+
+                }
+
+
+
+            }
+
+        })
+
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#example").delegate('td', 'click', function () {
+            debugger
+          
+            var row_num = parseInt($(this).parent().index());
+            
+            var PatientAppID = document.getElementById("example").tBodies[0].rows[row_num].cells[0].innerHTML;
+            alert(PatientAppID);
+
+            $("#PatientLabAppointmentID").val(PatientAppID);
+            $.ajax({
+                url: '@Url.Action("Edit", "PatientLabAppointment")',
+                type: "POST",
+                datatype: "Json",
+                data: { PatientAppID: $("#PatientLabAppointmentID").val() },
+                success: function (data) {
+                    $("#example1 td").remove();
+                    $(data).each(function (index, d) {
+
+                        for (var a = 0; a < d.SearchLabAppointment.length;a++)
+                        {
+                            debugger
+                            $("#PatientLabAppointmentID").val(d.SearchLabAppointment[a].PatientLabAppointmentID);
+                            $("#AppointmentID").val(d.SearchLabAppointment[a].PatientLabAppointmentID);
+                            $("#PFPatientName").val(d.SearchLabAppointment[a].PrefixName);
+                            $("#PatientName").val(d.SearchLabAppointment[a].PatientName);
+                            $("#GuardianName").val(d.SearchLabAppointment[a].GuardianName);
+                            $("#AppointmentDate").val(d.SearchLabAppointment[a].AppointmentDate);
+
+                            $("#Year").val(d.SearchLabAppointment[a].Year);
+
+                            $("#Gender").val(d.SearchLabAppointment[a].Gender);
+                            $("#DOB").val(d.SearchLabAppointment[a].DOB);
+                            $("#ConDR").val(d.SearchLabAppointment[a].ConsultantDr);
+                            $("#ConDRID").val(d.SearchLabAppointment[a].ConsultantDrID);
+                            $("#ReffDR").val(d.SearchLabAppointment[a].RefferedDr);
+                            $("#ReffDRID").val(d.SearchLabAppointment[a].RefferedDrID);
+                           // alert(d.SearchLabAppointment[a].SampleCollectionBy);
+                            $("#SampleCollectBy").val(d.SearchLabAppointment[a].SampleCollectionBy);
+                            $("#CollectionCentre").val(d.SearchLabAppointment[a].CollectionCentreName);
+                            $("#MobileNo").val(d.SearchLabAppointment[a].MobileNo);
+                            $("#Address").val(d.SearchLabAppointment[a].Address);
+                            $("#Gender").val(d.SearchLabAppointment[a].Gender);
+                   
+                        }
+
+                        for (var b= 0; b < d.SearchLabAppointmentDetails.length;b++)
+                        {
+                            $("#CompanyName").val(d.SearchLabAppointmentDetails[a].OrganizationName);
+                            $("#example1").append('<tr><td><input type="hidden" name="mode" value="Edit"><input type="hidden" name="PatientLabAppointmentDetailID" value=' + d.SearchLabAppointmentDetails[b].PatientLabAppointmentDetailID + '><td class="1testidhidden"><input type="hidden" id="testidhidden"  value=' + d.SearchLabAppointmentDetails[b].TestID + ' name="TesttableID"><input type="hidden"  value=' + d.SearchLabAppointmentDetails[b].TestName + ' name="TestNamerow">' + d.SearchLabAppointmentDetails[b].TestName + '</td><td><input type="text"  name="rate1" value=' + d.SearchLabAppointmentDetails[b].Rate + ' ></td><td><input type="text" value=' + d.SearchLabAppointmentDetails[b].Quantity + '  id="qty1" name="qty"></td><td class="total"><input Type="text"  id="TotalAmt"  value=' + d.SearchLabAppointmentDetails[b].TotalAmount + ' name="TotalAmt" > </td><td ><input type="text"  name="ServiceType" value=' + d.SearchLabAppointmentDetails[b].TestType + '></td><td><a href="#" style="color:red"  aria-hidden="true" id="delrow" class="delrow"><span>Remove</span></a></td></tr>');
+                        }
+
+                        $("#example1").on('click', '#delrow', function () {
+                            debugger;
+                            $(this).closest('tr').remove();
+                            GrossAmt = 0;
+                            var row = $("#example1 td").closest("tr").length;
+                            for (var a = 0; a < row; a++) {
+
+                                var newrow = a + 1;
+                                GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[newrow].cells[4].children[0].value);
+
+
+                            }
+                            $("#GrossTotal").val(GrossAmt);
+
+                        })
+                        debugger
+                        var TestName = $("#TestName").val('');
+                        var Rate = $("#Rate").val('');
+                        var Qty = 1;
+
+                        var rowCount = $('#example1 tr:last').index();
+                        var GrossAmt = 0;
+                        var TotalAmt1 = 0;
+
+                        var row = $('#example1 tbody tr').length;
+
+                        for (var a = 0; a < row; a++) {
+                            debugger
+                            GrossAmt = parseFloat(GrossAmt) + parseFloat(document.getElementById('example1').tBodies[0].rows[a].cells[4].children[0].value);
+                            $("#GrossTotal").val(GrossAmt);
+                           
+                        }
+
+
+                    });
+                }
+                });
+          
+               
+                
+                       
+                        
+                    })
+             
+
+
+
+        
+    })
+</script>
+<script>
+            $(document).ready(function () {
+                $("#btndelete").click(function () {
+                    //alert($("#PatientAppointmentScheduleID").val());
+                    var conform = confirm("Do you Want To Delete");
+                    if (conform) {
+                        debugger
+                        $.ajax({
+                            url: '@Url.Action("Delete", "PatientLabAppointment")',
+                            type: 'POST',
+                            data: { PatientAppID: $("#PatientLabAppointmentID").val() },
+
+                            success: function (data) {
+                                if (data.length > 1) {
+                                    alert("Delete Successfully");
+                                    location.reload();
+                                    //  alert($("#PatientAppointmentScheduleID").val());
+                                }
+                                else {
+
+                                }
+
+
+                            }
+
+                        })
+
+                    }
+                });
+            });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#CollectionCentre").autocomplete({
+
+            source:function(request,response){
+                $.ajax({
+
+                    url: '@Url.Action("CollectionCentre", "PatientLabAppointment")',
+                    type: "GET",
+                    dataType: "Json",
+
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.CollectionCentreName, value: item.CollectionCentreName, id: item.CollectionCentreID };
+                        }));
+                    },
+
+
+
+                });
+            },
+
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+                $("#CollectionCentreID").val(ui.item.id);
+            }
+
+        });
+
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $("#CompanyName").autocomplete({
+
+            source:function(request,response){
+                $.ajax({
+
+                    url: '@Url.Action("CompanyNameBind", "PatientLabAppointment")',
+                    type: "GET",
+                    dataType: "Json",
+
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.OrganizationName, value: item.OrganizationName, id: item.OrganizationID };
+                        }));
+                    },
+
+
+
+                });
+            },
+
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+                $("#CompanyID").val(ui.item.id);
+
+
+            }
+
+        });
+
+    })
+</script>
+
+<!-- ico font -->
+@*</head>*@
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <form action="" method="post">
+        <div class="wrapper">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Patient Lab Appointment</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item active">Patient Lab Appointment</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading green box">Patient Lab Appointment</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Appointment Id-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Appt. Id</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="hidden" id="PatientLabAppointmentID" name="PatientLabAppointmentID" class="form-control">
+                                                        <input type="text" id="AppointmentID" name="AppointmentID" class="form-control">
+                                                        @*<input type="hidden" id="TotalAmt" name="TotalAmt">*@
+                                                    </div>
+                                                </div>
+                                                <!--Aptpointment Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Apt. Date</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="date" id="AppointmentDate" name="AppointmentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Aptpointment Time-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Apt. Time</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="time" id="AppointmentTime" name="AppointmentTime" value="@DateTime.Now.ToString("hh:mm:ss")" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Pt. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                        <select class="form-control" id="PFPatientName" name="PFPatientName">
+                                                            <option id="Select" value="Select">Select</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Guardian Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="padding-right: 0;">
+                                                        <label>Gdn. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="text" id="GuardianName" name="GuardianName" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Date Of Birth-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>DOB.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="date" id="DOB" name="DOB" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control" style="padding: 0;font-size: 12px;">
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <label>Gen.</label>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                        <select name="Gender" id="Gender" class="form-control">
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Address-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Address</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <textarea id="Address" name="Address" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!--Age-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Age</label>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <span>D</span>
+                                                            </div>
+                                                            <input type="text" id="Day" name="Day" class="form-control" placeholder="Day" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 cpb-10">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">
+                                                                <span>M</span>
+                                                            </div>
+                                                            <input type="text" id="Month" name="Month" class="form-control" placeholder="Month" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon padding0">
+                                                                <span>Y</span>
+                                                            </div>
+                                                            <input type="text" required id="Year" name="Year" class="form-control" placeholder="Year" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Mobile Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Mobile No.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="text" id="MobileNo" name="MobileNo" class="form-control" maxlength="10" required
+                                                               style="border-left-color: red;border-left-width: thick;"
+                                                               oninvalid="this.setCustomValidity('Please Enter Mobile Number')"
+                                                               oninput="this.setCustomValidity('')">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Consultant Doctor-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Cons. Dr.</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ConDR" name="ConDR" class="form-control">
+                                                        <input type="hidden" id="ConDRID" name="ConDRID" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Referred By-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                        <label>Ref. By</label>
+                                                    </div>
+                                                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                        <input type="text" id="ReffDR" name="ReffDR" class="form-control" />
+                                                        <input type="hidden" id="ReffDRID" name="ReffDRID" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <!--Sample Collection Boy-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Smp. Coll. Boy</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="SampleCollectBy" name="SampleCollectBy" class="form-control" />
+                                                        <input type="hidden" id="SampleCollectByID" name="SampleCollectByID" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Lab Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Test and Package-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" id="RTest" name="Charge" value="Test" checked>Test
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check-inline">
+                                                        <label class="form-check-label">
+                                                            <input type="radio" class="form-check-input" id="RPackage" name="Charge" value="Package">Package
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!--Collection Centre-->
+                                                <div class="form-group col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Collection Centre</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="CollectionCentre" name="CollectionCentre" class="form-control">
+                                                        <input type="hidden" id="CollectionCentreID" name="CollectionCentreID">
+                                                    </div>
+                                                </div>
+                                                <!--TPA Wise-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4">
+                                                        <label>TPA Wise</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="CompanyName" name="CompanyName" class="form-control" />
+                                                        <input type="hidden" id="CompanyID" name="CompanyID" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Test Name-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Test Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" class="form-control" id="TestName" name="TestName" />
+                                                        <input type="hidden" class="form-control" id="TestNameID" name="TestNameID" />
+                                                    </div>
+                                                </div>
+                                                <!--Rate-->
+                                                <div class="form-group col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Rate</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" name="Rate" id="Rate" class="form-control" placeholder="0.00">
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <button type="button" class="btndivcss" id="Add" name="Add">Add</button>
+                                                    </div>
+                                                </div>
+                                                <!--Gross Total-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>GrossTotal</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="GrossTotal" name="GrossTotal" class="form-control" disabled placeholder="GrossTotal" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="table-responsive">
+                                                    <table id="example1" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                                        <thead style="background-color: #bddff7;">
+                                                            <tr>
+                                                                <th>Test Name</th>
+                                                                <th>Rate</th>
+                                                                <th>Quantity</th>
+                                                                <th>TotalAmount</th>
+                                                                <th>TestType</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="btndelete" name="btndelete">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Dashboard", "Home")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="exampleExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="example" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Patient Appointment Lab ID</th>
+                                            <th>Patient Name</th>
+                                            <th>Address</th>
+                                            <th>Mobile No</th>
+                                            <th>Appointment Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </form>
+</body>
+
+
+
+
+

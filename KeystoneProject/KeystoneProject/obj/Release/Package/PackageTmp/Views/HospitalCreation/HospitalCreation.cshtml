@@ -1,0 +1,1047 @@
+﻿@model KeystoneProject.Models.Keystone.HospitalCreation
+
+@{
+    ViewBag.Title = "HospitalCreation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<style>
+    input[type=file] {
+        display: block;
+        background: #ffffff;
+        padding: 0px 2px 0px 0px;
+        color: #868f95 !important;
+        font-family: roboto;
+    }
+
+    .btn-group {
+        margin-bottom: 4px;
+    }
+
+    .btn {
+        padding: 0px;
+    }
+
+    .padding0 {
+        padding: 0px;
+    }
+
+    .btndivcss:hover {
+        color: #fff;
+        background-color: #03578e;
+        border-color: #106dca;
+    }
+
+    .btndivcss {
+        height: 30px;
+        border: 0px solid white;
+        padding: 0px 6px 0px 0px !important;
+        font-family: roboto;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-radius: 4px;
+    }
+
+    .buttoniconcss {
+        background: #106dca;
+        padding: 8px;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #35a4f1;
+        border-radius: 23px;
+    }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .pagination {
+        margin: 0px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+        .pagination a {
+            color: #35a4f1;
+            float: left;
+            padding: 1px 8px;
+            text-decoration: none;
+            transition: background-color .3s;
+            font-size: 14px;
+            border-radius: 4px;
+            line-height: 21px;
+        }
+
+            .pagination a.active {
+                background-color: #35a4f1;
+                color: white;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #e1eff9;
+    }
+
+    .btn-group {
+        padding-right: 4px;
+    }
+
+    .tableheading {
+        color: #4c6588;
+        font-family: roboto;
+        padding-left: 1px;
+        font-size: 17px;
+        padding-top: 5px;
+    }
+
+    .topheadline {
+        background: white;
+        padding: 3px;
+        color: #1e2123;
+        box-shadow: 1px 1px 11px 1px #cecece;
+        font-family: roboto;
+        padding-left: 12px;
+        font-size: 19px;
+        margin-top: 0px;
+    }
+
+    .panelheading {
+        background: rgb(189, 223, 247);
+        color: #22292d;
+        font-family: roboto;
+        font-size: 15px;
+        padding: 5px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .panel-primary {
+        border: 1px solid #dadada;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        background: #ffffff;
+    }
+
+    .content-wrapper {
+        background: #F6F7FB !important;
+    }
+
+    span {
+        font-family: roboto;
+        font-size: 14px;
+    }
+
+    .rowmargintop {
+        margin-top: 5px;
+    }
+
+    .form-control {
+        height: 26px;
+        padding: 1px 1px 1px 6px;
+    }
+
+    .content-header {
+        padding: 0px .5rem;
+    }
+
+    .rowmarginbottom {
+        margin-bottom: 4px;
+    }
+
+    th {
+        font-family: roboto;
+        font-size: 15px;
+        font-weight: 500;
+        background: #e6e5e5;
+        padding: 3px !important;
+        text-align: center;
+    }
+
+    td {
+        font-family: roboto;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 2px !important;
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 4px;
+        border-collapse: inherit;
+        margin-bottom: 3px;
+    }
+
+    .btn-warning {
+        color: #ffffff;
+        background-color: #35a4f1;
+        border-color: #35a4f1;
+        box-shadow: 0 1px 1px rgba(0,0,0,.075);
+        font-family: roboto;
+    }
+</style>
+<style>
+    th {
+        width: 25.00%;
+    }
+
+    thead {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+    }
+
+    tfoot {
+        background: #d0e6f6;
+        display: table;
+        width: 100%;
+        width: calc(100% - 8px);
+        padding: 3px;
+        border: 1px solid white !important;
+    }
+
+        tfoot td {
+            border: 1px solid white !important;
+            padding: 1px !important;
+        }
+
+    tbody {
+        height: 120px;
+        overflow: auto;
+        overflow-x: hidden;
+        display: block;
+        width: 100%;
+    }
+
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    .btn-primary {
+        background-color: #35a4f1 !important;
+        color: #fff;
+        border: 1px solid #35a4f1;
+    }
+
+    .file-field input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+</style>
+
+<style>
+    label {
+        display: block;
+        margin-bottom: .5rem;
+        font-weight: 500 !important;
+        font-family: roboto;
+    }
+
+    .checkbox .cr, .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #98a5ad;
+        border-radius: 1px;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+
+    .glyphicon-ok:before {
+        content: "\e013";
+        padding-right: -10px;
+        margin-left: -1px;
+        color: #5f6365;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+    .checkbox, .radio {
+        position: relative;
+        display: block;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+        .checkbox label input[type="checkbox"],
+        .radio label input[type="radio"] {
+            display: none;
+        }
+
+            .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+            .radio label input[type="radio"] + .cr > .cr-icon {
+                transform: scale(3) rotateZ(-20deg);
+                opacity: 0;
+                transition: all .3s ease-in;
+            }
+
+            .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+            .radio label input[type="radio"]:checked + .cr > .cr-icon {
+                transform: scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+
+            .checkbox label input[type="checkbox"]:disabled + .cr,
+            .radio label input[type="radio"]:disabled + .cr {
+                opacity: .5;
+            }
+</style>
+<style>
+    .tab .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tab .nav-tabs > li > a {
+            border: none;
+            padding: 9px 10px;
+            color: #fff;
+            background: #4e6270;
+            border-radius: 0;
+            font-family: roboto;
+            font-size: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+            .tab .nav-tabs > li > a > i {
+                font-size: 14px;
+                margin-right: 10px;
+            }
+
+        .tab .nav-tabs > li.active > a,
+        .tab .nav-tabs > li.active > a:focus,
+        .tab .nav-tabs > li.active > a:hover {
+            border: none;
+            background: #e74c3c;
+            color: #fff;
+            transition: background 0.20s linear;
+        }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -25px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #e74c3c;
+        z-index: 999;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+        border: 2px solid #bddff7;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+
+    div.dt-buttons {
+        position: relative;
+        float: left;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        display: none;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #ccc8c8 !important;
+        background: #bddff7;
+        font-weight: 500 !important;
+    }
+
+    table.dataTable.no-footer {
+        border-bottom: 1px solid #ebe7e7 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+        color: #333;
+        background: #d0e6f6;
+        font-family: roboto;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: inherit !important;
+    }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #41b0ff !important;
+            padding: 0px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 2px 8px 0px 8px !important;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #333 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        padding-top: 0.25em;
+        padding-bottom: 3px;
+    }
+</style>
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script type="text/javascript">
+        $(document).ready(function () {
+
+                   debugger
+                   $.ajax({
+
+                       type: "POST",
+                       //  contentType: "application/json; charset=utf-8",
+                       url: '@Url.Action("Sho)_wHospital", "HospitalCreation")',
+                       //data: "{}",
+                       dataType: "json",
+                       success: function (data) {
+                           for (var i = 0; i < data.length; i++) {
+
+                               var SrNo = i+1;
+                               $("#tablerefferdoctor").append(
+                                   '<tr><td>' + SrNo + '</td><td>' + data[i].HospitalName + '</td><td style="">' + data[i].GroupName + '</td><td style="display:none">' + data[i].ReferenceCode + '</td><td style="display:none">' + data[i].Logo + '</td><td style="display:none">' + data[i].ManagingBody + '</td><td style="display:none">' + data[i].Adminstrator + '</td><td style="display:none">' + data[i].Address + '</td><td style="display:none">' + data[i].CityID + '</td><td style="display:none">' + data[i].PinCode + '</td><td style="display:none">' + data[i].EmailID + '</td></tr>');
+                           };
+                       },
+                       error: function (result) {
+                           alert("Error grd bind");
+                       }
+                   });
+
+
+           });
+
+
+    </script>*@
+
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+            window.onload(true);
+    </script>
+}
+
+<script>
+
+    function Delete(HospitalID) {
+        debugger
+        if (HospitalID != "" && $("#HospitalName").val() != "") {
+
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    //url: "/Doctor/DeleteDoctor?DoctorID=" + DoctorID,
+                    url: '@Url.Action("DeleteHospital", "HospitalCreation")',
+                    data: { HospitalID: HospitalID },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Hospital Deleted Successfully") {
+                            alert("Hospital Deleted Successfully");
+                            location.reload(true);
+                            Restore();
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#hospitalCity").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetCityRecord", "HospitalCreation")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.CityName, value: item.CityName, id: item.CityID, StateID: item.StateID, StateName: item.StateName, CountryID: item.CountryID, CountryName: item.CountryName
+                            };
+                        }))
+                    }
+                })
+
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#CityID").val(show);
+                $("#hospitalState").val(i.item.StateName);
+                $("#hospitalCountry").val(i.item.CountryName);
+            },
+        });
+
+
+    $.ajax
+        ({
+            type: "POST",
+            url: '@Url.Action("DatatableBind", "HospitalCreation")',
+            dataType: "json",
+
+            success: function (result) {
+                var count = 1;
+                $.each(result, function (i, obj) {
+                    $("#datatable-responsive").append('<tr><td>' + count + '</td><td style="display:none">' + obj.HospitalID + '</td><td>' + obj.HospitalName + '</td><td style="display:none">' + obj.ReferenceCode + '</td><td style="display:none">' + obj.GroupName + '</td></tr>')
+                    count++;
+                });
+            },
+            error: function () {
+            }
+        });
+
+
+
+    $(document).ready (function(){
+        $("#datatable-responsive").delegate('td', 'click', function () {
+            debugger;
+            Restore();
+
+            $("#save").text("Update");
+            $("save").addClass("btndivcss");
+            var row_num = parseInt($(this).parent().index());
+            var HospitalID = parseInt(document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[1].innerHTML);
+            var HospitalName = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[2].innerHTML;
+            var ReferenceCode = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[3].innerHTML;
+            var GroupName = document.getElementById("datatable-responsive").tBodies[0].rows[row_num].cells[4].innerHTML;
+            $("#HospitalID").val(HospitalID);
+            $("#HospitalName").val(HospitalName);
+            $("#ReferenceCode").val(ReferenceCode);
+            $("#GroupName").val(ReferenceCode);
+            $.ajax
+                ({
+                    type: "GET",
+                    url: '@Url.Action("Fill", "HospitalCreation")',
+                    data: { HospitalID: HospitalID },
+
+                    success: function (result) {
+
+                        $.each(result, function (i, obj) {
+                            $("#HospitalID").val(HospitalID);
+                            $("#HospitalName").val(obj.HospitalName);
+                            $("#GroupName").val(obj.GroupName);
+                            $("#ReferenceCode").val(obj.ReferenceCode);
+                            $("#ManagingBody").val(obj.ManagingBody);
+                            $("#Adminstrator").val(obj.Adminstrator);
+                            $("#Address").val(obj.Address);
+                            $("#CityID").val(obj.CityID);
+                            $("#hospitalCity").val(obj.CityName);
+                            $("#hospitalPincode").val(obj.PinCode);
+                            $("#hospitalEmailId").val(obj.EmailID);
+                            $("#StateID").val(obj.StateID);
+                            $("#hospitalState").val(obj.StateName);
+                            $("#CountryID").val(obj.CountryID);
+                            $("#hospitalCountry").val(obj.CountryName);
+                            $("#hospitalPhoneNumber1").val(obj.PhoneNo);
+                            $("#hospitalFaxNumber").val(obj.FaxNo);
+                            $("#PhoneNo1").val(obj.PhoneNo1);
+                            $("#hospitalMobileNumber").val(obj.MobileNo);
+                            $("#hospitalURL").val(obj.URL);
+
+                        });
+                    }
+                });
+        });
+    });
+    });
+
+    function Restore() {
+
+        $("#HospitalID").val("");
+        $("#HospitalName").val("");
+        $("#GroupName").val("");
+        $("#ReferenceCode").val("");
+        $("#ManagingBody").val("");
+        $("#Adminstrator").val("");
+        $("#Address").val("");
+        $("#CityID").val("");
+        $("#hospitalCity").val("");
+        $("#hospitalPincode").val("");
+        $("#hospitalEmailId").val("");
+        $("#StateID").val("");
+        $("#hospitalState").val("");
+        $("#CountryID").val("");
+        $("#hospitalCountry").val("");
+        $("#hospitalPhoneNumber1").val("");
+        $("#hospitalFaxNumber").val("");
+        $("#PhoneNo1").val("");
+        $("#hospitalMobileNumber").val("");
+        $("#hospitalURL").val("");
+
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <form action="" method="post">
+            <div class="content-wrapper">
+                <h5 class="topheadline">Hospital Creation Master</h5>
+                <!-- Content Header (Page header) -->
+                <!-- Main content -->
+                <section class="content-header">
+                    <form action="" method="post">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-8 padding0">
+                                    <!-- left column -->
+                                    <div class="col-md-12">
+
+                                        <div class="panel-primary">
+                                            <div class="box-header with-border">
+                                                <h3 class="panelheading">Hospital Registration Details</h3>
+                                            </div>
+                                            <!-- /.box-header -->
+                                            <!-- Hospital Location Form Start -->
+                                            <!--<form role="form">-->
+                                            <div class="panel-body padding0">
+
+                                                <div class="col-lg-7 padding0">
+                                                    <div class="rowmargintop rowmarginbottom" style="padding-top:6px">
+                                                        <div class="col-lg-12 padding0">
+                                                            <div class="col-lg-4">
+                                                                <label>Group Name</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="text" class="form-control" required="" id="GroupName" name="GroupName" style="border-left: 4px solid red;">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12 padding0 rowmargintop" style="padding-top:6px">
+                                                            <div class="col-lg-4">
+                                                                <label>Hospital Name</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="text" class="form-control" id="HospitalName" name="HospitalName" style="border-left: 4px solid red;">
+                                                                <input type="hidden" id="HospitalID" name="HospitalID">
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="rowmargintop">
+                                                        <div class="col-lg-12 padding0 rowmargintop" style="padding-top:3px">
+                                                            <div class="col-lg-4">
+                                                                <label>Managing Body</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="text" class="form-control" id="ManagingBody" name="ManagingBody">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12 padding0 rowmarginbottom rowmargintop" style="padding-top:3px">
+                                                            <div class="col-lg-4">
+                                                                <label>Administrator</label>
+
+                                                            </div>
+                                                            <div class="col-lg-8">
+                                                                <input type="email" class="form-control" id="Adminstrator" name="Adminstrator">
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-5 padding0">
+                                                    <div class="col-lg-12 padding0 rowmarginbottom rowmargintop">
+
+                                                        <div class="col-sm-2">
+                                                            <span>Logo</span>
+                                                        </div>
+                                                        <div class="col-lg-8" style="text-align: -webkit-center">
+
+
+                                                            <img src="https://www.freeiconspng.com/uploads/ambulance-cross-hospital-icon-11.png" style="height: 100px;border: 1px solid #e8e8e8;
+                                         border-radius: 4px;">
+
+                                                            <input type="file" id="file" aria-label="File browser example" class="form-control input-sm" style="font-size:12px;padding:1px;width:80%;margin-top:5px">
+
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Hospital Location Tab Ends -->
+                                            <!-- Address Tab Starts -->
+                                            <!-- Address Tab Ends -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Registration Tab Starts -->
+                                    <!-- Registration Tab Ends -->
+                                    <!--/.col (left) -->
+                                    <!-- right column -->
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="panel-primary">
+                                        <div class="box-header">
+
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
+                                               cellspacing="0" width="100" role="grid"
+                                               aria-describedby="datatable-responsive_info">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hospital Name</th>
+                                                    <th>Reference Code</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tablebind" class="scrollbar">
+                                                <tr></tr>
+
+                                            </tbody>
+
+                                        </table>
+
+                                        <!-- /.box-body -->
+                                    </div>
+                                    <!-- /.box -->
+                                </div>
+                                <!--/.col (right) -->
+                            </div>
+
+
+
+                            <div class="row">
+
+                                <div class="col-md-12 rowmargintop">
+
+                                    <div class="panel-primary">
+                                        <div class="box-header with-border">
+                                            <h3 class="panelheading">Hospital Address Details</h3>
+                                        </div>
+
+                                        <div class="panel-body padding0">
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <!--Hospital Address Start-->
+                                                <div class="col-lg-5 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span>Address</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <textarea class="form-control" id="Address" name="Address" rows="3"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <!--Hospital Address End-->
+                                                <!--Hospital City Start-->
+                                                <div class="col-lg-4 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span>  City</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" id="hospitalCity" name="hospitalCity" class="form-control">
+                                                        <input type="hidden" id="CityID" name="CityID">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span>Pin code</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" id="hospitalPincode" name="PinCode" class="form-control">
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <!--Hospital City End-->
+                                                <!--Hospital Pin code Start-->
+                                                <!--Hospital Pin code End-->
+                                                <!--Hospital State Start-->
+                                                <div class="col-lg-5 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span> State</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" id="hospitalState" name="hospitalState" class="form-control">
+                                                        <input type="hidden" id="StateID" name="StateID">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span>Country</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" id="hospitalCountry" name="hospitalCountry" class="form-control">
+                                                        <input type="hidden" id="CountryID" name="CountryID">
+                                                    </div>
+                                                </div>
+                                                <!--Hospital Country End-->
+                                                <!--Hospital Phone number 1 Start-->
+                                                <div class="col-lg-3 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span> Phone No.</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" id="hospitalPhoneNumber1" name="PhoneNo" class="form-control">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Hospital State End-->
+                                            <!--Hospital Country Start-->
+                                            <!--Hospital Phone number 1 End-->
+                                            <!--Hospital Fax Number Start-->
+                                            <div class="col-lg-12 padding0 rowmargintop">
+                                                <div class="col-lg-5 padding0">
+
+                                                    <div class="col-sm-4"><span>Fax No.</span></div>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" id="hospitalFaxNumber" name="FaxNo" class="form-control">
+                                                    </div>
+
+                                                </div>
+                                                <!--Hospital Fax Number End-->
+                                                <!--Hospital Phone number 2 Start-->
+
+                                                <div class="col-lg-4 padding0">
+
+                                                    <div class="col-sm-4">
+                                                        <span>  Mobile No.</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" id="hospitalMobileNumber" name="MobileNo" class="form-control">
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-3 padding0">
+                                                    <div class="col-sm-4">
+                                                        <span>   URL</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" id="hospitalURL" name="URL" class="form-control">
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 padding0 rowmarginbottom">
+                                                <!--Hospital Phone number 2 End-->
+                                                <!--Hospital Mobile Number Start-->
+                                                <!--Hospital Mobile Number End-->
+                                                <!--Hospital Email I'd Start-->
+
+                                                <div class="col-lg-5 padding0 rowmargintop">
+
+                                                    <div class="col-sm-4">
+                                                        <span>   Email Id</span>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <input type="email" id="hospitalEmailId" name="EmailID" class="form-control">
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <!--Hospital Email I'd End-->
+                                            <!--Hospital URL Start-->
+                                            <!--Hospital URL End-->
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+                                    <!-- Address Form Ends -->
+                                </div>
+                            </div>
+                            <div class="col-lg-12 rowmargintop">
+                                <div style="text-align: center; display: block;">
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="submit" id="save" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" onclick="Delete(document.getElementById('HospitalID').value)" class="btndivcss"><span class="fa fa-trash buttoniconcss"></span>Delete</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="reset" class="btndivcss"><span class="fa fa-refresh buttoniconcss"></span>Clear</button>
+
+
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+
+                                        <button type="button" class="btndivcss"><span class="fa fa-sign-out buttoniconcss"></span>Exit</button>
+
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                </section>
+        </form>
+
+    </div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

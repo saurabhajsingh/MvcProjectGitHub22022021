@@ -1,0 +1,1217 @@
+﻿@model KeystoneProject.Models.FinancialAccount.VoucherEntry
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file is edited by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>
+*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    /*#divChequeNo {
+            position: absolute;
+            margin-left: 380px;
+            display: grid;
+            border: 2px solid red;
+            background: aliceblue;
+        }*/
+
+    @@media only screen and (max-width: 425px) {
+        .cpb-10 {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+@*
+    <style>
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+        input[type=file] {
+            display: block;
+            background: #ffffff;
+            padding: 0px 2px 0px 0px;
+            color: #868f95 !important;
+            font-family: roboto;
+        }
+
+        .btn-group {
+            margin-bottom: 4px;
+        }
+
+        .btn {
+            padding: 0px;
+        }
+
+        .padding0 {
+            padding: 0px;
+        }
+
+        .btndivcss:hover {
+            color: #fff;
+            background-color: #03578e;
+            border-color: #106dca;
+        }
+
+        .btndivcss {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 6px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+
+        .buttoniconcss {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 0px 0px 4px;
+            margin-right: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #35a4f1;
+            border-radius: 23px;
+        }
+
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .btn-group {
+            padding-right: 4px;
+        }
+
+        .topheadline {
+            background: white;
+            padding: 3px;
+            color: #1e2123;
+            box-shadow: 1px 1px 11px 1px #cecece;
+            font-family: roboto;
+            padding-left: 12px;
+            font-size: 19px;
+            margin-top: 0px;
+        }
+
+        .panelheading {
+            background: rgb(189, 223, 247);
+            color: #22292d;
+            font-family: roboto;
+            font-size: 15px;
+            padding: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .panel-primary {
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            box-shadow: 1px 1px 11px 1px #eae4e4;
+            background: #ffffff;
+        }
+
+        .content-wrapper {
+            background: #F6F7FB !important;
+        }
+
+        span {
+            font-family: roboto;
+            font-size: 14px;
+        }
+
+        .rowmargintop {
+            margin-top: 5px;
+        }
+
+        .form-control {
+            height: 26px;
+            padding: 1px 1px 1px 6px;
+        }
+
+        .rowmarginbottom {
+            margin-bottom: 4px;
+        }
+
+        .btn-warning {
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            font-family: roboto;
+        }
+
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+    </style>*@
+
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example2').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example3').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#example5').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+<script>
+    var TotalCr = "0.00";
+    var TotalDr = "0.00";
+    var Accountname;
+    var OtherAcoountId;
+    var Dramount;
+    var Cramount;
+    var ChequeNo;
+    var BankName;
+    var Date;
+    $(document).ready(function () {
+        debugger
+        //alert("asdsf");
+        $("#voucher_name").autocomplete({
+            source: function (request, responce) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("BindVoucherName", "VoucherEntry")',
+                    type: "Post",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        responce($.map(data, function (item) {
+                            return { label: item.VoucherTypeName, value: item.VoucherTypeName, id: item.VoucherTypeID }
+                        }));
+                    }
+                })
+            },
+            select: function (event, ui) {
+                debugger
+                $("#account_name").val("");
+                document.getElementById("account_name").readOnly = true;
+                var idd = ui.item.id;
+                $("#voucher_nameId").val(idd);
+                $.ajax({
+                    url: '@Url.Action("GetVoucherType", "VoucherEntry")',
+                    type: "Post",
+                    dataType: "json",
+                    data: { VoucherTypeID: idd },
+                    success: function (data) {
+                        debugger
+                        var prefix = (data[0].AccountsID);
+                        if (data[0].EditMasterAccount == "True") {
+                            document.getElementById("account_name").readOnly = false;
+                        }
+                        if (data[0].DebitMasterAccount == "True") {
+                            document.getElementById("dr_amount_other").readOnly = true;
+                            document.getElementById("cr_amount_other").readOnly = false;
+                        }
+                        else {
+                            document.getElementById("dr_amount_other").readOnly = false;
+                            document.getElementById("cr_amount_other").readOnly = true;
+                        }
+                        $.ajax({
+                            url: '@Url.Action("getAccountsName", "VoucherEntry")',
+                            type: "Post",
+                            dataType: "json",
+                            data: { prefix: prefix },
+                            success: function (data) {
+                                debugger
+                                $("#account_name").val(data[0].AccountName);
+                                $("#account_nameId").val(data[0].AccountsID);
+                            }
+                        })
+                    }
+                })
+            }
+        });
+    });
+    $(document).ready(function () {
+        debugger
+        $("#account_name_other").autocomplete({
+            source: function (request, responce) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("BindAccountName", "VoucherEntry")',
+                    type: "Post",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        responce($.map(data, function (item) {
+                            return { label: item.AccountName, value: item.AccountName, id: item.AccountsID }
+                        }));
+                    }
+                })
+            },
+            select: function (event, ui) {
+                debugger
+                var Id = ui.item.id;
+                $("#account_name_otherId").val(Id);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $("#datatable-responsive").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            $(this).closest('tr').text();
+        })
+        $("#add").click(function () {
+            debugger
+            if ($("#voucher_name").val() != "") {
+                if ($("#account_name_other").val() != "") {
+                    if ($("#dr_amount_other").val() != "" && $("#dr_amount_other").val() > 0 || $("#cr_amount_other").val() != "" && $("#cr_amount_other").val() > 0) {
+                        ChequeNo = "";
+                        BankName = "";
+                        Accountname = $("#account_name_other").val();
+                        OtherAcoountId = $("#account_name_otherId").val();
+                        Dramount = $("#dr_amount_other").val();
+                        Cramount = $("#cr_amount_other").val();
+                        ChequeNo = $("#cmbChequeNo").val();
+
+                        if (ChequeNo == null || ChequeNo == "") {
+                            ChequeNo = "";
+                        }
+                        BankName = $("#BankName").val();
+                        //var Date1 = new Date($("#datepicker3").val());
+                        var Date = $("#current_date").val();
+                        Narration = $("#Narration").val();
+                        var FillCr = $("#dr_amount_other").val();
+                        if (Dramount == "" || Dramount == "0.00") {
+                            Dramount = "0.00";
+                        }
+                        else if (Cramount == "" || Cramount == "0.00") {
+                            Cramount = "0.00";
+                        }
+                        $("#datatable-responsive").append('<tr><td>' + '<input type="text" value="' + Accountname + '" id="AccountName" readOnly class="form-control"  name="AccountName">' + '<input type="hidden" value="' + OtherAcoountId + '" id="tblAccountNameId" name="tblAccountNameId">' + '</td><td>' +
+                            '<input type="text" value="' + Dramount + '" id="Dramt" class="form-control" name="Dramt">' + '</td><td>' + '<input type="text" value="' + Cramount + '" id="Cramt" class="form-control" name="Cramt">' +
+                            '</td><td>' + '<input type="text" value="' + ChequeNo + '" id="Cheq" class="form-control" readOnly name="Cheq">' + '</td><td>' + '<input type="text" value="' + BankName + '" id="Bank" class="form-control" readOnly name="Bank">' + '</td><td>' + '<input type="Date" value="@DateTime.Now.ToString("yyyy-MM-dd")""' + Date + '" id="date" readOnly name="date">' + '</td><td>' + '<input type="text" value="' + Narration + '" id="Narr" class="form-control" readOnly name="Narr">' + '</td><td><a href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>');
+                        TotalCr = "0.00";
+                        TotalDr = "0.00";
+                        var child = $("#datatable-responsive tr").length - 1;
+                        for (var i = 1; i < child; i++) {
+                            var ch = document.getElementById('datatable-responsive').tBodies[0].rows[i].cells[2].innerHTML;
+                            if (Cramount != "" && Cramount != "0.00") {
+                                TotalCr = parseFloat(TotalCr) + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[i].cells[2].children[0].value);
+                                document.getElementById('datatable-responsive').tBodies[0].rows[i].cells[1].children[0].readOnly = true;
+                            }
+                            else {
+                                TotalDr = parseFloat(TotalDr) + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[i].cells[1].children[0].value);
+                                document.getElementById('datatable-responsive').tBodies[0].rows[i].cells[2].children[0].readOnly = true;
+                            }
+                        }
+                        $("#dr_amount").val(TotalCr);
+                        $("#cr_amount").val(TotalDr);
+                        $("#cr_amount").val(Dramount);
+                        $("#dr_amount").val(Cramount);
+                        $("#account_name_other").val("");
+                        $("#dr_amount_other").val("0.00");
+                        $("#cr_amount_other").val("0.00");
+                        $("#cmbChequeNo").val("");
+                        $("#BankName").val("");
+                        $("#Narration").val("");
+                        document.getElementById("voucher_name").readOnly = true;
+                        $("#account_name_other").focus();
+                    }
+                    else {
+                        alert("Please Select Cr or Dr Amount");
+                    }
+                }
+                else {
+                    alert("Please Select Account Name");
+                    $("#account_name_other").focus();
+                }
+            }
+            else {
+                alert("Please Select Voucher Name");
+                $("#voucher_name").focus();
+            }
+        })
+    })
+    $(document).ready(function () {
+        $("#BankName").autocomplete
+              ({
+                  source: function (request, response) {
+                      $.ajax
+                          ({
+                              url: '@Url.Action("GetAllBank", "VoucherEntry")',
+                              type: "POST",
+                              dataType: "json",
+                              data: { prefix: request.term },
+                              success: function (data) {
+                                  debugger
+                                  response($.map(data, function (item) {
+                                      return {
+                                          label: item.BankName, value: item.BankName, id: item.BankId
+                                      };
+                                  }))
+                              }
+                          })
+                  },
+                  minLength: 1,
+                  select: function (event, i) {
+                      if (!i.item) {
+                          this.value = "";
+                      }
+                      $("#BankID").val(i.item.id);
+                      alert($("#BankID").val());
+                      $.ajax({
+                          url: '@Url.Action("GetChequeBookByBankID", "VoucherEntry")',
+                          dataType: "json",
+                          data: { BankId: $('#BankID').val() },
+                          success: function (data) {
+                              debugger
+                              $("#bookName").text("");
+                              $("#bookName").val("");
+                              $("#cmbChequeNo").text("");
+                              $("#cmbChequeNo").val("");
+                              for (var a = 0; a < data.length; a++) {
+                                  debugger
+                                  $("#bookName").append('<option value=' + data[a].ChequeBookID + '>' + data[a].BookName + '</option>')
+                              }
+                              var ChequeBookID = data[0].ChequeBookID;
+                              $.ajax({
+                                  url: '@Url.Action("ChequeNo", "VoucherEntry")',
+                                  dataType: "json",
+                                  data: { ChequeBookID: ChequeBookID },
+                                  success: function (data) {
+                                      debugger
+                                      var lent = data.length;
+                                      $("#cmbChequeNo").append('<option value=' + data[0].SchequeNo + '>' + data[0].SchequeNo + '</option>')
+                                      for (var b = 0; b < data.length; b++) {
+                                          $("#cmbChequeNo").append('<option value=' + data[b].ChequeNo1 + '>' + data[b].ChequeNo1 + '</option>')
+                                      }
+                                  }
+                              });
+                          }
+                      });
+                  },
+              });
+        $(document).ready(function () {
+            debugger
+            $("#datatable-responsive").delegate('td', 'keyup', function () {
+                debugger
+                var child = $("#datatable-responsive tr").index();
+                $("#dr_amount").val("0.00");
+                $("#cr_amount").val("0.00");
+                TotalCr = "0.00";
+                TotalDr = "0.00";
+                var ch = document.getElementById('datatable-responsive').tBodies[0].rows[child].cells[2].children[0].value;
+                if (Cramount != "" && Cramount != "0.00") {
+                    TotalCr = parseFloat(TotalCr) + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[child].cells[2].children[0].value);
+                }
+                TotalDr = parseFloat(TotalDr) + parseFloat(document.getElementById('datatable-responsive').tBodies[0].rows[child].cells[1].children[0].value);
+                $("#dr_amount").val(TotalCr);
+                $("#cr_amount").val(TotalDr);
+            });
+        });
+        $(document).ready(function () {
+            $("#ChequeNo").click(function () {
+                debugger
+                //$("#divChequeNo").toggle(300);
+                $('#chequeNoModal').modal('show');
+            })
+        });
+        $(document).ready(function () {
+            $("#bookName").autocomplete
+                  ({
+                      source: function (request, response) {
+                          $.ajax
+                              ({
+                                  url: '@Url.Action("GetChequeBookByBankID", "VoucherEntry")',
+                                  type: "POST",
+                                  dataType: "json",
+                                  data: { prefix: request.term },
+                                  success: function (data) {
+                                      response($.map(data, function (item) {
+                                          return {
+                                              label: item.bookName, value: item.bookName, id: item.ChequeBookID
+                                          };
+                                      }))
+                                  }
+                              })
+                      },
+                      minLength: 1,
+                      change: function (event, i) {
+                          if (!i.item) {
+                              this.value = "";
+                          }
+                      },
+                      select: function (event, i) {
+                          $('#ChequeBookID').val(i.item.id);
+                          $("#bookName").val(i.item.bookName);
+                      },
+                  });
+            $(document).ready(function () {
+                $("#BankName").change(function () {
+                    debugger
+                    //alert("7");
+                    var BankId = $("#BankID").val();
+                    alert($("#BankID").val());
+                });
+            });
+            $(document).ready(function () {
+                $("#bookName").change(function () {
+                    debugger
+                    var ChequeBookID = $("#bookName").val();
+                    $.ajax({
+                        url: '@Url.Action("ChequeNo", "VoucherEntry")',
+                        dataType: "json",
+                        data: { ChequeBookID: ChequeBookID },
+                        success: function (data) {
+                            debugger
+                            $("#cmbChequeNo").val("");
+                            $("#cmbChequeNo").text("");
+                            $("#cmbChequeNo").append('<option value=' + data[0].SchequeNo + '>' + data[0].SchequeNo + '</option>')
+                            for (var b = 0; b < data.length; b++) {
+                                $("#cmbChequeNo").append('<option value=' + data[b].ChequeNo1 + '>' + data[b].ChequeNo1 + '</option>')
+                            }
+                        }
+                    });
+                });
+                $("#btnok").click(function () {
+                    //$("#divChequeNo").hide(300);
+                    $("#chequeNoModal").modal('hide');
+                });
+            });
+        });
+    });
+</script>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ShowAllVoucherEntry", "VoucherEntry")',
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#datatable-responsive2").append(
+                        '<tr><td>' + SrNo + '</td><td>' + data[i].VoucharEntryID + '</td><td>' + data[i].CurrentDate + '</td><td>' + data[i].VoucharName + '</td><td>' + data[i].RefVoucharNo + '</td><td>' + data[i].AccountName + '</td><td>' + data[i].VoucharDate + '</td><td>' + data[i].Narration + '</td><td>' + data[i].VoucharAccountName + '</td><td>' + data[i].VoucharDrAmount + '</td><td>' + data[i].VoucharCrAmount + '</td><td style="display:none">' + data[i].InvNo + '</td><td style="display:none">' + data[i].AccountsIDTable + '</td><td style="display:none">' + data[i].VoucharID + '</td><td style="display:none">' + data[i].AccountsID + '</td><td style="display:none">' + data[i].print1 + '</td><td><i id="print" class="fa fa-print"></i></td></tr>');
+                };
+                $('#datatable-responsive2').DataTable({
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#datatable-responsive2').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#datatable-responsive2ExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grid bind");
+            }
+        });
+        $("#presentor").on('click', '#print', function () {
+            debugger;
+            var row = $(this).closest('tr').index();
+            var VoucherEntryID = document.getElementById('datatable-responsive2').tBodies[0].rows[row].cells[1].innerHTML;
+
+            var VoucherEntryID = { VoucharEntryID: VoucherEntryID }
+
+            $.ajax({
+                url: '@Url.Action("PrintVoucherEntry", "VoucherEntry")',
+                dataType: "json",
+                type: 'POST',
+                data: JSON.stringify(VoucherEntryID),
+                traditional: true,
+                contentType: 'application/json',
+                success: function (data) {
+                    debugger;
+                    var Print = "Print";
+                    
+                    if (data == "Print") {
+
+                        window.open('@Url.Action("RptVoucherEntryPrint", "VoucherEntry")');
+                    }
+                      
+                   
+                    
+                }
+            });           
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        $('#datatable-responsive2').delegate('td', 'click', function () {
+            debugger;
+            var row = $(this).parent().index();
+            var VoucharEntryID = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[1].innerHTML;
+            var CurrentDate = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[2].innerHTML;
+            var VoucharName = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[3].innerHTML;
+            var RefVoucharNo = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[4].innerHTML;
+            var AccountName = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[5].innerHTML;
+            var VoucharDate = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[6].innerHTML;
+            var Narration = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[7].innerHTML;
+            var VoucharAccountName = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[8].innerHTML;
+            var VoucharDrAmount = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[9].innerHTML;
+            var VoucharCrAmount = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[10].innerHTML;
+            var InvNo = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[11].innerHTML;
+            //var ChequeClearDate = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[12].innerHTML;
+            var AccountsIDTable = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[12].innerHTML;
+            var VoucharID = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[13].innerHTML;
+            var AccountsID = document.getElementById("datatable-responsive2").tBodies[0].rows[row].cells[14].innerHTML;
+            $('#voucher_name').val(VoucharName);
+            $('#current_date').val(CurrentDate);
+            $('#RefVoucharNo').val(RefVoucharNo);
+            $('#voucher_date').val(VoucharDate);
+            $('#Narration').val(Narration);
+            $('#account_name').val(AccountName);
+            $('#dr_amount').val(VoucharDrAmount);
+            $('#cr_amount').val(VoucharCrAmount);
+            $('#inv_no').val(InvNo);
+            //$('#chq_date').val(ChequeClearDate);
+            $('#account_name_otherId').val(AccountsIDTable);
+            $('#voucher_nameId').val(VoucharID);
+            $('#account_nameId').val(AccountsID);
+            $.ajax({
+                url: '@Url.Action("FillVoucherEntry", "VoucherEntry")',
+                dataType: "json",
+                data: { VoucharEntryID: VoucharEntryID },
+                success: function (data) {
+                    debugger
+                    $("#datatable-responsive tbody tr").remove();
+                    for (var b = 0; b < data.length; b++) {
+                        $("#datatable-responsive").append('<tr><td>' + '<input type="text" value="' + data[0].AccountName + '" id="AccountName" readOnly class="form-control"  name="AccountName">' + '<input type="hidden" value="' + data[0].VoucharEntryID + '" id="VoucharEntryID" class="form-control"  name="VoucharEntryID">'
+                            + '<input type="hidden" value="' + data[0].VoucharID + '" id="VoucharID"  class="form-control"  name="VoucharID">' + '<input type="hidden" value="' + data[0].OtherAcoountId + '" id="tblAccountNameId" name="tblAccountNameId">' + '</td><td>' +
+                        '<input type="text" value="' + data[0].DrAmount + '" id="Dramt" class="form-control" name="Dramt">' + '</td><td>' + '<input type="text" value="' + data[0].CrAmount + '" id="Cramt" class="form-control" name="Cramt">' + '<input type="hidden" value="' + data[0].VoucharEntryDetailID
+                        + '" id="VoucharEntryDetailID"  class="form-control"  name="VoucharEntryDetailID">' + '<input type="hidden" value="' + data[0].AccountsIDTable + '" id="AccountsIDTable"  class="form-control"  name="AccountsIDTable">' +
+                        '</td><td>' + '<input type="text" value="' + data[0].ChequeNo + '" id="Cheq" class="form-control" readOnly name="Cheq">' + '</td><td>' + '<input type="text" value="' + data[0].Name + '" id="Bank" class="form-control" readOnly name="Bank">' + '</td><td>' +
+                        '<input type="Date" value="@DateTime.Now.ToString("yyyy-MM-dd")""' + data[0].Date + '" id="date" readOnly name="date">' + '</td><td>' + '<input type="text" value="' + data[0].Narration + '" id="Narr" class="form-control" readOnly name="Narr">' +
+                        '</td><td><a href="#" class="fa fa-trash-o"  id="delrow" class="delrow"></a></td></tr>');
+                    }
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function VoucherEntry(VoucharEntryID) {
+        debugger
+        if (VoucharEntryID != "" && $("#voucher_name").val() != "") {
+            var ans = confirm("Are you sure you want to delete this Record?");
+            if (ans) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeleteVoucher", "VoucherEntry")',
+                    data: { VoucharEntryID: VoucharEntryID },
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        if (data == "VoucherEntry Deleted Successfully") {
+                            alert("VoucherEntry Deleted Successfully");
+                            window.location.reload(true);
+                        }
+                        else {
+                            alert(data);
+                            window.location.reload(true);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                        window.location.reload(true);
+                    }
+                });
+            }
+        }
+    }
+</script>
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Voucher Entry</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="" method="post">
+        <div class="wrapper">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h1>Voucher Entry</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action(" dashboard","home")">Home</a></li>
+                                    <li class="breadcrumb-item active">Voucher Entry</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Voucher Entry Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Voucher Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Vou. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 cpb-10">
+                                                        <input type="text" id="voucher_name" name="voucher_name" class="form-control" placeholder="Voucher Name">
+                                                        <input type="hidden" id="voucher_nameId" name="voucher_nameId">
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <button type="button" onclick="window.location.href='@Url.Action(" vouchertype", "VoucherType" )'" class="btndivcss" style="height:25px" title="Add Voucher">
+                                                            <i class="fa fa-plus" style="font-weight:400"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!--Current Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Current Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="current_date" name="current_date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Voucher Date-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Voucher Date</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="date" id="voucher_date" name="voucher_date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Refference Voucher Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Reff. Vou. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input type="text" id="RefVoucharNo" name="RefVoucharNo" class="form-control" placeholder="Refference Voucher Name">
+                                                    </div>
+                                                </div>
+                                                <!--Invoice Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Inv. No.</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <input value="" type="text" class="form-control" id="inv_no" name="inv_no" placeholder="Invoice Number">
+                                                    </div>
+                                                </div>
+                                                <!--Narration-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                        <label>Narration</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                        <textarea id="Narration" name="Narration" class="form-control" placeholder="Narration"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="tab" role="tabpanel">
+                                        <div class="tab-content" style="padding:0px">
+                                            <div role="tabpanel" class="tab-pane fade" id="Section2">
+                                                <div class="row">
+                                                    <div class="col-lg-12 ">
+                                                        <div class="" style="box-shadow:none">
+                                                            <div class="box-header with-border">
+                                                                <h3 class="panelheading">Product Voucher</h3>
+                                                            </div>
+                                                            <div class="form-horizontal">
+                                                                <div class="panel-body" style="padding:7px">
+                                                                    <div class="row ">
+                                                                        <div class="col-md-4">
+                                                                            <div class="col-md-4">
+                                                                                Account name
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" id="AccountName" name="AccountName" class="form-control input-sm" />
+                                                                                <input type="hidden" id="AccountNameID" name="AccountNameID" />
+                                                                            </div>
+                                                                            <div class="col-md-8 rowmargintop">
+                                                                                <input type="text" id="AccNameOther" name="AccNameOther" class="form-control input-sm" />
+                                                                                <input type="hidden" id="AccNameOtherID" name="AccNameOtherID" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="col-md-4">
+                                                                                Dr. Amt.
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" readonly id="DrAmt" name="DrAmt" class="form-control input-sm" />
+                                                                            </div>
+                                                                            <div class="col-md-8 rowmargintop">
+                                                                                <input type="text" id="DrAmtOther" name="DrAmtOther" class="form-control input-sm" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="col-md-4">
+                                                                                Cr. Amt.
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" readonly id="CrAmt" name="CrAmt" class="form-control input-sm" />
+                                                                            </div>
+                                                                            <div class="col-md-8 rowmargintop">
+                                                                                <input type="text" id="CrAmtOther" name="CrAmtOther" class="form-control input-sm" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2 padding0">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row ">
+                                                                    <div class="col-md-12">
+                                                                        <div class="col-md-12 rowmargintop">
+                                                                            <div class="panel-primary" style="box-shadow:none">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Product Voucher Details</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Account Name-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <label>Account Name</label>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
+                                                        <input value="" type="hidden" class="form-control" readonly id="account_nameId" name="account_nameId">
+                                                        <input value="" type="text" class="form-control" readonly id="account_name" name="account_name" placeholder="Account Name">
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12 cpb-10">
+                                                            <input value="" type="hidden" class="form-control" id="account_name_otherId" name="account_name_otherId" placeholder="">
+                                                            <input value="" type="text" class="form-control" id="account_name_other" name="account_name_other" placeholder="">
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                                                            <button type="button" onclick="window.location.href='@Url.Action(" accounts", "Accounts" )'" class="btndivcss" style="height:25px;float: right;">
+                                                                <i class="fa fa-plus" title="Add"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Debit Amount-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <label>Debit Amount</label>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
+                                                        <input value="" type="text" class="form-control" readonly id="dr_amount" name="dr_amount" placeholder="0.00">
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cpb-10">
+                                                        <input value="" type="number" class="form-control" id="dr_amount_other" name="dr_amount_other" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <!--Credit Amount-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <label>Credit Amount</label>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
+                                                        <input value="" type="text" class="form-control" readonly id="cr_amount" name="cr_amount" placeholder="0.00">
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <input value="" type="number" class="form-control" id="cr_amount_other" name="cr_amount_other" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <!--Cheque Number-->
+                                                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12" style="text-align: right;margin-top: 20px;">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
+                                                        <button type="button" id="ChequeNo" name="ChequeNo" class="btn btn-primary" style="font-size: 14px;">
+                                                            Cheque No
+                                                        </button>
+
+                                                        <!-- Modal -->
+                                                        <div class="modal" id="chequeNoModal" role="dialog">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Cheque Detail</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body" style="text-align: left;">
+                                                                        <!--Bank Name-->
+                                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                <label>Bank Name</label>
+                                                                            </div>
+                                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                <input type="text" name="BankName" id="BankName" class="form-control">
+                                                                                <input type="hidden" name="BankID" id="BankID" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--Book Name-->
+                                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                <label>Book Name</label>
+                                                                            </div>
+                                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                <select id="bookName" class="form-control"></select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--Cheque Number-->
+                                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                <label>Cheque Number</label>
+                                                                            </div>
+                                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                <select id="cmbChequeNo" class="form-control"></select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--Payee Name-->
+                                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                <label>Payee Name</label>
+                                                                            </div>
+                                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                                <input type="text" name="PayeeName" id="PayeeName" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--Cheque Date-->
+                                                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                                                <label>Cheque Date</label>
+                                                                            </div>
+                                                                            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                                               
+                                                                                <input type="date" id="Cheque_date" name="Cheque_date" class="form-control input-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--Ok Button-->
+                                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                            <input type="button" id="btnok" value="OK" class="btn btn-primary" style="float: right;font-size: 13px;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <button type="button" id="add" class="btn btn-primary" style="font-size: 14px;">
+                                                            Add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body table-responsive">
+                                        <table id="datatable-responsive" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th>Account Name</th>
+                                                    <th>Debit Amount</th>
+                                                    <th>Credit Amount</th>
+                                                    <th>Cheque No.</th>
+                                                    <th>Bank Name</th>
+                                                    <th>Date</th>
+                                                    <th>Narration</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="Delete" onclick="VoucherEntry(document.getElementById('VoucharEntryID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action(" dashboard", "Home" )'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="datatable-responsive2ExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 rowmargintop">
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <div class="col-md-12 padding0 rowmargintop">
+                                        <div class="panel-primary" style="box-shadow:none">
+                                            <div class="col-lg-12 padding0">
+                                                <div class="col-lg-12 row rowmarginbottom rowmargintop">
+                                                    @*<div class="item form-group">
+                                                            <div class="col-lg-12">
+                                                                <div class="col-lg-12 padding0">
+                                                                    <div class="col-md-4 col-sm-5 col-xs-12">
+                                                                        <span class="required">Account Name</span>
+                                                                        <input value="" type="hidden" class="form-control" readonly id="account_nameId" name="account_nameId" placeholder="">
+                                                                        <input value="" type="text" class="form-control" readonly id="account_name" name="account_name" placeholder="">
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-2 col-xs-12">
+                                                                        <span class="required">Dr.Amount</span>
+                                                                        <input value="" type="text" class="form-control" readonly id="dr_amount" name="dr_amount" placeholder="0.00">
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-2 col-xs-12">
+                                                                        <span class="required">Cr.Amount</span>
+                                                                        <input value="" type="text" class="form-control" readonly id="cr_amount" name="cr_amount" placeholder="0.00">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+                                                    @*<div class="col-md-2 col-sm-2 col-xs-6">
+                                                            <span class="required">Chq. Clear Date.</span>
+                                                            <input type="date" required id="chq_date" name="chq_date" value="@DateTime.Now.ToString(" yyyy-mm-dd")" class="form-control input-sm" />
+                                                        </div>*@
+                                                    @*<div class="item form-group">
+                                                            <div class="row">
+                                                                <div class="col-md-4 col-sm-5 col-xs-12" style="padding-left:0px;">
+                                                                    <div class="col-md-11 col-sm-11 col-xs-12">
+                                                                        <input value="" type="hidden" class="form-control" id="account_name_otherId" name="account_name_otherId" placeholder="">
+                                                                        <input value="" type="text" class="form-control" id="account_name_other" name="account_name_other" placeholder="">
+                                                                    </div>
+                                                                    <div class="col-md-1 col-sm-1 col-xs-12" style="padding-left:0px;">
+                                                                        <button type="button" onclick="window.location.href='@Url.Action(" accounts", "Accounts" )'" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px"><i class="fa fa-plus" style="font-weight:400" title="Add"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                                                            <input value="" type="number" class="form-control" id="dr_amount_other" name="dr_amount_other" placeholder="0.00">
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                                                            <input value="" type="number" class="form-control" id="cr_amount_other" name="cr_amount_other" placeholder="0.00">
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                                                            <button type="button" id="ChequeNo" name="ChequeNo" class="btn btn-primary">Cheque No</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                                                    <button type="button" id="add" class="btn btn-primary">Add</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="datatable-responsive2" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            
+                                            <th scope="col">Sr. No.</th>
+                                            <th scope="col">Voucher Entry ID</th>
+                                            <th scope="col">Current Date</th>
+                                            <th scope="col">Vouchar Name</th>
+                                            <th scope="col">Ref. Vouchar No</th>
+                                            <th scope="col">Account Name</th>
+                                            <th scope="col">Vouchar Date</th>
+                                            <th scope="col">Narration</th>
+                                            <th scope="col">Voucher Account Name</th>
+                                            <th scope="col">Voucher Debit Amount</th>
+                                            <th scope="col">Voucher Credit Amount</th>
+                                            <th style="display:none">Invoice No.</th>
+                                            <th style="display:none">Accounts ID Table</th>
+                                            <th style="display:none">Voucher ID</th>
+                                            <th style="display:none">Accounts ID</th>
+                                            <th style="display:none">Print</th>
+                                            <th><i class="fa fa-print"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="presentor" class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </form>
+</body>

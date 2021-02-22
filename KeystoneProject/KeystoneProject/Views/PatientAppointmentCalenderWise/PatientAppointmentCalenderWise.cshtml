@@ -1,0 +1,2807 @@
+﻿@model KeystoneProject.Models.Patient.PatientAppointmentCalenderWise
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+
+    function generate_series(step) {
+        var dt = new Date(1970, 0, 1, 0, 0, 0, 0),
+            rc = [];
+        while (dt.getDate() == 1) {
+            rc.push(dt.toLocaleTimeString('en-GB'));
+            dt.setMinutes(dt.getMinutes() + step);
+        }
+        return rc;
+    }
+    var lab_time_slots = []
+    a = generate_series(30)
+    for (var i = 0; i < a.length - 1; i++) {
+        lab_time_slots.push(a[i] + "-" + a[i + 1])
+    }
+    lab_time_slots.push("23:30:00" + "-" + "23:59:59")
+
+</script>
+
+<style type="text/css">
+    .typeahead {
+        background-color: #fff;
+    }
+
+    #registrationForm .twitter-typeahead {
+        width: 100%;
+    }
+
+    .typeahead:focus {
+        border: 2px solid #0097cf;
+    }
+
+    .tt-hint {
+        color: #999;
+        padding: 4px 11px;
+        height: inherit;
+        font-size: 18px;
+    }
+
+    .tt-dropdown-menu {
+        width: inherit;
+        margin-top: 1px;
+        padding: 8px 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    }
+
+    .tt-suggestion {
+        padding: 3px 20px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+        .tt-suggestion.tt-cursor {
+            color: #fff;
+            background-color: #0097cf;
+        }
+
+        .tt-suggestion p {
+            margin: 0;
+        }
+
+    .CustomTemplate .repo-tag {
+        float: right;
+        font-style: italic;
+    }
+
+    .CustomTemplate .repo-name {
+        font-weight: bold;
+    }
+
+    .CustomTemplate .repo-description {
+        font-size: 14px;
+    }
+
+    .gist {
+        font-size: 18px;
+    }
+
+    #appContainer, .appContainer {
+        border: 1px solid #dedede;
+        border-radius: 3px;
+        padding: 0px;
+        margin-bottom: 10px;
+    }
+
+        #appContainer:hover, .appContainer:hover {
+            cursor: auto;
+            background-color: #eee;
+        }
+
+    #appointmentListDiv {
+        float: left;
+        overflow-y: auto;
+        height: 500px;
+    }
+</style>
+<style>
+    .fc-button-group {
+        display: none;
+    }
+    
+     .tooltip1 {
+        position: relative;
+        display: inline-block;
+        /*border-bottom: 1px dotted black;*/
+    }
+
+        .tooltip1 .tooltiptext {
+            visibility: hidden;
+            /*width: 120px;*/
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            /*position: absolute;*/
+            /*z-index: 1;*/
+            right: 170px;
+            top: 120%;
+            /*margin-left: -60px;*/
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+            .tooltip1 .tooltiptext::after {
+                content: "";
+                position: absolute;
+                bottom: 120px;
+                left: 250px;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #555 transparent transparent transparent;
+            }
+
+        .tooltip1:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+</style>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+@if (TempData["Msg"] != null)
+{
+
+    <script type="text/javascript">
+        debugger;
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        //   Restor();
+    </script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        //var id = ui.item.DoctorID;
+        //var Date = ui.item.id;
+        //$("#DoctorID").val(id);
+        //$("#Date").val(Date);
+        debugger;
+        $.ajax({
+
+            type: "GET",
+            url: '@Url.Action("GetAllPatientAppointmentDetail", "PatientAppointmentCalenderWise")',
+            //  data: "{DoctorID:id ,Date:Date}",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#example1").append('<tr><td>' + SrNo + '</td><td>' + data[i].PFirstName + '</td><td>' + data[i].DoctorID + '</td><td>' + data[i].DoctorPrintName + '</td><td>' + data[i].AppointmentDate + '</td><td>' + data[i].FromTime + '</td><td>' + data[i].ToTime + '</td><td style="display:none">' + data[i].PatientAppointmentScheduleID + '</td><td style="display:none">' + data[i].DoctorAppoinmentScheduleID + '</td><td style="display:none">' + data[i].PatientID + '</td></tr>');
+                };
+                debugger
+                EventFind();
+            },
+            error: function (result) {
+                //alert("Error in bindgrid");
+            }
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $.ajax({
+
+            type: "GET",
+            url: '@Url.Action("GetNextOutsidePatientID", "PatientAppointmentCalenderWise")',
+            //  data: {PatientID:""},
+            dataType: "json",
+            success: function (data) {
+                debugger
+                //   alert(data[0]);
+                $("#AppointmentNo").val(data[0]);
+
+            },
+            error: function (result) {
+                // alert("Error in bindgrid");
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            url: '@Url.Action("BindPatientPrefix", "PatientAppointmentCalenderWise")',
+            type: "GET",
+            dataType: "json",
+            data: { prefix: "" },
+            success: function (data) {
+                $("#PFPatientName").val("");
+                $("#PFPatientName").text("");
+                debugger
+                for (var i = 0 ; i < data.length; i++) {
+                    debugger
+                    $("#PFPatientName").append('<option value=' + data[i].PrefixName + '> ' + data[i].PrefixName + '</option>')
+
+                }
+
+
+
+            }
+
+        })
+
+    })
+</script>
+<script>
+
+    $(document).ready(function () {
+
+
+        $.ajax({
+            //url: "/PatientOPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "PatientAppointmentCalenderWise")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+
+
+        debugger
+
+
+        $("#ConsultantDoctorName").autocomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("BindDoctorAppointment", "PatientAppointmentCalenderWise")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger;
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID, DoctorAppoinmentScheduleID: item.DoctorAppointmentScheduleID
+                            };
+
+                        }))
+
+                    }
+
+
+                })
+            },
+
+
+
+
+
+
+            minLength: 1,
+            change: function (event, ui) {
+
+                if (!ui.item) {
+                    this.value = '';
+
+                }
+
+                debugger
+                var id = ui.item.DoctorAppoinmentScheduleID;
+                var DoctorID = ui.item.id;
+                $("#DoctorID").val(DoctorID);
+                $("#DoctorAppoinmentScheduleID").val(id);
+
+
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentCalenderWise")',
+                    data: { DoctorAppoinmentScheduleID: id, DoctorID: DoctorID },
+                    success: function (searchList) {
+                        debugger
+                        $('#dgvDoctorSchedule td').remove();
+
+                        for (var i = 0 ; i < searchList.length; i++) {
+
+                            if (searchList[i].Table1 == "Table1") {
+                                $("#dgvDoctorSchedule").append('<tr><td>' + searchList[i].DoctorAppointmentScheduleID + '</td> <td>' + searchList[i].AppointmentType + '</td><td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td></tr>')
+
+                            }
+
+
+
+                        }
+
+                        //$("#AppointmentTypeID").val(searchList[0]);
+
+                    },
+                });
+
+
+
+                var AppointmentType = "";
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentCalenderWise")',
+                    data: { DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+
+                    success: function (searchList) {
+                        debugger
+                        //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                        //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                        $('#AppointmentTypeID').append('<option value="select">Select</option>');
+                        $('#AppointmentTypeID option:not(:first)').remove();
+                        $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+
+                        var dropItems = $(".abc");
+                        var str = "";
+
+                        // Remove 'active' tag for all list items
+                        // based on iteration
+                        for (let i = 0; i < dropItems.length; i++) {
+                            dropItems[i].remove();
+                        }
+                        $("#DivAppointmentType").show();
+                        for (var i = 0 ; i < searchList.length; i++) {
+
+                            debugger
+                            //$("#AppointmentTypeID").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+
+                            $("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" value=' + searchList[i].AppointmentType + '   class="abc">' + searchList[i].AppointmentType + '</button>');
+                            // <button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                            //var myobj = document.getElementById("DivAppointmentType");
+
+
+
+                        }
+                        // myobj.remove();
+
+                        AppointmentType = searchList[0].AppointmentType;
+                        //alert(AppointmentType);
+                        var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                        // Appoint= Appointment.val("#AppointType")
+
+                        //  // alert(Appointment);
+                        $(document).ready(function () {
+                            $(".abc").click(function () {
+                                $("#AppointType").val($(this).val());
+
+                                // alert($(this).val());
+                                debugger;
+                                $.ajax({
+                                    url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                                    type: "GET",
+                                    data: { AppointmentType: $(this).val(), DoctorID: DoctorID, AppointmentDate: $("#appointmentTime").val() },
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        debugger;
+
+                                        $('#AppointmentTime option:not(:first)').remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                        }
+                                        //$("#DivAppointment").change(function () {
+                                        //    $("#Daily").val("Daily");
+
+
+                                        if (data == "Doctor Not Comming") {
+                                            alert($("#ConsultantDoctorName").val() + " " + data);
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                        }
+                                        //})
+                                    },
+                                    error: function (data) {
+                                        debugger;
+                                        // alert('dewdeguywfueureyt');
+                                    }
+                                })
+
+
+
+                            })
+                            AppointmentType = searchList[0].AppointmentType;
+                            var Appointment = AppointmentType;
+
+
+                            $("#dgvDoctorScheduleDetail").delegate('td', 'click', function () {
+                                debugger;
+                                //("#dgvDoctorScheduleDetail td").remove();
+
+                                var row_num = parseInt($(this).parent().index());
+                                Appointment = document.getElementById("dgvDoctorScheduleDetail").tBodies[0].rows[row_num].cells[1].innerHTML;
+                                debugger
+                                $.ajax({
+                                    url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                                    type: "GET",
+                                    data: { AppointmentType: Appointment, DoctorID: DoctorID, AppointmentDate: $("#appointmentTime").val() },
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        debugger;
+
+
+                                        $('#AppointmentTime option:not(:first)').remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                        }
+                                        if (data == "Doctor Not Comming") {
+                                            alert($("#ConsultantDoctorName").val() + " " + data);
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                        }
+                                    },
+
+                                })
+                            })
+                        });
+
+
+                    },
+
+
+                });
+
+
+
+            }
+
+
+        })
+
+        // as= $("#DoctorAppoinmentScheduleID").val();
+
+
+
+
+
+        $(document).ready(function () {
+            $("#dgvDoctorSchedule").delegate('td', 'click', function () {
+                debugger;
+
+                $("#dgvDoctorScheduleDetail td").remove();
+                var row_num = parseInt($(this).parent().index());
+                var id = document.getElementById("dgvDoctorSchedule").tBodies[0].rows[row_num].cells[0].innerHTML;
+                //   alert(id);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentCalenderWise")',
+                    data: { DoctorAppoinmentScheduleID: id, DoctorID: $("#DoctorID").val() },
+                    success: function (searchList) {
+                        debugger
+                        //   alert("hello");
+                        for (var i = 0 ; i < searchList.length; i++) {
+
+                            if (searchList[i].Table2 == "Table2") {
+                                $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].AppointmentType + '</td> <td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].DayDate + '</td></tr>')
+
+                            }
+
+
+                        }
+                        //$("#AppointmentTypeID").val(searchList[0]);
+
+                    },
+                });
+                //if (searchList[i].Table2 == "Table2") {
+                //    $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].AppointmentType + '</td> <td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].DayDate + '</td></tr>')
+
+                //}
+                // $("#PFPatientNameID").append('<option value=' + data[i].Gender + '> ' + data[i].PrefixName + '</option>')
+
+
+
+            })
+        })
+
+        $("#AppointmentTime").change(function () {
+            debugger;
+
+            var a = $("#DoctorID").val();
+            var Appointment = $("#AppointmentTime").val();
+            var AppointmentTime = Appointment;
+            $('#AppointmentNoID').val(Appointment);
+
+            $('#FromTime').val($("#AppointmentTime option:selected").text());
+
+        });
+
+
+        $("#FirstName").autocomplete({
+
+            source: function (request, response) {
+
+                $.ajax({
+                    url: '@Url.Action("BindPatientName", "PatientAppointmentCalenderWise")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.PFirstName, value: item.PFirstName, PatientRegNo: item.PatientRegNo, PMiddleName: item.PMiddleName, PLastName: item.PLastName, DateOFBirth: item.DateOFBirth, MobileNo: item.MobileNo
+                            };
+
+                        }))
+
+                    }
+
+                })
+            },
+
+            minLength: 1,
+            select: function (event, ui) {
+                debugger
+                //   $("#PFirstName").val(ui.item.PatientName);
+                //  $("#PFirstName").val(ui.item.PFirstName);
+                $("#PMiddleName").val(ui.item.PMiddleName);
+                $("#PLastName").val(ui.item.PLastName)
+                $("#DateOfBirth").val(ui.item.DateOFBirth)
+                $("#MobileNo").val(ui.item.MobileNo)
+                //  DateOFBirth
+
+            }
+
+        })
+
+
+
+
+
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#DoctorName").autocomplete({
+            
+            source: function (request, response) {
+                debugger
+
+                $.ajax({
+                    url: '@Url.Action("BindDoctorAppointment", "PatientAppointmentCalenderWise")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger;
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.DoctorPrintName, value: item.DoctorPrintName, id: item.DoctorID, DoctorAppoinmentScheduleID: item.DoctorAppointmentScheduleID
+                            };
+
+                        }))
+
+                    }
+
+
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+
+                if (!ui.item) {
+                    this.value = '';
+                    $("#DoctorNameID").val('');
+                }
+
+                $("#DoctorNameID").val(ui.item.id);
+                var AppointmentType = "";
+                var DoctorID = ui.item.id;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentCalenderWise")',
+                    data: { DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+
+                    success: function (searchList) {
+                        debugger
+                        $('#AppointmentType option:not(:first)').remove();
+                        // $("#AppointmentType").append('<option value=' + searchList[0].AppointmentType + '>' + searchList[0].AppointmentType + '</option>')
+                        alert($("#AppointmentType").val());
+                        AppointmentType = $("#AppointmentType").val();
+                        // $("#DoctorAppoinmentID").val(searchList[0].DoctorAppoinmentID)
+
+                        //alert($("#DoctorAppoinmentID").val());
+                    },
+                });
+
+                $(document).ready(function () {
+                    $("#AppointmentType").change(function () {
+                        debugger;
+                        $.ajax({
+                            url: '@Url.Action("BindFromToTime1", "PatientAppointmentCalenderWise")',
+                            type: "GET",
+                            data: { AppointmentType: $(this).val(), DoctorID: DoctorID, AppointmentDate: $("#AppointmentDate").val() },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                debugger;
+                                alert(data[0][0]);
+                                alert(data[0][1]);
+                                //$('#FromTime option:not(:first)').remove();
+                                //$('#ToTime option:not(:first)').remove();
+
+                                //for (var i = 0; i < data.length; i++) {
+                                $("#FromTime1").val(data[0][0]);
+                                $("#ToTime").val(data[0][1]);
+                                // alert(data[0][0] + "TO" + data[0][1]);
+                                //    $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                //  }
+                            },
+                            error: function (data) {
+                                debugger;
+                                // alert('dewdeguywfueureyt');
+                            }
+                        })
+
+                    })
+                });
+
+
+
+
+                debugger
+                var DoctorID = ui.item.id;
+                var DoctorAppoinmentScheduleID = ui.item.DoctorAppoinmentScheduleID;
+                //   alert(DoctorAppoinmentScheduleID);
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetDoctorAppointmentSchedule1", "PatientAppointmentCalenderWise")',
+                    data: { DoctorAppoinmentScheduleID: DoctorAppoinmentScheduleID, DoctorID: DoctorID },
+                    success: function (searchList) {
+                        debugger;
+                        $('#AppointmentType').append('<option value="select">Select</option>');
+                        $('#AppointmentType option:not(:first)').remove();
+                        // $("#dgvDoctorSchedule").append('<tr><td>' + searchList[i].DoctorAppointmentScheduleID + '</td> <td>' + searchList[i].AppointmentType + '</td><td>' + searchList[i].DoctorPrintName + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td></tr>')
+                        for (var i = 0; i < searchList.length; i++) {
+                            //  $("#FromTime1").val(searchList[i].FromTime);
+                            // $("#ToTime").val(searchList[i].ToTime);
+                            //$("#AppointmentType").val(searchList[0].AppointmentType)
+                            $('#AppointmentType').append('<option value="' + searchList[i].AppointmentType + '">' + searchList[i].AppointmentType + '</option>');
+                            $("#DoctorAppoinmentID").val(searchList[i].DoctorAppoinmentID)
+                            //$("#AppointmentTypeID").val(searchList[0]);
+                        }
+                    },
+                });
+
+            }
+
+        })
+
+
+
+
+
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#Add").click(function () {
+            debugger
+            var DoctorID = $("#DoctorNameID").val();
+            var Reason = $("#Reason").val();
+            var FromTime1 = $("#FromTime1").val();
+            var ToTime = $("#ToTime").val();
+            var AppointmentDate = $("#AppointmentDate").val();
+            var AppointmentType = $("#AppointmentType").val();
+            var CancelAppointment = document.getElementById("CancelAppointment").checked;
+            alert(CancelAppointment);
+            debugger;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveDoctorReschedule", "PatientAppointmentCalenderWise")',
+                data: { DoctorName: $("#DoctorName").val(), DoctorID: DoctorID, Reason: Reason, FromTime1: FromTime1, ToTime: ToTime, AppointmentDate: AppointmentDate, AppointmentType: AppointmentType, CancelAppointment: CancelAppointment },
+                success: function (searchList) {
+                    debugger;
+                    // alert(searchList);
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetDoctorRescheduleAppointment", "PatientAppointmentCalenderWise")',
+                        data: { DoctorID: DoctorID, AppointmentDate: AppointmentDate, AppointmentType: AppointmentType },
+                        success: function (searchList) {
+                            debugger;
+
+                        },
+                    });
+                    window.location.reload(true);
+                },
+            });
+
+            debugger;
+
+
+
+        })
+
+    })
+
+
+</script>
+<script>
+
+    function FillData() {
+        PatientID = $("#AppointmentNo").val();
+
+        $.ajax({
+            url: '@Url.Action("BindPatientAppointmentID", "PatientAppointmentCalenderWise")',
+            type: "GET",
+            data: { PatientID: PatientID },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#PatientID").val(data[0].PatientID);
+                $("#PFPatientName").val(data[0].PFPatientName);
+                $("#FirstName").val(data[0].PFirstName);
+                $("#PMiddleName").val(data[0].PMiddleName);
+                $("#PLastName").val(data[0].PLastName);
+                $("#MobileNo").val(data[0].MobileNo);
+                $("#Year").val(data[0].Age);
+                $("#DateOFBirth").val(data[0].DateOfBirth);
+                $("#PatientAppointmentScheduleID").val(data[0].PatientAppointmentScheduleID);
+                $("#DoctorAppoinmentScheduleID").val(data[0].DoctorAppoinmentScheduleID);
+                $("#DoctorID").val(data[0].DoctorID);
+                $("#appointmentTime").val(data[0].AppointmentDate);
+                $("#ConsultantDoctorName").val(data[0].DoctorPrintName);
+                $("#AppointmentTypeID").val(data[0].AppointmentType);
+                $("#AppointmentNoID").val(data[0].NoOfAppointment)
+
+                $('#AppointmentTime').text("");
+                $('#AppointmentTime').val("");
+                var AppointmentTime = data[0].AppointmentTime;
+                //   $('#AppointmentTime').append('<option value="' + data[0].AppointmentTime + '">' + data[0].AppointmentTime + '</option>');
+                $('#FromTime').val(data[0].AppointmentTime);
+
+                $('#DivAppointmentType').append('<option value="' + data[0].AppointmentType + '">' + data[0].AppointmentType + '</option>');
+                var Appointment = $('#AppointmentTypeID').val();
+                varDoctorID = $("#DoctorID").val();
+                // $("#AppointmentTime").val(obd.ToTime);
+                // $("#AppointmentTime").val(obd.ToTime);
+                debugger;
+                $.ajax({
+                    url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                    type: "GET",
+                    data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#AppointmentTime').append('<button type="button" click="myFunction(' + searchList[i].DoctorAppoinmentID + ' )">' + AppointmentTime + '</option>');
+                        //   $('#AppointmentTime option:not(:first)').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                        // alert('dewdeguywfueureyt');
+                    }
+                })
+
+
+
+            },
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+    // });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#SaveAppointment").click(function () {
+
+        })
+    })
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        debugger;
+
+        //  var table = $('#deptID').DataTable();
+        $('#example1').delegate('td', 'click', function () {
+            debugger;
+
+
+
+
+            var row_num = parseInt($(this).parent().index());
+            var SrNo = document.getElementById("example1").tBodies[0].rows[row_num].cells[0].innerHTML;
+
+            var PatientAppointmentScheduleID = document.getElementById("example1").tBodies[0].rows[row_num].cells[7].innerHTML;
+            // var PrivilegePriceDetailID = document.getElementById("example1").tBodies[0].rows[row_num].cells[10].innerHTML;
+
+            // $("#PatientAppointmentScheduleID").val(data[0].PatientAppointmentScheduleID);
+            $("#PatientAppointmentScheduleID").val(PatientAppointmentScheduleID)
+
+            $.ajax({
+
+
+                type: "POST",
+                url: '@Url.Action("EditGetPatientAppointmentDetails", "PatientAppointmentCalenderWise")',
+                data: { PatientAppointmentScheduleID: PatientAppointmentScheduleID },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    //alert(obd.DepartmentName);
+                    debugger
+                    $("#PFPatientName").val(data[1].PFPatientName);
+                    $("#PatientID").val(data[1].PatientID);
+
+                    // alert($("#PatientID").val());
+                    $("#FirstName").val(data[1].PFirstName);
+                    $("#PMiddleName").val(data[1].PMiddleName);
+                    $("#PLastName").val(data[1].PLastName)
+                    $("#Year").val(data[1].Age);
+                    $("#DateOFBirth").val(data[1].DateOFBirth);
+                    $("#MobileNo").val(data[1].MobileNo);
+                    $("#DoctorID").val(data[0].DoctorID);
+                    $("#ConsultantDoctorName").val(data[0].DoctorPrintName);
+
+                    //////////////////////////
+                    // $("#AppointmentTypeID").val(id);
+                    $("#AppointmentTypeID").val(data[0].AppointmentType);
+                    $("#AppointmentDate").val(data[0].AppointmentDate);
+                    $("#AppointmentNoID").val(data[0].NoOfAppointment);
+
+                    $('#AppointmentTime').text("");
+                    $('#AppointmentTime').val("");
+                    var AppointmentTime = data[0].AppointmentTime;
+                    $('#AppointmentTime').append('<option value="' + data[0].AppointmentTime + '">' + data[0].AppointmentTime + '</option>');
+                    $('#FromTime').val(data[0].AppointmentTime);
+                    //      $('#DivAppointmentType').append('<option value="' + data[0].AppointmentType + '">' + data[0].AppointmentType + '</option>');
+
+                    //                        $("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" value=' + searchList[i].AppointmentType + '   class="abc">' + searchList[i].AppointmentType + '</button>');
+
+                    // $('#DivAppointmentType').append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )"value=' + searchList[i].AppointmentType + ' class="abc">' + data[0].AppointmentType + '</button>');
+                    var Appointment = $('#AppointmentTypeID').val();
+                    var DoctorID = $("#DoctorID").val();
+
+                    debugger;
+                    var AppointmentType = "";
+
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentCalenderWise")',
+                        data: { DoctorID: DoctorID },
+                        contentType: "application/json; charset=utf-8",
+
+                        success: function (searchList) {
+                            debugger
+                            //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                            //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                            $('#AppointmentTypeID').append('<option value="select">Select</option>');
+                            $('#AppointmentTypeID option:not(:first)').remove();
+                            $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+
+                            var dropItems = $(".abc");
+                            var str = "";
+
+                            // Remove 'active' tag for all list items
+                            // based on iteration
+                            for (let i = 0; i < dropItems.length; i++) {
+                                dropItems[i].remove();
+                            }
+
+                            for (var i = 0 ; i < searchList.length; i++) {
+
+                                debugger
+                                //$("#AppointmentTypeID").append('<option value=' + searchList[i].AppointmentType + '>' + searchList[i].AppointmentType + '</option>')
+
+                                $("#DivAppointmentType").append('<button type="button" onmouseover="myFunction(' + searchList[i].DoctorAppoinmentID + ' )" class="abc">' + searchList[i].AppointmentType + '</button>');
+                                // <button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                //var myobj = document.getElementById("DivAppointmentType");
+
+
+
+                            }
+                            // myobj.remove();
+
+                            AppointmentType = searchList[0].AppointmentType;
+                            //alert(AppointmentType);
+                            var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                            // Appoint= Appointment.val("#AppointType")
+
+                            //  // alert(Appointment);
+                            $(document).ready(function () {
+                                $(".abc").click(function () {
+                                    $("#AppointType").val($(this).val());
+
+                                    // alert($(this).val());
+                                    debugger;
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                                        type: "GET",
+                                        data: { AppointmentType: $(this).val(), DoctorID: DoctorID, AppointmentDate: $("#appointmentTime").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            //$("#DivAppointment").change(function () {
+                                            //    $("#Daily").val("Daily");
+
+
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                            //})
+                                        },
+                                        error: function (data) {
+                                            debugger;
+                                            // alert('dewdeguywfueureyt');
+                                        }
+                                    })
+
+
+
+                                })
+                                AppointmentType = searchList[0].AppointmentType;
+                                var Appointment = AppointmentType;
+
+
+                                $("#dgvDoctorScheduleDetail").delegate('td', 'click', function () {
+                                    debugger;
+                                    //("#dgvDoctorScheduleDetail td").remove();
+
+                                    var row_num = parseInt($(this).parent().index());
+                                    Appointment = document.getElementById("dgvDoctorScheduleDetail").tBodies[0].rows[row_num].cells[1].innerHTML;
+                                    debugger
+                                    $.ajax({
+                                        url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                                        type: "GET",
+                                        data: { AppointmentType: Appointment, DoctorID: DoctorID, AppointmentDate: $("#appointmentTime").val() },
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            debugger;
+
+
+                                            $('#AppointmentTime option:not(:first)').remove();
+                                            for (var i = 0; i < data.length; i++) {
+                                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                                            }
+                                            if (data == "Doctor Not Comming") {
+                                                alert($("#ConsultantDoctorName").val() + " " + data);
+                                                $('#AppointmentTime option:not(:first)').remove();
+                                            }
+                                        },
+
+                                    })
+                                })
+                            });
+
+
+                        },
+
+
+                    });
+
+
+
+
+                },
+
+
+            });
+
+
+
+
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btndelete").click(function () {
+            //alert($("#PatientAppointmentScheduleID").val());
+            var conform = confirm("Do you Want To Delete");
+            if (conform) {
+                debugger
+                $.ajax({
+                    url: '@Url.Action("Delete", "PatientAppointmentCalenderWise")',
+                    type: 'POST',
+                    data: { PatientAppointmentScheduleID: $("#PatientAppointmentScheduleID").val() },
+
+                    success: function (data) {
+                        if (data.length > 1) {
+                            alert("Delete Successfully");
+                            location.reload();
+                            //  alert($("#PatientAppointmentScheduleID").val());
+                        }
+                        else {
+
+                        }
+
+
+                    }
+
+                })
+
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#appointmentTime").change(function () {
+            debugger;
+            // var AppointDate =  getDate();
+            // alert("AppointDate");
+            // if ($("#AppointDateID").val >= DateTime.Now.toString("yyyy-MM-dd")) {
+            //alert($(DateTime.Now.toString("yyyy-MM-dd")));
+            var DateTime = "";
+            $("#AppointDate").val = DateTime.Now("yyyy-MM-dd");
+            // alert(DateTime.Now("yyyy-MM-dd"));
+            var Appointment = $('#AppointmentTypeID').val();
+            var DoctorID = $("#DoctorID").val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPatientAppointmentDetailForBindAppointmentType", "PatientAppointmentCalenderWise")',
+                data: { DoctorID: DoctorID },
+                contentType: "application/json; charset=utf-8",
+
+                success: function (searchList) {
+                    debugger
+                    //$("#AppointmentTypeID").val(searchList[0].AppointmentTypeID);
+                    //$("#AppointmentTypeID").text(searchList[0].AppointmentType);
+                    $('#PatientAppointmentText').val($("#AppointmentType option:selected").text());
+                    $("#AppointmentTypeID").append('<option value=' + searchList[0].AppointmentType + '>' + searchList[0].AppointmentType + '</option>')
+                    AppointmentType = searchList[0].AppointmentType;
+                    var Appointment = AppointmentType;//  $("#AppointmentType").val();
+                    // alert(Appointment);
+                    $.ajax({
+                        url: '@Url.Action("BindFromToTime", "PatientAppointmentCalenderWise")',
+                        type: "GET",
+                        data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            debugger;
+
+                            $('#AppointmentTime option:not(:first)').remove();
+                            for (var i = 0; i < data.length; i++) {
+                                $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                            }
+                        },
+                        error: function (data) {
+                            debugger;
+                            // alert('dewdeguywfueureyt');
+                        }
+                    })
+
+                },
+
+
+            });
+            @*$.ajax({
+                    url: '@Url.Action("BindFromToTime", "PatientAppointmentSchedule")',
+                    type: "GET",
+                    data: { AppointmentType: Appointment, DoctorID: DoctorID },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#AppointmentTime').append('<option value="' + AppointmentTime + '">' + AppointmentTime + '</option>');
+                        //   $('#AppointmentTime option:not(:first)').remove();
+                        for (var i = 0; i < data.length; i++) {
+                            $('#AppointmentTime').append('<option value="' + data[i][1] + '">' + data[i][0] + '</option>');
+                        }
+                    },
+                    error: function (data) {
+                        debugger;
+                        // alert('dewdeguywfueureyt');
+                    }
+                })*@
+
+        })
+
+        // chkdiv
+
+        $("#DoctorSchedule").click(function () {
+            debugger
+            var a = document.getElementById("DoctorSchedule").checked;
+            if (a == true) {
+                $("#chkdiv").show();
+            }
+            else {
+                $("#chkdiv").hide();
+            }
+        })
+
+
+        $("#takeNewRequest").click(function () {
+            debugger
+            alert("yes");
+            $("#dgvappoiment").show();
+            $("#Book").show();
+        })
+    });
+
+</script>
+@*<script>
+    $("#DoctorSchedule").click(function () {
+        debugger
+        var a = document.getElementById("DoctorSchedule").checked;
+        if (a == true) {
+            $("#chkdiv").show();
+        }
+        else {
+            $("#chkdiv").hide();
+        }
+    })
+</script>*@
+<script>
+
+
+    $(".abc").mouseover(function () {
+        alert("sdfgd")
+    })
+    function myFunction(DoctorAppoinmentScheduleID) {
+
+        $("#dgvDoctorScheduleDetail td").remove();
+        //  $("#AppointType").val($(this).val());
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDoctorAppointmentSchedule", "PatientAppointmentCalenderWise")',
+            data: { DoctorAppoinmentScheduleID: DoctorAppoinmentScheduleID, DoctorID: $("#DoctorID").val() },
+            success: function (searchList) {
+
+
+                for (var i = 0 ; i < searchList.length; i++) {
+
+                    if (searchList[i].Table2 == "Table2") {
+                        $("#dgvDoctorScheduleDetail").append('<tr><td>' + searchList[i].DayDate + '</td><td >' + searchList[i].AppointmentType + '</td></tr>')
+                        $("#AppointType").val(searchList[i].AppointmentType);
+                    }
+
+
+                }
+
+
+            },
+        });
+
+
+
+
+    }
+
+
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+
+ 
+    <section id="mainDiv">
+        <form action="" method="post">
+            <div id="featureErrorDiv"></div>
+            <div id="myModal1" style="display:none" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content" style="width:fit-content">
+                        <div class="modal-header">
+                          
+                            <button type="button" id="btnclose" class="close">X</button>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12 padding0">
+                                <div class="col-lg-12 row rowmarginbottom padding0">
+                                    @*<h4 class="modal-title">Doctor Appointment Reschedule</h4>*@
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 padding0 rowmargintop">
+                                <div class="" style="box-shadow:none">
+                                    <div class="box-header">
+
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <table id="tblPatientAppoimetView" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Sr.No</th>
+                                                <th>Patient Name</th>
+                                                <th>DoctorID</th>
+                                                <th>Doctor Name</th>
+                                                <th>Appointment Date</th>
+                                                <th>From Time</th>
+                                                <th>To Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="scrollbar"></tbody>
+
+                                    </table>
+
+                                    <!-- /.box-body -->
+                                </div>
+                                <div class="float-left">
+
+
+                                </div>
+
+                                <!-- /.box -->
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+           
+           
+            <div class="col-md-10 col-sm-12 col-xs-12 col-md-offset-2 registrationSection" style="padding-top: 20px;">
+                <input type="hidden" id='csrfmiddlewaretoken' value="CnELry99EHXT0zQk61o5CoQAXYxycpDLH9VNQqqmCe1AtWwT90c4AoNWgXH8tXsw">
+                <input type="hidden" id='profileImagePath' value="profilePics/defaultProfilePic.png">
+                <input type="hidden" id='labNameForUserLogin' value="Primus Pathology And Diagnostics">
+                <input type="hidden" id='labAbbreviation' value="ppd">
+                <input type="hidden" id="currency" value="INR">
+                <input type="hidden" id="defaultDoc" value="748667">
+                <input type="hidden" id="defaultOrg" value="">
+                <div id="htmlMsgDiv" class="col-md-12 col-sm-12 col-xs-12"></div>
+
+                <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 8px;">
+                    <label class="pull-right">Pending</label>
+                    <div class="pull-right" style="width: 15px;height: 15px;background: #9e9e9e;-webkit-border-radius: 12px;margin-right: 5px;margin-top: 2px;"></div>
+                    <label class="pull-right" style="margin-right: 33px;">Confirmed</label>
+                    <div class="pull-right" style="width: 15px;height: 15px;background: #00acc1;-webkit-border-radius: 12px;margin-right: 5px;margin-top: 2px;"></div>
+                    <label class="pull-right" style="margin-right: 33px;">Billing Done</label>
+                    <div class="pull-right" style="width: 15px;height: 15px;background:#00C851;-webkit-border-radius: 12px;margin-right: 5px;margin-top: 2px;"></div>
+                    <label class="pull-right" style="margin-right: 33px;">Billed, Appt. Not Confirmed</label>
+                    <div class="pull-right" style="width: 15px;height: 15px;background:#D39CE4;-webkit-border-radius: 12px;margin-right: 5px;margin-top: 2px;"></div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 clear-both" id="appointmentContainer" style="font-family: Lucida Grande;font-size: 14px;margin-bottom: 20px;height: 10px;margin-top: 10px;padding: 0;"></div>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-12" style="padding: 0;">
+                    <div style="text-align: center;"><button type="button" id="takeNewRequest" name="takeNewRequest" onclick="Book();" class="btn btn-primary" style="width: 100%">Book Appointment</button></div>
+                    <div><input type="checkbox" style="color:#ffffff" data-toggle="modal" data-target="#myModal" id="DoctorSchedule" name="DoctorSchedule" />Doctor Schedule</div>
+                    <h4 style="text-align: center;padding-top: 6px;" id="totalAppCountId">Today's Appointments</h4>
+                    <h4 style="text-align: center;padding-top: 6px;padding-bottom:6px;" id="pendingCountId">Pending</h4>
+                    <div style="display:flex; justify-content: space-evenly;">
+                        <div class="" style="border: 1px solid #ccc;margin-top: 4px;border-radius: 4px;padding: 4px; width: 30%">
+                            <h3 style="margin: 0;text-align: center;color: #00C851;" id="billedCountId">0</h3>
+                            <hr class="clear_both" style="margin: 4px" ;>
+                            <div>
+                                <p style="margin: 0;text-align: center">Billing Done</p>
+                            </div>
+
+                        </div>
+                        <div class="" style="border: 1px solid #ccc;margin-top: 4px;border-radius: 4px;padding: 4px; width: 30%">
+                            <h3 style="margin: 0;text-align: center;color: #00acc1;" id="confirmedCountId">0</h3>
+                            <hr class="clear_both" style="margin: 4px" ;>
+                            <div>
+                                <p style="margin: 0;text-align: center">Confirmed</p>
+                            </div>
+
+                        </div>
+                        <div class="" style="border: 1px solid #ccc;margin-top: 4px;border-radius: 4px;padding: 4px; width: 30%">
+                            <h3 style="margin: 0;text-align: center;color: #D39CE4;" id="billingDoneNotConfirmedCount">0</h3>
+                            <hr class="clear_both" style="margin: 4px" ;>
+                            <div>
+                                <p style="margin: 0;text-align: center">Billed, Appt. Not Confirmed</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12" id="appointmentListDiv" style="padding: 0;">
+
+
+
+                    </div>
+                </div>
+               
+                <div class="modal fade" id="bookAppointmentModal"  tabindex="-1" role="dialog" aria-labelledby="bookAppointmentModalLabel"aria-hidden="true">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content" style="width: inherit;display:none" id="Book" >
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">Book New Appointment</h4>
+                                
+                                
+                            </div>
+                            <div style="display:none" class="modal-body">
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group" id='errorDiv'></div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <select style="display:none" name="patientType" id="patientType" class="form-control" tabindex="1">
+                                        <option value="D" selected="1">Patient Type (Default : Direct)</option>
+                                        <option value="I">Indirect (I)</option>
+                                        <option value="OP">OPD (OP)</option>
+                                        <option value="IP">IPD (IP)</option>
+                                        <option value="RB">RB</option>
+                                        <option value="ML">Main Lab (ML)</option>
+                                        <option value="B/O">Baby or Just Born (B/O)</option>
+                                        <option value="CC">Corporate (CC)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group" id="nationalIndentityNoDiv">
+                                    <input type="text" id="nationalIdentity" tabindex="3" placeholder="National Identity Number" class="form-control" onblur="setNationalIdentityNumberTypehead();"></input>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group" id="mobDiv" style="margin-bottom: 12px;">
+                                    <input type="text" dir="auto" id="regMobile" class="form-control"
+                                           placeholder="Mobile (10 digits)" tabindex="3" />
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 hidden-xs" style="margin-bottom: 2px;">
+                                    <span id="newValid-msg" class="hide" style="float: right;">✓ Valid</span>
+                                    <span id="newError-msg" class="hide" style="float: right;">Invalid number</span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group" id="alternateMobDiv" style="margin-bottom: 12px;">
+                                    <input type="text" dir="auto" id="regAlternateMobile" class="form-control"
+                                           placeholder="Alternate Mobile (10 digits)" tabindex="3" />
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 hidden-xs" style="margin-bottom: 2px;">
+                                    <span id="newValid-msg1" class="hide" style="float: right;">✓ Valid</span>
+                                    <span id="newError-msg1" class="hide" style="float: right;">Invalid number</span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <input type="text" dir="auto" class="form-control" placeholder="Email" id="email" name="email" tabindex="4">
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <div class="col-md-3 col-sm-3 col-xs-3" style="padding: 0;">
+                                        <select name="designation" id="designation" class="form-control" onchange="designationSex_handler();" tabindex="5">
+                                            <option value="" selected="1">Designation</option>
+                                            <option value="Mr.">Mr.</option>
+                                            <option value="Mrs.">Mrs.</option>
+                                            <option value="Ms.">Ms.</option>
+                                            <option value="Master">Master</option>
+                                            <option value="Miss">Miss</option>
+                                            <option value="Smt.">Smt.</option>
+                                            <option value="Dr.">Dr.</option>
+                                            <option value="B/O">Baby or Just Born (B/O)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-9" style="padding-right: 0;">
+                                        <input type="text" class="form-control" placeholder="Full Name" id="patientName" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <input type="text" dir="auto" class="form-control" placeholder="Age (in years)" tabindex="7" id="age"
+                                           name="age" onblur="calculateAgeDOBApp()" />
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <div class="col-md-3 col-sm-3 hidden-xs" style="padding: 0px;">
+                                        <label style="line-height: 35px;" id="newDirectDOB">DOB : </label>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-4" style="padding-right: 0px;">
+                                        <select id="day" tabindex="11" class="form-control" onchange="calculateAgeFromBirthdate();">
+                                            <option value="0" selected="1">Day</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                            <option value="25">25</option>
+                                            <option value="26">26</option>
+                                            <option value="27">27</option>
+                                            <option value="28">28</option>
+                                            <option value="29">29</option>
+                                            <option value="30">30</option>
+                                            <option value="31">31</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-4" style="padding-right: 0px;">
+                                        <select id="month" tabindex="12" class="form-control" onchange="calculateAgeFromBirthdate();">
+                                            <option value="0" selected="1">Month</option>
+                                            <option value="1">Jan</option>
+                                            <option value="2">Feb</option>
+                                            <option value="3">Mar</option>
+                                            <option value="4">Apr</option>
+                                            <option value="5">May</option>
+                                            <option value="6">Jun</option>
+                                            <option value="7">Jul</option>
+                                            <option value="8">Aug</option>
+                                            <option value="9">Sept</option>
+                                            <option value="10">Oct</option>
+                                            <option value="11">Nov</option>
+                                            <option value="12">Dec</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-4" style="padding-right: 0px;">
+                                        <select id="year" tabindex="13" class="form-control" onchange="calculateAgeFromBirthdate();">
+                                            <option value="0" selected="1">Year</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2010">2010</option>
+                                            <option value="2009">2009</option>
+                                            <option value="2008">2008</option>
+                                            <option value="2007">2007</option>
+                                            <option value="2006">2006</option>
+                                            <option value="2005">2005</option>
+                                            <option value="2004">2004</option>
+                                            <option value="2003">2003</option>
+                                            <option value="2002">2002</option>
+                                            <option value="2001">2001</option>
+                                            <option value="2000">2000</option>
+                                            <option value="1999">1999</option>
+                                            <option value="1998">1998</option>
+                                            <option value="1997">1997</option>
+                                            <option value="1996">1996</option>
+                                            <option value="1995">1995</option>
+                                            <option value="1994">1994</option>
+                                            <option value="1993">1993</option>
+                                            <option value="1992">1992</option>
+                                            <option value="1991">1991</option>
+                                            <option value="1990">1990</option>
+                                            <option value="1989">1989</option>
+                                            <option value="1988">1988</option>
+                                            <option value="1987">1987</option>
+                                            <option value="1986">1986</option>
+                                            <option value="1985">1985</option>
+                                            <option value="1984">1984</option>
+                                            <option value="1983">1983</option>
+                                            <option value="1982">1982</option>
+                                            <option value="1981">1981</option>
+                                            <option value="1980">1980</option>
+                                            <option value="1979">1979</option>
+                                            <option value="1978">1978</option>
+                                            <option value="1977">1977</option>
+                                            <option value="1976">1976</option>
+                                            <option value="1975">1975</option>
+                                            <option value="1974">1974</option>
+                                            <option value="1973">1973</option>
+                                            <option value="1972">1972</option>
+                                            <option value="1971">1971</option>
+                                            <option value="1970">1970</option>
+                                            <option value="1969">1969</option>
+                                            <option value="1968">1968</option>
+                                            <option value="1967">1967</option>
+                                            <option value="1966">1966</option>
+                                            <option value="1965">1965</option>
+                                            <option value="1964">1964</option>
+                                            <option value="1963">1963</option>
+                                            <option value="1962">1962</option>
+                                            <option value="1961">1961</option>
+                                            <option value="1960">1960</option>
+                                            <option value="1959">1959</option>
+                                            <option value="1958">1958</option>
+                                            <option value="1957">1957</option>
+                                            <option value="1956">1956</option>
+                                            <option value="1955">1955</option>
+                                            <option value="1954">1954</option>
+                                            <option value="1953">1953</option>
+                                            <option value="1952">1952</option>
+                                            <option value="1951">1951</option>
+                                            <option value="1950">1950</option>
+                                            <option value="1949">1949</option>
+                                            <option value="1948">1948</option>
+                                            <option value="1947">1947</option>
+                                            <option value="1946">1946</option>
+                                            <option value="1945">1945</option>
+                                            <option value="1944">1944</option>
+                                            <option value="1943">1943</option>
+                                            <option value="1942">1942</option>
+                                            <option value="1941">1941</option>
+                                            <option value="1940">1940</option>
+                                            <option value="1939">1939</option>
+                                            <option value="1938">1938</option>
+                                            <option value="1937">1937</option>
+                                            <option value="1936">1936</option>
+                                            <option value="1935">1935</option>
+                                            <option value="1934">1934</option>
+                                            <option value="1933">1933</option>
+                                            <option value="1932">1932</option>
+                                            <option value="1931">1931</option>
+                                            <option value="1930">1930</option>
+                                            <option value="1929">1929</option>
+                                            <option value="1928">1928</option>
+                                            <option value="1927">1927</option>
+                                            <option value="1926">1926</option>
+                                            <option value="1925">1925</option>
+                                            <option value="1924">1924</option>
+                                            <option value="1923">1923</option>
+                                            <option value="1922">1922</option>
+                                            <option value="1921">1921</option>
+                                            <option value="1920">1920</option>
+                                            <option value="1919">1919</option>
+                                            <option value="1918">1918</option>
+                                            <option value="1917">1917</option>
+                                            <option value="1916">1916</option>
+                                            <option value="1915">1915</option>
+                                            <option value="1914">1914</option>
+                                            <option value="1913">1913</option>
+                                            <option value="1912">1912</option>
+                                            <option value="1911">1911</option>
+                                            <option value="1910">1910</option>
+                                            <option value="1909">1909</option>
+                                            <option value="1908">1908</option>
+                                            <option value="1907">1907</option>
+                                            <option value="1906">1906</option>
+                                            <option value="1905">1905</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <label>Gender : </label>
+                                    <label style="font-weight: 400;padding-left: 5px;">
+                                        <input style="margin-right: 2px;" type="radio" id="radiobutton" tabindex="8" name="gender"
+                                               accesskey="m" value="Male" />Male
+                                    </label>
+                                    <label style="font-weight: 400;padding-left: 5px;">
+                                        <input style="margin-right: 2px;" type="radio" id="radiobutton1" tabindex="9" name="gender"
+                                               value="Female" />Female
+                                    </label>
+                                    <label style="font-weight: 400;padding-left: 5px;">
+                                        <input style="margin-right: 2px;" type="radio" id="radiobutton2" tabindex="10" name="gender"
+                                               value="Other" />Other
+                                    </label>
+                                    <label id="genderAlert" style="color:white;margin-right: 15px;">*</label>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group ">
+                                    <div class="input-group ">
+                                        <input type="text" dir="auto" class="form-control" id="patientOrgName" placeholder=" Search Organization" style="font-size: 18px;">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">List <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu" id="patientOrgNameList"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group ">
+                                    <div class="input-group ">
+                                        <input type="text" dir="auto" class="form-control" id="patientRefName" placeholder=" Search Referral Doctor" style="font-size: 18px;">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">List <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu" id="patientRefNameList"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p><label><b>Appointment Details</b></label></p>
+                                <input type="hidden" id="patOrgId" value="0">
+                                <input type="hidden" id="patRefId" value="0">
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <input type="text" dir="auto" class="form-control" id="area" name="area" tabindex="11" placeholder="Area" />
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <div class="input-append">
+                                        @*<input readonly="true" id="appointmentTime" type="text" dir="auto" placeholder="Appointment Time" class="form-control" onchange="showSlots(1)">*@
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <select id="timeSlots" class="form-control"></select>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group">
+                                    <select id="bookAppDoctor" class="form-control" onchange="showDocTimeSlot(this,1);"></select>
+                                    <p id="docTimeSlotForBook" style="padding-left: 5px;"></p>
+                                </div>
+
+                                <div class="col-md-12 col-sm-12 col-xs-12 clear_both form-group" style="padding: 0px; margin-top: -8px;">
+                                    <div class="col-md-3 col-sm-3 hidden-xs" style="padding-left: 16px;">
+                                        <label style="line-height: 35px;">Comments : </label>
+                                    </div>
+                                    <div class="col-lg-9 col-sm-9 col-xs-12 form-group">
+                                        <textarea id="comment" placeholder="Comments (if any)" class="form-control" style="font-size: 18px;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <label><input type="checkbox" onclick="showHideSentSMSDiv();" id="confirmFlag" style="margin: 10px 5px 0;">Appointment Confirmed By Patient</label>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group" id="showHideSentSMSDiv" style="display: none;">
+                                    <label><input type="checkbox" id="confirmSentSMSFlag" style="margin: 10px 5px 0;">Send SMS to Patient</label>
+                                </div>
+                                <div class='col-lg-8 col-sm-8 col-xs-12 form-group' style="padding-left:0px;display:none" id="adminPasswordForAuthTxtDiv">
+                                    <input type='password' class='form-control' id='adminPasswordForAuthTxt' value='' placeholder="Enter Admin Password">
+                                </div>
+                                <div class='col-lg-4 col-sm-4 col-xs-12 form-group' style="display:none" id="adminPasswordForAuthDiv">
+                                    <input type='button' class='btn btn-sm btn-primary' id='adminPasswordForAuth' value='Verify Password' onclick="checkAdminPasswordForAppoint()">
+                                </div>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="col-lg-12 padding0">
+                                    <div class="row">
+                                        <div id="HideShow" class="col-lg-12  col-md-12 col-sm-12 col-xs-12 rowmargintop rowmarginbottom">
+
+                                            <div class="row">
+
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding0 rowmargintop">
+
+
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="font-family:roboto">
+                                                            <span>Patient Type</span>
+
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: flex">
+
+                                                            <span style="font-family: roboto; background-color: #eee; padding: 3px; box-shadow: inset 0 1px 1px rgba(0,0,0,.075);border: 1px solid #ccc;border-radius:4px; width:600px; margin-right: 5px; font-size: 13px;">New Registration</span>
+
+
+                                                            <input type="hidden" id="FinancialYearID" name="FinancialYearID">
+                                                            <select class="form-control input-sm" id="FinancialYear" name="FinancialYear" disabled></select>
+
+
+
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>Appoint ID.</span>
+
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" readonly="readonly" value="@Model.PatientID" id="AppointmentNo" name="AppointmentNo" class="form-control input-sm" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding0 rowmargintop">
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>Patient Name</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-12" style="display:flex">
+                                                            <div class="col-lg-3" style="display:flex">
+
+                                                                <select class="form-control input-sm" id="PFPatientName" name="PFPatientName">
+                                                                    <option id="Select" value="Select">Select</option>
+                                                                </select>
+
+                                                            </div>
+
+                                                            <input type="text" id="FirstName" name="FirstName" required="" class="form-control input-sm" placeholder="First Name" style="margin-left:5px" />
+                                                            <input type="hidden" id="PatientAppointmentText" name="PatientAppointmentText" class="form-control input-sm" placeholder="First Name" style="margin-left:5px" />
+
+
+
+                                                            <input type="text" id="PMiddleName" name="PMiddleName" class="form-control input-sm" placeholder="Middle Name" style="margin-left:5px" />
+                                                            <input type="hidden" id="PatientAppointmentScheduleID" name="PatientAppointmentScheduleID">
+
+
+                                                            <input type="text" id="PLastName" name="PLastName" class="form-control input-sm" placeholder="last Name" style="margin-left:5px" />
+
+
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>Mobile No.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                                                            <input type="text" id="MobileNo" name="MobileNo" maxlength="10" class="form-control input-sm" style="padding:1px 1px 1px 1px" />
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  rowmargintop padding0">
+
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Age</span>
+
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style=" display: flex;">
+                                                            <input type="text" id="Day" name="Day" class="form-control input-sm" placeholder="Day" />
+                                                            <input type="text" id="Month" name="Month" class="form-control input-sm" placeholder="Month" style="margin-left:5px" />
+                                                            <input type="text" id="Year" name="Year" class="form-control input-sm" placeholder="Year" style="margin-left:5px" />
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>DOB.</span>
+
+
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="date" id="DateOFBirth" name="DateOFBirth" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-sm" style="padding:1px 1px 1px 1px" />
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0 rowmargintop">
+                                                    <!--Hospital Address Start-->
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Doctor Name</span>
+                                                        </div>
+                                                        <div class="col-lg-10 style=" display:flex">
+                                                            <input type="hidden" id="DoctorID" name="DoctorID" class="form-control">
+                                                            <input type="text" id="ConsultantDoctorName" style="text-transform:uppercase" name="ConsultantDoctorName" required="" class="form-control input-sm" />
+
+
+
+                                                            <input type="hidden" id="DoctorAppoinmentScheduleID" name="DoctorAppoinmentScheduleID">
+                                                            @*<button type="button" onclick="window.location.href='@Url.Action("DoctorAppointmentSchedule", "DoctorAppointmentSchedule")'" class="btndivcss" title="Add Doctor">+</button>*@
+
+                                                            @*<button type="button" onclick="window.location.href='@Url.Action("DoctorAppointmentSchedule", "DoctorAppointmentSchedule")'" class="btndivcss" style="width: 10px; height: 100%; border: 2px solid #106dca; background: white; color: #106dca; font-size: 20px; border-radius: 3px; padding: 110px; line-height: 0px; text-align: end;" title="Add Doctor">+</button>*@
+                                                            <input type="hidden" name="FromTime" id="FromTime">
+
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <button type="button" onclick="window.location.href='@Url.Action("DoctorAppointmentSchedule", "DoctorAppointmentSchedule")'" class="btndivcss" title="Add Doctor">+</button>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <!--Hospital Address End-->
+                                                    <!--Hospital City Start-->
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0 rowmargintop rowmarginbottom">
+                                                    <!--Hospital City End-->
+                                                    <!--Hospital Pin code Start-->
+                                                    <!--Hospital Pin code End-->
+                                                    <!--Hospital State Start-->
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>  Appointment Date</span>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            @*<input type="date" id="AppointDateID" name="AppointDateID" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control">*@
+                                                            <input readonly="readonly" id="appointmentTime" name="appointmentTime" type="text" dir="auto" placeholder="Appointment Time" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" onchange="showSlots(0)">
+                                                            <span class="add-on"><i class="icon-th"></i></span>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span> Appointment Type</span>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <select hidden class="form-control" id="AppointmentTypeID" name="AppointmentTypeID"></select>
+                                                            <div id="DivAppointmentType" class="btn-group dropdown-split-warning form-control input-sm" style="display:none;display:flex">
+                                                                @*<button type="button" id="Daily" onclick="" class="btndivcss">Daily</button>
+                                                                    <button type="button" id="Weekly" onclick="" class="btndivcss">Weekly</button>
+                                                                    <button type="button" id="Monthy" onclick="" class="btndivcss">Monthly</button>
+                                                                    <button type="button" id="OnCall" onclick="" class="btndivcss">Oncall</button>*@
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+
+
+
+                                                        <table id="dgvDoctorScheduleDetail" class="table table-bordered table-striped" style="width:100%;display:none">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>AppointmentType</th>
+                                                                    @*<th>DoctorName</th>*@
+                                                                    <th>DayDate</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="scrollbar"></tbody>
+
+                                                        </table>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                            <span>Appointment No.</span>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="AppointmentNoID" name="AppointmentNoID" class="form-control">
+                                                            <input hidden type="text" id="AppointType" name="AppointType">
+                                                            @*<button type="button" id="SaveAppointment" name="SaveAppointment" class="btndivcss" style="width: 50px; margin-left: 5px; height: 26px; border: 2px solid #106dca; background: white; color: #106dca; font-size: 20px; border-radius: 3px; padding: 110px; line-height: 0px; text-align: end;" title="Save Appointment">Save</button>*@
+                                                        </div>
+
+
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <span>Time </span>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <select class="form-control" required name="AppointmentTime" id="AppointmentTime">
+                                                                <option id="Select" value="Select">Select</option>
+
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+                                                
+                                                    <table style="width:400px" id="" class="table table-striped tooltiptbl modal-content"><thead><tr><th>Sr.No</th><th>Patient Name</th><th>Doctor Name</th><th>Appointment Date</th><th>From Time</th><th>To Time</th></tr></thead>
+                                                        <tbody id="example3"></tbody></table>
+
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="modal-footer clear_both">
+                                <button type="button" id="btndelete" class="btn btn-default">Delete</button>
+                                <button type="button" class="btn btn-default" style="float: left;" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success" id="Save">
+                                    Book
+                                    Appointment
+
+                                </button>
+                                <button type="button" onclick="window.location.href='@Url.Action("Dashboard","Home")'" class="btn btn-default">Exit</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal fade" id="rescheduleAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="rescheduleAppointmentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="check_fun();check_fun = function(){};">&times;</button>
+                                <h4 class="modal-title" id="dateModalLabel">Update Appointment</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="rescheduleAppId">
+                                <input type="hidden" id="userId">
+                                <div class="col-md-12 col-sm-12 col-xs-12" id='rescheduleErrorDiv'></div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="float: right;">Patient Id : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                                    <span id="patientId"></span>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="float: right;">Name : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                                    <span id="patientInfo"></span>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="float: right;">Contact : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-6">
+                                    <span id="pcontact"></span>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="float: right;">Tests : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-6">
+                                    <span id="ptests"></span>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="padding-top: 5px;float: right;">Appointment Date : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                                    <div class="input-append">
+                                        @*<input readonly="true" id="newAppointmentTime" type="text" dir="auto" placeholder="Appointment Time" class="form-control" onchange="showSlots(0)">*@
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="padding-top: 5px;float: right;">Available Slots : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                                    <div class="input-append">
+                                        <select id="newTimeSlots" class="form-control"></select>
+                                        <span class="add-on"><i class="icon-th"></i></span>
+                                    </div>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="padding-top: 5px;float: right;">Appointment Doctor : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-12">
+                                    <select id="rescheduleAppDoctor" class="form-control" onchange="showDocTimeSlot(this,2);"></select>
+                                    <p id="docTimeSlotForReschedule" style="padding-left: 5px;"></p>
+                                </div>
+                                <div class="clear_both form-group col-md-4 col-sm-4 col-xs-6">
+                                    <label style="float: right;">Comment : </label>
+                                </div>
+                                <div class="form-group col-md-8 col-sm-8 col-xs-6">
+                                    <textarea rows="4" cols="50" id="pcomment" class="form-control"></textarea>
+                                </div>
+                                <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4 col-md-6 col-sm-6 col-xs-12 form-group" style="width:100%" id="confirmAppFlagId">
+                                    <label><input type="checkbox" id="reconfirmFlag" style="margin: 10px 5px 0;">Appointment Confirmed By Patient</label>
+                                </div>
+                                <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4 col-md-7 col-sm-7 col-xs-12 form-group" id="updateConfirmSMSFlagDiv">
+                                    <label><input type="checkbox" id="updateSendSMSFlag" style="margin: 10px 5px 0;">Send SMS to Patient</label>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="height: auto;max-height: 250px;overflow-x: hidden" id="testDetails">
+                                </div>
+
+                            </div>
+                            <div class="modal-footer clear_both">
+                                <button type="button" class="btn btn-default btn-sm" style="float: left;" data-dismiss="modal" onclick="check_fun();check_fun = function(){};">Close</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="cancelWebAppointment(0);">Dismiss</button>
+                                <button type="button" class="btn btn-default btn-sm" id="rescheduleBtn" onclick="rescheduleWebAppointment(0);">Reschedule</button>
+                                <button type="button" class="btn btn-success btn-sm" id="confirmBtn" onclick="confirmWebAppointment();">Confirm</button>
+                                <button type="button" class="btn btn-success btn-sm" id="billingBtn" onclick="billPatient();">Proceed To Bill</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="confirmAppointmentCancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel">Confirm Cancel Appointment</h4>
+                                </div>
+                                <div class="modal-body float_left" style="width: 100%;">
+                                    <input type="hidden" id="cancelAppId">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group" id='cancelErrorDiv'></div>
+                                    <p>Are you sure you want to cancel this Appointment?</p>
+                                </div>
+                                <div class="modal-footer clear_both">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" style="color:black;">No! I clicked this by mistake</button>
+                                    <button type="button" class="btn btn-primary" onclick="cancelWebAppointment(0);">Yes! I'm sure</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="overflow:auto;">
+                    <div class=" panel-primary" style="box-shadow:none">
+                        <table id="example1" data-toggle="popover" title="Appointment Details" class="table table-bordered table-striped data-toggle ">
+                            <thead>
+                                <tr>
+                                    <th>Sr.No</th>
+                                    <th>Patient Name</th>
+                                    <th>DoctorID</th>
+                                    <th>Doctor Name</th>
+                                    <th>Appointment Date</th>
+                                    <th>From Time</th>
+                                    <th>To Time</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody class="scrollbar"></tbody>
+
+                        </table>
+
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+
+
+
+        </form>
+    </section>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css" />
+
+
+    <link href="https://d1c1amdhe68x8s.cloudfront.net/CSS/lab.css?v=1.5" rel="stylesheet">
+
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/requestFeature.js"></script>
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/typeahead.js"></script>
+    <link type="text/css" href="https://d1c1amdhe68x8s.cloudfront.net/CSS/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/moment.js"></script>
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/bootstrap-datetimepicker.min.js"></script>
+    <link href="https://d1c1amdhe68x8s.cloudfront.net/CSS/intlTelInput.css" rel="stylesheet">
+    <script src="https://d1c1amdhe68x8s.cloudfront.net/JS/intlTelInput.min.js"></script>
+    <script src="https://js.pusher.com/3.2/pusher.min.js"></script>
+    <script>
+        var key = document.getElementById("pusherkey").value;
+        var pusher = new Pusher(key, {
+            cluster: 'ap2',
+            encrypted: true,
+            disableStats: true
+        });
+        var channel = pusher.subscribe('Appointment_Changes_' + 1816);
+    </script>
+
+    <script type="text/javascript">
+        $('#remoteSearch').tooltip();
+        $.ajaxSetup({
+            crossDomain: true,
+            beforeSend: function (xhr, settings) {
+            }
+        });
+    </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js"></script>
+
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/commonSearch.js?v=3.0"></script>
+
+    <script>registrationSearchConfig(1);</script>
+    <script type="text/javascript" src="https://d1c1amdhe68x8s.cloudfront.net/JS/lab.js"></script>
+    <style>
+        .fc-time-grid .fc-slats td {
+            height: 2em;
+        }
+
+        .fc-v-event {
+            max-height: 30px;
+        }
+
+        .fc-resizer.fc-end-resizer {
+            display: none;
+        }
+    </style>
+
+    <script>
+        $(function () {
+            $(".fc-month-button,.fc-agendaWeek-button,.fc-agendaDay-button").hide();
+            $(".fc-day-number").prop('disabled',true);
+          //  $(".fc-month-button").hide();
+            $(".fc-prev-button,.fc-next-button,.fc-month-button,.fc-agendaWeek-button,.fc-agendaDay-button").click(function () {
+                debugger
+                $(".fc-day-number").prop('disabled', true);
+                $(".fc-month-button,.fc-agendaWeek-button,.fc-agendaDay-button").hide();
+                EventFind();
+
+                $(".fc-day-top").click(function () {
+                    debugger
+                    var count = 0;
+                    // var a1=   showSlots(3)
+
+                    debugger
+                    var AddDate = $("#appointmentTime").val();
+                    debugger
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("GetAllPatientAppointmentData", "PatientAppointmentCalenderWise")',
+                        data: { Date: AddDate },
+                        success: function (searchList) {
+                            $("#example3 tr").remove();
+                            debugger
+                            for (var i = 0 ; i < searchList.length; i++) {
+
+                                var SrNo = i + 1;
+                                $("#example3").append('<tr><td>' + SrNo + '</td><td>' + searchList[i].PatientName + '</td><td>' + searchList[i].DoctorName + '</td><td>' + searchList[i].AppointmentDate + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td><td style="display:none">' + searchList[i].PatientID + '</td></tr>');
+
+                            }
+
+
+                        },
+                    });
+                    //$('.tooltiptbl').DataTable();
+                })
+
+            })
+            var cells = document.getElementsByTagName("tr");
+            cells.onclick = function () {
+                cells.style.backgroundColor = "white";
+            }
+
+            $(".fc-prev-button,.fc-next-button,.fc-month-button,.fc-agendaWeek-button,.fc-agendaDay-button").click(function () {
+                debugger
+        
+        
+
+
+            })
+            $('.myCssClass').on('click', function () {
+                debugger
+                alert("sjjs");
+            })
+            
+            //$("tr").click(function () {
+            //    debugger
+                
+              // var a1 = showSlots(3)
+            //})
+
+            $(".fc-day-top").click(function () {
+            debugger
+            var count = 0;
+        // var a1=   showSlots(3)
+           
+                debugger
+                var AddDate = $("#appointmentTime").val();
+                debugger
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetAllPatientAppointmentData", "PatientAppointmentCalenderWise")',
+                    data: { Date: AddDate },
+                    success: function (searchList) {
+                        $("#example3 tr").remove();
+                        debugger
+                        for (var i = 0 ; i < searchList.length; i++)
+                        {
+                                           
+                            var SrNo = i + 1;
+                            $("#example3").append('<tr><td>' + SrNo + '</td><td>' + searchList[i].PatientName + '</td><td>' + searchList[i].DoctorName + '</td><td>' + searchList[i].AppointmentDate + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td><td style="display:none">' + searchList[i].PatientID + '</td></tr>');
+
+                        }
+
+
+                    },
+                });
+                //$('.tooltiptbl').DataTable();
+            })
+
+        });
+
+        function TableToolTip(lam) {
+            
+            var aa = lam.className;
+            debugger
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAllPatientAppointmentData", "PatientAppointmentCalenderWise")',
+                data: { Date: aa },
+                success: function (searchList) {
+                    $("#tblPatientAppoimetView tr").remove();
+                    debugger
+                    $("#myModal1").show();
+                    for (var i = 0 ; i < searchList.length; i++) {
+
+                        var SrNo = i + 1;
+                        $("#tblPatientAppoimetView").append('<tr><td>' + SrNo + '</td><td>' + searchList[i].PatientName + '</td><td>' + searchList[i].DoctorName + '</td><td>' + searchList[i].AppointmentDate + '</td><td>' + searchList[i].FromTime + '</td><td>' + searchList[i].ToTime + '</td><td style="display:none">' + searchList[i].PatientID + '</td></tr>');
+
+                    }
+
+
+                },
+            });
+        }
+
+        function showDetails(animal) {
+
+            var animalType = animal.getAttribute("data-date");
+            return animalType;
+        }
+        function EventFind() {
+            debugger
+            document.querySelectorAll('tbody').forEach(function (el, i) {
+
+                el.css = "Display:none";
+            });
+
+            var lentbl = $("#example1 tbody tr").length;
+            // var anchors = document.getElementsByTagName("tbody");
+            var l = 0;
+            $(".fc-day-top").each(function () {
+
+                var count = 0;
+               // $(this).append('<p id="Appoiment" >Details </p>')
+                var lam = showDetails(this);
+                var date = '@DateTime.Now.ToString("yyyy-MM-dd")';
+                var same = "";
+                var row=0;
+                for (var m = 0; m < lentbl; m++) {
+                    var qq = document.getElementById("example1").tBodies[0].rows[m].cells[4].innerHTML;
+                    // alert(lam);
+                    if (document.getElementById("example1").tBodies[0].rows[m].cells[4].innerHTML == lam) {
+                        row++;
+                       // $(this).append( document.getElementById("example1").tBodies[0].rows[m].cells[1].innerHTML + ',')
+                        debugger
+                        if (same == "") {
+                           // $("p").remove();
+                          //  $(this).append(' <div " id=' + lam + '  class="tooltip1 ">Details <div class="tooltiptext" > </div></div>');
+                            $(this).append('<input type="button" onmouseover="TableToolTip(this)" id=' + lam + ' value="Detail" class=' + lam + '>')
+                          //  $("."+lam).hide();
+                            same = "data";
+                            //
+                        }
+                        $("#" + lam).val("Detail " + row)
+                      //  count++;
+                     //   $(this).replaceWith("Appoiment - " + count);
+                      //  $("p").replaceWith("Appoiment - " + count);
+                       // $("#Appoiment").text().replaceWith("Appoiment - " + count );
+                        
+                       // alert($("#Appoiment").text());
+
+                        $("#example1").hide();
+
+                    }
+                }
+                if (lam < date) {
+                    $(this).addClass("disabledbutton")
+                }
+               
+                
+
+            })
+            //$(".p").each(function () {
+            //    var i = 1;
+            //$(".fc-day-top").each(function () {
+               
+                 
+            //        $(this).text("Details-" + i);
+            //        i++;
+            //    })
+            //})
+            debugger
+
+            //var anchors = document.getElementsByTagName("td");
+
+            //for (var i = 0; i < anchors.length; i++) {
+
+            //    anchors[i].onclick = function () {
+
+            //        var Date = showDetails(this);
+            //        if (Date != null) {
+            //            $("#dgvappoiment").show();
+            //            $("#AppointDateID").val(Date);
+                       
+            //        }
+
+            //        return false;
+            //    }
+            //}
+
+        }
+        function show(obj) {
+            debugger
+            var obj1 = document.getElementsByClassName("fc-day")[0].getAttribute("data-date");
+            // var obj1=document.getElementsByTagName("td")[0].getAttribute("data-date");
+            // var obj1 = document.getElementById("calendar").getAttribute("data-date");
+            //  document.ge
+            alert(obj1);
+            return obj1;
+        }
+
+        function EventFindWeek() {
+            debugger
+            document.querySelectorAll('tbody').forEach(function (el, i) {
+
+                el.id = i;
+                el.css = "Display:none";
+            });
+            debugger
+            var lentbl = $("#example1 tbody tr").length;
+            var date = '@DateTime.Now.ToString("yyyy-MM-dd")';
+            var same = "";
+            $(".fc-day").each(function () {
+                debugger
+                var am = show(this);
+                //  var am='2020-02-25';
+                // alert(am)
+
+                for (var n = 0; n < lentbl; n++) {
+                    var qq = document.getElementById("example1").tBodies[0].rows[n].cells[4].innerHTML;
+                    //alert(qq);
+                    debugger
+                    if (document.getElementById("example1").tBodies[0].rows[n].cells[4].innerHTML == am) {
+
+                        //$(this).append('<p style="Color:red">' + document.getElementById("example1").tBodies[0].rows[n].cells[1].innerHTML + ' </p>')
+                        debugger
+                        if (same == "") {
+                            $(this).append('<p style=" Color:red">' + document.getElementById("example1").tBodies[0].rows[n].cells[1].innerHTML + ' </p>')
+                            $(this).append('<div onmouseover="return TableToolTip(this)" id=' + am + ' class="tooltip1">Details <div class="tooltiptext" > <table style="width:400px" id="example3"  class="table table-striped tooltiptbl"><thead><tr><th>Sr.No</th><th>Patient Name</th><th>Doctor Name</th><th>Appointment Date</th><th>From Time</th><th>To Time</th></tr></thead></table></div></div>');
+                            same = "data";
+
+                            // TableToolTip(lam);
+                        }
+                        $("#example1").hide();
+
+                    }
+                    //if (am < date) {
+                    //    $(this).addClass("disabledbutton")
+                    //}
+                }
+            });
+            debugger
+
+            var anchors = document.getElementsByTagName("td");
+            for (var i = 0; i < anchors.length; i++) {
+
+                anchors[i].onclick = function () {
+
+                    debugger
+
+                    var Date = show(this);
+
+                    if (Date != null) {
+                        $("#dgvappoiment").show();
+                        $("#AppointDateID").val(Date);
+
+                    }
+
+                }
+            }
+
+        }
+
+
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+           
+
+        })
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        loadCalendarView();
+        getDocListForAppointment();
+        $('#appointmentTime').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            startDate: moment().startOf('hour'),
+            minDate: moment().startOf('hour'),
+            timePickerIncrement: 15,
+            timePicker24Hour: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
+        $('#newAppointmentTime').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            startDate: moment().startOf('hour'),
+            minDate: moment().startOf('hour'),
+            timePickerIncrement: 15,
+            timePicker24Hour: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
+        webAppointmentPusherHandling();
+        setPhoneAndNameTypeheadAppointment();
+    </script>
+    <script type="text/javascript">
+        //Newt Rregistration
+        var mobile = $("#regMobile"),
+        newErrorMsg = $("#newError-msg"),
+        newValidMsg = $("#newValid-msg");
+        mobile.intlTelInput({
+            defaultCountry: "IN",
+            preferredCountries: "IN",
+            utilsScript: "/static/JS/utils.js"
+        });
+
+        var newreset = function () {
+            mobile.removeClass("error");
+            newErrorMsg.addClass("hide");
+            newValidMsg.addClass("hide");
+            document.getElementById('mobDiv').style.marginBottom = '12px';
+        };
+
+        // on blur: validate
+        mobile.blur(function () {
+            newreset();
+            if ($.trim(mobile.val())) {
+                if (mobile.intlTelInput("isValidNumber")) {
+                    newValidMsg.removeClass("hide");
+                    document.getElementById('mobDiv').style.marginBottom = '0px';
+                } else {
+                    mobile.addClass("error");
+                    newErrorMsg.removeClass("hide");
+                    document.getElementById('mobDiv').style.marginBottom = '0px';
+                }
+            }
+        });
+        // on keyup / change flag: reset
+        mobile.on("keyup change", newreset);
+
+        //For alternate contact
+        var alternateMobile = $("#regAlternateMobile"),
+        newErrorMsg1 = $("#newError-msg1"),
+        newValidMsg1 = $("#newValid-msg1");
+        alternateMobile.intlTelInput({
+            defaultCountry: "IN",
+            preferredCountries: "IN",
+            utilsScript: "/static/JS/utils.js"
+        });
+
+        var newreset = function () {
+            alternateMobile.removeClass("error");
+            newErrorMsg1.addClass("hide");
+            newValidMsg1.addClass("hide");
+            document.getElementById('alternateMobDiv').style.marginBottom = '12px';
+        };
+
+        // on blur: validate
+        alternateMobile.blur(function () {
+            newreset();
+            if ($.trim(alternateMobile.val())) {
+                if (alternateMobile.intlTelInput("isValidNumber")) {
+                    newValidMsg1.removeClass("hide");
+                    document.getElementById('alternateMobDiv').style.marginBottom = '0px';
+                } else {
+                    alternateMobile.addClass("error");
+                    newErrorMsg1.removeClass("hide");
+                    document.getElementById('alternateMobDiv').style.marginBottom = '0px';
+                }
+            }
+        });
+        // on keyup / change flag: reset
+        alternateMobile.on("keyup change", newreset);
+
+    </script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-42275452-5', 'livehealth.solutions');
+        ga('send', 'pageview');
+    </script>
+    <script>
+        var labUserName = "Dr Neeraj Gujar".toLowerCase();
+        if (labUserName != 'livehealth') {
+
+            window.intercomSettings = {
+                app_id: "yh7drcr4", alignment: 'left', horizontal_padding: 25, vertical_padding: 20,
+                name: "Dr Neeraj Gujar", // Full name
+                email: "dr.neerajgujar@gmail.com", // Email address
+                user_id: "14669",
+                user_hash: "462eaf2e4692df9692e8ed7b65e708acd05c7261881024b22aa2fa4b50534aa2",
+                centre_id: "1816",
+                centre_name: "Primus Pathology And Diagnostics",
+                contact: "+919930885530",
+                admin: "1",
+                registration: "1",
+                operation: "1",
+                accession: "0",
+                finance: "1",
+                newAccessControl: "1",
+                currency: "INR",
+                accountMgrId: "None",
+                paymentPendingTrialLoginFlag: "1",
+                isTrial: "0",
+                MRR: "1",
+                planId: "2-Beginners Plan New",
+                accountId: "1",
+                LabName: "Primus Pathology And Diagnostics", TYPE: "Lab User",
+                companies: [{
+                    "company_id": "1816",
+                    "name": "Primus Pathology And Diagnostics"
+                }]
+            }
+        }
+    </script>
+    <script>
+        var labType = "Lab User";
+        if (labType != "" && labType == "Lab User") {
+            var labUserName = "Dr Neeraj Gujar".toLowerCase();
+            if (labUserName != 'livehealth') {
+                (function () {
+                    var w = window;
+                    var ic = w.Intercom;
+                    if (typeof ic !== "function") {
+                        var d = document;
+                        var i = function () {
+                            i.c(arguments)
+                        };
+                        i.q = [];
+                        i.c = function (args) {
+                            i.q.push(args)
+                        };
+                        w.Intercom = i;
+                        function l() {
+                            var s = d.createElement('script');
+                            s.type = 'text/javascript';
+                            s.async = true;
+                            s.src = 'https://widget.intercom.io/widget/yh7drcr4';
+                            var x = d.getElementsByTagName('script')[0];
+                            x.parentNode.insertBefore(s, x);
+                        }
+
+                        if (w.attachEvent) {
+                            w.attachEvent('onload', l);
+                        } else {
+                            w.addEventListener('load', l, false);
+                        }
+                    }
+                })()
+            }
+        }
+    </script>
+
+    <section class="content-header">
+
+        <!-- Modal content-->
+        <div id="chkdiv" style="display: none; position: absolute; margin: 0 auto; top: 10%; left: 0; right: 0; width: 600px; border: 1px solid #dadada; border-radius: 4px; box-shadow: 1px 1px 11px 1px #eae4e4; background: #ffffff; z-index: 100000;">
+            <div class="modal-header">
+                <h4 class="modal-title">Doctor Appointment Reschedule</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <div class="modal-body">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row rowmarginbottom padding0">
+
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>Doctor Name</span>
+
+
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                                <input type="text" id="DoctorName" name="DoctorName" class="form-control input-sm">
+                                <input type="hidden" id="DoctorNameID" name="DoctorNameID">
+                                <input type="hidden" id="DoctorAppoinmentID" name="DoctorAppoinmentID">
+
+
+
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+
+
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>FromTime</span>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                                @*<input type="time" value="@DateTime.Now.ToString("hh:mm:ss")" id="FromTime1" name="FromTime1" class="form-control input-sm" style="width:100%">*@
+                                <input type="datetime" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="FromTime1" name="FromTime1">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 padding0">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>ToTime</span>
+
+
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                @*<input type="time" value="@DateTime.Now.ToString("hh:mm:ss")" id="ToTime" name="ToTime" class="form-control input-sm" style="width:100%">*@
+                                <input type="datetime" value="@DateTime.Now.ToString("hh:mm:ss tt")" id="ToTime" name="ToTime">
+
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row rowmarginbottom padding0">
+
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>AppointmentDate</span>
+
+
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                                <input type="date" id="AppointmentDate" name="AppointmentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-sm">
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3  col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                <span>AppointmentType</span>
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                                <select class="form-control" id="AppointmentType" name="AppointmentType"></select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="padding-top:20px">
+                                <input type="checkbox" id="CancelAppointment" name="CancelAppointment"><span>Cancel Apt.</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                        <span>Reason</span>
+                    </div>
+                    <input type="text" id="Reason" name="Reason" class="form-control input-sm" style="width:100%;height:50px">
+
+
+
+
+
+
+                </div>
+
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="text-align:center;padding-top:15px;padding-bottom:20px">
+                    <div class="btn-group dropdown-split-warning">
+
+                        <button type="button" id="Add" name="Add" class="btndivcss"><span class="fa fa-plus buttoniconcss"></span>Add</button>
+                    </div>
+
+                    <div class="btn-group dropdown-split-warning">
+
+                        <button type="reset" onclick="window.location.reload(true)" class="btndivcss"><span class="fa fa-close buttoniconcss"></span>Close</button>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="container-fluid">
+
+
+
+
+            @*<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0" style="overflow:auto;">
+                <div class=" panel-primary" style="box-shadow:none">
+                    <table id="example1" data-toggle="popover" title="Appointment Details" class="table table-bordered table-striped data-toggle ">
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Patient Name</th>
+                                <th>DoctorID</th>
+                                <th>Doctor Name</th>
+                                <th>Appointment Date</th>
+                                <th>From Time</th>
+                                <th>To Time</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody class="scrollbar"></tbody>
+
+                    </table>
+
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>*@
+
+            <div  class="col-lg-6 col-md-12 col-sm-12 col-xs-12 margin-r-5">
+                <div class="panel-primary" style="box-shadow:none">
+                    <table id="dgvDoctorSchedule" class="table table-bordered table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>DoctorAppoinmentScheduleID</th>
+                                <th>AppointmentType</th>
+                                <th>Doctor Name</th>
+                                <th>FromTime</th>
+                                <th>ToTime</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollbar"></tbody>
+
+                    </table>
+
+
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+
+</body>
+
+

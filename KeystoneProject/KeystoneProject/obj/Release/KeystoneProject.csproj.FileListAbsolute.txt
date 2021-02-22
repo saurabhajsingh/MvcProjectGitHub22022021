@@ -1,0 +1,360 @@
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll.config
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.pdb
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\CrystalDecisions.CrystalReports.Engine.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportSource.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Shared.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Web.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Web.Infrastructure.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Owin.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Razor.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\WebGrease.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Razor.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.pdb
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.csprojResolveAssemblyReference.cache
+C:\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.dll
+C:\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.pdb
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll.config
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\KeystoneProject.pdb
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\itextsharp.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Owin.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Razor.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\WebGrease.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\itextsharp.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.Razor.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.pdb
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.csprojResolveAssemblyReference.cache
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.dll
+C:\Users\Kapsicumweb\Desktop\Govind\final keystone project\final keystone project\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.pdb
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll.config
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\KeystoneProject.pdb
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\EntityFramework.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Global.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Hale-Lib.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Hale-Lib.ModuleLoader.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\itextsharp.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Http.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Http.Extensions.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Web.Infrastructure.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\NLog.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Owin.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Razor.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\WebGrease.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\itextsharp.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\NLog.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.Razor.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.pdb
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\EntityFramework.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.csprojResolveAssemblyReference.cache
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.pdb
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.CrystalReports.Engine.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportSource.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Shared.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Web.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataDefModel.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ClientDoc.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ReportDefModel.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Controllers.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommLayer.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Prompting.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.XmlSerialize.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CubeDefModel.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonObjectModel.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ObjectFactory.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonControls.dll
+E:\Govind 02-09-2020\keystone project 16092020\KeystoneProject\KeystoneProject\bin\stdole.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll.config
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\KeystoneProject.pdb
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.CrystalReports.Engine.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportSource.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Shared.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Web.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\EntityFramework.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Global.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Hale-Lib.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Hale-Lib.ModuleLoader.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\itextsharp.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Http.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Http.Extensions.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Web.Infrastructure.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\NLog.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Owin.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Razor.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\WebGrease.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataDefModel.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ClientDoc.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ReportDefModel.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Controllers.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommLayer.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Prompting.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.XmlSerialize.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CubeDefModel.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonObjectModel.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ObjectFactory.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonControls.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\stdole.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\itextsharp.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\NLog.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.Razor.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.pdb
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\EntityFramework.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.csprojResolveAssemblyReference.cache
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.dll
+E:\Updated Mvc Project 27012021\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.pdb
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll.config
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\KeystoneProject.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\KeystoneProject.pdb
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.CrystalReports.Engine.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportSource.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Shared.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.Web.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\EntityFramework.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Global.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Hale-Lib.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Hale-Lib.ModuleLoader.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\itextsharp.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Http.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Http.Extensions.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Web.Infrastructure.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\NLog.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Owin.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Razor.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\WebGrease.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataDefModel.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ClientDoc.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ReportDefModel.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Controllers.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommLayer.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.DataSetConversion.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.Prompting.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.XmlSerialize.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CubeDefModel.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonObjectModel.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.ObjectFactory.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\CrystalDecisions.ReportAppServer.CommonControls.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\stdole.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\itextsharp.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Newtonsoft.Json.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\NLog.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Helpers.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Mvc.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Optimization.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.Razor.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Deployment.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\System.Web.WebPages.Razor.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Antlr3.Runtime.pdb
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\EntityFramework.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\EntityFramework.SqlServer.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Core.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.Owin.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Facebook.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Cookies.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.OAuth.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Google.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.Twitter.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.csprojResolveAssemblyReference.cache
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.dll
+E:\MvcProject09022021 GitHub\KeystoneProject\KeystoneProject\obj\Release\KeystoneProject.pdb

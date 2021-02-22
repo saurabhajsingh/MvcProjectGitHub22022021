@@ -1,0 +1,737 @@
+﻿@model KeystoneProject.Models.Master.PrivilegeCard
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- This file is edited by Mohammed -->
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    #serviceGroupTableId_filter {
+        float: right;
+    }
+
+    @@media screen and (max-width: 425px) {
+        .priceButtonPadding {
+            padding-top: 10px;
+        }
+    }
+
+    #serviceGroupTableId th:nth-child(1) {
+        width: 225px !important;
+        text-align: left;
+        padding-left: 10px !important;
+    }
+
+    #priceDetailTable {
+        border: 1px solid #bddff7;
+    }
+
+        #priceDetailTable td {
+            border-left: 1px solid #bddff7;
+            border-top: 1px solid #bddff7;
+            text-align: center;
+        }
+
+            #priceDetailTable td:hover {
+                background-color: #f6f6f6;
+            }
+
+    #serviceNameTableId {
+        border: 1px solid #bddff7;
+    }
+
+        #serviceNameTableId td {
+            border-left: 1px solid #bddff7;
+            border-top: 1px solid #bddff7;
+            text-align: center;
+        }
+
+            #serviceNameTableId td:hover {
+                background-color: #f6f6f6;
+            }
+
+    #testNameTableId {
+        border: 1px solid #bddff7;
+    }
+
+        #testNameTableId td {
+            border-left: 1px solid #bddff7;
+            border-top: 1px solid #bddff7;
+            text-align: center;
+        }
+
+            #testNameTableId td:hover {
+                background-color: #f6f6f6;
+            }
+
+    .modal-header {
+        background: #1a5e8e;
+    }
+
+    #ui-id-1 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        height: 200px;
+        overflow: auto;
+        width: 250px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+    }
+
+        #ui-id-1 li {
+            cursor: pointer;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+
+            #ui-id-1 li:hover {
+                cursor: pointer;
+                background: #eae4e4;
+            }
+
+    #ui-id-2 {
+        background: #ffffff !important;
+        border: 1px solid #cfcfdb;
+        border-radius: 4px;
+        box-shadow: 1px 1px 11px 1px #eae4e4;
+        height: 200px;
+        overflow: auto;
+        width: 250px;
+        font-family: roboto;
+        padding-inline-start: 0px;
+    }
+
+        #ui-id-2 li {
+            cursor: pointer;
+            list-style-type: none;
+            border-bottom: 1px solid #d3d0d0;
+            text-align: left;
+            padding: 5px;
+            padding-left: 10px;
+        }
+
+            #ui-id-2 li:hover {
+                cursor: pointer;
+                background: #eae4e4;
+            }
+
+    .priceDetail {
+        background-color: #bddff7;
+    }
+
+    .dt-button span {
+        font-size: 13px;
+    }
+</style>
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+        window.onload(true);
+        Restor();
+    </script>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#save").click(function () {
+            debugger
+            var row_num = $("#priceDetailTable tbody tr").length;
+            if (row_num == 0) {
+                alert("Enter Card Price");
+                return false;
+            }
+
+        });
+
+
+        debugger
+        $.ajax({
+            type: "GET",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetAllPrivilageCardServiceGroup", "PriviledgeCard")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                debugger
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#serviceGroupTableId").append('<tr><td>' + data[i].ServiceGroupName + '<input type="hidden" name="ServiceGroupName" value="' + data[i].ServiceGroupName + '"><input type="hidden" name="PrivilegeServiceGroupID" value=' + 0 + '></td><td> <input type ="text" id="DiscountPerc" name="DiscountPer"  value=' + data[i].DiscountPer + ' size="10" class="form-control"></td><td style="display:none"><input type="hidden" name="ServiceGroupID" value=' + data[i].ServiceGroupID + '></td></tr>');
+                };
+                $('#serviceGroupTableId').DataTable({
+                    "fixedHeader": false,
+                    "paging": false,
+                    "lengthChange": false,
+                    "searching": true,
+                    "ordering": false,
+                    "info": false,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+
+        $('#DiscountService').keyup(function () {
+            if ($(this).val() > 100) {
+                alert("Discount Percentage Cannot be greater than 100");
+                $(this).val('100');
+            }
+        });
+        
+        $('#DiscountTest').keyup(function () {
+            if ($(this).val() > 100) {
+                alert("Discount Percentage Cannot be greater than 100");
+                $(this).val('100');
+            }
+        });
+
+        $('#DiscountPerc').keyup(function () {
+            if ($(this).val() > 100) {
+                alert("Discount Percentage Cannot be greater than 100");
+                $(this).val('100');
+            }
+        });
+    });
+    $(document).ready(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            //  contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetAllPrivilegeCard", "PriviledgeCard")',
+            //data: "{}",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var SrNo = i + 1;
+                    $("#privilageCardTableId").append('<tr><td style="width:60px !important">' + SrNo + '</td><td>' + data[i].CardName + '</td><td>' + data[i].Path + '</td><td>' + data[i].Remark + '</td><td style="display:none">' + data[i].PrivilegeCardID + '</td></tr>');
+                };
+                $('#privilageCardTableId').DataTable({
+                    //dom: 'Bfrtip',
+                    //buttons: [{
+                    //    extend: 'excel',
+                    //    text: 'Excel',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Excel',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //},
+                    //{
+                    //    extend: 'csv',
+                    //    text: 'CSV',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Csv',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //},
+                    //{
+                    //    extend: 'pdf',
+                    //    text: 'PDF',
+                    //    className: 'exportExcel',
+                    //    filename: 'Test_Pdf',
+                    //    exportOptions: { modifier: { page: 'all' } }
+                    //}]
+                    "fixedHeader": true,
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": true,
+                    "responsive": false,
+                });
+                var buttons = new $.fn.dataTable.Buttons($('#privilageCardTableId').DataTable(), {
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                        }
+                    ]
+                }).container().appendTo($('#privilageCardExcelExport'));
+            },
+            error: function (result) {
+                alert("Error grd bind");
+            }
+        });
+    });
+    var SerGroupID = 0;
+    $(document).ready(function () {
+        $("#ServiceName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetServiceBind", "PriviledgeCard")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        debugger;
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.ServiceName, value: item.ServiceName, id: item.ServiceID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                debugger;
+                var show = i.item.id;
+                var showName = i.item.value;
+                //var trimServiceName = $.trim(showName);
+                $("#ServiceID").val(show);
+                SerGroupID = show;
+                //$("#ServiceName").val(trimServiceName);
+            },
+        });
+    });
+    var TestID = 0;
+    $(document).ready(function () {
+        $("#TestName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    //url: "/PatientOPDBill/GetServiceGrp",
+                    url: '@Url.Action("GetTestBind", "PriviledgeCard")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.TestName, value: item.TestName, id: item.TestID
+                            };
+                        }))
+                    }
+                })
+            },
+            minlength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+            },
+            select: function (event, i) {
+                var show = i.item.id;
+                $("#TestID").val(show);
+                SerGroupID = show;
+            },
+        });
+        var SrNo3 = 1;
+        $("#Servicebutton").click(function () {
+            debugger;
+            if ($("#ServiceName").val() != "") {
+                $("#serviceNameTableId").append('<tr><td>' + SrNo3 + '</td><td>' + $("#ServiceName").val() + '<input type="hidden" name="ServiceID1" value="' + $("#ServiceID").val() + '"><input type="hidden" name="ServiceName1" value="' + $("#ServiceName").val() + '"></td><td>' + '<input type="text" name="DiscountService" value="' + $("#DiscountService").val() + '"><input type="hidden" name="PrivilegeServiceDetailID" value="' + 0 + '"></td><td><a id="deleteserviceNameRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                $("#ServiceName").val('');
+                $("#DiscountService").val('');
+            }
+            SrNo3++;
+        });
+        $("#serviceNameTableId").on('click', '#deleteserviceNameRow', function () {
+            $(this).parents("tr").remove();
+        });
+        var SrNo1 = 1;
+        $("#TestButton").click(function () {
+            debugger;
+            if ($("#TestName").val() != "") {
+                $("#testNameTableId").append('<tr><td>' + SrNo1 + '</td><td>' + $("#TestName").val() + '<input type="hidden" name="TestID1" value="' + $("#TestID").val() + '"><input type="hidden" name="TestName1" value="' + $("#TestName").val() + '"> </td><td>' + '<input type="text" name="DiscountTest" value="' + $("#DiscountTest").val() + '"><input type="hidden" name="PrivilegeTestDetailID" value="' + 0 + '"></td><td><a id="deleteTestNameRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                $("#TestName").val('');
+                $("#DiscountTest").val('');
+            }
+            SrNo1++;
+        });
+        $("#testNameTableId").on('click', '#deleteTestNameRow', function () {
+            $(this).parents("tr").remove();
+        });
+        var SrNo2 = 1;
+        var SrNo = 1;
+        $("#PriceButton").click(function () {
+            debugger;
+            if ($("#PriceName1").val() != "") {
+                $("#priceDetailTable").append('<tr><td>' + SrNo + '</td><td>' + $("#PriceName1").val() + '<input type="hidden" name="PriceName" value=' + $("#PriceName1").val() + '></td><td>' + $("#Price").val() + '<input type="hidden" name="Price" value=' + $("#Price").val() + '><input type="hidden" name="PrivilegePriceDetailID" value=' + 0 + '></td><td><a id="deletePriceDetailRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                $("#PriceName1").val('');
+                $("#Price").val('');
+            }
+            SrNo++;
+        });
+        $("#priceDetailTable").on('click', '#deletePriceDetailRow', function () {
+            //debugger
+            $(this).parents("tr").remove();
+            //var len = $("#priceDetailTable tr").length;
+            //for (var a = 0; a < len; a++) {
+            //    document.getElementById("#priceDetailTable").rows[a].cells[0].innerHTML = a+1;
+            //}
+        });
+    });
+    $(document).ready(function () {
+        $("#privilageCardTableId").delegate('td', 'click', function () {
+            debugger;
+            var row_num = parseInt($(this).parent().index());
+            var PriviledgeID = parseInt(document.getElementById("privilageCardTableId").tBodies[0].rows[row_num].cells[4].innerHTML);
+            $("#save").html("<i class='fa fa-save'></i>Update");
+            $.ajax({
+                url: '@Url.Action("GetPrivilageCard", "PriviledgeCard")',
+                type: "GET",
+                datatype: "json",
+                data: { PrivilegeCardID: PriviledgeID },
+                success: function (data) {
+                    debugger;
+                    $('#priceDetailTable tbody tr').remove();
+                    $('#testNameTableId tbody tr').remove();
+                    $('#serviceNameTableId tbody tr').remove();
+                    $('#serviceGroupTableId tbody tr').remove();
+                    for (var i = 0; i < data[0].filldgv.length; i++) {
+                        $("#PrivilegeCardID").val(data[0].filldgv[i].PrivilegeCardID);
+                        $("#CardName").val(data[0].filldgv[i].CardName);
+
+                        $("#Path").text(data[0].filldgv[i].Path);
+                        $("#Remark").val(data[0].filldgv[i].Remark);
+                    }
+                    for (var i = 0; i < data[0].cardPriceDetailArray.length; i++) {
+                        //----------------Price
+                        //  $("#PriceName").val(data[0].cardPriceDetailArray[i].PriceName);
+                        //  $("#Price").val(data[0].cardPriceDetailArray[i].Price);
+                        var SrNo = i + 1;
+                        $("#priceDetailTable").append('<tr><td>' + SrNo + '</td><td>' + data[0].cardPriceDetailArray[i].PriceName + '<input type="hidden" name="PriceName" value=' + data[0].cardPriceDetailArray[i].PriceName + '></td><td>' + data[0].cardPriceDetailArray[i].Price + '<input type="hidden" name="Price" value=' + data[0].cardPriceDetailArray[i].Price + '><input type="hidden" name="PrivilegePriceDetailID" value=' + data[0].cardPriceDetailArray[i].PrivilegePriceDetailID + '></td><td><a id="deletePriceDetailRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                    }
+                    for (var i = 0; i < data[0].ServiceNameArray.length; i++) {
+                        ////---------Service
+                        //  $("#ServiceName").val(data[0].filldgv[i].ServiceName1);
+                        //  $("#DiscountService").val(data[0].filldgv[i].DiscountService);
+                        var SrNo = i + 1;
+                        $("#serviceNameTableId").append('<tr><td>' + SrNo + '</td><td>' + data[0].ServiceNameArray[i].ServiceName1 + '<input type="hidden" name="ServiceID1" value="' + data[0].ServiceNameArray[i].ServiceID1 + '"><input type="hidden" name="ServiceName1" value="' + data[0].ServiceNameArray[i].ServiceName1 + '"></td><td>' + '<input type="text" name="DiscountService" value=' + data[0].ServiceNameArray[i].DiscountService + '><input type="hidden" name="PrivilegeServiceDetailID" value="' + data[0].ServiceNameArray[i].PrivilegeServiceDetailID + '"></td><td><a id="deleteserviceNameRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                    }
+                    for (var i = 0; i < data[0].TestNameArray.length; i++) {
+                        ////------------LAB
+                        // $("#TestName").val(data[0].filldgv[i].TestName);
+                        //$("#DiscountTest").val(data[0].filldgv[i].DiscountTest);
+                        var SrNo = i + 1;
+                        $("#testNameTableId").append('<tr><td>' + SrNo + '</td><td>' + data[0].TestNameArray[i].TestName1 + '<input type="hidden" name="TestID1" value="' + data[0].TestNameArray[i].TestID1 + '"><input type="hidden" name="TestName1" value="' + data[0].TestNameArray[i].TestName1 + '"> </td><td>'  + '<input type="text" name="DiscountTest" value="' + data[0].TestNameArray[i].DiscountTest + '"><input type="hidden" name="PrivilegeTestDetailID" value="' + data[0].TestNameArray[i].PrivilegeTestDetailID + '"></td><td><a id="deleteTestNameRow" class="btn btn-danger" style="font-weight: 600;">x</a></td></tr>');
+                    }
+                    for (var i = 0; i < data[0].ServiceGroupArray.length; i++) {
+                        ////------------ServiceGroup
+                        // $("#TestName").val(data[0].filldgv[i].TestName);
+                        //$("#DiscountTest").val(data[0].filldgv[i].DiscountTest);
+                        // var SrNo = i + 1;
+                        $("#serviceGroupTableId").append('<tr><td>' + data[0].ServiceGroupArray[i].ServiceGroupName + '<input type="hidden" name="ServiceGroupName" value="' + data[0].ServiceGroupArray[i].ServiceGroupName + '"><input type="hidden" name="PrivilegeServiceGroupID" value="' + data[0].ServiceGroupArray[i].PrivilegeServiceGroupID + '"></td><td> <input type ="text" name="DiscountPer"  value="' + data[0].ServiceGroupArray[i].DiscountPer + '" class="form-control"></td><td style="display:none"><input type="hidden" name="ServiceGroupID" value="' + data[0].ServiceGroupArray[i].ServiceGroupID + '"></td></tr>');
+                    }
+                },
+            })
+        });
+    });
+</script>
+<script>
+    function Delele(PrivilegeCardID) {
+        debugger
+        var ans = confirm("Are you sure you want to Delete this Record?");
+        if (ans) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeletePrivilegeCard", "PriviledgeCard")',
+                data: { PrivilegeCardID: PrivilegeCardID },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    if (data == "Done") {
+                        alert("Privilege Card Deleted Successfully !");
+                        window.location.reload(true);
+
+
+                        //return false;
+
+                    }
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <form action="" method="post">
+                <!-- Modal -->
+                <div id="priceDetailModal" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Price Details</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group col-lg-12 padding0">
+                                    <div class="col-lg-6" style="padding-bottom: 10px;">
+                                        <input type="text" id="PriceName1" name="PriceName1" class="form-control" placeholder="Card Detials">
+                                    </div>
+                                    <div class="col-lg-4" style="padding-bottom: 10px;">
+                                        <input type="text" id="Price" name="Price1" class="form-control" style="width:100%" placeholder="Price"
+                                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <button type="button" id="PriceButton" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px">
+                                            <i class="fa fa-plus" style="font-weight:400" title="Add"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padding0">
+                                    <div class="" style="box-shadow:none">
+                                        <div class="box-header">
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <table id="priceDetailTable" class=" table table-bordered table-striped" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr.No</th>
+                                                    <th>Price Name</th>
+                                                    <th>Price</th>
+                                                    <th>Acrion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="scrollbar"></tbody>
+                                        </table>
+                                        <!-- /.box-body -->
+                                    </div>
+                                    <!-- /.box -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Privilege Card Master</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                    <li class="breadcrumb-item active">Privilege Card</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Privilege Card</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop padding0 rowmarginbottom">
+                                            <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="padding-right:0px">
+                                                    <label>Card Name</label>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <input type="text" id="CardName" name="CardName" class="form-control"
+                                                           required style="border-left-color: red;border-left-width: thick;"
+                                                           oninvalid="this.setCustomValidity('Please Enter Card Name')"
+                                                           oninput="this.setCustomValidity('')">
+                                                    @*<input type="hidden" name="ServiceGroupID" id="ServiceGroupID" class="form-control">*@
+                                                    <input type="hidden" name="PrivilegeCardID" id="PrivilegeCardID" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="Path" name="Path">
+                                                    <label class="custom-file-label" for="customFile">Upload Card Image</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12" style="margin-bottom: 0;">
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <label>Remarks</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                    <textarea id="Remark" name="Remark" class="form-control" rows="2" cols="50"></textarea>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <div class="btn-group dropdown-split-warning priceButtonPadding">
+                                                        <button type="button" class="btn btn-app priceDetail" data-toggle="modal" data-target="#priceDetailModal">
+                                                            <i class="fa fa-inr"></i>Price Details
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service Group Wise</h2>
+                                    <div class="card-body table-responsive p-0" style="height: 325px;">
+                                        <table id="serviceGroupTableId" class="table text-nowrap table-bordered hover display table-hover">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th>Service Group</th>
+                                                    <th>Discount %</th>
+                                                    <th style="display:none">Discount %</th>
+                                                    <th style="display:none">ServiceGroupID</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Service Wise</h2>
+                                    <div class="card-body" style="height: 325px;">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <input type="hidden" value="" id="ServiceID" name="ServiceID">
+                                                    <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="Service Name" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <input type="text" id="DiscountService" name="DiscountService1" class="form-control" placeholder="Discount"
+                                                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <button type="button" id="Servicebutton" class="btndivcss" style="padding: 2px 10px 0px 10px !important;height:26px">
+                                                        <i class="fa fa-plus" style="font-weight:400" title="Add"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow: auto; height: 250px; padding: 0px">
+                                            <table id="serviceNameTableId" class="table table-bordered table-striped hover display">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th>Sr.No</th>
+                                                        <th>Service Name</th>
+                                                        <th>Discount %</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="scrollbar"></tbody>
+                                            </table>
+                                            <!-- /.box-body -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-md-4 col-sm-12 col-xs-12p">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Test Name</h2>
+                                    <div class="card-body" style="height: 325px;">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <input type="hidden" value="" id="TestID" name="ServiceID">
+                                                    <input type="text" id="TestName" name="TestName" class="form-control" placeholder="Test Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <input type="text" id="DiscountTest" name="DiscountTest1" class="form-control" placeholder="Discount"
+                                                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <button type="button" id="TestButton" class="btndivcss" style=" padding: 2px 10px 0px 10px !important;height:26px">
+                                                        <i class="fa fa-plus" style="font-weight:400" title="Add"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow: auto; height: 250px; padding: 0px">
+                                            <table id="testNameTableId" class="table table-bordered table-striped hover display">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th>Sr.No</th>
+                                                        <th>Test Name</th>
+                                                        <th>Discount %</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="scrollbar"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="Delele(document.getElementById('PrivilegeCardID').value)">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="privilageCardExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="privilageCardTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="privilageCardTableId_info"
+                                       style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Card Name</th>
+                                            <th>Card Image</th>
+                                            <th>Remarks</th>
+                                            <th style="display:none">PrivilegeCardID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</body>

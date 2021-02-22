@@ -1,0 +1,1417 @@
+﻿@model KeystoneProject.Models.Patient.PreBalanceAmount
+
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<script>
+    $(document).ready(function () {
+        $("#TpaDetailsCheck").hide();
+    });
+
+
+</script>
+
+
+
+
+
+<script>
+    var chk = false;
+    function myFunction() {
+        debugger
+
+        debugger
+        if (chk == "True") {
+            var con = confirm("Send For Authorization Confirmation");
+            if (con) {
+                var person = prompt("Reason For Authorization");
+                if (person) {
+                    //govind
+                    $("#txtinput").val(person);
+                    $("#ForAuthorization").val(1);
+                    return true;
+                }
+                else {
+                    $("#ForAuthorization").val(0);
+                    $("#txtinput").val('');
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+    }
+    function aurthorise()
+    {
+        $.ajax({
+            //url: "/OPDBill/GetServiceGrp",
+            url: '@Url.Action("chkAurthorise", "OPDBill")',
+            type: "POST",
+            dataType: "json",
+            data: { prefix: "" },
+            success: function (data) {
+                debugger
+                // alert(data[0]);
+                chk = data[0];
+                if (data[1] == "True") {
+                    chk = false;
+                }
+                myFunction();
+
+            }
+        })
+    }
+    function del(PatientAccountRowID, BillType) {
+        debugger;
+
+        if (BillType == "OtherPreBalanceBills") {
+
+
+
+        var ans = confirm("Are you sure you want to delete this Record?");
+
+
+        if (ans) {
+           // aurthorise();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("DeletePreBalance", "OtherPreBalanceAmount")',
+                    data: { PatientAccountRowID: PatientAccountRowID, BillType: BillType, Reg: $("#PatientRegNO").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == "Advice Deleted Successfully") {
+                            alert(" Deleted Successfully");
+                            debugger
+                            var PatientRegNo = $("#PatientRegNO").val();
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("AjaxMethodDgv", "PreBalanceAmount")',
+                                data: '{PatientRegNo: ' + PatientRegNo + '}',
+                                contentType: "application/json; charset=utf-8",
+                                success: function (search) {
+                                    debugger;
+                                    $("#presentor tr").remove();
+                                    $("#OPDIPDNO option:selected").remove();
+                                    $("#OPDIPDNO").val("");
+                                    for (var i = 0; i < search.length; i++) {
+                                        $("#presentor").append('<tr> <td><a href="#"    <i  class="fa fa-print"></i></a></td><td> ' + search[i].OPDIPDNO + '</td><td>' + search[i].BillType + '</td><td>' + search[i].DrAmount + '</td><td>' + search[i].P_BillNo + '</td><td>' + search[i].CrAmount + '</td><td>' + search[i].TDSAmount + '</td><td>' + search[i].TPAOtherDeduction + '</td><td>' + search[i].BillDate + '</td><td>' + search[i].BillNo + '</td><td>' + search[i].P_RegNo + '</td><td>' + search[i].PaymentType + '</td><td>' + search[i].OPDIPDID + '</td><td>' + search[i].PatientAccountRowID + '</td><td><button type="button" id="tbltd" class="ss btndivcss" onclick="del(' + search[i].PatientAccountRowID + ')" value="Delete"><span class="buttoniconcss"></span>Delete</button></td></tr>');
+                                    }
+                                },
+                            });
+                            //--------
+                            $("#OPDIPDNO option:selected").remove();
+                            $("#OPDIPDNO").val("");
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("GetRefoundIPDOPDID1", "PreBalanceAmount")',
+                                data: JSON.stringify(PatientRegNo),
+                                contentType: "application/json; charset=utf-8",
+                                success: function (SearchList2) {
+                                    debugger
+                                    for (var i = 0; i < SearchList2.length; i++) {
+                                        $("#OPDIPDNO").append('<option value="' + SearchList2[i].OPDIPDNO + "-" + SearchList2[i].PatinetType + '">' + SearchList2[i].PrintOPDIPDNo + '</option>');
+                                    }
+                                    TableBind();
+                                },
+                            });
+                            //----------------
+                        }
+                        else {
+                            alert(data);
+                        }
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        $("#PatientName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPatientName", "PreBalanceAmount")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, id: item.PatientRegNo
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                var d = ui.item.id;
+                $("#presentor tr").remove();
+                if (d > 0) {
+                    $("#PatientRegNO").val(d);
+                }
+                FillRegNo();
+                TableBind();
+            },
+        });
+    })
+
+    $(function () {
+        $("#PatientRegNO").change(function () {
+            FillRegNo();
+            debugger
+
+
+        });
+
+        $("#SecurityDepositeTPA").change(function () {
+
+            var chk = $('input[name=SecurityDepositeTPA]:checked').val();
+
+            if (chk == "on") {
+                $("#PaidAmount").val(SecurityDeposityAmt);
+                PaidAmount();
+            }
+            else {
+                $("#PaidAmount").val(0);
+                PaidAmount();
+            }
+        })
+
+        var IPDOPDRegNo = localStorage.getItem('IPDOPDRegNo');
+
+        if (IPDOPDRegNo > 0) {
+            $("#PatientRegNO").val(IPDOPDRegNo)
+            FillRegNo();
+            localStorage.setItem('IPDOPDRegNo', "0");
+        }
+    })
+
+    var SecurityDeposityAmt = 0;
+    debugger
+    function FillRegNo() {
+        $("#pre").text("Pre Bal. Amt.");
+        $("#presentor tr").remove();
+        var PregNo = { PatientRegNO: $("#PatientRegNO").val() }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetPatientRegNo", "PreBalanceAmount")',
+            data: JSON.stringify(PregNo),
+            contentType: "application/json; charset=utf-8",
+            success: function (searchList) {
+                $("#PatientName").val(searchList[0]);
+            },
+        });
+        var PregNo = { PatientRegNO: $("#PatientRegNO").val() }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AjaxMethod", "OtherPreBalanceAmount")',
+            data: JSON.stringify(PregNo),
+            contentType: "application/json; charset=utf-8",
+            success: function (searchList) {
+                debugger
+                $("#PreBalanceAmount").val(searchList.prebalamt.PreBalance);
+                $("#PaidAmount").val(0)
+                PaidAmount();
+                debugger
+                if (parseFloat($("#PreBalanceAmount").val()) < 0) {
+                    //alert("Deposit");
+                    $("#btnpaid").addClass("hide");
+                    $("#pre").text("Deposit Amt");
+                    $("#pre").css("color", "blue");
+                }
+                else {
+
+                    $("#btnpaid").removeClass("hide");
+                    $("#pre").text("Pre Bal. Amt.");
+                    $("#pre").css("color", "black");
+                }
+                debugger
+                TableBind();
+
+                //if (searchList[0].chkTPA == "True") {
+                //    $("#chkTPA").prop("checked", true);
+                //    $("#TpaDetailsCheck").show();
+                //    $("#SecurityDepositeTPA1").show();
+                //    SecurityDeposityAmt = searchList[0].SecurityDeposityAmt;
+                //    $("#SecurityDeposityID").val(searchList[0].SecurityDeposityID);
+
+                //} else {
+                //    SecurityDeposityAmt = 0;
+                //    $("#chkTPA").prop("checked", false);
+                //    $("#TpaDetailsCheck").hide();
+                //    $("#SecurityDepositeTPA1").hide();
+                //}
+
+                for (var i = 0; i < searchList.searchListTable.length; i++) {
+                    //  $("#presentor").append('<tr><td  id="PatientRegNO" value="' + search[i][0] + '">' + search[i][0] + '</td><td>' + search[i][1] + '</td><td>' + search[i][2] + '</td><td>' + search[i][3] + '</td><td>' + search[i][4] + '</td><td>' + search[i][5] + '</td><td id="tbltd">' + search[i][6] + '</td><td>' + search[i][7] + '</td><td>' + search[i][8] + '</td><td>' + search[i][9] + '</td><td>' + search[i][10] + '</td><td>' + search[i][11] + '</td><td><button type="button" class="btndivcss" id="tbltd" onclick="del(' + PatientRegNo + ')" value="Delete"><span class="fa fa-sign-out buttoniconcss"></span>Delete</button></td></tr>');
+                    $("#presentor").append('<tr><td> <i id="print" class="fa fa-print"></i></td><td> ' + searchList.searchListTable[i].OPDIPDNO + '</td><td>' + searchList.searchListTable[i].BillType + '</td><td>' + searchList.searchListTable[i].DrAmount + '</td><td>' + searchList.searchListTable[i].P_BillNo + '</td><td>' + searchList.searchListTable[i].CrAmount + '</td><td>' + searchList.searchListTable[i].BillDate + '</td><td>' + searchList.searchListTable[i].BillNo + '</td><td>' + searchList.searchListTable[i].P_RegNo + '</td><td>' + searchList.searchListTable[i].PaymentType + '</td><td>' + searchList.searchListTable[i].OPDIPDID + '</td><td>' + searchList.searchListTable[i].PatientAccountRowID + '</td><td><button type="button" id="tbltd" class="ss btndivcss" onclick="del(\'' + searchList.searchListTable[i].PatientAccountRowID + '\',\'' + searchList.searchListTable[i].BillType + '\')" value="Delete"><span class="buttoniconcss"></span>Delete</button></td></tr>');
+
+                }
+                $("#OPDIPDNO").text("");
+                $("#OPDIPDNO").val("");
+                debugger
+                $("#OPDIPDNO").append('<option value="' + $("#PatientRegNO").val() + '">---All---</option>');
+                for (var i = 0; i < searchList.searchListOPDIPD.length; i++) {
+
+                    //$("#OPDIPDNO").val(optionhtml);
+
+                    $("#OPDIPDNO").append('<option value="' + searchList.searchListOPDIPD[i].OPDIPDNO + '">' + searchList.searchListOPDIPD[i].PrintOPDIPDNo + '</option>');
+
+
+                }
+            },
+        });
+        var PatientRegNo = $("#PatientRegNO").val();
+        @*$.ajax({
+            type: "POST",
+            url: '@Url.Action("AjaxMethodDgv", "PreBalanceAmount")',
+            data: '{PatientRegNO: ' + JSON.stringify(PatientRegNo) + '}',
+            contentType: "application/json; charset=utf-8",
+            success: function (search) {
+                debugger;
+
+                $('#presentor').show();
+
+                //for (var i = 0; i < search.length; i++) {
+                //    //  $("#presentor").append('<tr><td  id="PatientRegNO" value="' + search[i][0] + '">' + search[i][0] + '</td><td>' + search[i][1] + '</td><td>' + search[i][2] + '</td><td>' + search[i][3] + '</td><td>' + search[i][4] + '</td><td>' + search[i][5] + '</td><td id="tbltd">' + search[i][6] + '</td><td>' + search[i][7] + '</td><td>' + search[i][8] + '</td><td>' + search[i][9] + '</td><td>' + search[i][10] + '</td><td>' + search[i][11] + '</td><td><button type="button" class="btndivcss" id="tbltd" onclick="del(' + PatientRegNo + ')" value="Delete"><span class="fa fa-sign-out buttoniconcss"></span>Delete</button></td></tr>');
+                //    $("#presentor").append('<tr><td> <i id="print" class="fa fa-print"></i></td><td> ' + search[i].OPDIPDNO + '</td><td>' + search[i].BillType + '</td><td>' + search[i].DrAmount + '</td><td>' + search[i].P_BillNo + '</td><td>' + search[i].CrAmount + '</td><td>' + search[i].TDSAmount + '</td><td>' + search[i].TPAOtherDeduction + '</td><td>' + search[i].BillDate + '</td><td>' + search[i].BillNo + '</td><td>' + search[i].P_RegNo + '</td><td>' + search[i].PaymentType + '</td><td>' + search[i].OPDIPDID + '</td><td>' + search[i].PatientAccountRowID + '</td><td><button type="button" id="tbltd" class="ss btndivcss" onclick="del(\'' + search[i].PatientAccountRowID + '\',\'' + search[i].BillType + '\')" value="Delete"><span class="buttoniconcss"></span>Delete</button></td></tr>');
+
+                //}
+                TableBind();
+            },
+        });*@
+        @*var PregNo = { PatientRegNO: $("#PatientRegNO").val() }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetRefoundIPDOPDID1", "PreBalanceAmount")',
+            data: JSON.stringify(PregNo),
+            contentType: "application/json; charset=utf-8",
+            success: function (SearchList2) {
+                var value = "";
+                $("#OPDIPDNO").text("");
+                $("#OPDIPDNO").val("");
+                debugger
+                $("#OPDIPDNO").append('<option value="' + $("#PatientRegNO").val() + '">---All---</option>');
+                for (var i = 0; i < SearchList2.length; i++) {
+
+                    //$("#OPDIPDNO").val(optionhtml);
+
+                    $("#OPDIPDNO").append('<option value="' + SearchList2[i].OPDIPDNO + '">' + SearchList2[i].PrintOPDIPDNo + '</option>');
+
+
+                }
+
+                TableBind();
+            },
+        });*@
+    }
+
+
+
+
+    $(function () {
+
+        $("#PaidAmount").keyup(function () {
+            if ($(this).val() == "") {
+                $(this).val(0);
+            }
+            PaidAmount();
+        })
+        $("#PaidAmount").change(function () {
+            if ($("#PaymentType").val() == "Cash") {
+                $("#tablepaymentAdd").append('<tr><td><input type="hidden" value="Cash" class="tblPaymentType" name="tblPaymentType"/>Cash</td><td><input type="hidden" value="Cash" name="tblNumber"/>Cash</td><td><input type="text"  name="tblName" readonly class="form-control input-sm" value="Cash"></td><td><input type="date" name="tblpaymentDate" class="form-control input-sm" value=' + $("#paymentDate").val() + '></td><td><input type="text" name="tblRemarks" class="form-control input-sm" value=' + $("#Remarks").val() + '></td><td><input type="number" class=".total"  id="tblPaymentTotal" name="tblPaymentTotal"  class="form-control input-sm" value=' + $("#PaidAmount").val() + '></td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td></tr>');
+
+            }
+        })
+    });
+    debugger
+    function PaidAmount() {
+        var PaidAmount = $("#PaidAmount").val().replace("-", "");
+
+        $("#PaidAmount").val(PaidAmount);
+        var PreBalance = $("#PreBalanceAmount").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Calculate", "PreBalanceAmount")',
+            data: '{PaidAmount: ' + JSON.stringify(PaidAmount) + ',PreBalance:' + JSON.stringify(PreBalance) + '}',
+            contentType: "application/json; charset=utf-8",
+            success: function (search1) {
+                $("#BalanceAmount").val(search1[0]);
+            },
+
+        });
+
+    }
+
+
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            debugger
+            $("#paymentAdd").show()
+
+            $("#tablepaymentAdd").append('<tr><td><input type="hidden" class="tblPaymentType" value=' + $("#PaymentType").val() + ' name="tblPaymentType"/>  ' + $("#PaymentType").val() + '</td><td><input type="hidden" value=' + $("#Number").val() + ' name="tblNumber"/>' + $("#Number").val() + '</td><td><input type="text"  name="tblName" readonly class="form-control input-sm" value=' + $("#Name").val() + '></td><td><input type="date" name="tblpaymentDate" class="form-control input-sm" value=' + $("#paymentDate").val() + '></td><td><input type="text" name="tblRemarks" class="form-control input-sm" value=' + $("#Remarks").val() + '></td><td><input type="number" class=".total"  id="tblPaymentTotal" name="tblPaymentTotal"  class="form-control input-sm" value=' + $("#PaidAmt").val() + '></td><td><a href="#" class="fa fa-trash-o" aria-hidden="true" id="delrow" class="delrow"></td></tr>')
+
+
+
+            var Total = 0;
+
+            var len = $("#tablepaymentAdd td").closest("tr").length;
+
+            for (var row = 0; row < len; row++) {
+                debugger
+                Total += parseFloat(document.getElementById('paymentAdd').tBodies[0].rows[row].cells[5].children[0].value);
+
+                $("#PaidAmount").val(Total)
+            }
+
+        })
+        $("#tablepaymentAdd").delegate('td', 'keyup', function () {
+            debugger;
+            var Total = 0;
+            var len = $("#tablepaymentAdd td").closest("tr").length;
+            for (var row = 0; row < len; row++) {
+                debugger
+                Total += parseFloat(document.getElementById('paymentAdd').tBodies[0].rows[row].cells[5].children[0].value);
+
+                $("#PaidAmount").val(Total)
+            }
+            var PaidAmount = $("#PaidAmount").val().replace("-", "");
+
+            $("#PaidAmount").val(PaidAmount);
+            var PreBalance = $("#PreBalanceAmount").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Calculate", "PreBalanceAmount")',
+                data: '{PaidAmount: ' + JSON.stringify(PaidAmount) + ',PreBalance:' + JSON.stringify(PreBalance) + '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (search1) {
+                    $("#BalanceAmount").val(search1[0]);
+                },
+
+            });
+
+        });
+
+        $("#tablepaymentAdd").on('click', '#delrow', function () {
+            debugger;
+            $(this).closest('tr').remove();
+            var Total = 0;
+
+            var len = $("#tablepaymentAdd td").closest("tr").length;
+            if (len == 0) {
+                $("#PaidAmount").val(0);
+            }
+            for (var row = 0; row < len; row++) {
+                debugger
+                Total += parseFloat(document.getElementById('paymentAdd').tBodies[0].rows[row].cells[5].children[0].value);
+
+                $("#PaidAmount").val(Total)
+            }
+        })
+    })
+
+    $(function () {
+        var prebalance;
+        var count = 0;
+        $("#TdsAmount").keyup(function () {
+
+            debugger
+            if (count == 0) {
+                prebalance = $("#PreBalanceAmount").val();
+                count++;
+            }
+
+            var tdsamt = $("#TdsAmount").val();
+
+            var result = prebalance - tdsamt;
+
+            $("#PreBalanceAmount").val(result);
+
+            PaidAmount();
+        });
+    });
+
+
+    $(function () {
+        var prebalance;
+        var count = 0;
+        $("#TPAOtherDeduction").keyup(function () {
+
+            debugger
+            if (count == 0) {
+                prebalance = $("#PreBalanceAmount").val();
+                count++;
+            }
+
+            var tdsamt = $("#TPAOtherDeduction").val();
+
+            var result = prebalance - tdsamt;
+
+            $("#PreBalanceAmount").val(result);
+
+            PaidAmount();
+        });
+    });
+
+
+
+    $(document).ready(function () {
+
+        var paytype = document.getElementById("PaymentType1").value;
+        var paymentType, numer, bankname, date, remark = "";
+        $("#paymentbutton").click(function () {
+
+            var select = document.getElementById("PaymentType1").value;
+            paymentType += select + ",";
+            numer += $("#Number").val() + ",";
+            bankname += $("#Name").val() + ",";
+            date += $("#paymentDate").val() + ",";
+            remark += $("#Remarks").val() + ",";
+
+            $("#Number1").val(numer);
+            $("#Name1").val(bankname);
+            $("#paymentDate1").val(date);
+            $("#Remarks1").val(remark);
+            $("#PaymentType1").val(paymentType);
+
+            alert($("#PaymentType1").val());
+
+            $("#Number").val("");
+            $("#Name").val("");
+            // $("#paymentDate").val("");
+            $("#Remarks").val("");
+            $("#DoctorSaveDiv").hide(300);
+        })
+    })
+
+
+    $(document).ready(function () {
+        $("#DoctorSaveDiv").hide();
+        $("#presentor tr").remove();
+        $("#PaymentType").change(function () {
+            debugger
+            $("#Number1").val("");
+            $("#Name1").val("");
+            $("#paymentDate1").val("");
+            $("#Remarks1").val("");
+            $("#PaymentType1").val("");
+            $("#paymentAdd").show()
+
+            var len = $("#tablepaymentAdd td").closest("tr").length;
+            if (len > 0) {
+                $("#paymentAdd").show()
+
+                $(".tblPaymentType").each(function () {
+                    if ($(this).val() == $("#PaymentType").val()) {
+                        alert("Alredy Exit");
+                        if ($("#PaymentType").val() == "Cash") {
+                            $("#DoctorSaveDiv").hide(300);
+                        }
+                        return false;
+                    }
+
+                })
+            }
+            var Total = 0;
+
+
+
+            PaymentValueChange();
+        })
+
+        $('input[name=RadioCharge]').change(function () {
+
+            document.getElementById("PaymentType").value = $(this).val();
+            $("#Number1").val("");
+            $("#Name1").val("");
+            $("#paymentDate1").val("");
+            $("#Remarks1").val("");
+            $("#PaymentType1").val("");
+            PaymentValueChange();
+        })
+
+    });
+    // $("#Number").val("") ;
+    //$("#Name").val("") ;
+    //$("#paymentDate").val("");
+    //$("#Remarks").val("") ;
+
+    function PaymentValueChange() {
+        var select = document.getElementById("PaymentType").value;
+        switch (select) {
+            case 'Cheque':
+                $("#DoctorSaveDiv").show(300);
+                $("#PaymentNo1").text("Cheque No");
+
+                $("#paymentName1").text("Bank Name");
+
+                $("#paymentDate1").text("Cheque Date");
+
+                $("#paymentRemark1").text("Remark");
+                break;
+
+
+            case 'Debit Card':
+                $("#DoctorSaveDiv").show(300);
+                $("#PaymentNo1").text("Debit Card No");
+
+                $("#paymentName1").text("Holder Name");
+
+                $("#paymentDate1").text("Valid UPTO");
+
+                $("#paymentRemark1").text("Remark");
+                break;
+
+
+
+            case 'Credit Card':
+                $("#DoctorSaveDiv").show(300);
+                $("#PaymentNo1").text("Credit Card No");
+
+                $("#paymentName1").text("Holder Name");
+
+                $("#paymentDate1").text("Valid UPTO");
+
+                $("#paymentRemark1").text("Remark");
+                break;
+
+            case 'E-money':
+                $("#DoctorSaveDiv").show(300);
+                $("#PaymentNo1").text("Code");
+
+                $("#paymentName1").text("Bank Name");
+
+                $("#paymentDate1").text("Date");
+
+                $("#paymentRemark1").text("Remark");
+                break;
+
+            case 'EFT':
+                $("#DoctorSaveDiv").show(300);
+                $("#PaymentNo1").text("Code");
+
+                $("#paymentName1").text("Bank Name");
+
+                $("#paymentDate1").text("Date");
+
+                $("#paymentRemark1").text("Remark");
+                break;
+
+            case 'CASH':
+
+                $("#DoctorSaveDiv").hide(300);
+                break;
+        }
+
+    }
+    $(document).ready(function () {
+
+        $("#presentor").on('dblclick', '#tbltd', function () {
+            debugger;
+            var row = $(this).closest('tr').index();
+
+            var BillType = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[2].innerHTML;
+            var RegNo = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[10].innerHTML;
+            var BillNo = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[4].innerHTML;
+
+            if (BillType == "IPDFinalBill" || BillType == "IPDBill") {
+                var ans = confirm("Are you sure you want to delete this Record?");
+
+                if (ans) {
+                    //  window. = '@Url.Action("PaymentAndDeposit", "PaymentAndDeposit")?Reg=' + RegNo
+                    localStorage.setItem('BillNo', BillNo);
+                    localStorage.setItem('BillType', BillType);
+                    window.open('@Url.Action("IPDBill", "IPDBill")?BillNo=' + BillNo);
+                }
+
+            }
+            if (BillType == "OPDBill") {
+                var ans = confirm("Are you sure you want to delete this Record?");
+                if (ans)
+                {
+                    localStorage.setItem('BillNo', BillNo);
+                    localStorage.setItem('BillType', BillType);
+                    window.open('@Url.Action("OPDBill", "OPDBill")?BillNo=' + BillNo);
+                }
+            }
+
+            @*if (BillType == "OPDLabBills") {
+                var ans = confirm("Are you sure you want to delete this Record?");
+                if (ans) {
+                    localStorage.setItem('BillNo', BillNo);
+                    localStorage.setItem('BillType', BillType);
+                    window.open('@Url.Action("PatientLabBills", "PatientLabBills")?BillNo=' + BillNo);
+                }
+            }*@
+
+        })
+        $("#presentor").on('click', '#print', function () {
+            debugger;
+            var row = $(this).closest('tr').index();
+            var BillType = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[2].innerHTML;
+            var OPDIPDNO = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[1].innerHTML;
+            var PatientAccountRowID = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[13].innerHTML;
+            var RegNo = $("#PatientRegNO").val();
+            if (BillType == "OPD PreBalanceBills" || BillType == "IPD PreBalanceBillsTPA" || BillType == "IPD PreBalanceBills" || BillType == "IPDRefundBills") {
+
+                window.open('@Url.Action("RptbtnPreBalanceAmount", "PreBalanceAmount")?PatientAccountRowID=' + PatientAccountRowID + '&BillType=' + BillType + '&RegNo=' + RegNo + '&OPDIPDNO=' + OPDIPDNO);
+            }
+            if (BillType == "IPDFinalBill" || BillType == "IPDBill") {
+                var BillNo = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[9].innerHTML;
+                var UserData = { IPDNo: OPDIPDNO, BillType: BillType, BillNo: BillNo, RegNo: RegNo }
+                $.ajax({
+                    url: '@Url.Action("OldBillReport", "IPDBill")',
+                    dataType: "json",
+                    type: 'POST',
+                    data: JSON.stringify(UserData),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        debugger
+                        if (BillType == "IPDBill") {
+                            window.open('@Url.Action("RptPatientIPDBill", "IPDBill")');
+                        }
+                        if (BillType == "IPDFinalBill") {
+                            window.open('@Url.Action("RptPatientIPDFinalBillsSummaryNew", "PatientReport")');
+                        }
+
+                        if (BillType == "Provisional") {
+                            window.open('@Url.Action("RptPatientIPDProvisionalBills", "PatientReport")');
+                        }
+                    }
+                });
+
+            }
+
+            if (BillType == "OPDBill") {
+                var BillNo = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[9].innerHTML;
+                var UserData = { BillNo: BillNo }
+                $.ajax({
+                    url: '@Url.Action("OldBillReport", "OPDBill")',
+                    dataType: "json",
+                    type: 'POST',
+                    data: JSON.stringify(UserData),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        debugger
+                        window.open('@Url.Action("RptPatientOPDBills", "PatientReport")');
+
+                    }
+                });
+
+            }
+        })
+
+
+
+        @*var BillType_OPDIPDNo = localStorage.getItem('BillType_OPDIPDNo');
+
+        if (BillType_OPDIPDNo != null) {
+            if (BillType_OPDIPDNo.length > 3) {
+                debugger
+                var UserData = { OPDIPDNo: BillType_OPDIPDNo }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetRefoundAmountOPDIPD", "PreBalanceAmount")',
+                    data: JSON.stringify(UserData),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (search) {
+                        debugger;
+
+                        $("#PatientRegNO").val(search[0].P_RegNo);
+                        $("#PatientName").val(search[0].PatientName);
+                        $("#presentor tr").remove();
+                        $("#PreBalanceAmount").val(search[0].BalanceAmount);
+                        $("#OPDIPDNO").val(BillType_OPDIPDNo);
+                        $("#OPDIPDNO").text(BillType_OPDIPDNo);
+
+                        $("#OPDIPDNO").append('<option  value =' + BillType_OPDIPDNo + '>' + BillType_OPDIPDNo + '</option>');
+
+                        for (var i = 0; i < search.length; i++) {
+                            $("#presentor").append('<tr><td> <i id="print" class="fa fa-print"></i></td><td> ' + search[i].OPDIPDNO + '</td><td>' + search[i].BillType + '</td><td>' + search[i].DrAmount + '</td><td>' + search[i].P_BillNo + '</td><td>' + search[i].CrAmount + '</td><td>' + search[i].TDSAmount + '</td><td>' + search[i].TPAOtherDeduction + '</td><td>' + search[i].BillDate + '</td><td>' + search[i].BillNo + '</td><td>' + search[i].P_RegNo + '</td><td>' + search[i].PaymentType + '</td><td>' + search[i].OPDIPDID + '</td><td>' + search[i].PatientAccountRowID + '</td><td><button type="button" id="tbltd" class="ss btndivcss" onclick="del(' + search[i].PatientAccountRowID + ')" value="Delete"><span class="buttoniconcss"></span>Delete</button></td></tr>');
+                        }
+                        localStorage.setItem('BillType_OPDIPDNo', "");
+
+                        TableBind();
+                    },
+                });
+
+            }
+        }*@
+        $("#OPDIPDNO").change(function () {
+            debugger
+            var OPDIPDNo = $(this).val();
+
+            var sel = document.getElementById("OPDIPDNO");
+
+            var i = sel.selectedIndex;
+            var selected_text = sel.options[i].text;
+
+            if (selected_text == "---All---") {
+                FillRegNo();
+                return false;
+            }
+            @*var UserData = { OPDIPDNo: OPDIPDNo }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetRefoundAmountOPDIPD", "PreBalanceAmount")',
+                data: JSON.stringify(UserData),
+                contentType: "application/json; charset=utf-8",
+                success: function (search) {
+                    debugger;
+                    $("#presentor tr").remove();
+                    $("#PreBalanceAmount").val(search[0].BalanceAmount);
+                    if (parseFloat(search[0].BalanceAmount) < 0) {
+                        //alert("Deposit");
+                        $("#btnpaid").hide();
+                        $("#pre").text("Deposit Amt")
+
+                        $("#pre").css("color", "blue");
+
+                        //var pre_balance = $("#pre_balance").val().replace("-", "");
+                        // $("#pre_balance").val(pre_balance)
+
+                        // $("#Deposit").val(pre_balance);
+                        // $("#pre_balance").attr('value', Deposit);
+                    }
+                    else {
+                        $("#pre").text("Pre Bal. Amt.");
+                        $("#pre").css("color", "black");
+                        $("#btnpaid").show();
+
+                    }
+                    for (var i = 0; i < search.length; i++) {
+                        $("#presentor").append('<tr><td> <i id="print" class="fa fa-print"></i></td><td> ' + search[i].OPDIPDNO + '</td><td>' + search[i].BillType + '</td><td>' + search[i].DrAmount + '</td><td>' + search[i].P_BillNo + '</td><td>' + search[i].CrAmount + '</td><td>' + search[i].TDSAmount + '</td><td>' + search[i].TPAOtherDeduction + '</td><td>' + search[i].BillDate + '</td><td>' + search[i].BillNo + '</td><td>' + search[i].P_RegNo + '</td><td>' + search[i].PaymentType + '</td><td>' + search[i].OPDIPDID + '</td><td>' + search[i].PatientAccountRowID + '</td><td><button type="button" id="tbltd" class="ss btndivcss" onclick="del(\'' + search[i].PatientAccountRowID + '\',\'' + search[i].BillType + '\')" value="Delete"><span class="buttoniconcss"></span>Delete</button></td></tr>');
+                    }
+                    TableBind();
+                },
+            });*@
+        })
+
+        $("#chkAllpaidAmt").change(function () {
+
+            if ($(this).prop("checked") == true) {
+                $("#PaidAmount").val($("#PreBalanceAmount").val());
+                PaidAmount();
+            }
+            else {
+                $("#PaidAmount").val(0);
+                PaidAmount();
+            }
+        })
+        $("#pre").text("Pre Bal. Amt.");
+        $("form").submit(function () {
+            debugger
+            var sel = document.getElementById("OPDIPDNO");
+            var i = sel.selectedIndex;
+            var selected_text = sel.options[i].text;
+            if (selected_text == "---All---") {
+
+                var chkAll = $("#chkAllpaidAmt").prop("checked")
+                if (chkAll == true) {
+                    return true;
+                }
+                alert("Select OPD/IPD No")
+                return false;
+            }
+
+
+        });
+
+        $("#pre").click(function () {
+            debugger
+
+            var a = $("#priPalanceDeposit").text().trim();
+            if ($(this).text().trim() != "Pre Bal. Amt." && $(this).text().trim() != "Pre Bal. Amt.") {
+                var sel = document.getElementById("OPDIPDNO");
+                var i = sel.selectedIndex;
+                var selected_text = sel.options[i].text;
+                if (selected_text == "---All---") {
+
+                    alert("Select OPD/IPD No")
+                    return false;
+                }
+                else {
+                    var IPDNo = $("#OPDIPDNO").val().trim().replace("-", ",");
+                    window.open('@Url.Action("PaymentAndDeposit", "PaymentAndDeposit")?IPDNo=' + IPDNo);
+                }
+                @*if ('@TempData["Reg"]' != "") {
+
+
+                    window.location.href = '@Url.Action("PaymentAndDeposit", "PaymentAndDeposit",new{Reg=TempData["Reg"]})'
+                }*@
+            }
+
+        })
+    })
+
+    function TableBind() {
+        debugger
+
+        var row = 0;
+        $(".ss").each(function () {
+            debugger
+
+            var BillType = document.getElementById('datatableAccountDetail').tBodies[0].rows[row].cells[2].innerHTML;
+            if (BillType == "IPDLabBills" || BillType == "IPDFinalBill" || BillType == "IPDBill" || BillType == "Addmission" || BillType == "OPDBill") {
+
+                //  $(this).parent().find('#tbltd').remove();
+                $(this).css('display', 'none');
+            }
+            row++;
+        })
+    }
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div>
+            <input type="hidden" id="SecurityDeposityID" name="SecurityDeposityID" />
+            <input type="hidden" id="Number1" name="Number1" />
+            <input type="hidden" id="Name1" name="Name1" />
+            <input type="hidden" id="Date1" name="Date1" class="form-control" />
+            <input type="hidden" id="Remarks1" name="Remarks1" />
+            <input type="hidden" id="PaymentType1" name="PaymentType1" />
+        </div>
+        <form  id="form" action="" method="post">
+            <input type="hidden" id="PatientAccountRowID" name="PatientAccountRowID">
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Pre Balance Amount</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient Module</a></li>
+                                    <li class="breadcrumb-item active">Pre Balance Amount</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Information</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--UHID Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>UHID No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <select class="form-control">
+                                                            <option value="">2017-2018</option>
+                                                            <option value="">2018-2019</option>
+                                                            <option value="">2019-2020</option>
+                                                            <option value="">2020-2021</option>
+                                                            <option value="">2021-2022</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="number" id="PatientRegNO" name="PatientRegNO" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Patient Name-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="PatientName" name="PatientName" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Date /Time-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Date /Time</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="date" name="BillDate" id="datepicker" required value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="time" name="time" id="datepicker" value="@DateTime.Now.ToString("hh:mm:ss")" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--TPA-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>TPA</label>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" id="chkTPA" name="chkTPA" class="form-check-input" value="true" disabled>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--OPD IPD Number-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12" style="display:none">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>OPD IPD No</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" name="BillDate" id="datepicker" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <!--Security Deposite TPA-->
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12" style="display:none">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Security Deposite TPA</label>
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                        <div class="form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" id="SecurityDepositeTPA" name="SecurityDepositeTPA" class="form-check-input">Security Deposite TPA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ">
+                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                <div class="table-responsive">
+                                    <table id="datatableAccountDetail" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                        <thead style="background-color: #bddff7;">
+                                            <tr>
+                                                <th><i class="fa fa-print"></i></th>
+                                                <th>OPD/IPD NO.</th>
+                                                <th>Bill Type</th>
+                                                <th>Debit Amt.</th>
+                                                <th>Print Bill No.</th>
+                                                <th>Credit Amt.</th>
+                                              
+                                                <th>Date</th>
+                                                <th>Bill No.</th>
+                                                <th>Reg. No.</th>
+                                                <th>Payment Type</th>
+                                                <th>OPD/IPD ID</th>
+                                                <th>Patient A/c. RowID</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="presentor" class="scrollbar"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Amount Details</h2>
+                                    <div class="card-body panel-body">
+                                        <!--Pre Balance Amount-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label id="pre"><a href="#">Pre Bal. Amt.</a></label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <input type="number" id="PreBalanceAmount" name="PreBalanceAmount" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!--All Paid and Paid Amount-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div  class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <span style="font-weight: 700;">Paid Amt.</span>
+                                                <label style="display:none" id="btnpaid" class="form-check-label hide">
+                                                    <input type="checkbox" class="checkbox" name="chkAllpaidAmt" id="chkAllpaidAmt">All
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 padding0">
+                                                <input type="number" id="PaidAmount" name="PaidAmount" class="form-control">
+                                            </div>
+                                            @*<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <label id="pre">All Paid</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="checkbox" class="checkbox" name="chkAllpaidAmt" id="chkAllpaidAmt">
+                                                </div>*@
+                                        </div>
+                                        <!--Paid Amount-->
+                                        @*<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <label>Paid Amt.</label>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <input type="number" id="PaidAmount" name="PaidAmount" class="form-control">
+                                                </div>
+                                            </div>*@
+                                        <!--Payment Type-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Payment Type</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="PaymentType" name="PaymentType">
+                                                    <option id="CASH" value="Cash">Cash</option>
+                                                    <option id="Cheque" value="Cheque">Cheque</option>
+                                                    <option id="Credit" value="Credit Card">Credit Card</option>
+                                                    <option id="Debit" value="Debit Card">Debit Card</option>
+                                                    <option id="EMoney" value="E-Money">E-Money</option>
+                                                    <option id="EFT" value="EFT">EFT</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Modal -->
+                                            <div class="modal" id="DoctorSaveDiv" role="dialog">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Payment</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;margin-bottom: 10px;">
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="Cash" id="Cash" name="RadioCharge" checked>Cash
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="Cheque" id="" name="RadioCharge" checked>Cheque
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="Credit Card" id="Credit Card" name="RadioCharge" checked>Credit Card
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="Debit Card" id="Debit Card" name="RadioCharge" checked>Debit Card
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="E-Money" id="E-Money" name="RadioCharge" checked>E-Money
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check-inline">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input" value="EFT" id="EFT" name="RadioCharge" checked>EFT
+                                                                    </label>
+                                                                </div>
+                                                                <button type="button" onclick="document.getElementById('DoctorSaveDiv').style = 'display:none'" id="close" class="close" value="Close" data-dismiss="modal">×</button>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <!--Payment Number-->
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                                        <label id="PaymentNo1"></label>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <span class="error" id="Doctorfill"></span>
+                                                                        <input value="" type="text" id="Number" class="form-control" name="Number" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <!--Payment Name-->
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                                        <label id="paymentName1"></label>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <span class="error" id=""></span>
+                                                                        <input value="" type="text" id="Name" class="form-control" name="Name" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <!--Payment Date-->
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                                        <label id="paymentDate1"></label>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <span class="error" id="paymentDate11"></span>
+                                                                        <input type="date" id="paymentDate" name="paymentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                                <!--Payment Remarks-->
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                                        <label id="paymentRemark1">Remark</label>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <input value="" type="text" id="Remarks" class="form-control" name="Remarks" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <!--Paid Amount-->
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                                        <label id="paymentRemark1">Paid Amt.</label>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <input value="" type="number" id="PaidAmt" class="form-control" name="PaidAmt" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                                                    <div class="btn-group dropdown-split-warning">
+                                                                        <a class="btn btn-app" id="btnadd">
+                                                                            <i class="fa fa-plus"></i>Add
+                                                                        </a>
+                                                                    </div>
+                                                                    @*<div class="btn-group dropdown-split-warning">
+                                                                            <button type="submit" class="btn btn-app" onclick="Chequesave1">
+                                                                                <i class="fa fa-save"></i>Save
+                                                                            </button>
+                                                                        </div>*@
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                                                    <table id="paymentAdd" class="table table-bordered hover display table-hover" role="grid" style="display: none; width: 100%;">
+                                                                        <thead style="background-color: #bddff7;">
+                                                                            <tr>
+                                                                                <th>Payment Type</th>
+                                                                                <th>Card No.</th>
+                                                                                <th>Bank Name</th>
+                                                                                <th>Date</th>
+                                                                                <th>Remark</th>
+                                                                                <th>Paid Amount</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tablepaymentAdd"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*<div id="dialogform">
+                                                    <fieldset>
+                                                        <div class="header" id="DoctorSaveDiv">
+                                                            <div class=" modal-header">
+                                                                <h4 class="modal-title">Payment &nbsp;&nbsp; &nbsp;</h4>
+                                                                <div class="row" style="color:white">
+                                                                    <label class="rad"> <input type="radio" class="iradio_flat-green" value="Cash" id="Cash" name="RadioCharge" checked="checked">Cash &nbsp;</label>
+                                                                    <label class="rad"><input type="radio" class="iradio_flat-green" value="Cheque" id="" name="RadioCharge"> Cheque &nbsp;</label>
+                                                                    <label class="rad"><input type="radio" class="iradio_flat-green" style="" value="Credit Card" id="Credit Card" name="RadioCharge">Credit Card &nbsp;</label>
+                                                                    <label class="rad"><input type="radio" class="iradio_flat-green" style="" value="Debit Card" id="Debit Card" name="RadioCharge"> Debit Card &nbsp;</label>
+                                                                    <label class="rad"><input type="radio" class="iradio_flat-green" style="" value="E-Money" id="E-Money" name="RadioCharge"> E-money &nbsp;</label>
+                                                                    <label class="rad">  <input type="radio" class="iradio_flat-green" style="" value="EFT" id="EFT" name="RadioCharge"> EFT &nbsp;</label>
+                                                                </div>
+                                                                <button type="button" onclick="document.getElementById('DoctorSaveDiv').style = 'display:none'" id="close" class="close" value="Close" data-dismiss="modal">×</button>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="control-label" for="name">
+                                                                            <span class="required" id="PaymentNo1"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                        <span class="error" id="Doctorfill"></span>
+                                                                        <input value="" type="text" id="Number" class="form-control input-sm" name="Number" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop ">
+                                                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+                                                                        <div class="control-label" for="name">
+                                                                            <span class="required" id="paymentName1"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                        <span class="error" id=""></span>
+                                                                        <input value="" type="text" id="Name" class="form-control input-sm" name="Name" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop">
+                                                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="control-label" for="name">
+                                                                            <span class="required" id="paymentDate1"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                        <span class="error" id="paymentDate11"></span>
+                                                                        <input value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" id="paymentDate" class="form-control" name="paymentDate" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop rowmarginbottom">
+                                                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+                                                                        <div class="control-label" for="name">
+                                                                            <span class="required" id="paymentRemark1"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                        <input value="" type="text" id="Remarks" class="form-control input-sm" name="Remarks" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop rowmarginbottom">
+                                                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+                                                                        <div class="control-label" for="name">
+                                                                            <span class="required" id="paymentRemark1">Paid Amt</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                                                        <input value="" type="number" id="PaidAmt" class="form-control input-sm" name="PaidAmt" placeholder="">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop" style="text-align: center;display: block; margin-top: 10px;">
+                                                                <div class="btn-group dropdown-split-warning">
+                                                                    <button type="button" id="btnadd" class="btndivcss"><span class="fa fa-plus buttoniconcss"></span>Add</button>
+                                                                </div>
+                                                                <div class="btn-group dropdown-split-warning">
+                                                                    <button type="submit" onclick="Chequesave1" class="btndivcss"><span class="fa fa-save buttoniconcss"></span>Save</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 rowmargintop" style="text-align: center; display: block; margin-top: 10px;">
+                                                                <table id="paymentAdd" style="display:none" class="table table-bordered table-striped">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Payment Type</th>
+                                                                            <th>Card No</th>
+                                                                            <th>bank Name</th>
+                                                                            <th>Date</th>
+                                                                            <th>Remark</th>
+                                                                            <th>Paid Amt</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="tablepaymentAdd"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>*@
+                                        </div>
+                                        <!--Balance Amtount-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label>Balance Amt.</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <input type="number" id="BalanceAmount" name="BalanceAmount" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!--OPD/IPD-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 padding0">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label>OPD/IPD</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <select class="form-control" id="OPDIPDNO" name="OPDIPDNO"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-primary panel-primary" id="TpaDetailsCheck">
+                                    <h2 class="panelheading">TPA Details</h2>
+                                    <div class="card-bodys panel-body">
+                                        <!--TDS Amount-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label>TDS Amount</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <input type="number" id="TdsAmount" name="TdsAmount" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!--TPA/Other Deduction-->
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <label>TPA/Other Deduction</label>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                <input type="number" id="TPAOtherDeduction" name="TPAOtherDeduction" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" card card-primary panel-primary">
+                                    <h2 class="panelheading">Narration</h2>
+                                    <div class="card-body panel-body">
+                                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <textarea name="Narrection" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app" id="save">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="datatableAccountDetailExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <input type="hidden" value="" name="txtinput" id="txtinput" />
+            <input type="hidden" value="0" name="ForAuthorization" id="ForAuthorization" />
+        </form>
+    </div>
+</body>
+
+
+
+
+

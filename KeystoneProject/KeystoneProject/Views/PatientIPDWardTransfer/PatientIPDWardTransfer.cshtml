@@ -1,0 +1,632 @@
+﻿@model KeystoneProject.Models.Patient.PatientIPDWardTransfer
+@{
+    ViewBag.Title = "Patient";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+@if (TempData["Msg"] != null)
+{
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["msg"])));
+        window.onload(true);
+        //Restor();
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $('#maintable').DataTable({
+            type: 'post',
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#patient_name").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("BindName", "PatientIPDWardTransfer")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PatientName, value: item.PatientName, PatientRegNO: item.PatientRegNO
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                debugger
+                $("#patientID").val(ui.item.PatientRegNO);
+                var b = $("#patientID").val(ui.item.PatientRegNO);
+                Filldata(b);
+               
+              
+            }
+        });
+        // Fill Reg No
+        $("#printregNo").change(function () {
+            debugger
+
+            debugger
+            var printReg = $(this).val();
+            // fin_year_id = $("#fin_year_id").val();
+            $.ajax({
+                url: '@Url.Action("GetPatientPrintNo_ToRegNo", "PatientOPD")',
+                dataType: "json",
+                type: 'GET',
+                data: { PrintRegNo: $("#printregNo").val(), PatientType: "IPD" },
+                success: function (data) {
+                    debugger
+
+                    // $('#printregNo').val(printReg);
+                    // $('#fin_year_id').val(fin_year_id);
+                    if (data == "") {
+                        alert("Patient RegNo Does Not Exists");
+                        return false;
+                    }
+                    $("#regNo").val(data)
+                    var a = (data)
+                    alert(a)
+
+                    $.ajax({
+                        //url: "/Add_Patient_Registration/BindConsultant_dr",
+                        url: '@Url.Action("BindTable", "PatientIPDWardTransfer")',
+                        type: "GET",
+                        dataType: "json",
+                        data: { RegNo: a },
+                        success: function (data) {
+                            $("#datatable-responsive td").remove();
+                            $(data).each(function (index, d) {
+                                {
+                                    if (d.ExitTime == "" || d.ExitTime == null) {
+                                        $("#datatable-responsive").append('<tr><td>' + d.WardName + '</td><td>' + d.RoomName + '</td><td>' + d.BedNo + '</td><td>' + d.EnterDateTimeFill + '</td><td>' + 'Present' + '</td></tr>')
+                                    }
+                                    else {
+                                        $("#datatable-responsive").append('<tr><td>' + d.WardName + '</td><td>' + d.RoomName + '</td><td>' + d.BedNo + '</td><td>' + d.EnterDateTimeFill + '</td><td>' + d.ExitTime + '</td></tr>')
+                                    }
+                                    
+
+                                };
+                            });
+                        }
+                    })
+                    Filldata(a);
+
+                    $("#datatable-responsive").delegate('td', 'click', function () {
+                        debugger;
+                        var row = $(this).parent().index();
+                        var ipdno = $("#IPD").val();
+
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("GetPatientDetails", "PatientIPDWardTransfer")',
+                            data: { ipdno: ipdno, regno :a},
+                            dataType: "json",
+
+                            success: function (data) {
+                                debugger
+
+                                $('#stickerModal').modal('show');
+
+                            },
+                            error: function (result) {
+                                alert("Error grid bind !");
+                            }
+                        });
+                    })
+                }
+            })
+        })
+        $("#Toword").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    //url: "/Add_Patient_Registration/BindConsultant_dr",
+                    url: '@Url.Action("BindToWord", "PatientIPDWardTransfer")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.WardName, value: item.WardName, WardID: item.WardID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#TowordID").val(ui.item.WardID);
+            }
+        })
+        $("#RoomId").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    //url: "/Add_Patient_Registration/BindConsultant_dr",
+                    url: '@Url.Action("BindToRoom", "PatientIPDWardTransfer")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { prefix: request.term, TowordID: $("#TowordID").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.RoomName, value: item.RoomName, RoomID: item.RoomID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#RoomNo").val(ui.item.RoomID);
+            }
+        })
+        $("#ToBed").autocomplete({
+            source: function (request, response) {
+                debugger
+                $.ajax({
+                    //url: "/Add_Patient_Registration/BindConsultant_dr",
+                    url: '@Url.Action("BindToBed", "PatientIPDWardTransfer")',
+                    type: "GET",
+                    dataType: "json",
+                    data: { WordID: $("#TowordID").val(), RoomID: $("#RoomNo").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.BedNo, value: item.BedNo, BedID: item.BedID
+                            };
+                        }))
+                    }
+                })
+            },
+            minLength: 1,
+            change: function (event, ui) {
+                if (!ui.item) {
+                    this.value = '';
+                }
+                $("#ToBed1").val(ui.item.BedID);
+            }
+        })
+        $.ajax({
+            //url: "/PatientOPDBill/GetAllFinancialYear",
+            url: '@Url.Action("GetAllFinancialYear", "PatientIPDWardTransfer")',
+            type: "GET",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(data).each(function (index, d) {
+                    $("#FinancialYear").append($("<option value=" + d.FinancialYear + ">" + d.FinancialYear + "</option>"));
+                    $("#FinancialYearID").val(data[0].FinancialYearID);
+                });
+            },
+            error: function (data) {
+            }
+        });
+    });
+    $(function () {
+        var d = new Date(),
+            h = d.getHours(),
+            m = d.getMinutes();
+        if (h < 10) h = '0' + h;
+        if (m < 10) m = '0' + m;
+        $('input[type="time"][value="now"]').each(function () {
+            $(this).attr({ 'value': h + ':' + m });
+        });
+    });
+</script>
+
+
+<script>
+    function sticker() {
+        debugger
+        var qty = $("#sticker").val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Print_sticker", "PatientIPDWardTransfer")',
+            data: {qty: qty },
+            dataType: "json",
+            success: function (data) {
+                window.open('@Url.Action("Rpt_A4stickerprint", "PatientReport")');
+            }
+        });
+    }
+
+
+    function Filldata() {
+        debugger
+           $.ajax({
+                        //url: "/Add_Patient_Registration/BindConsultant_dr",
+                        url: '@Url.Action("FillData", "PatientIPDWardTransfer")',
+                        type: "GET",
+                        dataType: "json",
+                        data: { prefix: $("#regNo").val() },
+                        success: function (data) {
+                            $(data).each(function (index, d) {
+                                //  MasterLaboratory
+                                debugger
+                                $("#patient_name").attr('value', d.PatientName);
+                                $("#Guardian").val(d.GuardianName);
+                                $("#IPD").val(d.PatientIPDNO);
+                                $("#Doctor").val(d.DoctorName);
+                                $("#DoctorID").val(d.DoctorID);
+                                $("#FrombedNo1").val(d.BedID);
+                                $("#RoomID1").val(d.RoomID);
+                                $("#wordID1").val(d.WardID);
+                                $("#FrombedNo").val(d.BedName);
+                                $("#RoomID").val(d.RoomName);
+                                $("#wordID").val(d.WardName);
+                                $("#FromTime").val(d.time);
+                                $("#fromDate").val(d.EnterDateTime)
+                                //$("#FromTime").val(Date.parse(d.time).toString('hh:mm:ss tt'));
+                                //$("#fromDate").val(Date.parse(d.EnterDateTime).toString('dd-MMM-yyyy'));
+                                //$("#FinancialYearID").val(data[0].FinancialYearID);
+                                //$("#FinancialYear").val(data[0].FinancialYear);
+                                //$("#datepicker").val(Date.parse(data[0].BillDate).toString('dd-MMM-yyyy'));
+                                //$("#datepicker1").val(Date.parse(data[0].BillDate).toString('hh:mm:ss tt'));
+                                //$("#datatable-responsive td").remove();
+                                
+                            })
+                        }
+                    })
+    }
+</script>
+
+
+
+<!-- ico font -->
+@*</head>*@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <div class="content-wrapper">
+
+            <!-- Sticker Modal -->
+            <div class="modal" id="stickerModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Sticker Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!--Sticker Quantity-->
+                                <div class="form-group col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <label>Sticker Quantity</label>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <input type="text" class="form-control" id="sticker" name="sticker" placeholder="Enter Qunatity">
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12" style="float: right;">
+                                    <a class="btn btn-app" onclick="sticker()">
+                                        <i class="fa fa-print"></i>Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form action="" method="post">
+                <section class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1>Patient IPD Ward Transfer</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="@Url.Action("Patient", "Application")">Patient</a></li>
+                                    <li class="breadcrumb-item active">Patient IPD Ward Transfer</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="card card-primary panel-primary">
+                                    <h2 class="panelheading">Patient Information</h2>
+                                    <div class="card-body pane-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--UHID Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>UHID No.</label>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <select class="form-control" id="FinancialYear" name="FinancialYearID" disabled></select>
+                                                    </div>
+                                                    <div class="hide col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="text" id="regNo" name="regNo" class="form-control">
+                                                        <input type="hidden" class="form-control" name="id" value="">
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="text" id="printregNo" name="printregNo" class="form-control">
+
+                                                    </div>
+                                                </div>
+                                                <!--IPD Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>IPD No.</label>
+                                                    </div>
+
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <input type="text" id="IPD" class="form-control" name="IPD" readonly />
+                                                    </div>
+                                                </div>
+                                                <!--IPD Number-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Patient Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="patient_name" name="patient_name" class="form-control">
+                                                        <input value="" type="hidden" id="patientID" class="form-control" name="patientID" placeholder="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <!--Guardian Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Gdn. Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Guardian" name="guardian_name" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                                <!--Insured With-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Insured With</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="insured_with" name="insured_with" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                                <!--Doctor Name-->
+                                                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                        <label>Doctor Name</label>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                        <input type="text" id="Doctor" name="DoctorPrintName" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-6 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card card-primary panel-primary">
+                                            <h2 class="panelheading">From Ward</h2>
+                                            <div class="card-body pane-body">
+                                                <div class="row">
+                                                    <!--From Ward-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Ward</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input value="8" type="hidden" id="wordID1" class="form-control" name="wordID1" placeholder="">
+                                                            <input type="text" id="wordID" name="from_ward" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--From Room-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Room</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input value="17" type="hidden" id="RoomID1" class="form-control" name="from_room1" placeholder="">
+                                                            <input type="text" id="RoomID" name="from_room" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--From Bed Number-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Bed No.</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input value="87" type="hidden" id="FrombedNo1" class="form-control" name="from_bed_no1" placeholder="">
+                                                            <input type="text" id="FrombedNo" name="from_bed_no" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--From Date-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Date</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="Date" id="fromDate" name="from_date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--From Time-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Time</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="time" id="FromTime" name="from_time" value="now" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card card-primary panel-primary">
+                                            <h2 class="panelheading">To Ward</h2>
+                                            <div class="card-body pane-body">
+                                                <div class="row">
+                                                    <!--To Ward-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Ward</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="Toword" name="to_wardID" class="form-control">
+                                                            <input value="" type="hidden" id="TowordID" class="form-control" name="to_ward_ID" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <!--To Room-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Room</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="RoomId" name="to_roomID" class="form-control">
+                                                            <input value="" type="hidden" id="RoomNo" class="form-control" name="RoomID" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <!--To Bed Number-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Bed No.</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="text" id="ToBed" name="to_bedID" class="form-control">
+                                                            <input value="" type="hidden" id="ToBed1" class="form-control" name="to_bed_ID" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <!--To Date-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Date</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="Date" name="transfer_date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="9999-12-31" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <!--To Time-->
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                                            <label>Time</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                                            <input type="time" name="transfer_time" value="now" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hide form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+                                            <label>Quantity</label>
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                            <select class="form-control" name="qnty"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="table-responsive">
+                                        <table id="datatable-responsive" class="table table-bordered hover display table-hover" role="grid" style="width: 100%">
+                                            <thead style="background-color: #bddff7;">
+                                                <tr>
+                                                    <th>Ward Name</th>
+                                                    <th>Room Name</th>
+                                                    <th>Bed No.</th>
+                                                    <th>Enter Date Time</th>
+                                                    <th>Exit Date Time</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+                                <div class="btn-group dropdown-split-warning">
+                                    <button type="submit" class="btn btn-app">
+                                        <i class="fa fa-save"></i>Save
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app">
+                                        <i class="fa fa-trash"></i>Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="location.reload();">
+                                        <i class="fa fa-refresh"></i>Clear
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" onclick="window.location.href='@Url.Action("Patient", "Application")'">
+                                        <i class="fa fa-sign-out"></i>Exit
+                                    </a>
+                                </div>
+                                <div class="btn-group dropdown-split-warning">
+                                    <a class="btn btn-app" id="patientIPDWardTransferExcelExport"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+                                <table id="patientIPDWardTransferTableId" class="table table-bordered hover display dataTable table-hover" role="grid" style="width: 100%">
+                                    <thead style="background-color: #bddff7;">
+                                        <tr>
+                                            <th>Ward Name</th>
+                                            <th>Room Name</th>
+                                            <th>Bed Name</th>
+                                            <th>Enter Date Time</th>
+                                            <th>Exit Date Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="scrollbar"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</body>

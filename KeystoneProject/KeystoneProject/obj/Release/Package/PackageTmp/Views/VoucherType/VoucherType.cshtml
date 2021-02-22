@@ -1,0 +1,465 @@
+﻿@model KeystoneProject.Models.MasterFinacialAccounts.VoucherType
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This file isedited by Mohammed-->
+@*<!DOCTYPE html>
+    <html>
+    <head>*@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+@*<style>
+
+        input[type=file] {
+            display: block;
+            background: #ffffff;
+            padding: 0px 2px 0px 0px;
+            color: #868f95 !important;
+            font-family: roboto;
+        }
+        .btn-group {
+            margin-bottom: 4px;
+        }
+        .btn {
+            padding: 0px;
+        }
+        .padding0 {
+            padding: 0px;
+        }
+        .btndivcss:hover {
+            color: #fff;
+            background-color: #03578e;
+            border-color: #106dca;
+        }
+        .btndivcss {
+            height: 30px;
+            border: 0px solid white;
+            padding: 0px 6px 0px 0px !important;
+            font-family: roboto;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-radius: 4px;
+        }
+        .buttoniconcss {
+            background: #106dca;
+            padding: 8px;
+            border-radius: 4px 0px 0px 4px;
+            margin-right: 5px;
+        }
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #35a4f1;
+            border-radius: 23px;
+        }
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .btn-group {
+            padding-right: 4px;
+        }
+        .topheadline {
+            background: white;
+            padding: 3px;
+            color: #1e2123;
+            box-shadow: 1px 1px 11px 1px #cecece;
+            font-family: roboto;
+            padding-left: 12px;
+            font-size: 19px;
+            margin-top: 0px;
+        }
+        .panelheading {
+            background: rgb(189, 223, 247);
+            color: #22292d;
+            font-family: roboto;
+            font-size: 15px;
+            padding: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+        .panel-primary {
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            box-shadow: 1px 1px 11px 1px #eae4e4;
+            background: #ffffff;
+        }
+        .content-wrapper {
+            background: #F6F7FB !important;
+        }
+        span {
+            font-family: roboto;
+            font-size: 14px;
+        }
+        .rowmargintop {
+            margin-top: 5px;
+        }
+        .form-control {
+            height: 26px;
+            padding: 1px 1px 1px 6px;
+        }
+        .rowmarginbottom {
+            margin-bottom: 4px;
+        }
+        .btn-warning {
+            color: #ffffff;
+            background-color: #35a4f1;
+            border-color: #35a4f1;
+            box-shadow: 0 1px 1px rgba(0,0,0,.075);
+            font-family: roboto;
+        }
+        .btn-primary {
+            background-color: #35a4f1 !important;
+            color: #fff;
+            border: 1px solid #35a4f1;
+        }
+        .file-field input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+    </style>*@
+
+}
+    @*<script>
+            $(document).ready(function () {
+                $("#serachtable").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#voucherTypeTableId tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+                $("#voucherTypeTableId").delegate('tr', 'click', function () {
+                    $('#voucherTypeTableId tr').removeClass('highlighted');
+                    $(this).addClass('highlighted');
+                });
+            });
+        </script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            debugger
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ShowAllVoucherType", "VoucherType")',
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    for (var i = 0; i < data.length; i++) {
+                        var SrNo = i + 1;
+                        $("#voucherTypeTableId").append(
+                            '<tr><td>' + SrNo + '</td><td>' + data[i].VoucherTypeName + '</td><td>' + data[i].Narration + '</td><td> <input type="checkbox" class="cbDBA" name="cbDBA" value="' + data[i].DebitmasterAcc + '"></td><td> <input type="checkbox" class="cbDBA" name="cbDBA" value="' + data[i].EditmasterAcc + '"></td><td style="display:none">' + data[i].CodeBlock + '</td><td style="display:none">' + data[i].MasterAc + '</td><td style="display:none">' + data[i].MasterAcID + '</td><td style="display:none">' + data[i].VoucherTypeID + '</td></tr>');
+                    };
+                    $('.cbDBA').each(function () {
+                        debugger
+                        chk = $(this).val();
+                        if (chk == "True") {
+                            $(this).prop('checked', true);
+                        }
+                        else {
+                            $(this).prop('checked', false);
+                        }
+                    });
+                    //   }
+                    $('#voucherTypeTableId').DataTable({
+                        "fixedHeader": true,
+                        "paging": true,
+                        "lengthChange": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": true,
+                        "responsive": false,
+                    });
+                    var buttons = new $.fn.dataTable.Buttons($('#voucherTypeTableId').DataTable(), {
+                        buttons: [
+                            {
+                                extend: 'excel',
+                                text: '<li class="fa fa-file-excel-o fa-lg" style="font-weight: 600;"></li><br>Excel'
+                            }
+                        ]
+                    }).container().appendTo($('#voucherTypeExcelExport'));
+                },
+                error: function (result) {
+                    alert("Error grd bind");
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            debugger;
+            $("#MasterAc").autocomplete({
+                source: function (request, response) {
+                    debugger
+                    $.ajax({
+                        url: '@Url.Action("GetAccountID", "VoucherType")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { prefix: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.AccountName, value: item.AccountName, id: item.MasterAcID
+                                };
+                            }))
+                        },
+                    })
+                },
+                minLength: 1,
+                change: function (event, i) {
+                    debugger
+                    if (!i.item) {
+                        this.value = '';
+                        $("#MasterAc").val('');
+                    }
+                    $('#MasterAcID').val(i.item.id);
+                    //alert($('#MasterAcID').val());
+                }
+            });
+        });
+    </script>
+
+    @if (TempData["msg"] != null)
+    {
+        <script type="text/javascript">
+            debugger
+            alert(@Html.Raw(Json.Encode(TempData["msg"])));
+            window.onload(true);
+            Restor();
+        </script>
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#voucherTypeTableId').delegate('td', 'click', function () {
+                $("#save").html("<i class='fa fa-save'></i>Update");
+                debugger;
+                var row = $(this).parent().index();
+                var VoucherTypeName = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[1].innerHTML;
+                var Narration = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[2].innerHTML;
+                var DebitmasterAcc = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[3].children[0].value;
+                var EditmasterAcc = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[4].children[0].value;
+                var Codeblock = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[5].innerHTML;
+                var MasterAc = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[6].innerHTML;
+                var MasterAcID = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[7].innerHTML;
+                var VoucherTypeID = document.getElementById("voucherTypeTableId").tBodies[0].rows[row].cells[8].innerHTML;
+                $('#VoucherTypeName').val(VoucherTypeName);
+                $('#MasterAcID').val(MasterAcID);
+                $('#MasterAc').val(MasterAc);
+                //$('#MasterAc').val(MasterAc);
+                $('#Narration').val(Narration);
+                if (DebitmasterAcc == "True") {
+                    $('#DebitmasterAcc').prop("checked", DebitmasterAcc);
+                }
+                else {
+                    $('#DebitmasterAcc').prop("checked", false);
+                }
+                if (EditmasterAcc == "True") {
+                    $('#EditmasterAcc').prop("checked", EditmasterAcc);
+                }
+                else {
+                    $('#EditmasterAcc').prop("checked", false);
+                }
+                $('#Codeblock').val(Codeblock);
+                $('#VoucherTypeID').val(VoucherTypeID);
+            })
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#Delete").click(function () {
+               
+                var conform = confirm("Are you sure you want to delete this Record?");
+                if (conform) {
+                    debugger
+                    $.ajax({
+                        url: '@Url.Action("DeleteVoucherType", "VoucherType")',
+                        type: 'POST',
+                        data: { VoucherTypeID: $("#VoucherTypeID").val() },
+                        success: function (data) {
+                            if (data.length > 1) {
+                                alert("VoucherType Deleted Successfully");
+                                location.reload();
+                            }
+                            else {
+                            }
+                        }
+                    })
+                }
+            });
+        });
+    </script>
+    <body class="hold-transition skin-blue sidebar-mini">
+        <div class="wrapper">
+            <form action="" method="post">
+                <div class="content-wrapper">
+                    <section class="content-header">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h1>Voucher Type Master</h1>
+                                </div>
+                                <div class="col-sm-6">
+                                    <ol class="breadcrumb float-sm-right">
+                                        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="@Url.Action("PatientMaster", "Application")">Master</a></li>
+                                        <li class="breadcrumb-item active">Voucher Type</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="content">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="card card-primary panel-primary">
+                                        <h2 class="panelheading">Voucher Type</h2>
+                                        <div class="card-body pane-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <!--Voucher Type-->
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <label>Voucher Type</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                            <input type="text" id="VoucherTypeName" name="VoucherTypeName" class="form-control" required>
+                                                            <input type="hidden" name="VoucherTypeID" id="VoucherTypeID" />
+                                                        </div>
+                                                    </div>
+                                                    <!--Master Account-->
+                                                    <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <label>Master A/c</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                            <input type="text" id="MasterAc" name="MasterAc" class="form-control" placeholder="Search Master Account">
+                                                            <input type="hidden" name="MasterAcID" id="MasterAcID" class="form-control input-sm" />
+                                                            <input type="hidden" name="AccountID" id="AccountID" class="form-control input-sm" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="text-align: center; display: block;">
+                                    <div class="btn-group dropdown-split-warning">
+                                        <button type="submit" class="btn btn-app" id="save">
+                                            <i class="fa fa-save"></i>Save
+                                        </button>
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" id="Delete">
+                                            <i class="fa fa-trash"></i>Delete
+                                        </a>
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" onclick="location.reload();">
+                                            <i class="fa fa-refresh"></i>Clear
+                                        </a>
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" onclick="window.location.href='@Url.Action("PatientMaster", "Application")'">
+                                            <i class="fa fa-sign-out"></i>Exit
+                                        </a>
+                                    </div>
+                                    <div class="btn-group dropdown-split-warning">
+                                        <a class="btn btn-app" id="voucherTypeExcelExport"></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="card card-primary panel-primary">
+                                            <h2 class="panelheading">Narration</h2>
+                                            <div class="card-body pane-body">
+                                                <div class="row">
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <label>Default:</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                            <input type="text" id="Narration" name="Narration" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <label for="Debit">Debit Master A/c</label>
+                                                            <input type="checkbox" id="DebitmasterAcc" name="DebitmasterAcc" value="true">
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                            <label for="Edit">Edit Master A/c</label>
+                                                            <input type="checkbox" id="EditmasterAcc" name="EditmasterAcc" value="true">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                                            <label>Code Block</label>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+                                                            <input type="text" id="Codeblock" name="Codeblock" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 margin-r-5" style=" padding-bottom: 10px;overflow:auto">
+                                            <table id="voucherTypeTableId" class="table table-bordered hover display dataTable table-hover" role="grid" aria-describedby="example1_info"
+                                                   style="width: 100%">
+                                                <thead style="background-color: #bddff7;">
+                                                    <tr>
+                                                        <th scope="col">Srno.</th>
+                                                        
+                                                        <th scope="col">Voucher Type Name</th>
+                                                        @*<th scope="col">AccountsID</th>*@
+                                                        <th scope="col">Narration</th>
+                                                        <th scope="col">Debit Master Account</th>
+                                                        <th scope="col">Edit Master Account</th>
+                                                        <th style="display:none">CodeBlock</th>
+                                                        <th style="display:none">MasterAccount</th>
+                                                        <th style="display:none">MasterAccountID</th>
+                                                        <th style="display:none">Voucher Type ID</th>
+                                                        @*<th style="display:none">Print Name</th>
+                                                            <th style="display:none">Print Name</th>*@
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="scrollbar"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </form>
+        </div>
+    </body>

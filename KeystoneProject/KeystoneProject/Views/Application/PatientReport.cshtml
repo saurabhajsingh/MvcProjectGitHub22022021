@@ -1,0 +1,304 @@
+﻿@model KeystoneProject.Models.Master.Masters
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--This File is edited by Mohammed-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+    .tab .nav-tabs > li > a {
+        border: none;
+        padding: 10px 15px;
+        color: #000;
+        background: #bddff7;
+        border-radius: 0;
+        font-family: roboto;
+    }
+
+    .tab .nav-tabs > li.active > a,
+    .tab .nav-tabs > li.active > a:focus {
+        border: none;
+        background: #1a5e8e;
+        color: #fff !important;
+        transition: background 0.20s linear;
+    }
+
+    .nav > li > a:hover {
+        color: #000 !important;
+    }
+
+    a {
+        color: #195580;
+        text-decoration: none;
+    }
+
+    .tab .nav-tabs li.active:after {
+        content: " ";
+        position: absolute;
+        bottom: -30px;
+        left: 37%;
+        border: 15px solid transparent;
+        border-top-color: #1a5e8e;
+    }
+
+    .tab .tab-content {
+        background: #fdfdfd;
+        line-height: 25px;
+        border: 1px solid #ddd;
+        border-top: 2px solid #1a5e8e;
+        border-bottom: 2px solid #1a5e8e;
+        padding: 30px 45px;
+        font-family: roboto;
+        line-height: 30px;
+    }
+
+    @@media only screen and (max-width 480px) {
+        .tab > .nav-tabs li {
+            width: 100%;
+        }
+
+        .tab .nav-tabs > li > a {
+            padding: 20px;
+            font-family: roboto;
+        }
+
+        .tab .nav-tabs > li.active:after {
+            border: none;
+        }
+    }
+</style>
+@*</head>*@
+<script>
+    $(document).ready(function () {
+        @*$.ajax({
+            url: '@Url.Action("HideModuls", "UserRights")',
+            type: "GET",
+            success: function (data) {
+                //  debugger
+                for (var a = 0; a < data.length; a++) {
+                    $('.role').each(function () {
+                        if (data[a].ModuleName == $(this).text()) {
+                            //alert($(this).text());
+                        }
+                    })
+                }
+            }
+        })*@
+        })
+</script>
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1>Patient Report</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="@Url.Action("Dashboard","Home")">Home</a></li>
+                            <li class="breadcrumb-item active">Patient Report</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tab" role="tabpanel">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a href="#Section1" aria-controls="home" role="tab" data-toggle="tab">
+                                        <i class="fa fa-bar-chart"></i> Patient Report
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#Section2" aria-controls="home" role="tab" data-toggle="tab">
+                                        <i class="fa fa-bar-chart"></i> Financial Account Report
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#Section3" aria-controls="home" role="tab" data-toggle="tab">
+                                        <i class="fa fa-bar-chart"></i> Lab Report
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade in active" id="Section1">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("OPDPatientReport", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>OPD Patient Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("NewIPDPatient", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient IPD New
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("PatientRevisit", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient Revisit
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("PatientReAddmission", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient ReAddmission
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("PatientOPDToIPD", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient OPD TO IPD
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("PatientAll", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient ALL
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("PatientIPDAdmit", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient IPD Admit
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("PatientHistory", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Patient History
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("VoucherReport", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Voucher Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("PatientBillNoReport", "PatientBillNoReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Pt Bill No Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("PatientIPDNoReport", "PatientIPDNoReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Pt IPD No Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("PatientOPDNoReport", "PatientOPDNoReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Pt OPD No Report
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="row">
+                                                <a href="@Url.Action("MISReportMonthlyConsultancyCharges", "MISReportMonthlyConsultancyCharges")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Monthly Consultancy Charges
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("MISGovernmentRecordReport", "MISGovernmentRecordReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Government Record Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("MISConsultantDrService", "MISConsultantDrService")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Consultant Dr Service
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a href="@Url.Action("ExportPatientData", "PatientReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>ExportPatientData
+                                                </a>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-lg-3" style="padding-left: 80px; border-right: 1px solid #4e6270;">
+                                                <div class="row">
+                                                    <a class="role" href="@Url.Action("PatientIPDWardTransfer", "PatientIPDWardTransfer")" style="font-size: 15px">
+                                                        <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>
+                                                        PatientIPDWardTransfer
+                                                    </a>
+                                                </div>
+                                                <div class="row">
+                                                    <a class="role" href="@Url.Action("PatientPrescriptionNew", "PatientPrescriptionNew") " style=" font-size 15px">
+                                                        <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>
+                                                        PatientPrescriptionNew
+                                                    </a>
+                                                </div>
+                                                <div class="row">
+                                                    <a class="role" href="@Url.Action("PatientFeedback", "PatientFeedback")" style="font-size: 15px">
+                                                        <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>
+                                                        PatientFeedback
+                                                    </a>
+                                                </div>
+                                            </div>*@
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="Section2">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("MISBalanceSheet", "MISBalanceSheet")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Balance Sheet
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("MISHospitalProductPurchase", "MISHospitalProductPurchase")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Hospital Product Purchase
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("MISHospitalProductPurchaseReport", "MISHospitalProductPurchaseReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Hospital Product Purchase Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("MISVoucherEntryWiseReport", "MISVoucherEntryWiseReport")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Voucher Entry Wise Report
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("MISChequePrint", "MISChequePrint")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>MIS Cheque Print
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="Section3">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("ReportLabTest", "ReportLabTest")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Report Lab Test
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("ReportLabTestByCategory", "ReportLabTestByCategory")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Lab Test By Category
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("ReportLabTestByName", "ReportLabTestByName")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Lab Test By Name
+                                                </a>
+                                            </div>
+                                            <div class="row">
+                                                <a class="role" href="@Url.Action("ReportLabTestWithDetails", "ReportLabTestWithDetails")" style="font-size: 15px">
+                                                    <i class="fa fa-circle" style="padding-right: 7px; font-size: 11px"></i>Lab Test With Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
