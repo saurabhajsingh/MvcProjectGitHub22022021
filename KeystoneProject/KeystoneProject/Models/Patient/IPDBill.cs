@@ -7,6 +7,8 @@ namespace KeystoneProject.Models.Patient
 {
     public class IPDBill
     {
+        
+        public string DisCountResion { get; set; }
         public string Doctor { get; set; }
         public string txtinput { get; set; }
         public string ForAuthorization { get; set; }

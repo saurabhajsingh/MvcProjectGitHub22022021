@@ -142,7 +142,6 @@ namespace KeystoneProject.Controllers.Hospital
         
            
         }
-
         [HttpGet]
         public ActionResult UserRights()
         {
@@ -150,16 +149,14 @@ namespace KeystoneProject.Controllers.Hospital
             //collection
             //return View();
             UserRights location = new UserRights();
-
-
             BL_RolesRights BLobj = new BL_RolesRights();
             RolesRights obj = new RolesRights();
             ModelState.Clear();
             obj.GetRoleAndRights = BLobj.GetRoleAndRights();
             obj.GetRoles = BLobj.GetAllRols();
-
             return View(obj);
         }
+
         public JsonResult GetUsers(string prefix)
         {
             BL_RolesRights co = new BL_RolesRights();
@@ -168,7 +165,7 @@ namespace KeystoneProject.Controllers.Hospital
             try
             {
                 DataSet ds=new DataSet();
-                SqlCommand cmd = new SqlCommand("select upper(LoginName) as LoginName,upper(FullName) as FullName,UserID from Users where LoginName like '" + prefix + "%' and RowStatus = 0", con);
+                SqlCommand cmd = new SqlCommand("select upper(LoginName) as LoginName,upper(FullName) as FullName,UserID from Users where LoginName like '" + prefix + "%' and RowStatus = 0 and LocationID="+LocationID+" and HospitalID="+HospitalID+"", con);
                
                 con.Open();
                 SqlDataAdapter ad = new SqlDataAdapter();
@@ -210,6 +207,8 @@ namespace KeystoneProject.Controllers.Hospital
             {
                 SqlCommand cmd = new SqlCommand("GetUsersForUser", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@HospitalID", HospitalID);
+                cmd.Parameters.AddWithValue("@LocationID", LocationID);
                 cmd.Parameters.AddWithValue("@UserID", UserID);
                 con.Open();
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -235,7 +234,7 @@ namespace KeystoneProject.Controllers.Hospital
             return new JsonResult { Data = usersRight, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
-        public JsonResult GetRoleDataForUserRights(int UserID)
+        public JsonResult GetRoleDataForUserRights(int UserID,string Level1ModuleID)
         {
             connect();
             DataSet ds = new DataSet();
@@ -250,8 +249,9 @@ namespace KeystoneProject.Controllers.Hospital
                 con.Open();
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(ds);
+                DataView dv = new DataView(ds.Tables[1], " ParentModuleID = " + Level1ModuleID + "", "", DataViewRowState.CurrentRows);
 
-                foreach (DataRow dr in ds.Tables[1].Rows)
+                foreach (DataRow dr in dv.ToTable().Rows)
                 {
                     RolesRights role = new RolesRights();
                     role.ModuleID = Convert.ToInt32(dr["ModuleID"]);
@@ -313,11 +313,8 @@ namespace KeystoneProject.Controllers.Hospital
                 ad.Fill(obj.GetRoleAndRights);
           foreach (DataRow dr in obj.GetRoleAndRights.Tables[0].Rows)
                 {
-
                     RolesRights obj1 = new RolesRights();
-                    obj1.LeafModuleName = dr["LeafModuleName"].ToString();
-                    obj1.ModuleName = dr["ModuleName"].ToString();
-                    obj1.SubModuleName = dr["SubModuleName"].ToString();
+                    obj1.ModuleName = dr["LeafModuleName"].ToString();
                     serch.Add(obj1);
                 }
             }

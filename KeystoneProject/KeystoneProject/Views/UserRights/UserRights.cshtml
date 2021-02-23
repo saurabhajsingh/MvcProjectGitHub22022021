@@ -779,38 +779,33 @@
                                                 <table id="tblchk" class="table table-bordered table-striped" style="font-family:roboto">
                                                     <thead>
                                                         <tr>
-                                                            <th>
-                                                                <label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
-                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="checked" />
-                                                                    <span class="checkmark checked"></span>
-                                                                </label>Sub Modules List
-                                                            </th>
+                                                            <th>Sub Modules List</th>
 
                                                             <th>
                                                                 Add
 
                                                                 <label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
-                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="checked" />
+                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Add checked" />
                                                                     <span class="checkmark checked"></span>
                                                                 </label>
                                                             </th>
 
                                                             <th>
                                                                 Edit<label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
-                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="checked" />
+                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Edit checked" />
                                                                     <span class="checkmark checked"></span>
                                                                 </label>
                                                             </th>
                                                             <th>
 
                                                                 Delete<label class="container1" style=" margin-left 20px; display inline-grid; vertical-align text-top; ">
-                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="checked" />
+                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" class="Delete checked" />
                                                                     <span class="checkmark checked"></span>
                                                                 </label>
                                                             </th>
                                                             <th>
-                                                                Print<label class="container1" style=" margin-left 20px; display inline-grid; vertical-align text-top; ">
-                                                                    <input type="checkbox" id="PatientCancelID" name="TPACheck" />
+                                                                Print<label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; ">
+                                                                    <input type="checkbox" id="PatientCancelID" class="Print checked" name="TPACheck" />
                                                                     <span class="checkmark checked"></span>
                                                                 </label>
                                                             </th>
@@ -839,7 +834,7 @@
                 </section>
 
 
-
+                <input type="hidden" id="beforAfterchk" name="beforAfterchk" />
 
 
             </div>
@@ -850,6 +845,37 @@
 <script>
     var count = 0;
     var len = 0;
+    var ModuleID = 0;
+    function unchk1() {
+        debugger
+
+
+
+
+
+
+        beforAfterchk = "";
+
+        $("#level3").parent().find('input[name="parentLevel4"]').each(function () {
+            debugger
+
+            var parentLevel4 = $(this).val();
+            var con = $(this).prop("checked");
+
+            if (con == true) {
+                chk1 = parentLevel4 + ",";// $(this).prop("checked",false);
+            }
+            else {
+                debugger
+                unchk = parentLevel4 + ",";
+                parentLevel4 + ",";
+                beforAfterchk += parentLevel4 + ",";
+            }
+        })
+        alert(beforAfterchk);
+        $("#beforAfterchk").val(beforAfterchk);
+
+    }
     $(document).ready(function () {
    
         $('.showhide').click(function () {
@@ -861,17 +887,24 @@
             var chk = false;
             if ($('input[name=allchk1]').prop("checked") == true) {
                 $("#loadimg").show();
+                $("#level3 tr").remove();
                 $("#hideandshow").hide();
                 len = $('input[name=allchk]').length;
                 $('input[name=allchk]').each(function () {
                     chk = true;
                     Level1($(this).val());
+
+                    $(".Add1").prop("checked", true);
+                    $(".Edit1").prop("checked", true);
+                    $(".Delete1").prop("checked", true);
                 })
 
             }
             else
             {
-                $("#hideandshow").show();
+                $("#level3 tr").remove();
+              
+                $("#hideandshow").hide();
             }
             if (chk==true) {
                 debugger
@@ -888,7 +921,9 @@
         var moduleID = value.value.split('-')[0];
         var moduleName = value.value.split('-')[1];
         var chkall1 = $('input[name=' + moduleID + ']').prop("checked");
+
         //    Level2(moduleID, moduleName, value.checked);
+
         debugger
         if (chkall1 == true) {
             $('.' + moduleID).prop("checked", true);
@@ -906,6 +941,8 @@
             // $('input[name=' + d.ModuleID + ']').prop("checked", false);
             // Level2(d.ModuleID, d.ModuleName, false);
         }
+
+        unchk1();
     }
     var ModuleID = "";
         function Level1(Level1ModuleID)
@@ -925,10 +962,18 @@
                         debugger
                         if ($('input[name=allchk1]').prop("checked") == true) {
                             Level2(d.ModuleID, d.ModuleName);
-                            $(".Add1").prop("checked", true);
-                            $(".Edit1").prop("checked", true);
-                            $(".Delete1").prop("checked", true);
-                            
+                           // $(".Add1").prop("checked", true);
+                           // $(".Edit1").prop("checked", true);
+                           // $(".Delete1").prop("checked", true);
+                        }
+                        else
+                        {
+                            //if ($('input[name=allchk1]').prop("checked") == false) {
+                            //    Level2(d.ModuleID, d.ModuleName);
+                            //    $(".Add1").prop("checked", false);
+                            //    $(".Edit1").prop("checked", false);
+                            //    $(".Delete1").prop("checked", false);
+                            //}
                         }
                         // Level2(d.ModuleID);
                     })
@@ -940,50 +985,57 @@
         }
     function Level2(Level1ModuleID, ModuleName) {
         debugger
+        $('.chkshowhide').prop("checked", false);
+        $('.Add ,.Edit ,.Delete ').prop("checked", false);
         $("#hedername").text(ModuleName);
         $(".m").hide(200);
-        $(".Add").prop("checked", false);
+        ModuleID = Level1ModuleID;
+   //     $(".Add").prop("checked", false);
         var tt = "";
-        $("." + Level1ModuleID).each(function () {
-             tt = $(this).attr('class');
-                $(this).show(200);
+        $("." + Level1ModuleID+",m").each(function () {
+            tt = $("." + Level1ModuleID).attr('class');
+            $(this).show(200);
+            //return false;
         })
-       
-        $.ajax({
-            url: '@Url.Action("RoleRightsLevel2", "RoleRightstwo")',
-            type: "POST",
-            data: { Level1ModuleID: Level1ModuleID },
-            dataType: "json",
-            success: function (data) {
-                // $("#level3 tr").remove();
-                debugger
-                if (tt.replace("Delete1 checked ", "").trim() != Level1ModuleID) {
+        if (tt.replace("m", "").trim() != Level1ModuleID) {
+            $.ajax({
+                url: '@Url.Action("RoleRightsLevel2", "RoleRightstwo")',
+                type: "POST",
+                data: { Level1ModuleID: Level1ModuleID },
+                dataType: "json",
+                success: function (data) {
+                    // $("#level3 tr").remove();
                     debugger
                     $(data).each(function (index, d) {
                         debugger
-                        $("#level3").append('<tr class="' + Level1ModuleID + ' m" value=' + Level1ModuleID + ' ><td><label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; "><input type="checkbox" id="PatientCancelID" name="chkshowhide" class="chkshowhide checked" /><span class="checkmark checked"></span></label>' + d.ModuleName + '<td style="display:none" ><input type="hidden" class="find" value=' + Level1ModuleID + '></td></td><td><label class="container1" style="margin-left: 10px "><input type="checkbox" id="PatientCancelID" name="parentLevel4" value=' + d.ModuleID + "+" + 1 + ' name="TPACheck" class="Add1 checked ' + Level1ModuleID + '"  /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 2 + ' id="PatientCancelID" name="TPACheck" class="Edit1 checked ' + Level1ModuleID + '"  /><span class="checkmark "></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 3 + ' id="PatientCancelID" name="TPACheck" class="Delete1 checked ' + Level1ModuleID + '" /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 5 + ' id="PatientCancelID" name="TPACheck" class="Print1 checked"  /><span class="checkmark checked"></span></label></td></tr>');
+                        $("#level3").append('<tr class="' + Level1ModuleID + ' m" value=' + Level1ModuleID + ' ><td><label class="container1" style="margin-left: 20px; display: inline-grid; vertical-align: text-top; "><input type="checkbox" id="PatientCancelID" name="chkshowhide" class="chkshowhide checked" /><span class="checkmark checked"></span></label>' + d.ModuleName + '<td style="display:none" ><input type="hidden" class="find" value=' + Level1ModuleID + '></td></td><td><label class="container1" style="margin-left: 10px "><input type="checkbox" id="PatientCancelID" name="parentLevel4" value=' + d.ModuleID + "+" + 1 + ' name="TPACheck" class="Add1 ' + Level1ModuleID + '"  /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 2 + ' id="PatientCancelID" name="TPACheck" class="Edit1 ' + Level1ModuleID + '"  /><span class="checkmark "></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 3 + ' id="PatientCancelID" name="TPACheck" class="Delete1 ' + Level1ModuleID + '" /><span class="checkmark checked"></span></label></td><td><label class="container1" style="    margin-left: 10px "><input type="checkbox" name="parentLevel4" value=' + d.ModuleID + "+" + 5 + ' id="PatientCancelID" name="TPACheck" class="Print1 checked"  /><span class="checkmark checked"></span></label></td></tr>');
                         // $("#DateOfBirth").val(data);
                         if ($('input[name=allchk1]').prop("checked") == true)
                         {
-                            $(".Add1").prop("checked", true);
-                            $(".Edit1").prop("checked", true);
-                            $(".Delete1").prop("checked", true);
+                            //$(".Add1").prop("checked", true);
+                            //$(".Edit1").prop("checked", true);
+                            //$(".Delete1").prop("checked", true);
                             if(len==count)
                             {
                                 $("#loadimg").hide();
 
                             }
                         }
+                        //else {
+
+                        //    $(".Add1").prop("checked", false);
+                        //    $(".Edit1").prop("checked", false);
+                        //    $(".Delete1").prop("checked", false);
+                        //}
                     })
-               }
+
                     debugger
 
-                    if ($("#UserID").val() > 0)
-                    {
+                    if ($("#UserID").val() > 0) {
                         $.ajax({
                             url: '@Url.Action("GetRoleDataForUserRights", "UserRights")',
                             type: "GET",
-                            data: { UserID: $("#UserID").val() },
+                            data: { UserID: $("#UserID").val(), Level1ModuleID: Level1ModuleID },
                             dataType: "json",
                             success: function (data) {
                                 debugger
@@ -991,51 +1043,50 @@
                                 var row = 0;
                                 $(data).each(function (index, d) {
 
-                                 $('#level3 tr').each(function () {
-                                     debugger
-                                     //-----Add
-                                     var AddRightCode = $(this).find('.Add1').val().split('+');
-                                     var AddModuleID = AddRightCode[0];
-                                     if (d.ModuleID == AddModuleID)
-                                     {
-                                         debugger
-                                     $(this).find('.chkshowhide').prop("checked", true, "value", true);
-                                         if (AddRightCode[1] == d.RightCode) {
-                                             debugger
-                                             $(this).find('.Add1').prop("checked", true);
-                                         }
-                                     }
+                                    $('#level3 tr').each(function () {
+                                        debugger
+                                        //-----Add
+                                        var AddRightCode = $(this).find('.Add1').val().split('+');
+                                        var AddModuleID = AddRightCode[0];
+                                       
+                                        if (d.ModuleID == AddModuleID) {
+                                            debugger
+                                            //$(this).find('.chkshowhide').prop("checked", true, "value", true);
+                                            if (AddRightCode[1] == d.RightCode) {
+                                                debugger
+                                                
+                                                $(this).find(".Add1," + Level1ModuleID).prop("checked", true);
+                                            }
+                                        }
+                                        //---End
+                                        //-----Edit
+                                        var EditRightCode = $(this).find('.Edit1').val().split('+');
+                                        var EditModuleID = AddRightCode[0];
+                                        if (d.ModuleID == EditModuleID) {
+                                            debugger
+                                            if (EditRightCode[1] == d.RightCode) {
+                                                debugger
+                                                $(this).find('.Edit1,' + Level1ModuleID).prop("checked", true);
 
-                                     //---End
-                                     //-----Edit
-                                     var EditRightCode = $(this).find('.Edit1').val().split('+');
-                                     var EditModuleID = AddRightCode[0];
+                                            }
+                                        }
+                                        //---End
+                                        //-----Delete
 
-                                     if (d.ModuleID == EditModuleID) {
-                                         debugger
-                                         if (EditRightCode[1] == d.RightCode) {
-                                             debugger
-                                             $(this).find('.Edit1').prop("checked", true);
+                                        var DeleteRightCode = $(this).find('.Delete1').val().split('+');
+                                        var DeleteModuleID = AddRightCode[0];
 
-                                         }
-                                     }
-                                     //---End
-                                     //-----Delete
+                                        if (d.ModuleID == DeleteModuleID) {
+                                            debugger
+                                            if (DeleteRightCode[1] == d.RightCode) {
+                                                debugger
+                                                $(this).find('.Delete1,' + Level1ModuleID).prop("checked", true);
+                                            }
+                                        }
 
-                                     var DeleteRightCode = $(this).find('.Delete1').val().split('+');
-                                     var DeleteModuleID = AddRightCode[0];
-
-                                     if (d.ModuleID == DeleteModuleID) {
-                                         debugger
-                                         if (DeleteRightCode[1] == d.RightCode) {
-                                             debugger
-                                             $(this).find('.Delete1').prop("checked", true);
-                                         }
-                                     }
-
-                                     //---End
-                                     row++;
-                                 });
+                                        //---End
+                                        row++;
+                                    });
 
                                     //for(var a=0; a<len;a++)
                                     //{
@@ -1050,9 +1101,10 @@
 
 
 
-            }
-            })
 
+                }
+            })
+        }
     }
 
         $(document).ready(function () {
@@ -1155,6 +1207,105 @@
 
                 //alert(row_num)
 
+            })
+
+       
+
+
+            //----------------
+
+            $(".Add").click(function () {
+                debugger
+
+                // var tr= $("#level3 tr").length;
+
+                //for
+
+                if ($(this).is(":checked")) {
+                    debugger
+                    var a = ".checked" + ModuleID;
+                    //alert($("#level3 tr").length);
+                    var row_num = 0;
+                    // $("."+ModuleID).each(function () {
+                    debugger
+
+                    //document.getElementById(".checked" + ModuleID).rows[row_num].cells[2].children[0].checked = true;
+                    //  (this).parent().find(".checked" + ModuleID).prop("checked", true);
+                    row_num++;
+                    $(".Add1," + ModuleID).prop("checked", "checked");
+                    // $(".checked" + ModuleID).prop("value", "govind");
+                    // })
+                }
+                else {
+                    //$("."+ModuleID).each(function () {
+                    debugger
+                    $(".Add1," + ModuleID).prop("checked", false);
+                    //   $(".checked" + ModuleID).prop("value", "govind");
+                    // document.getElementById(".checked" + ModuleID).rows[row_num].cells[2].children[0].checked = false;
+                    row_num++;
+                    // })
+                  
+                }
+
+            })
+
+
+            $(".Edit").click(function () {
+                debugger
+                if ($(this).is(":checked")) {
+                    debugger
+                  
+                        debugger
+                        $(".Edit1," + ModuleID).prop("checked", true);
+                    
+                }
+                else {
+                   
+                        debugger
+                        $(".Edit1," + ModuleID).prop("checked", false);
+                    
+                }
+                
+            })
+            //------------------------------------------
+
+            $(".Delete").click(function () {
+                debugger
+                if ($(this).is(":checked")) {
+                    debugger
+                  
+                        debugger
+                        $(".Delete1," + ModuleID).prop("checked", true);
+                    
+                }
+                else {
+                   
+                        debugger  
+                        $(".Delete1," + ModuleID).prop("checked", false);
+                    
+                }
+                
+            })
+            //-----------Print
+
+
+
+            $(".Print").click(function () {
+                debugger
+                if ($(this).is(":checked")) {
+                    debugger
+                    $(".checkedPrint" + ModuleID).each(function () {
+                        debugger
+                        $(this).prop("checked", true);
+                    })
+                }
+                else {
+                    $(".checkedPrint" + ModuleID).each(function () {
+                        debugger
+                        $(this).prop("checked", false);
+                    })
+                }
+                unchk1();
             })
             })
 

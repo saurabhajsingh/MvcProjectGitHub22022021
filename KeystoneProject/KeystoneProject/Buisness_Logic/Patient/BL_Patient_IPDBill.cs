@@ -1377,8 +1377,10 @@ namespace KeystoneProject.Buisness_Logic.Patient
             {
                 HttpContext.Current.Session["GetPatientBillsForIPDNosection"] = ds;
             }
-            
+
             //test.Business_Logic.Laboratory.BL_PatientLabBills BL_Lab = new test.Business_Logic.Laboratory.BL_PatientLabBills();
+            string DisCountResionID = "";
+            string DisCountResion = "";
             if (BillNo > 0)
             {
                //DataTable dt1 = (DataTable) HttpContext.Current.Session["GetPatientBillsForIPDNo"];
@@ -1386,6 +1388,21 @@ namespace KeystoneProject.Buisness_Logic.Patient
                 dt.Reset();
 
                 dt = dv1.ToTable();
+
+                if (dt.Rows.Count > 0)
+                {
+                    BL_PatientOPDBill objdiscountresion = new BL_PatientOPDBill();
+                    DataSet dsdisResion = objdiscountresion.GetDiscountReason("%");
+                    if (dt.Rows[0]["DiscountReason"].ToString() != "")
+                    {
+                        DataView dv = new DataView(dsdisResion.Tables[0], "DiscountReasonID=" + dt.Rows[0]["DiscountReason"].ToString() + "", "", DataViewRowState.CurrentRows);
+                        if (dv.ToTable().Rows.Count > 0)
+                        {
+                            DisCountResionID = dv.ToTable().Rows[0]["DiscountReasonID"].ToString();
+                            DisCountResion = dv.ToTable().Rows[0]["DiscountReason"].ToString();
+                        }
+                    }
+                }
             }  
 
             Laboratory.BL_PatientLabBills BL_Lab = new Laboratory.BL_PatientLabBills();
@@ -1455,7 +1472,7 @@ namespace KeystoneProject.Buisness_Logic.Patient
                 {
                     //  PatientId = Convert.ToInt32(dr["LocationID"]),
 
-                    
+
                     BillDateStr = DateTime.ToString("dd/MM/yyyy"),
                     BillTimeStr = DateTime.ToString("hh:mm:ss"),
                     GrossAmount = Convert.ToString(dr["GrossAmount"]),
@@ -1476,7 +1493,9 @@ namespace KeystoneProject.Buisness_Logic.Patient
                     Number = dr["Number"].ToString(),
                     Date = dr["Date"].ToString(),
                     Remarks = dr["Remarks"].ToString(),
-                    PaymentType = dr["PaymentType"].ToString()
+                    PaymentType = dr["PaymentType"].ToString(),
+                    DiscountReasonID = DisCountResionID,
+                    DisCountResion = DisCountResion,
 
                 });
 
@@ -1601,12 +1620,29 @@ namespace KeystoneProject.Buisness_Logic.Patient
                     cmd.Parameters.Add(new SqlParameter("@OPDIPDID", dr["OPDIPDID"]));
                     cmd.Parameters.Add(new SqlParameter("@BillType ", dr["BillType"]));
                     cmd.Parameters.Add(new SqlParameter("@GrossAmount", Convert.ToDouble(dr["GrossAmount"])));
-                    cmd.Parameters.Add(new SqlParameter("@TaxPercent", Convert.ToDouble(dr["TaxPercent"])));
+                    if(dr["TaxPercent"].ToString()=="")
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@TaxPercent", Convert.ToDouble(0)));
+                    }
+                    else
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@TaxPercent", Convert.ToDouble(dr["TaxPercent"])));
+                    }
+                   
                     cmd.Parameters.Add(new SqlParameter("@TaxAmount", Convert.ToDouble(dr["TaxAmount"])));
                     cmd.Parameters.Add(new SqlParameter("@ReffCommission", Convert.ToDouble(dr["ReffCommission"])));
                     cmd.Parameters.Add(new SqlParameter("@Commisson", Convert.ToDouble(dr["Commisson"])));
                     cmd.Parameters.Add(new SqlParameter("@TotalAmount", Convert.ToDouble(dr["TotalAmount"])));
-                    cmd.Parameters.Add(new SqlParameter("@NonMedicalExp", Convert.ToDouble(dr["NonMedicalExp"])));
+                    if(dr["NonMedicalExp"].ToString()=="")
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@NonMedicalExp", Convert.ToDouble(0)));
+                    }
+                    else
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@NonMedicalExp", Convert.ToDouble(dr["NonMedicalExp"])));
+                    }
+
+                   
 
                     if (dr["DiscountAmount"].ToString() != "")
                     {
@@ -1624,7 +1660,7 @@ namespace KeystoneProject.Buisness_Logic.Patient
                     {
                         cmd.Parameters.Add(new SqlParameter("@DiscountAmount ", Convert.ToDouble(0.00)));
                     }
-                    cmd.Parameters.Add(new SqlParameter("@DiscountReason", dr["DiscountReason"]));
+                   cmd.Parameters.Add(new SqlParameter("@DiscountReason", dr["DiscountReason"]));
                     cmd.Parameters.Add(new SqlParameter("@NetPayableAmount", Convert.ToDouble(dr["NetPayableAmount"])));
                     cmd.Parameters.Add(new SqlParameter("@BalanceAmount", Convert.ToDouble(dr["BalanceAmount"])));
                     if (dr["PreBalanceAmount"].ToString() == String.Empty)

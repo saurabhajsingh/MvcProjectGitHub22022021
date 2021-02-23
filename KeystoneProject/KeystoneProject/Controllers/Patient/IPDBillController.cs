@@ -526,6 +526,10 @@ namespace KeystoneProject.Controllers.Patient
                         if (old_bill_no == "-2")
                         {
                             db.UpdateAllIPDBill(ipdb);
+                            if (bill2 == null)
+                            {
+                                return RedirectToAction("IPDBill", "IPDBill");
+                            }
                         }
                         else
                         {
@@ -536,6 +540,7 @@ namespace KeystoneProject.Controllers.Patient
 
                         if (bill2.Message != null)
                         {
+                           
                             TempData["Msg"] = bill2.Message;
 
                             return RedirectToAction("IPDBill", "IPDBill");
@@ -1152,7 +1157,7 @@ namespace KeystoneProject.Controllers.Patient
         {
             BedchargeshCount = -1;
             EnterDate = RegDate;
-
+            int Days = 0;
             //  BillDate = ExitDate;
             if (Type == "true")
             {
@@ -1215,10 +1220,10 @@ namespace KeystoneProject.Controllers.Patient
                 {
                     oldBedCharges = 0;
                 }
-                if (dsBedCharges.Tables[0].Rows[i][ChargesType].ToString() == "")
-                {
-                    dsBedCharges.Tables[0].Rows[i][ChargesType] = 0;
-                }
+                //if (dsBedCharges.Tables[0].Rows[i][ChargesType].ToString() == "")
+                //{
+                //    dsBedCharges.Tables[0].Rows[i][ChargesType] = 0;
+                //}
                 CurrentBedCharges = Convert.ToDecimal(dsBedCharges.Tables[0].Rows[i][ChargesType].ToString());
                 if (dsBedCharges.Tables[0].Rows.Count > i + 1)
                 {
@@ -1904,7 +1909,7 @@ namespace KeystoneProject.Controllers.Patient
 
         }
 
-        public ActionResult GetPatientBillsForIPDNo(int BillNo, string gross_total, string pre_balance_id, string NonMedicalExp, string total_amount, string disc_perc_id, string disc_amount_id, string netpayable_id, string amtpaid_id, string bal_amount_id)
+        public ActionResult GetPatientBillsForIPDNo(int BillNo, string gross_total, string pre_balance_id, string NonMedicalExp, string total_amount, string disc_perc_id, string disc_amount_id, string netpayable_id, string amtpaid_id, string bal_amount_id,int DiscountReasonID)
         {
 
 
@@ -1919,9 +1924,9 @@ namespace KeystoneProject.Controllers.Patient
                     dr["DiscountPercent"] = total_amount;
                     dr["DiscountAmount"] = disc_amount_id;
                     dr["NetPayableAmount"] = netpayable_id;
-                    // dr["TaxAmount"]
+                    dr["DiscountReason"] = DiscountReasonID;
                     dr["BalanceAmount"] = bal_amount_id;
-                    // dr["DipositAmount"]
+                //    dr["DipositAmount"]
                     dr["PreBalanceAmount"] = pre_balance_id;
                     dr["NonMedicalExp"] = NonMedicalExp;
                     dr["PaidAmount"] = amtpaid_id;
@@ -1980,7 +1985,7 @@ namespace KeystoneProject.Controllers.Patient
         {
             BL_Patient_IPDBill db = new BL_Patient_IPDBill();
 
-              return new JsonResult { Data = db.GetPatientForIPDNoBills(IPDNo), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return new JsonResult { Data = db.GetPatientForIPDNoBills(IPDNo), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
 
         }
 
@@ -1998,17 +2003,15 @@ namespace KeystoneProject.Controllers.Patient
             HospitlLocationID();
             connection();
 
-            AuthoriseSave(BillNo);
-            if(con.State.ToString()=="Close")
-            {
-                con.Open();
-            }
+         
             BL_PatientOPDBill obj = new BL_PatientOPDBill();
             bool ChkAuth = obj.ForAuthorizationGetMasterSetting();
             SqlCommand cmd;
             if (ChkAuth)
             {
-                 cmd = new SqlCommand("DeletePatientBillsAuthorise", con);
+                AuthoriseSave(BillNo);
+               
+                cmd = new SqlCommand("DeletePatientBillsAuthorise", con);
             }
             else
             {
@@ -2020,6 +2023,10 @@ namespace KeystoneProject.Controllers.Patient
             cmd.Parameters.AddWithValue("@PatientRegNO", PatientRegNO);
             cmd.Parameters.AddWithValue("@BillNo", BillNo);
             cmd.Parameters.AddWithValue("@CreationID", CreationID);
+            if (con.State.ToString() == "Closed")
+            {
+                con.Open();
+            }
             int a = cmd.ExecuteNonQuery();
             con.Close();
             //  BL_PatientOPDBill obj = new BL_PatientOPDBill();

@@ -1405,10 +1405,12 @@
             var row = $("#datatable-responsive td").closest("tr").length;
 
             if (row == 0) {
+
                 $("#gross_total").val(0);
                 $("#gross_total_id").val(0);
                 $("#netpayable").val(0);
                 $("#netpayable_id").val(0);
+
                // $("#total_amount").val(0);
                // $("#total_amount_id,#netpayable_id,#netpayable").val(0);
              //   calculator();
@@ -1423,8 +1425,6 @@
                 else {
                     var tot = parseInt(sum) - parseInt(prebal);
                 }
-
-
                 $("#total_amount").val(tot);
                 $("#total_amount_id").val(tot);
 
@@ -1737,7 +1737,7 @@
 
         });
 
-
+      
     }
 
     $(document).ready(function () {
@@ -2670,6 +2670,7 @@
             contentType: 'application/json',
             success: function (data) {
                 $(".DoctorPrintNamedgv").append('<option value=' + 0 + '></option>');
+                $(".DoctorPrintNamedgv").empty();
                 // $(".DoctorPrintNamedgv").append('<option value=' + $("#DoctorPrintNameID").val() + ',' + $("#DoctorPrintName").val() + '>' + $("#DoctorPrintName").val() + '</option>');
                 $(data).each(function (index, i) {
 
@@ -2682,6 +2683,7 @@
                     var t = $("#DoctorPrintNameID").val();
                     $(".DoctorPrintNamedgv").val($("#DoctorPrintNameID").val());
                     $("#DoctorPrintNameID").val("0");
+
                     for (var a = 0; a < child; a++) {
                         var DoctorID = document.getElementById('datatable-responsive').tBodies[0].rows[a].cells[0].children[2].value;
                         if (DoctorID == "undefined")
@@ -2698,6 +2700,21 @@
                         }
                     }
                     // $('#datatable-responsive tbody').
+                }
+                else
+                {
+                    $(".drID").each(function () {
+                        debugger
+
+                        var doc_hid = $(this).parent().find('#doc_hid').val();
+                         $(this).parent().find('#doctorID').val('')
+                        $(this).parent().find('.DoctorPrintNamedgv ').val('')
+                         if ($("#Doctor").val() != doc_hid) {
+                        $(this).parent().find('#doctorID').val(doc_hid)
+                        $(this).parent().find('.DoctorPrintNamedgv ').val(doc_hid)
+                        }
+
+                    })
                 }
             }
         })
@@ -3482,7 +3499,9 @@
 
                             // changePatientbind();
                             Restore();
+                            
                             $("#datatable-responsive td").remove();
+                            return false;
                         }
                     }
                 })
@@ -3868,7 +3887,7 @@
                 CaculateDescount();
 
                 if ($("#old_bill_no_id").val() == -2) {
-                    var UserData = { BillNo: $("input[name='chkIPDBill']:checked").val(), gross_total: $("#gross_total_id").val(), pre_balance_id: $("#pre_balance_id").val(), NonMedicalExp: $("#NonMedicalExp").val(), total_amount: $("#total_amount").val(), disc_perc_id: $("#disc_perc_id").val(), disc_amount_id: $("#disc_amount_id").val(), netpayable_id: $("#netpayable_id").val(), amtpaid_id: $("#amtpaid_id").val(), bal_amount_id: $("#bal_amount_id").val() }
+                    var UserData = { BillNo: $("input[name='chkIPDBill']:checked").val(), gross_total: $("#gross_total_id").val(), pre_balance_id: $("#pre_balance_id").val(), NonMedicalExp: $("#NonMedicalExp").val(), total_amount: $("#total_amount").val(), disc_perc_id: $("#disc_perc_id").val(), disc_amount_id: $("#disc_amount_id").val(), netpayable_id: $("#netpayable_id").val(), amtpaid_id: $("#amtpaid_id").val(), bal_amount_id: $("#bal_amount_id").val(), DiscountReasonID: $("#DiscountReasonID").val() }
                     //  alert(JSON.stringify(UserData));
                     $.ajax({
                         url: '@Url.Action("GetPatientBillsForIPDNo", "IPDBill")',
@@ -3885,6 +3904,8 @@
             }
 
         });
+
+
 
         function GetAllPackageServiceWise( ServiceType) {
 
@@ -4121,7 +4142,7 @@
                                 // $('#datatable-responsive tbody').addClass(billsitem.BillNo);
                             }
                             if (billsitem.SvcID > 0) {
-                                $('#datatable-responsive tbody').append('<tr class="read" ><td>' + billsitem.SvcName + '<input value="' + billsitem.SvcID + '" type="hidden" id="svc_hid" name="svc_hid" /><input type="hidden" id="svc_nm_hid" name="svc_nm_hid"  value="' + billsitem.SvcName + '" /> <input type="hidden" value="' + billsitem.DoctorID + '" id="doc_hid" name="doc_hid" /><input type="hidden" value="1" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + billsitem.Rate + '"/><input type="hidden" name="svc_qty_hid" id="svc_qty_hid" value="' + billsitem.Quantity + '"/></td><td><input id="txt_tbl_rate" class="form-control" type="text" value=' + billsitem.Rate + '></td><td><input id="txt_tbl_qty" class="form-control" type="text" value=' + billsitem.Quantity + '></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"> <option value=' + billsitem.DiscountServiceType + '>' + billsitem.DiscountServiceType + '</option><option value="Rs">Rs</option><option value="%">%</option></select></td> <td><input value=' + billsitem.Discount_Service + ' class="nr form-control" type="text" id="Discount_Service" name="Discount_Service" /></td><td class=' + billsitem.BillNo + '>' + billsitem.Quantity * billsitem.Rate + '</td><td style="display:none"><input value="' + billsitem.Quantity * billsitem.Rate + '" type="hidden" id="tot_hid" name="tot_hid"/><input value="' + 0 + '" type="hidden" id="sevicedisAmt" name="sevicedisAmt"/></td><td style=" display: flex;"><input type="text" name="doctorID" id="doctorID" placeholder="Doctor ID.."><select class="fstdropdown-select DoctorPrintNamedgv form-control"></select></td></td><td> <button type="button" id="tbldel" class="btndivcss" onclick="RemoveSvcTable(this)"><span class="fa fa-trash buttoniconcss"></span>Delete</button><input type="hidden" name="Mode" value="Add"/><input value="' + billsitem.ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><input type="hidden" value="' + billsitem.Doctorcharges + '" name="Doctorcharges"/> <input type="hidden" name="UnitID1" value="' + billsitem.UnitID + '"><input type="hidden" id="tblIPDBill" name="tblIPDBill" value=' + billsitem.BillNo + '><input type="hidden" name="Authorization" value="0"></td></tr id="name">');
+                                $('#datatable-responsive tbody').append('<tr class="read" ><td class="drID">' + billsitem.SvcName + '<input value="' + billsitem.SvcID + '" type="hidden" id="svc_hid" name="svc_hid" /><input type="hidden" id="svc_nm_hid" name="svc_nm_hid"  value="' + billsitem.SvcName + '" /> <input type="hidden" value="' + billsitem.DoctorID + '" id="doc_hid" name="doc_hid" /><input type="hidden" value="1" id="unithid" name="unithid" /><input type="hidden" name="svc_rate_hid" id="svc_rate_hid" value="' + billsitem.Rate + '"/><input type="hidden" name="svc_qty_hid" id="svc_qty_hid" value="' + billsitem.Quantity + '"/></td><td><input id="txt_tbl_rate" class="form-control" type="text" value=' + billsitem.Rate + '></td><td><input id="txt_tbl_qty" class="form-control" type="text" value=' + billsitem.Quantity + '></td><td><select name="DiscountServiceType" id="DiscountServiceType" class="nr form-control"> <option value=' + billsitem.DiscountServiceType + '>' + billsitem.DiscountServiceType + '</option><option value="Rs">Rs</option><option value="%">%</option></select></td> <td><input value=' + billsitem.Discount_Service + ' class="nr form-control" type="text" id="Discount_Service" name="Discount_Service" /></td><td class=' + billsitem.BillNo + '>' + billsitem.Quantity * billsitem.Rate + '</td><td style="display:none"><input value="' + billsitem.Quantity * billsitem.Rate + '" type="hidden" id="tot_hid" name="tot_hid"/><input value="' + 0 + '" type="hidden" id="sevicedisAmt" name="sevicedisAmt"/></td><td style=" display: flex;"><input type="text" name="doctorID" id="doctorID" placeholder="Doctor ID.."><select class="fstdropdown-select DoctorPrintNamedgv form-control"></select></td></td><td> <button type="button" id="tbldel" class="btndivcss" onclick="RemoveSvcTable(this)"><span class="fa fa-trash buttoniconcss"></span>Delete</button><input type="hidden" name="Mode" value="Add"/><input value="' + billsitem.ServiceType + '" type="hidden" id="ServiceType" name="ServiceType" /><input type="hidden" value="' + billsitem.Doctorcharges + '" name="Doctorcharges"/> <input type="hidden" name="UnitID1" value="' + billsitem.UnitID + '"><input type="hidden" id="tblIPDBill" name="tblIPDBill" value=' + billsitem.BillNo + '><input type="hidden" name="Authorization" value="0"></td></tr id="name">');
                                 // $(".scrollbar tr").remove();
                                 // $(".16 tr").remove();
 
@@ -4188,6 +4209,10 @@
                         $("#payment_type").val(data[0].PaymentType);
                         $("#Number").val(data[0].Number);
                         $("#Name").val(data[0].Name);
+
+                        $("#disc_reason").val(data[0].DisCountResion);
+                        $("#DiscountReasonID").val(data[0].DiscountReasonID);
+
                         CaculateDescount();
                         calculator();
                         //-----------------------------
@@ -4593,7 +4618,6 @@
                     contentType: 'application/json',
                     success: function (data) {
 
-
                     }
                 })
             }
@@ -4677,23 +4701,30 @@
 
             debugger
             var PaidAmount = $("#amtpaid").val().replace("-", "");
-
             $("#amtpaid").val(PaidAmount);
-
             // $("#PaidAmount").val(PaidAmount)
             var PreBalance = $("#PreBalance").val();
-
-
             var disc = $('#netpayable').val();
             var amtpaid = $("#amtpaid").val();
-
             var bal = parseInt(disc) - parseInt(amtpaid);
-
-
             $("#bal_amount").val(bal);
             $("#bal_amount_id").val(bal);
             $("#amtpaid_id").val(amtpaid);
 
+            if ($("#old_bill_no_id").val() == -2) {
+                var UserData = { BillNo: $("input[name='chkIPDBill']:checked").val(), gross_total: $("#gross_total_id").val(), pre_balance_id: $("#pre_balance_id").val(), NonMedicalExp: $("#NonMedicalExp").val(), total_amount: $("#total_amount").val(), disc_perc_id: $("#disc_perc_id").val(), disc_amount_id: $("#disc_amount_id").val(), netpayable_id: $("#netpayable_id").val(), amtpaid_id: $("#amtpaid_id").val(), bal_amount_id: $("#bal_amount_id").val(), DiscountReasonID: $("#DiscountReasonID").val() }
+                //  alert(JSON.stringify(UserData));
+                $.ajax({
+                    url: '@Url.Action("GetPatientBillsForIPDNo", "IPDBill")',
+                    type: 'POST',
+                    data: JSON.stringify(UserData),
+                    traditional: true,
+                    contentType: 'application/json',
+                    success: function (data) {
+
+                    }
+                })
+            }
         });
     });
 
@@ -4990,6 +5021,16 @@
                 $(this).parent().find('#Discount_Service').val('');
             }
         })
+
+  
+
+
+
+
+
+
+
+
        // TableDefaltZerovalue();
         //  DiscountAmount();
         //var disc = $('#disc_amount').val();

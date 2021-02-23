@@ -140,12 +140,7 @@ namespace KeystoneProject.Buisness_Logic.Hospital
             con.Open();
             result = cmdIURoleRights.ExecuteNonQuery();
             con.Close();
-
-
-
-
         }
-
 
         public DataSet GetUserRightPassword(int UserID)
         { Connect();
@@ -154,8 +149,11 @@ namespace KeystoneProject.Buisness_Logic.Hospital
             con.Open();
             ad.Fill(ds);
             con.Close();
-             Password2 = ds.Tables[0].Rows[0]["Password2"].ToString();
-             Password = ds.Tables[0].Rows[0]["Password"].ToString();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Password2 = ds.Tables[0].Rows[0]["Password2"].ToString();
+                Password = ds.Tables[0].Rows[0]["Password"].ToString();
+            }
             return ds;
         }
     }
